@@ -2,6 +2,7 @@ import type {
   CallFunctionBody, CodeFunctionBody, SharedFunctionBody,
 } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunction';
 import { FunctionBodyType } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunction';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 export function expectCodeFunctionBody(
@@ -18,6 +19,7 @@ export function expectCallsFunctionBody(
 
 function expectBodyType(body: SharedFunctionBody, expectedType: FunctionBodyType) {
   const actualType = body.type;
+  expectExists(actualType, 'Function has no body');
   expect(actualType).to.equal(expectedType, formatAssertionMessage([
     `Actual: ${FunctionBodyType[actualType]}`,
     `Expected: ${FunctionBodyType[expectedType]}`,

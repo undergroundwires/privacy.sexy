@@ -32,7 +32,10 @@ describe('CategoryCollectionSpecificUtilities', () => {
       // arrange
       const functionsData = [createFunctionDataWithCode()];
       const syntax = new LanguageSyntaxStub();
-      const expected = new ScriptCompiler(functionsData, syntax);
+      const expected = new ScriptCompiler({
+        functions: functionsData,
+        syntax,
+      });
       const language = ScriptingLanguage.shellscript;
       const factoryMock = createSyntaxFactoryStub(language, syntax);
       const definition = new ScriptingDefinitionStub()

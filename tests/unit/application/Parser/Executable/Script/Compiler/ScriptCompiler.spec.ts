@@ -1,14 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import type { FunctionData } from '@/application/collections/';
 import { ScriptCompiler } from '@/application/Parser/Executable/Script/Compiler/ScriptCompiler';
-import type { ISharedFunctionsParser } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunctionsParser';
 import type { FunctionCallCompiler } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { FunctionCallCompilerStub } from '@tests/unit/shared/Stubs/FunctionCallCompilerStub';
-import { SharedFunctionsParserStub } from '@tests/unit/shared/Stubs/SharedFunctionsParserStub';
+import { createSharedFunctionsParserStub } from '@tests/unit/shared/Stubs/SharedFunctionsParserStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
-import { parseFunctionCalls } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCallParser';
+import { parseFunctionCalls } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCallsParser';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
@@ -22,6 +21,7 @@ import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { createScriptCodeFactoryStub } from '@tests/unit/shared/Stubs/ScriptCodeFactoryStub';
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
+import type { SharedFunctionsParser } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
 
 describe('ScriptCompiler', () => {
   describe('canCompile', () => {
@@ -90,7 +90,7 @@ describe('ScriptCompiler', () => {
         const script = createScriptDataWithCall(call);
         const functions = [createFunctionDataWithCode().withName('existing-func')];
         const compiledFunctions = new SharedFunctionCollectionStub();
-        const functionParserMock = new SharedFunctionsParserStub();
+        const functionParserMock = createSharedFunctionsParserStub();
         functionParserMock.setup(functions, compiledFunctions);
         const callCompilerMock = new FunctionCallCompilerStub();
         callCompilerMock.setup(
@@ -102,7 +102,7 @@ describe('ScriptCompiler', () => {
         );
         const sut = new ScriptCompilerBuilder()
           .withFunctions(...functions)
-          .withSharedFunctionsParser(functionParserMock)
+          .withSharedFunctionsParser(functionParserMock.parser)
           .withFunctionCallCompiler(callCompilerMock)
           .withScriptCodeFactory(scriptCodeFactory)
           .build();
@@ -118,33 +118,35 @@ describe('ScriptCompiler', () => {
       it('parses functions with expected syntax', () => {
         // arrange
         const expected: ILanguageSyntax = new LanguageSyntaxStub();
-        const parser = new SharedFunctionsParserStub();
+        const functionParserMock = createSharedFunctionsParserStub();
         const sut = new ScriptCompilerBuilder()
           .withSomeFunctions()
           .withSyntax(expected)
-          .withSharedFunctionsParser(parser)
+          .withSharedFunctionsParser(functionParserMock.parser)
           .build();
         const scriptData = createScriptDataWithCall();
         // act
         sut.compile(scriptData);
         // assert
-        expect(parser.callHistory.length).to.equal(1);
-        expect(parser.callHistory[0].syntax).to.equal(expected);
+        const parserCalls = functionParserMock.callHistory;
+        expect(parserCalls.length).to.equal(1);
+        expect(parserCalls[0].syntax).to.equal(expected);
       });
       it('parses given functions', () => {
         // arrange
         const expectedFunctions = [createFunctionDataWithCode().withName('existing-func')];
-        const parser = new SharedFunctionsParserStub();
+        const functionParserMock = createSharedFunctionsParserStub();
         const sut = new ScriptCompilerBuilder()
           .withFunctions(...expectedFunctions)
-          .withSharedFunctionsParser(parser)
+          .withSharedFunctionsParser(functionParserMock.parser)
           .build();
         const scriptData = createScriptDataWithCall();
         // act
         sut.compile(scriptData);
         // assert
-        expect(parser.callHistory.length).to.equal(1);
-        expect(parser.callHistory[0].functions).to.deep.equal(expectedFunctions);
+        const parserCalls = functionParserMock.callHistory;
+        expect(parserCalls.length).to.equal(1);
+        expect(parserCalls[0].functions).to.deep.equal(expectedFunctions);
       });
     });
     describe('rethrows error with script name', () => {
@@ -243,7 +245,7 @@ class ScriptCompilerBuilder {
 
   private syntax: ILanguageSyntax = new LanguageSyntaxStub();
 
-  private sharedFunctionsParser: ISharedFunctionsParser = new SharedFunctionsParserStub();
+  private sharedFunctionsParser: SharedFunctionsParser = createSharedFunctionsParserStub().parser;
 
   private callCompiler: FunctionCallCompiler = new FunctionCallCompilerStub();
 
@@ -281,7 +283,7 @@ class ScriptCompilerBuilder {
   }
 
   public withSharedFunctionsParser(
-    sharedFunctionsParser: ISharedFunctionsParser,
+    sharedFunctionsParser: SharedFunctionsParser,
   ): this {
     this.sharedFunctionsParser = sharedFunctionsParser;
     return this;
@@ -314,13 +316,17 @@ class ScriptCompilerBuilder {
       throw new Error('Function behavior not defined');
     }
     return new ScriptCompiler(
-      this.functions,
-      this.syntax,
-      this.sharedFunctionsParser,
-      this.callCompiler,
-      this.codeValidator,
-      this.wrapError,
-      this.scriptCodeFactory,
+      {
+        functions: this.functions,
+        syntax: this.syntax,
+      },
+      {
+        sharedFunctionsParser: this.sharedFunctionsParser,
+        callCompiler: this.callCompiler,
+        codeValidator: this.codeValidator,
+        wrapError: this.wrapError,
+        scriptCodeFactory: this.scriptCodeFactory,
+      },
     );
   }
 }

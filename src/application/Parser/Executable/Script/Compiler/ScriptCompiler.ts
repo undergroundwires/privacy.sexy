@@ -6,28 +6,46 @@ import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { createScriptCode, type ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
-import { SharedFunctionsParser } from './Function/SharedFunctionsParser';
 import { FunctionCallSequenceCompiler } from './Function/Call/Compiler/FunctionCallSequenceCompiler';
-import { parseFunctionCalls } from './Function/Call/FunctionCallParser';
+import { parseFunctionCalls } from './Function/Call/FunctionCallsParser';
+import { parseSharedFunctions, type SharedFunctionsParser } from './Function/SharedFunctionsParser';
 import type { CompiledCode } from './Function/Call/Compiler/CompiledCode';
 import type { IScriptCompiler } from './IScriptCompiler';
 import type { ISharedFunctionCollection } from './Function/ISharedFunctionCollection';
 import type { FunctionCallCompiler } from './Function/Call/Compiler/FunctionCallCompiler';
-import type { ISharedFunctionsParser } from './Function/ISharedFunctionsParser';
+
+interface ScriptCompilerUtilities {
+  readonly sharedFunctionsParser: SharedFunctionsParser;
+  readonly callCompiler: FunctionCallCompiler;
+  readonly codeValidator: ICodeValidator;
+  readonly wrapError: ErrorWithContextWrapper;
+  readonly scriptCodeFactory: ScriptCodeFactory;
+}
+
+const DefaultUtilities: ScriptCompilerUtilities = {
+  sharedFunctionsParser: parseSharedFunctions,
+  callCompiler: FunctionCallSequenceCompiler.instance,
+  codeValidator: CodeValidator.instance,
+  wrapError: wrapErrorWithAdditionalContext,
+  scriptCodeFactory: createScriptCode,
+};
+
+interface CategoryCollectionDataContext {
+  readonly functions: readonly FunctionData[];
+  readonly syntax: ILanguageSyntax;
+}
 
 export class ScriptCompiler implements IScriptCompiler {
   private readonly functions: ISharedFunctionCollection;
 
   constructor(
-    functions: readonly FunctionData[],
-    syntax: ILanguageSyntax,
-    sharedFunctionsParser: ISharedFunctionsParser = SharedFunctionsParser.instance,
-    private readonly callCompiler: FunctionCallCompiler = FunctionCallSequenceCompiler.instance,
-    private readonly codeValidator: ICodeValidator = CodeValidator.instance,
-    private readonly wrapError: ErrorWithContextWrapper = wrapErrorWithAdditionalContext,
-    private readonly scriptCodeFactory: ScriptCodeFactory = createScriptCode,
+    categoryContext: CategoryCollectionDataContext,
+    private readonly utilities: ScriptCompilerUtilities = DefaultUtilities,
   ) {
-    this.functions = sharedFunctionsParser.parseFunctions(functions, syntax);
+    this.functions = this.utilities.sharedFunctionsParser(
+      categoryContext.functions,
+      categoryContext.syntax,
+    );
   }
 
   public canCompile(script: ScriptData): boolean {
@@ -40,14 +58,14 @@ export class ScriptCompiler implements IScriptCompiler {
         throw new Error('Script does include any calls.');
       }
       const calls = parseFunctionCalls(script.call);
-      const compiledCode = this.callCompiler.compileFunctionCalls(calls, this.functions);
-      validateCompiledCode(compiledCode, this.codeValidator);
-      return this.scriptCodeFactory(
+      const compiledCode = this.utilities.callCompiler.compileFunctionCalls(calls, this.functions);
+      validateCompiledCode(compiledCode, this.utilities.codeValidator);
+      return this.utilities.scriptCodeFactory(
         compiledCode.code,
         compiledCode.revertCode,
       );
     } catch (error) {
-      throw this.wrapError(error, `Failed to compile script: ${script.name}`);
+      throw this.utilities.wrapError(error, `Failed to compile script: ${script.name}`);
     }
   }
 }

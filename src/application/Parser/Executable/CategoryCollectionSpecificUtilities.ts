@@ -18,7 +18,10 @@ export const createCollectionUtilities: CategoryCollectionSpecificUtilitiesFacto
 ) => {
   const syntax = syntaxFactory.create(scripting.language);
   return {
-    compiler: new ScriptCompiler(functionsData ?? [], syntax),
+    compiler: new ScriptCompiler({
+      functions: functionsData ?? [],
+      syntax,
+    }),
     syntax,
   };
 };

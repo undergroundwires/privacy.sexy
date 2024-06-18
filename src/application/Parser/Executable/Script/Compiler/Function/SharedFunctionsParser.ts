@@ -12,50 +12,52 @@ import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { FunctionParameter } from './Parameter/FunctionParameter';
-import { parseFunctionCalls } from './Call/FunctionCallParser';
+import { parseFunctionCalls, type FunctionCallsParser } from './Call/FunctionCallsParser';
 import { createFunctionParameterCollection, type FunctionParameterCollectionFactory } from './Parameter/FunctionParameterCollectionFactory';
 import type { ISharedFunctionCollection } from './ISharedFunctionCollection';
-import type { ISharedFunctionsParser } from './ISharedFunctionsParser';
 import type { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
 import type { ISharedFunction } from './ISharedFunction';
 
-const DefaultSharedFunctionsParsingUtilities: SharedFunctionsParsingUtilities = {
+export interface SharedFunctionsParser {
+  (
+    functions: readonly FunctionData[],
+    syntax: ILanguageSyntax,
+    utilities?: SharedFunctionsParsingUtilities,
+  ): ISharedFunctionCollection;
+}
+
+export const parseSharedFunctions: SharedFunctionsParser = (
+  functions: readonly FunctionData[],
+  syntax: ILanguageSyntax,
+  utilities = DefaultUtilities,
+) => {
+  const collection = new SharedFunctionCollection();
+  if (!functions.length) {
+    return collection;
+  }
+  ensureValidFunctions(functions);
+  return functions
+    .map((func) => parseFunction(func, syntax, utilities))
+    .reduce((acc, func) => {
+      acc.addFunction(func);
+      return acc;
+    }, collection);
+};
+
+const DefaultUtilities: SharedFunctionsParsingUtilities = {
   wrapError: wrapErrorWithAdditionalContext,
   createParameter: (...args) => new FunctionParameter(...args),
   codeValidator: CodeValidator.instance,
   createParameterCollection: createFunctionParameterCollection,
+  parseFunctionCalls,
 };
-
-export class SharedFunctionsParser implements ISharedFunctionsParser {
-  public static readonly instance: ISharedFunctionsParser = new SharedFunctionsParser();
-
-  constructor(
-    private readonly utilities = DefaultSharedFunctionsParsingUtilities,
-  ) { }
-
-  public parseFunctions(
-    functions: readonly FunctionData[],
-    syntax: ILanguageSyntax,
-  ): ISharedFunctionCollection {
-    const collection = new SharedFunctionCollection();
-    if (!functions.length) {
-      return collection;
-    }
-    ensureValidFunctions(functions);
-    return functions
-      .map((func) => parseFunction(func, syntax, this.utilities))
-      .reduce((acc, func) => {
-        acc.addFunction(func);
-        return acc;
-      }, collection);
-  }
-}
 
 interface SharedFunctionsParsingUtilities {
   readonly wrapError: ErrorWithContextWrapper;
   readonly createParameter: FunctionParameterFactory;
   readonly codeValidator: ICodeValidator;
   readonly createParameterCollection: FunctionParameterCollectionFactory;
+  readonly parseFunctionCalls: FunctionCallsParser;
 }
 
 export type FunctionParameterFactory = (
@@ -74,7 +76,7 @@ function parseFunction(
     return createFunctionWithInlineCode(name, parameters, data.code, data.revertCode);
   }
   // Has call
-  const calls = parseFunctionCalls(data.call);
+  const calls = utilities.parseFunctionCalls(data.call);
   return createCallerFunction(name, parameters, calls);
 }
 

@@ -1,14 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import type { FunctionData, CodeInstruction } from '@/application/collections/';
+import type {
+  FunctionData, CodeInstruction,
+  ParameterDefinitionData, FunctionCallsData,
+} from '@/application/collections/';
 import type { ISharedFunction } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunction';
-import { SharedFunctionsParser, type FunctionParameterFactory } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
-import { createFunctionDataWithCode, createFunctionDataWithoutCallOrCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
+import { parseSharedFunctions, type FunctionParameterFactory } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
+import { createFunctionDataWithCall, createFunctionDataWithCode, createFunctionDataWithoutCallOrCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { ParameterDefinitionDataStub } from '@tests/unit/shared/Stubs/ParameterDefinitionDataStub';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
-import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFactoryTests';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
@@ -19,18 +21,17 @@ import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithC
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
 import type { FunctionParameterCollectionFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterCollectionFactory';
 import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
+import type { FunctionCallsParser } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCallsParser';
+import { createFunctionCallsParserStub } from '@tests/unit/shared/Stubs/FunctionCallsParserStub';
+import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
+import type { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import { expectCallsFunctionBody, expectCodeFunctionBody } from './ExpectFunctionBodyType';
 
 describe('SharedFunctionsParser', () => {
-  describe('instance', () => {
-    itIsSingletonFactory({
-      getter: () => SharedFunctionsParser.instance,
-      expectedType: SharedFunctionsParser,
-    });
-  });
-  describe('parseFunctions', () => {
+  describe('parseSharedFunctions', () => {
     describe('validates functions', () => {
-      it('throws when functions have no names', () => {
+      it('throws when no name is provided', () => {
         // arrange
         const invalidFunctions = [
           createFunctionDataWithCode()
@@ -45,13 +46,13 @@ describe('SharedFunctionsParser', () => {
         ];
         const expectedError = `Some function(s) have no names:\n${invalidFunctions.map((f) => JSON.stringify(f)).join('\n')}`;
         // act
-        const act = () => new ParseFunctionsCallerWithDefaults()
+        const act = () => new TestContext()
           .withFunctions(invalidFunctions)
           .parseFunctions();
         // assert
         expect(act).to.throw(expectedError);
       });
-      it('throws when functions have same names', () => {
+      it('throws when functions have duplicate names', () => {
         // arrange
         const name = 'same-func-name';
         const expectedError = `duplicate function name: "${name}"`;
@@ -60,14 +61,14 @@ describe('SharedFunctionsParser', () => {
           createFunctionDataWithCode().withName(name),
         ];
         // act
-        const act = () => new ParseFunctionsCallerWithDefaults()
+        const act = () => new TestContext()
           .withFunctions(functions)
           .parseFunctions();
         // assert
         expect(act).to.throw(expectedError);
       });
-      describe('throws when when function have duplicate code', () => {
-        it('code', () => {
+      describe('throws when functions have duplicate code', () => {
+        it('throws on code duplication', () => {
           // arrange
           const code = 'duplicate-code';
           const expectedError = `duplicate "code" in functions: "${code}"`;
@@ -76,13 +77,13 @@ describe('SharedFunctionsParser', () => {
             createFunctionDataWithoutCallOrCode().withName('func-2').withCode(code),
           ];
           // act
-          const act = () => new ParseFunctionsCallerWithDefaults()
+          const act = () => new TestContext()
             .withFunctions(functions)
             .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
-        it('revertCode', () => {
+        it('throws on revert code duplication', () => {
           // arrange
           const revertCode = 'duplicate-revert-code';
           const expectedError = `duplicate "revertCode" in functions: "${revertCode}"`;
@@ -93,15 +94,15 @@ describe('SharedFunctionsParser', () => {
               .withName('func-2').withCode('code-2').withRevertCode(revertCode),
           ];
           // act
-          const act = () => new ParseFunctionsCallerWithDefaults()
+          const act = () => new TestContext()
             .withFunctions(functions)
             .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
       });
-      describe('ensures either call or code is defined', () => {
-        it('both code and call are defined', () => {
+      describe('throws when both or neither code and call are defined', () => {
+        it('throws when both code and call are defined', () => {
           // arrange
           const functionName = 'invalid-function';
           const expectedError = `both "code" and "call" are defined in "${functionName}"`;
@@ -110,45 +111,48 @@ describe('SharedFunctionsParser', () => {
             .withCode('code')
             .withMockCall();
           // act
-          const act = () => new ParseFunctionsCallerWithDefaults()
+          const act = () => new TestContext()
             .withFunctions([invalidFunction])
             .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
-        it('neither code and call is defined', () => {
+        it('throws when neither code nor call is defined', () => {
           // arrange
           const functionName = 'invalid-function';
           const expectedError = `neither "code" or "call" is defined in "${functionName}"`;
           const invalidFunction = createFunctionDataWithoutCallOrCode()
             .withName(functionName);
           // act
-          const act = () => new ParseFunctionsCallerWithDefaults()
+          const act = () => new TestContext()
             .withFunctions([invalidFunction])
             .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
       });
-      describe('throws when parameters type is not as expected', () => {
-        const testScenarios = [
+      describe('throws when parameter types are invalid', () => {
+        const testScenarios: readonly {
+          readonly description: string;
+          readonly invalidType: unknown;
+        }[] = [
           {
-            state: 'when not an array',
+            description: 'parameter is not an array',
             invalidType: 5,
           },
           {
-            state: 'when array but not of objects',
+            description: 'parameter array contains non-objects',
             invalidType: ['a', { a: 'b' }],
           },
         ];
         for (const testCase of testScenarios) {
-          it(testCase.state, () => {
+          it(testCase.description, () => {
             // arrange
             const func = createFunctionDataWithCode()
               .withParametersObject(testCase.invalidType as never);
             const expectedError = `parameters must be an array of objects in function(s) "${func.name}"`;
             // act
-            const act = () => new ParseFunctionsCallerWithDefaults()
+            const act = () => new TestContext()
               .withFunctions([func])
               .parseFunctions();
             // assert
@@ -164,7 +168,7 @@ describe('SharedFunctionsParser', () => {
           .withRevertCode('expected revert code to be validated');
         const validator = new CodeValidatorStub();
         // act
-        new ParseFunctionsCallerWithDefaults()
+        new TestContext()
           .withFunctions([functionData])
           .withValidator(validator)
           .parseFunctions();
@@ -190,7 +194,7 @@ describe('SharedFunctionsParser', () => {
           itThrowsContextualError({
             // act
             throwingAction: (wrapError) => {
-              new ParseFunctionsCallerWithDefaults()
+              new TestContext()
                 .withFunctions([functionData])
                 .withFunctionParameterFactory(parameterFactory)
                 .withErrorWrapper(wrapError)
@@ -203,10 +207,10 @@ describe('SharedFunctionsParser', () => {
         });
       });
     });
-    describe('given empty functions, returns empty collection', () => {
+    describe('handles empty function data', () => {
       itEachAbsentCollectionValue<FunctionData>((absentValue) => {
         // act
-        const actual = new ParseFunctionsCallerWithDefaults()
+        const actual = new TestContext()
           .withFunctions(absentValue)
           .parseFunctions();
         // assert
@@ -226,68 +230,181 @@ describe('SharedFunctionsParser', () => {
             new ParameterDefinitionDataStub().withName('expectedParameter2').withOptionality(false),
           );
         // act
-        const collection = new ParseFunctionsCallerWithDefaults()
+        const collection = new TestContext()
           .withFunctions([expected])
           .parseFunctions();
         // expect
         const actual = collection.getFunctionByName(name);
         expectEqualName(expected, actual);
-        expectEqualParameters(expected, actual);
+        expectEqualParameters(expected.parameters, actual.parameters);
         expectEqualFunctionWithInlineCode(expected, actual);
       });
     });
     describe('function with calls', () => {
-      it('parses single function with call as expected', () => {
-        // arrange
-        const call = new FunctionCallDataStub()
-          .withName('calleeFunction')
-          .withParameters({ test: 'value' });
-        const data = createFunctionDataWithoutCallOrCode()
-          .withName('caller-function')
-          .withCall(call);
-        // act
-        const collection = new ParseFunctionsCallerWithDefaults()
-          .withFunctions([data])
-          .parseFunctions();
-        // expect
-        const actual = collection.getFunctionByName(data.name);
-        expectEqualName(data, actual);
-        expectEqualParameters(data, actual);
-        expectEqualCalls([call], actual);
+      describe('parses single function correctly', () => {
+        it('parses name correctly', () => {
+          // arrange
+          const expectedName = 'expected-function-name';
+          const data = createFunctionDataWithCode()
+            .withName(expectedName);
+          // act
+          const collection = new TestContext()
+            .withFunctions([data])
+            .parseFunctions();
+          // expect
+          const actual = collection.getFunctionByName(expectedName);
+          expect(actual.name).to.equal(expectedName);
+          expectEqualName(data, actual);
+        });
+        it('parses parameters correctly', () => {
+          // arrange
+          const functionCallsParserStub = createFunctionCallsParserStub();
+          const expectedParameters: readonly ParameterDefinitionData[] = [
+            new ParameterDefinitionDataStub().withName('expectedParameter').withOptionality(true),
+            new ParameterDefinitionDataStub().withName('expectedParameter2').withOptionality(false),
+          ];
+          const data = createFunctionDataWithCode()
+            .withParameters(...expectedParameters);
+          // act
+          const collection = new TestContext()
+            .withFunctions([data])
+            .withFunctionCallsParser(functionCallsParserStub.parser)
+            .parseFunctions();
+          // expect
+          const actual = collection.getFunctionByName(data.name);
+          expectEqualParameters(expectedParameters, actual.parameters);
+        });
+        it('parses call correctly', () => {
+          // arrange
+          const functionCallsParserStub = createFunctionCallsParserStub();
+          const inputCallData = new FunctionCallDataStub()
+            .withName('function-input-call');
+          const data = createFunctionDataWithoutCallOrCode()
+            .withCall(inputCallData);
+          const expectedCall = new FunctionCallStub()
+            .withFunctionName('function-expected-call');
+          functionCallsParserStub.setup(inputCallData, [expectedCall]);
+          // act
+          const collection = new TestContext()
+            .withFunctions([data])
+            .withFunctionCallsParser(functionCallsParserStub.parser)
+            .parseFunctions();
+          // expect
+          const actualFunction = collection.getFunctionByName(data.name);
+          expectEqualFunctionWithCalls([expectedCall], actualFunction);
+        });
       });
-      it('parses multiple functions with call as expected', () => {
-        // arrange
-        const call1 = new FunctionCallDataStub()
-          .withName('calleeFunction1')
-          .withParameters({ param: 'value' });
-        const call2 = new FunctionCallDataStub()
-          .withName('calleeFunction2')
-          .withParameters({ param2: 'value2' });
-        const caller1 = createFunctionDataWithoutCallOrCode()
-          .withName('caller-function')
-          .withCall(call1);
-        const caller2 = createFunctionDataWithoutCallOrCode()
-          .withName('caller-function-2')
-          .withCall([call1, call2]);
-        // act
-        const collection = new ParseFunctionsCallerWithDefaults()
-          .withFunctions([caller1, caller2])
-          .parseFunctions();
-        // expect
-        const compiledCaller1 = collection.getFunctionByName(caller1.name);
-        expectEqualName(caller1, compiledCaller1);
-        expectEqualParameters(caller1, compiledCaller1);
-        expectEqualCalls([call1], compiledCaller1);
-        const compiledCaller2 = collection.getFunctionByName(caller2.name);
-        expectEqualName(caller2, compiledCaller2);
-        expectEqualParameters(caller2, compiledCaller2);
-        expectEqualCalls([call1, call2], compiledCaller2);
+      describe('parses multiple functions correctly', () => {
+        it('parses names correctly', () => {
+          // arrange
+          const expectedNames: readonly string[] = [
+            'expected-function-name-1',
+            'expected-function-name-2',
+            'expected-function-name-3',
+          ];
+          const data: readonly FunctionData[] = expectedNames.map(
+            (functionName) => createFunctionDataWithCall()
+              .withName(functionName),
+          );
+          // act
+          const collection = new TestContext()
+            .withFunctions(data)
+            .parseFunctions();
+          // expect
+          expectedNames.forEach((name, index) => {
+            const compiledFunction = collection.getFunctionByName(name);
+            expectEqualName(data[index], compiledFunction);
+          });
+        });
+        it('parses parameters correctly', () => {
+          // arrange
+          const testData: readonly {
+            readonly functionName: string;
+            readonly inputParameterData: readonly ParameterDefinitionData[];
+          }[] = [
+            {
+              functionName: 'func1',
+              inputParameterData: [
+                new ParameterDefinitionDataStub().withName('func1-first-parameter'),
+                new ParameterDefinitionDataStub().withName('func1-second-parameter'),
+              ],
+            },
+            {
+              functionName: 'func2',
+              inputParameterData: [
+                new ParameterDefinitionDataStub().withName('func2-optional-parameter').withOptionality(true),
+                new ParameterDefinitionDataStub().withName('func2-required-parameter').withOptionality(false),
+              ],
+            },
+          ];
+          const data: readonly FunctionData[] = testData.map(
+            (d) => createFunctionDataWithCall()
+              .withName(d.functionName)
+              .withParameters(...d.inputParameterData),
+          );
+          // act
+          const collection = new TestContext()
+            .withFunctions(data)
+            .parseFunctions();
+          // expect
+          testData.forEach(({ functionName, inputParameterData }) => {
+            const actualFunction = collection.getFunctionByName(functionName);
+            expectEqualParameters(inputParameterData, actualFunction.parameters);
+          });
+        });
+        it('parses call correctly', () => {
+          // arrange
+          const functionCallsParserStub = createFunctionCallsParserStub();
+          const callData: readonly {
+            readonly functionName: string;
+            readonly inputData: FunctionCallsData,
+            readonly expectedCalls: ReturnType<FunctionCallsParser>,
+          }[] = [
+            {
+              functionName: 'function-1',
+              inputData: new FunctionCallDataStub().withName('function-1-input-function-call'),
+              expectedCalls: [
+                new FunctionCallStub().withFunctionName('function-1-compiled-function-call'),
+              ],
+            },
+            {
+              functionName: 'function-2',
+              inputData: [
+                new FunctionCallDataStub().withName('function-2-input-function-call-1'),
+                new FunctionCallDataStub().withName('function-2-input-function-call-2'),
+              ],
+              expectedCalls: [
+                new FunctionCallStub().withFunctionName('function-2-compiled-function-call-1'),
+                new FunctionCallStub().withFunctionName('function-2-compiled-function-call-2'),
+              ],
+            },
+          ];
+          const data: readonly FunctionData[] = callData.map(
+            ({ functionName, inputData }) => createFunctionDataWithoutCallOrCode()
+              .withName(functionName)
+              .withCall(inputData),
+          );
+          callData.forEach(({
+            inputData,
+            expectedCalls,
+          }) => functionCallsParserStub.setup(inputData, expectedCalls));
+          // act
+          const collection = new TestContext()
+            .withFunctions(data)
+            .withFunctionCallsParser(functionCallsParserStub.parser)
+            .parseFunctions();
+          // expect
+          callData.forEach(({ functionName, expectedCalls }) => {
+            const actualFunction = collection.getFunctionByName(functionName);
+            expectEqualFunctionWithCalls(expectedCalls, actualFunction);
+          });
+        });
       });
     });
   });
 });
 
-class ParseFunctionsCallerWithDefaults {
+class TestContext {
   private syntax: ILanguageSyntax = new LanguageSyntaxStub();
 
   private codeValidator: ICodeValidator = new CodeValidatorStub();
@@ -295,6 +412,8 @@ class ParseFunctionsCallerWithDefaults {
   private functions: readonly FunctionData[] = [createFunctionDataWithCode()];
 
   private wrapError: ErrorWithContextWrapper = errorWithContextWrapperStub;
+
+  private functionCallsParser: FunctionCallsParser = createFunctionCallsParserStub().parser;
 
   private parameterFactory: FunctionParameterFactory = (
     name: string,
@@ -306,17 +425,22 @@ class ParseFunctionsCallerWithDefaults {
   private parameterCollectionFactory
   : FunctionParameterCollectionFactory = () => new FunctionParameterCollectionStub();
 
-  public withSyntax(syntax: ILanguageSyntax) {
+  public withSyntax(syntax: ILanguageSyntax): this {
     this.syntax = syntax;
     return this;
   }
 
-  public withValidator(codeValidator: ICodeValidator) {
+  public withValidator(codeValidator: ICodeValidator): this {
     this.codeValidator = codeValidator;
     return this;
   }
 
-  public withFunctions(functions: readonly FunctionData[]) {
+  public withFunctionCallsParser(functionCallsParser: FunctionCallsParser): this {
+    this.functionCallsParser = functionCallsParser;
+    return this;
+  }
+
+  public withFunctions(functions: readonly FunctionData[]): this {
     this.functions = functions;
     return this;
   }
@@ -338,16 +462,18 @@ class ParseFunctionsCallerWithDefaults {
     return this;
   }
 
-  public parseFunctions() {
-    const sut = new SharedFunctionsParser(
+  public parseFunctions(): ReturnType<typeof parseSharedFunctions> {
+    return parseSharedFunctions(
+      this.functions,
+      this.syntax,
       {
         codeValidator: this.codeValidator,
         wrapError: this.wrapError,
         createParameter: this.parameterFactory,
         createParameterCollection: this.parameterCollectionFactory,
+        parseFunctionCalls: this.functionCallsParser,
       },
     );
-    return sut.parseFunctions(this.functions, this.syntax);
   }
 }
 
@@ -355,12 +481,15 @@ function expectEqualName(expected: FunctionData, actual: ISharedFunction): void 
   expect(actual.name).to.equal(expected.name);
 }
 
-function expectEqualParameters(expected: FunctionData, actual: ISharedFunction): void {
-  const actualSimplifiedParameters = actual.parameters.all.map((parameter) => ({
+function expectEqualParameters(
+  expected: readonly ParameterDefinitionData[] | undefined,
+  actual: IReadOnlyFunctionParameterCollection,
+): void {
+  const actualSimplifiedParameters = actual.all.map((parameter) => ({
     name: parameter.name,
     optional: parameter.isOptional,
   }));
-  const expectedSimplifiedParameters = expected.parameters?.map((parameter) => ({
+  const expectedSimplifiedParameters = expected?.map((parameter) => ({
     name: parameter.name,
     optional: parameter.optional || false,
   })) || [];
@@ -371,33 +500,18 @@ function expectEqualFunctionWithInlineCode(
   expected: CodeInstruction,
   actual: ISharedFunction,
 ): void {
-  expect(actual.body, `function "${actual.name}" has no body`);
   expectCodeFunctionBody(actual.body);
   expect(actual.body.code, `function "${actual.name}" has no code`);
   expect(actual.body.code.execute).to.equal(expected.code);
   expect(actual.body.code.revert).to.equal(expected.revertCode);
 }
 
-function expectEqualCalls(
-  expected: FunctionCallDataStub[],
-  actual: ISharedFunction,
-) {
-  expect(actual.body, `function "${actual.name}" has no body`);
-  expectCallsFunctionBody(actual.body);
-  expect(actual.body.calls, `function "${actual.name}" has no calls`);
-  const actualSimplifiedCalls = actual.body.calls
-    .map((call) => ({
-      function: call.functionName,
-      params: call.args.getAllParameterNames().map((name) => ({
-        name, value: call.args.getArgument(name).argumentValue,
-      })),
-    }));
-  const expectedSimplifiedCalls = expected
-    .map((call) => ({
-      function: call.function,
-      params: Object.keys(call.parameters).map((key) => (
-        { name: key, value: call.parameters[key] }
-      )),
-    }));
-  expect(actualSimplifiedCalls).to.deep.equal(expectedSimplifiedCalls, 'Unequal calls');
+function expectEqualFunctionWithCalls(
+  expectedCalls: readonly FunctionCall[],
+  actualFunction: ISharedFunction,
+): void {
+  expectCallsFunctionBody(actualFunction.body);
+  const actualCalls = actualFunction.body.calls;
+  expect(actualCalls.length).to.equal(expectedCalls.length);
+  expect(actualCalls).to.have.members(expectedCalls);
 }
