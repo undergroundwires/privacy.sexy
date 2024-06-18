@@ -1611,7 +1611,7 @@ actions:
                     data misuse.
 
                     It specifically targets UWP (Universal Windows Platform) apps.
-                    These apps can be both native system apps [1] and third-party apps [2] [3].
+                    These apps can be both native system apps [1] and third-party apps [2].
                     They are typically available through the Microsoft Store [1] [2].
                     These scripts only affect UWP apps, not desktop applications outside the UWP ecosystem.
 
