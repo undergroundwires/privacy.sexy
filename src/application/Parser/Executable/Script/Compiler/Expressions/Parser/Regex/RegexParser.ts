@@ -4,7 +4,7 @@ import { createPositionFromRegexFullMatch, type ExpressionPositionFactory } from
 import { createFunctionParameterCollection, type FunctionParameterCollectionFactory } from '../../../Function/Parameter/FunctionParameterCollectionFactory';
 import type { IExpressionParser } from '../IExpressionParser';
 import type { IExpression } from '../../Expression/IExpression';
-import type { IFunctionParameter } from '../../../Function/Parameter/IFunctionParameter';
+import type { FunctionParameter } from '../../../Function/Parameter/FunctionParameter';
 import type { IFunctionParameterCollection, IReadOnlyFunctionParameterCollection } from '../../../Function/Parameter/IFunctionParameterCollection';
 
 export interface RegexParserUtilities {
@@ -110,7 +110,7 @@ function createParameters(
 
 export interface PrimitiveExpression {
   readonly evaluator: ExpressionEvaluator;
-  readonly parameters?: readonly IFunctionParameter[];
+  readonly parameters?: readonly FunctionParameter[];
 }
 
 export interface ExpressionFactory {

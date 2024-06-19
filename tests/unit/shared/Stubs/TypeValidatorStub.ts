@@ -1,4 +1,7 @@
-import type { NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import type {
+  NonEmptyCollectionAssertion, NonEmptyStringAssertion,
+  ObjectAssertion, TypeValidator,
+} from '@/application/Parser/Common/TypeValidator';
 import type { FunctionKeys } from '@/TypeHelpers';
 import { expectDeepIncludes } from '@tests/shared/Assertions/ExpectDeepIncludes';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
@@ -22,6 +25,13 @@ export class TypeValidatorStub
     });
   }
 
+  public assertNonEmptyString(assertion: NonEmptyStringAssertion): void {
+    this.registerMethodCall({
+      methodName: 'assertNonEmptyString',
+      args: [assertion],
+    });
+  }
+
   public expectObjectAssertion<T>(
     expectedAssertion: ObjectAssertion<T>,
   ): void {
@@ -32,6 +42,12 @@ export class TypeValidatorStub
     expectedAssertion: NonEmptyCollectionAssertion,
   ): void {
     this.expectAssertion('assertNonEmptyCollection', expectedAssertion);
+  }
+
+  public expectNonEmptyStringAssertion(
+    expectedAssertion: NonEmptyStringAssertion,
+  ): void {
+    this.expectAssertion('assertNonEmptyString', expectedAssertion);
   }
 
   private expectAssertion<T extends FunctionKeys<TypeValidator>>(

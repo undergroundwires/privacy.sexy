@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { createTypeValidator } from '@/application/Parser/Common/TypeValidator';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { createTypeValidator, type NonEmptyStringAssertion, type RegexValidationRule } from '@/application/Parser/Common/TypeValidator';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('createTypeValidator', () => {
   describe('assertObject', () => {
@@ -141,6 +141,108 @@ describe('createTypeValidator', () => {
         const { assertNonEmptyCollection } = createTypeValidator();
         // act
         const act = () => assertNonEmptyCollection({ value: emptyArrayValue, valueName });
+        // assert
+        expect(act).to.throw(expectedMessage);
+      });
+    });
+  });
+  describe('assertNonEmptyString', () => {
+    describe('with valid string', () => {
+      it('accepts non-empty string without regex rule', () => {
+        // arrange
+        const nonEmptyString = 'hello';
+        const { assertNonEmptyString } = createTypeValidator();
+        // act
+        const act = () => assertNonEmptyString({ value: nonEmptyString, valueName: 'unimportant name' });
+        // assert
+        expect(act).to.not.throw();
+      });
+      it('accepts if the string matches the regex', () => {
+        // arrange
+        const regex: RegExp = /goodbye/;
+        const stringMatchingRegex = 'Valid string containing "goodbye"';
+        const rule: RegexValidationRule = {
+          expectedMatch: regex,
+          errorMessage: 'String contain "goodbye"',
+        };
+        const { assertNonEmptyString } = createTypeValidator();
+        // act
+        const act = () => assertNonEmptyString({
+          value: stringMatchingRegex,
+          valueName: 'unimportant name',
+          rule,
+        });
+        // assert
+        expect(act).to.not.throw();
+      });
+    });
+    describe('with invalid string', () => {
+      describe('throws error for missing string', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const valueName = 'absent string value';
+          const expectedMessage = `'${valueName}' is missing.`;
+          const { assertNonEmptyString } = createTypeValidator();
+          // act
+          const act = () => assertNonEmptyString({ value: absentValue, valueName });
+          // assert
+          expect(act).to.throw(expectedMessage);
+        });
+      });
+      describe('throws error for non string values', () => {
+        // arrange
+        const testScenarios: readonly {
+          readonly description: string;
+          readonly invalidValue: unknown;
+        }[] = [
+          {
+            description: 'number',
+            invalidValue: 42,
+          },
+          {
+            description: 'boolean',
+            invalidValue: true,
+          },
+          {
+            description: 'object',
+            invalidValue: { property: 'value' },
+          },
+          {
+            description: 'array',
+            invalidValue: ['a', 'r', 'r', 'a', 'y'],
+          },
+        ];
+        testScenarios.forEach(({
+          description, invalidValue,
+        }) => {
+          it(description, () => {
+            const valueName = 'invalidValue';
+            const expectedMessage = `'${valueName}' should be of type 'string', but is of type '${typeof invalidValue}'.`;
+            const { assertNonEmptyString } = createTypeValidator();
+            // act
+            const act = () => assertNonEmptyString({ value: invalidValue, valueName });
+            // assert
+            expect(act).to.throw(expectedMessage);
+          });
+        });
+      });
+      it('throws an error if the string does not match the regex', () => {
+        // arrange
+        const regex: RegExp = /goodbye/;
+        const stringNotMatchingRegex = 'Hello';
+        const expectedMessage = 'String should contain "goodbye"';
+        const rule: RegexValidationRule = {
+          expectedMatch: regex,
+          errorMessage: expectedMessage,
+        };
+        const assertion: NonEmptyStringAssertion = {
+          value: stringNotMatchingRegex,
+          valueName: 'non-important-value-name',
+          rule,
+        };
+        const { assertNonEmptyString } = createTypeValidator();
+        // act
+        const act = () => assertNonEmptyString(assertion);
         // assert
         expect(act).to.throw(expectedMessage);
       });

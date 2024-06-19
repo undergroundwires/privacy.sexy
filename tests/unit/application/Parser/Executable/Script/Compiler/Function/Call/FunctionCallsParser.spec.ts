@@ -3,8 +3,12 @@ import type { FunctionCallsData, FunctionCallData } from '@/application/collecti
 import { parseFunctionCalls } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCallsParser';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import type { NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import type {
+  NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator,
+} from '@/application/Parser/Common/TypeValidator';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
+import type { FunctionCallArgumentFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
+import { FunctionCallArgumentFactoryStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentFactoryStub';
 
 describe('FunctionCallsParser', () => {
   describe('parseFunctionCalls', () => {
@@ -174,12 +178,15 @@ describe('FunctionCallsParser', () => {
 });
 
 class TestContext {
-  private validator: TypeValidator = new TypeValidatorStub();
+  private typeValidator: TypeValidator = new TypeValidatorStub();
+
+  private createCallArgument
+  : FunctionCallArgumentFactory = new FunctionCallArgumentFactoryStub().factory;
 
   private calls: FunctionCallsData = [new FunctionCallDataStub()];
 
   public withTypeValidator(typeValidator: TypeValidator): this {
-    this.validator = typeValidator;
+    this.typeValidator = typeValidator;
     return this;
   }
 
@@ -191,7 +198,10 @@ class TestContext {
   public parse(): ReturnType<typeof parseFunctionCalls> {
     return parseFunctionCalls(
       this.calls,
-      this.validator,
+      {
+        typeValidator: this.typeValidator,
+        createCallArgument: this.createCallArgument,
+      },
     );
   }
 }

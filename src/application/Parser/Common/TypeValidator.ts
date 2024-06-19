@@ -1,14 +1,28 @@
 import type { PropertyKeys } from '@/TypeHelpers';
-import { isNullOrUndefined, isArray, isPlainObject } from '@/TypeHelpers';
+import {
+  isNullOrUndefined, isArray, isPlainObject, isString,
+} from '@/TypeHelpers';
 
 export interface TypeValidator {
   assertObject<T>(assertion: ObjectAssertion<T>): void;
   assertNonEmptyCollection(assertion: NonEmptyCollectionAssertion): void;
+  assertNonEmptyString(assertion: NonEmptyStringAssertion): void;
 }
 
 export interface NonEmptyCollectionAssertion {
   readonly value: unknown;
   readonly valueName: string;
+}
+
+export interface RegexValidationRule {
+  readonly expectedMatch: RegExp;
+  readonly errorMessage: string;
+}
+
+export interface NonEmptyStringAssertion {
+  readonly value: unknown;
+  readonly valueName: string;
+  readonly rule?: RegexValidationRule;
 }
 
 export interface ObjectAssertion<T> {
@@ -32,6 +46,18 @@ export function createTypeValidator(): TypeValidator {
       assertDefined(assertion.value, assertion.valueName);
       assertArray(assertion.value, assertion.valueName);
       assertNonEmpty(assertion.value, assertion.valueName);
+    },
+    assertNonEmptyString: (assertion) => {
+      assertDefined(assertion.value, assertion.valueName);
+      assertString(assertion.value, assertion.valueName);
+      if (assertion.value.length === 0) {
+        throw new Error(`'${assertion.valueName}' is missing.`);
+      }
+      if (assertion.rule) {
+        if (!assertion.value.match(assertion.rule.expectedMatch)) {
+          throw new Error(assertion.rule.errorMessage);
+        }
+      }
     },
   };
 }
@@ -83,6 +109,15 @@ function assertArray(
 ): asserts value is Array<unknown> {
   if (!isArray(value)) {
     throw new Error(`'${valueName}' should be of type 'array', but is of type '${typeof value}'.`);
+  }
+}
+
+function assertString(
+  value: unknown,
+  valueName: string,
+): asserts value is string {
+  if (!isString(value)) {
+    throw new Error(`'${valueName}' should be of type 'string', but is of type '${typeof value}'.`);
   }
 }
 

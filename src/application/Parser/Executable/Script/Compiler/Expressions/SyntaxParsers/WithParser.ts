@@ -1,7 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import type { IExpressionParser } from '@/application/Parser/Executable/Script/Compiler/Expressions/Parser/IExpressionParser';
 import { FunctionParameterCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterCollection';
-import { FunctionParameter } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameter';
 import { ExpressionPosition } from '../Expression/ExpressionPosition';
 import { ExpressionRegexBuilder } from '../Parser/Regex/ExpressionRegexBuilder';
 import { createPositionFromRegexFullMatch } from '../Expression/ExpressionPositionFactory';
@@ -84,7 +83,10 @@ class WithStatementBuilder {
 
   public buildExpression(endExpressionPosition: ExpressionPosition, input: string): IExpression {
     const parameters = new FunctionParameterCollection();
-    parameters.addParameter(new FunctionParameter(this.parameterName, true));
+    parameters.addParameter({
+      name: this.parameterName,
+      isOptional: true,
+    });
     const position = new ExpressionPosition(
       this.startExpressionPosition.start,
       endExpressionPosition.end,

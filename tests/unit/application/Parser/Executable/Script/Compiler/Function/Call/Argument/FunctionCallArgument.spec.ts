@@ -1,52 +1,110 @@
-import { describe, expect } from 'vitest';
-import { FunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
-import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { testParameterName } from '../../../ParameterNameTestRunner';
+import { describe, expect, it } from 'vitest';
+import { createFunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
+import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
+import type { NonEmptyStringAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import { createParameterNameValidatorStub } from '@tests/unit/shared/Stubs/ParameterNameValidatorStub';
+import type { ParameterNameValidator } from '@/application/Parser/Executable/Script/Compiler/Function/Shared/ParameterNameValidator';
 
 describe('FunctionCallArgument', () => {
-  describe('ctor', () => {
+  describe('createFunctionCallArgument', () => {
     describe('parameter name', () => {
-      testParameterName(
-        (parameterName) => new FunctionCallArgumentBuilder()
-          .withParameterName(parameterName)
-          .build()
-          .parameterName,
-      );
-    });
-    describe('throws if argument value is absent', () => {
-      itEachAbsentStringValue((absentValue) => {
+      it('assigns correctly', () => {
         // arrange
-        const parameterName = 'paramName';
-        const expectedError = `Missing argument value for the parameter "${parameterName}".`;
-        const argumentValue = absentValue;
+        const expectedName = 'expected parameter name';
+        const context = new TestContext()
+          .withParameterName(expectedName);
         // act
-        const act = () => new FunctionCallArgumentBuilder()
-          .withParameterName(parameterName)
-          .withArgumentValue(argumentValue)
-          .build();
+        const actualArgument = context.create();
         // assert
-        expect(act).to.throw(expectedError);
-      }, { excludeNull: true, excludeUndefined: true });
+        const actualName = actualArgument.parameterName;
+        expect(actualName).toEqual(expectedName);
+      });
+      it('validates parameter name', () => {
+        // arrange
+        const validator = createParameterNameValidatorStub();
+        const expectedParameterName = 'parameter name expected to be validated';
+        const context = new TestContext()
+          .withParameterName(expectedParameterName)
+          .withParameterNameValidator(validator.validator);
+        // act
+        context.create();
+        // assert
+        expect(validator.validatedNames).to.have.lengthOf(1);
+        expect(validator.validatedNames).to.include(expectedParameterName);
+      });
+    });
+    describe('argument value', () => {
+      it('assigns correctly', () => {
+        // arrange
+        const expectedValue = 'expected argument value';
+        const context = new TestContext()
+          .withArgumentValue(expectedValue);
+        // act
+        const actualArgument = context.create();
+        // assert
+        const actualValue = actualArgument.argumentValue;
+        expect(actualValue).toEqual(expectedValue);
+      });
+      it('validates argument value', () => {
+        // arrange
+        const parameterNameInError = 'expected parameter with argument error';
+        const expectedArgumentValue = 'argument value to be validated';
+        const expectedAssertion: NonEmptyStringAssertion = {
+          value: expectedArgumentValue,
+          valueName: `Missing argument value for the parameter "${parameterNameInError}".`,
+        };
+        const typeValidator = new TypeValidatorStub();
+        const context = new TestContext()
+          .withArgumentValue(expectedArgumentValue)
+          .withParameterName(parameterNameInError)
+          .withTypeValidator(typeValidator);
+        // act
+        context.create();
+        // assert
+        typeValidator.assertNonEmptyString(expectedAssertion);
+      });
     });
   });
 });
 
-class FunctionCallArgumentBuilder {
-  private parameterName = 'default-parameter-name';
+class TestContext {
+  private parameterName = `[${TestContext.name}] default-parameter-name`;
 
-  private argumentValue = 'default-argument-value';
+  private argumentValue = `[${TestContext.name}] default-argument-value`;
 
-  public withParameterName(parameterName: string) {
+  private typeValidator: TypeValidator = new TypeValidatorStub();
+
+  private parameterNameValidator
+  : ParameterNameValidator = createParameterNameValidatorStub().validator;
+
+  public withParameterName(parameterName: string): this {
     this.parameterName = parameterName;
     return this;
   }
 
-  public withArgumentValue(argumentValue: string) {
+  public withArgumentValue(argumentValue: string): this {
     this.argumentValue = argumentValue;
     return this;
   }
 
-  public build() {
-    return new FunctionCallArgument(this.parameterName, this.argumentValue);
+  public withTypeValidator(typeValidator: TypeValidator): this {
+    this.typeValidator = typeValidator;
+    return this;
+  }
+
+  public withParameterNameValidator(parameterNameValidator: ParameterNameValidator): this {
+    this.parameterNameValidator = parameterNameValidator;
+    return this;
+  }
+
+  public create(): ReturnType<typeof createFunctionCallArgument> {
+    return createFunctionCallArgument(
+      this.parameterName,
+      this.argumentValue,
+      {
+        typeValidator: this.typeValidator,
+        validateParameterName: this.parameterNameValidator,
+      },
+    );
   }
 }

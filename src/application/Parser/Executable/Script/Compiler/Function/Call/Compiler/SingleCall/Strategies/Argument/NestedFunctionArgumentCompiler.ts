@@ -1,5 +1,4 @@
 import type { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
-import { FunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import { FunctionCallArgumentCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
 import { ExpressionsCompiler } from '@/application/Parser/Executable/Script/Compiler/Expressions/ExpressionsCompiler';
 import type { IExpressionsCompiler } from '@/application/Parser/Executable/Script/Compiler/Expressions/IExpressionsCompiler';
@@ -7,14 +6,11 @@ import type { FunctionCall } from '@/application/Parser/Executable/Script/Compil
 import type { FunctionCallCompilationContext } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
 import { ParsedFunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/ParsedFunctionCall';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { createFunctionCallArgument, type FunctionCallArgument, type FunctionCallArgumentFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import type { ArgumentCompiler } from './ArgumentCompiler';
 
 export class NestedFunctionArgumentCompiler implements ArgumentCompiler {
-  constructor(
-    private readonly expressionsCompiler: IExpressionsCompiler = new ExpressionsCompiler(),
-    private readonly wrapError: ErrorWithContextWrapper
-    = wrapErrorWithAdditionalContext,
-  ) { }
+  constructor(private readonly utilities: ArgumentCompilationUtilities = DefaultUtilities) { }
 
   public createCompiledNestedCall(
     nestedFunction: FunctionCall,
@@ -25,10 +21,7 @@ export class NestedFunctionArgumentCompiler implements ArgumentCompiler {
       nestedFunction,
       parentFunction.args,
       context,
-      {
-        expressionsCompiler: this.expressionsCompiler,
-        wrapError: this.wrapError,
-      },
+      this.utilities,
     );
     const compiledCall = new ParsedFunctionCall(nestedFunction.functionName, compiledArgs);
     return compiledCall;
@@ -38,6 +31,7 @@ export class NestedFunctionArgumentCompiler implements ArgumentCompiler {
 interface ArgumentCompilationUtilities {
   readonly expressionsCompiler: IExpressionsCompiler,
   readonly wrapError: ErrorWithContextWrapper;
+  readonly createCallArgument: FunctionCallArgumentFactory;
 }
 
 function compileNestedFunctionArguments(
@@ -78,7 +72,7 @@ function compileNestedFunctionArguments(
     .map(({
       parameterName,
       compiledArgumentValue,
-    }) => new FunctionCallArgument(parameterName, compiledArgumentValue));
+    }) => utilities.createCallArgument(parameterName, compiledArgumentValue));
   return buildArgumentCollectionFromArguments(compiledArguments);
 }
 
@@ -118,3 +112,9 @@ function buildArgumentCollectionFromArguments(
     return compiledArgs;
   }, new FunctionCallArgumentCollection());
 }
+
+const DefaultUtilities: ArgumentCompilationUtilities = {
+  expressionsCompiler: new ExpressionsCompiler(),
+  wrapError: wrapErrorWithAdditionalContext,
+  createCallArgument: createFunctionCallArgument,
+};

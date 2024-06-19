@@ -1,9 +1,9 @@
-import type { IFunctionParameter } from './IFunctionParameter';
+import type { FunctionParameter } from './FunctionParameter';
 
 export interface IReadOnlyFunctionParameterCollection {
-  readonly all: readonly IFunctionParameter[];
+  readonly all: readonly FunctionParameter[];
 }
 
 export interface IFunctionParameterCollection extends IReadOnlyFunctionParameterCollection {
-  addParameter(parameter: IFunctionParameter): void;
+  addParameter(parameter: FunctionParameter): void;
 }

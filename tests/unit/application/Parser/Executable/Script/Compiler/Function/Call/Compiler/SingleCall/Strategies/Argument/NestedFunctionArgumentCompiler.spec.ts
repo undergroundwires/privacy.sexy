@@ -14,6 +14,8 @@ import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFun
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
+import type { FunctionCallArgumentFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
+import { FunctionCallArgumentFactoryStub } from '../../../../../../../../../../../shared/Stubs/FunctionCallArgumentFactoryStub';
 
 describe('NestedFunctionArgumentCompiler', () => {
   describe('createCompiledNestedCall', () => {
@@ -266,6 +268,9 @@ class NestedFunctionArgumentCompilerBuilder implements ArgumentCompiler {
 
   private wrapError: ErrorWithContextWrapper = errorWithContextWrapperStub;
 
+  private callArgumentFactory
+  : FunctionCallArgumentFactory = new FunctionCallArgumentFactoryStub().factory;
+
   public withExpressionsCompiler(expressionsCompiler: IExpressionsCompiler): this {
     this.expressionsCompiler = expressionsCompiler;
     return this;
@@ -292,10 +297,11 @@ class NestedFunctionArgumentCompilerBuilder implements ArgumentCompiler {
   }
 
   public createCompiledNestedCall(): FunctionCall {
-    const compiler = new NestedFunctionArgumentCompiler(
-      this.expressionsCompiler,
-      this.wrapError,
-    );
+    const compiler = new NestedFunctionArgumentCompiler({
+      expressionsCompiler: this.expressionsCompiler,
+      wrapError: this.wrapError,
+      createCallArgument: this.callArgumentFactory,
+    });
     return compiler.createCompiledNestedCall(
       this.nestedFunctionCall,
       this.parentFunctionCall,

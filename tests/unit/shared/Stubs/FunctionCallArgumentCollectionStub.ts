@@ -1,9 +1,9 @@
-import type { IFunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
+import type { FunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import type { IFunctionCallArgumentCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentStub } from './FunctionCallArgumentStub';
 
 export class FunctionCallArgumentCollectionStub implements IFunctionCallArgumentCollection {
-  private args = new Array<IFunctionCallArgument>();
+  private args = new Array<FunctionCallArgument>();
 
   public withEmptyArguments(): this {
     this.args.length = 0;
@@ -36,7 +36,7 @@ export class FunctionCallArgumentCollectionStub implements IFunctionCallArgument
     return this.args.some((a) => a.parameterName === parameterName);
   }
 
-  public addArgument(argument: IFunctionCallArgument): void {
+  public addArgument(argument: FunctionCallArgument): void {
     this.args.push(argument);
   }
 
@@ -44,7 +44,7 @@ export class FunctionCallArgumentCollectionStub implements IFunctionCallArgument
     return this.args.map((a) => a.parameterName);
   }
 
-  public getArgument(parameterName: string): IFunctionCallArgument {
+  public getArgument(parameterName: string): FunctionCallArgument {
     const arg = this.args.find((a) => a.parameterName === parameterName);
     if (!arg) {
       throw new Error(`no argument exists for parameter "${parameterName}"`);

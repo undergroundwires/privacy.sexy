@@ -1,6 +1,6 @@
-import type { IFunctionParameter } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/IFunctionParameter';
+import type { FunctionParameter } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameter';
 
-export class FunctionParameterStub implements IFunctionParameter {
+export class FunctionParameterStub implements FunctionParameter {
   public name = 'function-parameter-stub';
 
   public isOptional = true;

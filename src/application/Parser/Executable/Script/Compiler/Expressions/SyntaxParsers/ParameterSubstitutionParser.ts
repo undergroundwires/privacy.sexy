@@ -1,4 +1,3 @@
-import { FunctionParameter } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameter';
 import { RegexParser, type PrimitiveExpression } from '../Parser/Regex/RegexParser';
 import { ExpressionRegexBuilder } from '../Parser/Regex/ExpressionRegexBuilder';
 
@@ -16,7 +15,10 @@ export class ParameterSubstitutionParser extends RegexParser {
     const parameterName = match[1];
     const pipeline = match[2];
     return {
-      parameters: [new FunctionParameter(parameterName, false)],
+      parameters: [{
+        name: parameterName,
+        isOptional: false,
+      }],
       evaluator: (context) => {
         const { argumentValue } = context.args.getArgument(parameterName);
         if (!pipeline) {

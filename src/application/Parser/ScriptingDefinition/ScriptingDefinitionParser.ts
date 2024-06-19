@@ -5,8 +5,7 @@ import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { createEnumParser, type EnumParser } from '../../Common/Enum';
 import { createTypeValidator, type TypeValidator } from '../Common/TypeValidator';
-import { CodeSubstituter } from './CodeSubstituter';
-import type { ICodeSubstituter } from './ICodeSubstituter';
+import { type CodeSubstituter, substituteCode } from './CodeSubstituter';
 
 export const parseScriptingDefinition: ScriptingDefinitionParser = (
   definition,
@@ -15,8 +14,8 @@ export const parseScriptingDefinition: ScriptingDefinitionParser = (
 ) => {
   validateData(definition, utilities.validator);
   const language = utilities.languageParser.parseEnum(definition.language, 'language');
-  const startCode = utilities.codeSubstituter.substitute(definition.startCode, projectDetails);
-  const endCode = utilities.codeSubstituter.substitute(definition.endCode, projectDetails);
+  const startCode = utilities.codeSubstituter(definition.startCode, projectDetails);
+  const endCode = utilities.codeSubstituter(definition.endCode, projectDetails);
   return new ScriptingDefinition(
     language,
     startCode,
@@ -45,12 +44,12 @@ function validateData(
 
 interface ScriptingDefinitionParserUtilities {
   readonly languageParser: EnumParser<ScriptingLanguage>;
-  readonly codeSubstituter: ICodeSubstituter;
+  readonly codeSubstituter: CodeSubstituter;
   readonly validator: TypeValidator;
 }
 
 const DefaultUtilities: ScriptingDefinitionParserUtilities = {
   languageParser: createEnumParser(ScriptingLanguage),
-  codeSubstituter: new CodeSubstituter(),
+  codeSubstituter: substituteCode,
   validator: createTypeValidator(),
 };

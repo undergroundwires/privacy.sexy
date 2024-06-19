@@ -11,9 +11,10 @@ import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
-import { FunctionParameter } from './Parameter/FunctionParameter';
 import { parseFunctionCalls, type FunctionCallsParser } from './Call/FunctionCallsParser';
 import { createFunctionParameterCollection, type FunctionParameterCollectionFactory } from './Parameter/FunctionParameterCollectionFactory';
+import { parseFunctionParameter, type FunctionParameterParser } from './Parameter/FunctionParameterParser';
+import type { FunctionParameter } from './Parameter/FunctionParameter';
 import type { ISharedFunctionCollection } from './ISharedFunctionCollection';
 import type { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
 import type { ISharedFunction } from './ISharedFunction';
@@ -46,7 +47,7 @@ export const parseSharedFunctions: SharedFunctionsParser = (
 
 const DefaultUtilities: SharedFunctionsParsingUtilities = {
   wrapError: wrapErrorWithAdditionalContext,
-  createParameter: (...args) => new FunctionParameter(...args),
+  parseParameter: parseFunctionParameter,
   codeValidator: CodeValidator.instance,
   createParameterCollection: createFunctionParameterCollection,
   parseFunctionCalls,
@@ -54,15 +55,11 @@ const DefaultUtilities: SharedFunctionsParsingUtilities = {
 
 interface SharedFunctionsParsingUtilities {
   readonly wrapError: ErrorWithContextWrapper;
-  readonly createParameter: FunctionParameterFactory;
+  readonly parseParameter: FunctionParameterParser;
   readonly codeValidator: ICodeValidator;
   readonly createParameterCollection: FunctionParameterCollectionFactory;
   readonly parseFunctionCalls: FunctionCallsParser;
 }
-
-export type FunctionParameterFactory = (
-  ...args: ConstructorParameters<typeof FunctionParameter>
-) => FunctionParameter;
 
 function parseFunction(
   data: FunctionData,
@@ -100,7 +97,7 @@ function parseParameters(
   utilities: SharedFunctionsParsingUtilities,
 ): IReadOnlyFunctionParameterCollection {
   return (data.parameters || [])
-    .map((parameter) => createFunctionParameter(
+    .map((parameter) => parseParameterWithContextualError(
       data.name,
       parameter,
       utilities,
@@ -111,16 +108,13 @@ function parseParameters(
     }, utilities.createParameterCollection());
 }
 
-function createFunctionParameter(
+function parseParameterWithContextualError(
   functionName: string,
   parameterData: ParameterDefinitionData,
   utilities: SharedFunctionsParsingUtilities,
 ): FunctionParameter {
   try {
-    return utilities.createParameter(
-      parameterData.name,
-      parameterData.optional || false,
-    );
+    return utilities.parseParameter(parameterData);
   } catch (err) {
     throw utilities.wrapError(
       err,

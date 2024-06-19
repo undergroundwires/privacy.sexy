@@ -1,15 +1,15 @@
-import type { IFunctionParameter } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/IFunctionParameter';
 import type { IFunctionParameterCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+import type { FunctionParameter } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameter';
 import { FunctionParameterStub } from './FunctionParameterStub';
 
 export class FunctionParameterCollectionStub implements IFunctionParameterCollection {
-  private parameters = new Array<IFunctionParameter>();
+  private parameters = new Array<FunctionParameter>();
 
-  public addParameter(parameter: IFunctionParameter): void {
+  public addParameter(parameter: FunctionParameter): void {
     this.parameters.push(parameter);
   }
 
-  public get all(): readonly IFunctionParameter[] {
+  public get all(): readonly FunctionParameter[] {
     return this.parameters;
   }
 

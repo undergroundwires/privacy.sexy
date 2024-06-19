@@ -1,11 +1,11 @@
-import type { IFunctionCallArgument } from './IFunctionCallArgument';
+import type { FunctionCallArgument } from './FunctionCallArgument';
 
 export interface IReadOnlyFunctionCallArgumentCollection {
-  getArgument(parameterName: string): IFunctionCallArgument;
+  getArgument(parameterName: string): FunctionCallArgument;
   getAllParameterNames(): string[];
   hasArgument(parameterName: string): boolean;
 }
 
 export interface IFunctionCallArgumentCollection extends IReadOnlyFunctionCallArgumentCollection {
-  addArgument(argument: IFunctionCallArgument): void;
+  addArgument(argument: FunctionCallArgument): void;
 }

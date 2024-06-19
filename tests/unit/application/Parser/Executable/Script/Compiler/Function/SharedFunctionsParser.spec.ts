@@ -4,7 +4,7 @@ import type {
   ParameterDefinitionData, FunctionCallsData,
 } from '@/application/collections/';
 import type { ISharedFunction } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunction';
-import { parseSharedFunctions, type FunctionParameterFactory } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
+import { parseSharedFunctions } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
 import { createFunctionDataWithCall, createFunctionDataWithCode, createFunctionDataWithoutCallOrCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { ParameterDefinitionDataStub } from '@tests/unit/shared/Stubs/ParameterDefinitionDataStub';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
@@ -16,7 +16,6 @@ import type { ICodeValidator } from '@/application/Parser/Executable/Script/Vali
 import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoDuplicatedLines';
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
-import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParameterStub';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
 import type { FunctionParameterCollectionFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterCollectionFactory';
@@ -26,6 +25,8 @@ import { createFunctionCallsParserStub } from '@tests/unit/shared/Stubs/Function
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import type { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
+import type { FunctionParameterParser } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterParser';
+import { createFunctionParameterParserStub } from '@tests/unit/shared/Stubs/FunctionParameterParserStub';
 import { expectCallsFunctionBody, expectCodeFunctionBody } from './ExpectFunctionBodyType';
 
 describe('SharedFunctionsParser', () => {
@@ -185,7 +186,7 @@ describe('SharedFunctionsParser', () => {
           const functionName = 'functionName';
           const expectedErrorMessage = `Failed to create parameter: ${invalidParameterName} for function "${functionName}"`;
           const expectedInnerError = new Error('injected error');
-          const parameterFactory: FunctionParameterFactory = () => {
+          const parser: FunctionParameterParser = () => {
             throw expectedInnerError;
           };
           const functionData = createFunctionDataWithCode()
@@ -196,7 +197,7 @@ describe('SharedFunctionsParser', () => {
             throwingAction: (wrapError) => {
               new TestContext()
                 .withFunctions([functionData])
-                .withFunctionParameterFactory(parameterFactory)
+                .withFunctionParameterParser(parser)
                 .withErrorWrapper(wrapError)
                 .parseFunctions();
             },
@@ -415,12 +416,7 @@ class TestContext {
 
   private functionCallsParser: FunctionCallsParser = createFunctionCallsParserStub().parser;
 
-  private parameterFactory: FunctionParameterFactory = (
-    name: string,
-    isOptional: boolean,
-  ) => new FunctionParameterStub()
-    .withName(name)
-    .withOptional(isOptional);
+  private functionParameterParser: FunctionParameterParser = createFunctionParameterParserStub;
 
   private parameterCollectionFactory
   : FunctionParameterCollectionFactory = () => new FunctionParameterCollectionStub();
@@ -450,8 +446,8 @@ class TestContext {
     return this;
   }
 
-  public withFunctionParameterFactory(parameterFactory: FunctionParameterFactory): this {
-    this.parameterFactory = parameterFactory;
+  public withFunctionParameterParser(functionParameterParser: FunctionParameterParser): this {
+    this.functionParameterParser = functionParameterParser;
     return this;
   }
 
@@ -469,7 +465,7 @@ class TestContext {
       {
         codeValidator: this.codeValidator,
         wrapError: this.wrapError,
-        createParameter: this.parameterFactory,
+        parseParameter: this.functionParameterParser,
         createParameterCollection: this.parameterCollectionFactory,
         parseFunctionCalls: this.functionCallsParser,
       },

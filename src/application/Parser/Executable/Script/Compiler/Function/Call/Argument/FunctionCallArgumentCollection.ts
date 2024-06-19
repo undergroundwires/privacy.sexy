@@ -1,10 +1,10 @@
-import type { IFunctionCallArgument } from './IFunctionCallArgument';
+import type { FunctionCallArgument } from './FunctionCallArgument';
 import type { IFunctionCallArgumentCollection } from './IFunctionCallArgumentCollection';
 
 export class FunctionCallArgumentCollection implements IFunctionCallArgumentCollection {
-  private readonly arguments = new Map<string, IFunctionCallArgument>();
+  private readonly arguments = new Map<string, FunctionCallArgument>();
 
-  public addArgument(argument: IFunctionCallArgument): void {
+  public addArgument(argument: FunctionCallArgument): void {
     if (this.hasArgument(argument.parameterName)) {
       throw new Error(`argument value for parameter ${argument.parameterName} is already provided`);
     }
@@ -22,7 +22,7 @@ export class FunctionCallArgumentCollection implements IFunctionCallArgumentColl
     return this.arguments.has(parameterName);
   }
 
-  public getArgument(parameterName: string): IFunctionCallArgument {
+  public getArgument(parameterName: string): FunctionCallArgument {
     if (!parameterName) {
       throw new Error('missing parameter name');
     }

@@ -552,7 +552,7 @@ actions:
                                         function: ClearDirectoryContents
                                         parameters:
                                             directoryGlob: '%USERPROFILE%\Local Settings\Temporary Internet Files'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 📂 Unprotected on Windows 11 since 22H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 📂 Unprotected on Windows 11 since 22H2
                                     -
                                         function: ClearDirectoryContents
                                         parameters:
@@ -564,7 +564,7 @@ actions:
                                             #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Virtualized
                                             # Since Windows 10 22H2 and Windows 11 22H2, data files are observed in this subdirectories but not on the parent.
                                             # Especially in `IE` folder includes many files. These folders are protected and hidden by default.
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         function: ClearDirectoryContents
                                         parameters:
@@ -573,7 +573,7 @@ actions:
                                         function: ClearDirectoryContents
                                         parameters:
                                             directoryGlob: '%LOCALAPPDATA%\Temporary Internet Files'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                             -
                                 name: Clear Internet Explorer feeds cache
                                 recommend: standard
@@ -1217,7 +1217,7 @@ actions:
                                         function: StopService
                                         parameters:
                                             serviceName: wuauserv
-                                            waitUntilStopped: true
+                                            waitUntilStopped: 'true'
                                             serviceRestartStateFile: '%APPDATA%\privacy.sexy-wuauserv' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
                                     -
                                         function: ClearDirectoryContents
@@ -1303,18 +1303,18 @@ actions:
                                 function: StopService
                                 parameters:
                                     serviceName: DiagTrack
-                                    waitUntilStopped: true
+                                    waitUntilStopped: 'true'
                                     serviceRestartStateFile: '%APPDATA%\privacy.sexy-DiagTrack' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
                             -
                                 function: DeleteFiles
                                 parameters:
                                     fileGlob: '%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl'
-                                    grantPermissions: true
+                                    grantPermissions: 'true'
                             -
                                 function: DeleteFiles
                                 parameters:
                                     fileGlob: '%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\ShutdownLogger\AutoLogger-Diagtrack-Listener.etl'
-                                    grantPermissions: true
+                                    grantPermissions: 'true'
                             -
                                 function: StartService
                                 parameters:
@@ -1371,7 +1371,7 @@ actions:
                             function: ClearDirectoryContents # Otherwise it cannot access/delete files under `Scans\History`, see https://github.com/undergroundwires/privacy.sexy/issues/246
                             parameters:
                                 directoryGlob: '%ProgramData%\Microsoft\Windows Defender\Scans\History'
-                                grantPermissions: true # Running as TrustedInstaller is not needed, and causes Defender to alarm https://github.com/undergroundwires/privacy.sexy/issues/264
+                                grantPermissions: 'true' # Running as TrustedInstaller is not needed, and causes Defender to alarm https://github.com/undergroundwires/privacy.sexy/issues/264
             -
                 name: Clear credentials in Windows Credential Manager
                 call:
@@ -1508,13 +1508,13 @@ actions:
                         function: StopService
                         parameters:
                             serviceName: DPS
-                            waitUntilStopped: true
+                            waitUntilStopped: 'true'
                             serviceRestartStateFile: '%APPDATA%\privacy.sexy-DPS' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
                     -
                         function: DeleteFiles
                         parameters:
                             fileGlob: '%WINDIR%\System32\sru\SRUDB.dat'
-                            grantPermissions: true
+                            grantPermissions: 'true'
                     -
                         function: StartService
                         parameters:
@@ -1526,7 +1526,7 @@ actions:
                     function: DeleteDirectory
                     parameters:
                         directoryGlob: '%SYSTEMDRIVE%\Windows.old'
-                        grantPermissions: true
+                        grantPermissions: 'true'
     -
         category: Disable OS data collection
         children:
@@ -2813,7 +2813,7 @@ actions:
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%WINDIR%\System32\CompatTelRunner.exe'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                     -
                         category: Disable background application compatibility checks (Application Experience scheduled tasks)
                         docs: |-
@@ -3037,7 +3037,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'SdbinstMergeDbTask'
                                         taskPathPattern: \Microsoft\Windows\Application Experience\
                                         taskNamePattern: SdbinstMergeDbTask
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 11 23H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 11 23H2]
                             -
                                 name: Disable application backup data gathering (`MareBackup`)
                                 recommend: strict
@@ -5985,12 +5985,12 @@ actions:
                                 function: SoftDeleteFiles
                                 parameters:
                                     fileGlob: '%PROGRAMFILES(X86)%\NVIDIA Corporation\NvTelemetry\*'
-                                    recurse: true
+                                    recurse: 'true'
                             -
                                 function: SoftDeleteFiles
                                 parameters:
                                     fileGlob: '%PROGRAMFILES%\NVIDIA Corporation\NvTelemetry\*'
-                                    recurse: true
+                                    recurse: 'true'
                     -
                         name: Disable Nvidia telemetry drivers
                         recommend: standard
@@ -5998,7 +5998,7 @@ actions:
                             function: SoftDeleteFiles
                             parameters:
                                 fileGlob: '%SYSTEMROOT%\System32\DriverStore\FileRepository\NvTelemetry*.dll'
-                                recurse: true
+                                recurse: 'true'
                     -
                         name: Disable participation in Nvidia telemetry
                         recommend: standard
@@ -7047,7 +7047,7 @@ actions:
                             parameters:
                                 serviceName: adobeupdateservice # Check: (Get-Service -Name adobeupdateservice).StartType
                                 defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                                ignoreMissingOnRevert: true
+                                ignoreMissingOnRevert: 'true'
                     -
                         name: Disable "Adobe Acrobat Update Task" scheduled task
                         recommend: standard
@@ -7091,7 +7091,7 @@ actions:
                     parameters:
                         serviceName: Razer Game Scanner Service # Check: (Get-Service -Name 'Razer Game Scanner Service').StartType
                         defaultStartupMode: Manual # Allowed values: Automatic | Manual
-                        ignoreMissingOnRevert: true
+                        ignoreMissingOnRevert: 'true'
             -
                 name: Disable "Logitech Gaming Registry Service"
                 recommend: standard
@@ -7415,7 +7415,7 @@ actions:
                                     function: RequireTLSMinimumKeySize
                                     parameters:
                                         algorithmName: Diffie-Hellman
-                                        keySizeInBits: 2048
+                                        keySizeInBits: '2048'
                             -
                                 name: Enable strong RSA key requirement (breaks Hyper-V VMs)
                                 recommend: strict # Microsoft deprecated it and will end support; but breaks Hyper-V VMs, see #363
@@ -7467,8 +7467,8 @@ actions:
                                     function: RequireTLSMinimumKeySize
                                     parameters:
                                         algorithmName: PKCS
-                                        keySizeInBits: 2048
-                                        ignoreServerSide: true # Controlled by the specified server certificate
+                                        keySizeInBits: '2048'
+                                        ignoreServerSide: 'true' # Controlled by the specified server certificate
                     -
                         category: Disable insecure connections
                         docs: |- # refactor-with-variables: Same • Caution
@@ -8140,23 +8140,23 @@ actions:
                                                 function: DisableWindowsFeature
                                                 parameters:
                                                     featureName: SMB1Protocol # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol' -Online
-                                                    disabledByDefault: true
+                                                    disabledByDefault: 'true'
                                             -
                                                 function: DisableWindowsFeature
                                                 parameters:
                                                     featureName: SMB1Protocol-Client # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Client' -Online
-                                                    disabledByDefault: true
+                                                    disabledByDefault: 'true'
                                             -
                                                 function: DisableWindowsFeature
                                                 parameters:
                                                     featureName: SMB1Protocol-Server # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Server' -Online
-                                                    disabledByDefault: true
+                                                    disabledByDefault: 'true'
                                             -
                                                 function: DisableService
                                                 parameters:
                                                     serviceName: mrxsmb10 # Check: (Get-Service -Name 'mrxsmb10').StartType
                                                     defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
-                                                    ignoreMissingOnRevert: true # This service is only available when SMB1 feature is installed
+                                                    ignoreMissingOnRevert: 'true' # This service is only available when SMB1 feature is installed
                                             -
                                                 function: RunInlineCode
                                                 # This ensures that `lanmanworkstation` does not depend on `mrxsmb10` to avoid potential system issues.
@@ -8809,7 +8809,7 @@ actions:
                                     function: DisableWindowsFeature
                                     parameters:
                                         featureName: TelnetClient # Get-WindowsOptionalFeature -FeatureName 'TelnetClient' -Online
-                                        disabledByDefault: true
+                                        disabledByDefault: 'true'
                             -
                                 name: Remove "RAS Connection Manager Administration Kit (CMAK)" capability
                                 docs: |- # refactor-with-variables: Same • Caution
@@ -9005,7 +9005,7 @@ actions:
                                     function: DisableWindowsFeature
                                     parameters:
                                         featureName: TFTP # Get-WindowsOptionalFeature -FeatureName 'TFTP' -Online
-                                        disabledByDefault: true
+                                        disabledByDefault: 'true'
                             -
                                 name: Remove "RIP Listener" capability
                                 docs: |- # refactor-with-variables: *Caution**
@@ -10456,7 +10456,7 @@ actions:
                                                 function: SoftDeleteFiles
                                                 parameters:
                                                     fileGlob: '%SYSTEMROOT%\System32\drivers\mpsdrv.sys'
-                                                    grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                             -
                                                 function: ShowComputerRestartSuggestion
                                     -
@@ -10527,7 +10527,7 @@ actions:
                                                 function: SoftDeleteFiles
                                                 parameters:
                                                     fileGlob: '%WINDIR%\System32\mpssvc.dll'
-                                                    grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                             -
                                                 function: ShowComputerRestartSuggestion
                             -
@@ -10783,7 +10783,7 @@ actions:
                                                             property: SubmitSamplesConsent  # Status:   Get-MpPreference | Select-Object -Property SubmitSamplesConsent
                                                             value: "'2'"                    # Set:      Set-MpPreference -Force -SubmitSamplesConsent 2
                                                             default: "'1'"                  # Default:  1 (Send safe samples automatically) | Remove-MpPreference -Force -SubmitSamplesConsent | Set-MpPreference -Force -SubmitSamplesConsent 1
-                                                            setDefaultOnWindows11: true     # `Remove-MpPreference` sets it to 0 instead 1 (OS default) in Windows 11
+                                                            setDefaultOnWindows11: 'true'   # `Remove-MpPreference` sets it to 0 instead 1 (OS default) in Windows 11
                                                     -
                                                         function: SetRegistryValue
                                                         parameters:
@@ -11276,7 +11276,7 @@ actions:
                                                     property: QuarantinePurgeItemsAfterDelay    # Status:   Get-MpPreference | Select-Object -Property QuarantinePurgeItemsAfterDelay
                                                     value: "'1'"                                # Set:      Set-MpPreference -Force -QuarantinePurgeItemsAfterDelay 1
                                                     default: "'90'"                             # Default:  90 | Remove-MpPreference -Force -QuarantinePurgeItemsAfterDelay | Set-MpPreference -Force -QuarantinePurgeItemsAfterDelay 90
-                                                    setDefaultOnWindows11: true                 # `Remove-MpPreference` sets it to 0 instead 90 (OS default) in Windows 11
+                                                    setDefaultOnWindows11: 'true'               # `Remove-MpPreference` sets it to 0 instead 90 (OS default) in Windows 11
                                             -
                                                 function: SetRegistryValue
                                                 parameters:
@@ -11447,7 +11447,7 @@ actions:
                                             property: DisableAutoExclusions     # Status:   Get-MpPreference | Select-Object -Property DisableAutoExclusions
                                             value: $True                        # Set:      Set-MpPreference -Force -DisableAutoExclusions $True
                                             default: $False                     # Default:  False | Remove-MpPreference -Force -DisableAutoExclusions | Set-MpPreference -Force -DisableAutoExclusions $False
-                                            setDefaultOnWindows11: true         # `Remove-MpPreference` has no affect (does not change the value) in Windows 11
+                                            setDefaultOnWindows11: 'true'       # `Remove-MpPreference` has no affect (does not change the value) in Windows 11
                                     -
                                         function: SetRegistryValue
                                         parameters:
@@ -11935,10 +11935,10 @@ actions:
                                                     -
                                                         function: SetMpPreference
                                                         parameters:
-                                                            property: ScanParameters    # Status:   Get-MpPreference | Select-Object -Property ScanParameters
-                                                            value: "'1'"                # Set:      Set-MpPreference -Force -ScanParameters '1'
-                                                            default: "'1'"              # Default:  1 | Remove-MpPreference -Force -ScanParameters | Set-MpPreference -Force -ScanParameters '1'
-                                                            setDefaultOnWindows11: true # ❌ Remove-MpPreference with -ScanParameters fails due to a buggy behavior where it tries to set it to True on Windows 11
+                                                            property: ScanParameters        # Status:   Get-MpPreference | Select-Object -Property ScanParameters
+                                                            value: "'1'"                    # Set:      Set-MpPreference -Force -ScanParameters '1'
+                                                            default: "'1'"                  # Default:  1 | Remove-MpPreference -Force -ScanParameters | Set-MpPreference -Force -ScanParameters '1'
+                                                            setDefaultOnWindows11: 'true'   # ❌ Remove-MpPreference with -ScanParameters fails due to a buggy behavior where it tries to set it to True on Windows 11
                                             -
                                                 name: Minimize daily quick scan frequency
                                                 docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_QuickScanInterval
@@ -12819,7 +12819,7 @@ actions:
                                             #     function: SoftDeleteFiles
                                             #     parameters:
                                             #         fileGlob: '%PROGRAMFILES%\Windows Defender\MsMpEng.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
-                                            #         grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                            #         grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         category: Disable Defender kernel-level drivers
                                         children:
@@ -12840,7 +12840,7 @@ actions:
                                                         function: SoftDeleteFiles
                                                         parameters:
                                                             fileGlob: '%SYSTEMROOT%\System32\drivers\WdNisDrv.sys'
-                                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                             -
                                                 name: Disable "Microsoft Defender Antivirus Mini-Filter Driver" service
                                                 docs:
@@ -12858,7 +12858,7 @@ actions:
                                                         function: SoftDeleteFiles
                                                         parameters:
                                                             fileGlob: '%SYSTEMROOT%\System32\drivers\WdFilter.sys'
-                                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                             -
                                                 name: Disable "Microsoft Defender Antivirus Boot Driver" service
                                                 docs: https://web.archive.org/web/20240314062057/https://batcmd.com/windows/10/services/wdboot/
@@ -12874,7 +12874,7 @@ actions:
                                                         function: SoftDeleteFiles
                                                         parameters:
                                                             fileGlob: '%SYSTEMROOT%\System32\drivers\WdBoot.sys'
-                                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Microsoft Defender Antivirus Network Inspection" service
                                         docs:
@@ -12890,7 +12890,7 @@ actions:
                                             #     function: SoftDeleteFiles
                                             #     parameters:
                                             #       fileGlob: '%PROGRAMFILES%\Windows Defender\NisSrv.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
-                                            #       grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                            #       grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Windows Defender Advanced Threat Protection Service" service
                                         docs: https://web.archive.org/web/20240314091443/https://batcmd.com/windows/10/services/sense/
@@ -12904,7 +12904,7 @@ actions:
                                                 function: SoftDeleteFiles
                                                 parameters:
                                                     fileGlob: '%PROGRAMFILES%\Windows Defender Advanced Threat Protection\MsSense.exe'
-                                                    grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Windows Security Service" service
                                         docs: |-
@@ -12939,7 +12939,7 @@ actions:
                                                 function: SoftDeleteFiles
                                                 parameters:
                                                     fileGlob: '%WINDIR%\System32\SecurityHealthService.exe'
-                                                    grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                     -
                         category: Disable SmartScreen
                         docs:
@@ -13411,7 +13411,7 @@ actions:
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%SYSTEMROOT%\System32\WaaSMedicSvc.dll'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                     -
                                         function: TerminateAndBlockExecution
                                         parameters:
@@ -13420,38 +13420,38 @@ actions:
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%SYSTEMROOT%\System32\WaaSMedicAgent.exe'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔍 Missing on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔍 Missing on Windows 11 since 23H2
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%SYSTEMROOT%\System32\WaaSMedicCapsule.dll'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔍 Missing on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔍 Missing on Windows 11 since 23H2
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%SYSTEMROOT%\System32\WaaSMedicPS.dll'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%SYSTEMROOT%\System32\WaaSAssessment.dll'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%SYSTEMROOT%\System32\Windows.Internal.WaaSMedicDocked.dll'
-                                            grantPermissions: true # 🔍 Missing on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔍 Missing on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%WINDIR%\UUS\amd64\WaaSMedicSvcImpl.dll'
-                                            grantPermissions: true # 🔍 Missing on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔍 Missing on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%WINDIR%\WaaS\*' # Includes `services` and `tasks` folders that defines the desired state configuration on remediation.
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
-                                            recurse: true
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            recurse: 'true'
                             -
                                 name: Disable automatically enabling Windows Update Medic Service
                                 recommend: strict
@@ -13491,7 +13491,7 @@ actions:
                                         function: SoftDeleteFiles
                                         parameters:
                                             fileGlob: '%SYSTEMROOT%\System32\upfc.exe'
-                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                             beforeIteration: |- # Skip Windows versions older than Windows 10 22H2 (build number 19045) to avoid reported blue screen issues.
                                                 $osVersion = [System.Environment]::OSVersion.Version
                                                 function Test-IsBeforeWin10Version22H2 { ($osVersion.Major -lt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -lt 19045)) }
@@ -13658,7 +13658,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\InstallService\' -TaskName 'WakeUpAndContinueUpdates'
                                         taskPathPattern: \Microsoft\Windows\InstallService\
                                         taskNamePattern: WakeUpAndContinueUpdates
-                                        disableOnRevert: true
+                                        disableOnRevert: 'true'
                             -
                                 name: Disable "WakeUpAndScanForUpdates" task
                                 docs: |-
@@ -13681,7 +13681,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\InstallService\' -TaskName 'WakeUpAndScanForUpdates'
                                         taskPathPattern: \Microsoft\Windows\InstallService\
                                         taskNamePattern: WakeUpAndScanForUpdates
-                                        disableOnRevert: true
+                                        disableOnRevert: 'true'
                             -
                                 name: Disable "Scheduled Start" task
                                 docs: |-
@@ -13734,7 +13734,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Report policies'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: Report policies
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
                             -
                                 name: Disable "Schedule Maintenance Work" task
                                 docs: |-
@@ -13760,8 +13760,8 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Maintenance Work'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: Schedule Maintenance Work
-                                        disableOnRevert: true
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                                        disableOnRevert: 'true'
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
                             -
                                 name: Disable "Schedule Scan" task
                                 docs: |-
@@ -13786,7 +13786,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Scan'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: Schedule Scan
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
                             -
                                 name: Disable "Schedule Scan Static Task" task
                                 docs: |-
@@ -13812,7 +13812,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Scan Static Task'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: Schedule Scan Static Task
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
                             -
                                 name: Disable "Schedule Wake To Work" task
                                 docs: |-
@@ -13837,8 +13837,8 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Wake To Work'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: Schedule Wake To Work
-                                        disableOnRevert: true
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                                        disableOnRevert: 'true'
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
                             -
                                 name: Disable "Schedule Work" task
                                 docs: |-
@@ -13863,8 +13863,8 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Work'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: Schedule Work
-                                        disableOnRevert: true
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                                        disableOnRevert: 'true'
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
                             -
                                 name: Disable "UpdateModelTask" task
                                 docs: |-
@@ -13894,7 +13894,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'UpdateModelTask'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: UpdateModelTask
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2]
                             -
                                 name: Disable "Start Oobe Expedite Work" task
                                 docs: |-
@@ -13921,7 +13921,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Start Oobe Expedite Work'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: Start Oobe Expedite Work
-                                        grantPermissions: true # 🔒 No permissions, Tested since [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, Tested since [≥ Windows 11 22H2]
                             -
                                 name: Disable "StartOobeAppsScan_LicenseAccepted" task
                                 docs: |-
@@ -13948,7 +13948,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'StartOobeAppsScan_LicenseAccepted'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: StartOobeAppsScan_LicenseAccepted
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 11 22H2]
                             -
                                 name: Disable "StartOobeAppsScan_OobeAppReady" task
                                 docs: |-
@@ -13975,7 +13975,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'StartOobeAppsScan_OobeAppReady'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: StartOobeAppsScan_OobeAppReady
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 11 22H2]
                             -
                                 name: Disable "StartOobeAppsScanAfterUpdate" task
                                 docs: |-
@@ -14002,7 +14002,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'StartOobeAppsScanAfterUpdate'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: StartOobeAppsScanAfterUpdate
-                                        grantPermissions: true  # 🔒 No permissions, tested since [≥ Windows 11 22H2]
+                                        grantPermissions: 'true'  # 🔒 No permissions, tested since [≥ Windows 11 22H2]
                             -
                                 name: Disable "USO_UxBroker" task
                                 docs: |-
@@ -14033,7 +14033,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'USO_UxBroker'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: USO_UxBroker
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
                             -
                                 name: Disable "UUS Failover Task" task
                                 docs: |-
@@ -14060,7 +14060,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'UUS Failover Task'
                                         taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
                                         taskNamePattern: UUS Failover Task
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 11 22H2]
                             -
                                 name: Disable "PerformRemediation" task
                                 docs: |-
@@ -14093,7 +14093,7 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\WaaSMedic\' -TaskName 'PerformRemediation'
                                         taskPathPattern: \Microsoft\Windows\WaaSMedic\
                                         taskNamePattern: PerformRemediation
-                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                                        grantPermissions: 'true' # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
                             -
                                 name: Disable outdated Windows Update tasks
                                 docs: |-
@@ -19014,7 +19014,7 @@ actions:
                                 function: DeleteDirectory
                                 parameters:
                                     directoryGlob: '%LOCALAPPDATA%\Microsoft\OneDrive'
-                                    grantPermissions: true
+                                    grantPermissions: 'true'
                             -
                                 function: DeleteDirectory
                                 parameters:
@@ -19465,7 +19465,7 @@ actions:
                             function: DisableWindowsFeature
                             parameters:
                                 featureName: DirectPlay # Get-WindowsOptionalFeature -FeatureName 'DirectPlay' -Online
-                                disabledByDefault: true
+                                disabledByDefault: 'true'
                     -
                         name: Disable "Internet Explorer" feature
                         docs: |-
@@ -19483,17 +19483,17 @@ actions:
                                 function: DisableWindowsFeature
                                 parameters:
                                     featureName: Internet-Explorer-Optional-x64 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-x64' -Online
-                                    ignoreMissingOnRevert: true
+                                    ignoreMissingOnRevert: 'true'
                             -
                                 function: DisableWindowsFeature
                                 parameters:
                                     featureName: Internet-Explorer-Optional-x84 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-x84' -Online
-                                    ignoreMissingOnRevert: true
+                                    ignoreMissingOnRevert: 'true'
                             -
                                 function: DisableWindowsFeature
                                 parameters:
                                     featureName: Internet-Explorer-Optional-amd64 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-amd64' -Online
-                                    ignoreMissingOnRevert: true
+                                    ignoreMissingOnRevert: 'true'
                     -
                         name: Disable "Legacy Components" feature
                         docs: |-
@@ -19510,7 +19510,7 @@ actions:
                             function: DisableWindowsFeature
                             parameters:
                                 featureName: LegacyComponents # Get-WindowsOptionalFeature -FeatureName 'LegacyComponents' -Online
-                                disabledByDefault: true
+                                disabledByDefault: 'true'
                     -
                         category: Disable Hyper-V virtualization features
                         children:
@@ -19530,7 +19530,7 @@ actions:
                                     function: DisableWindowsFeature
                                     parameters:
                                         featureName: Microsoft-Hyper-V-All # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-All' -Online
-                                        disabledByDefault: true
+                                        disabledByDefault: 'true'
                             -
                                 name: Disable "Hyper-V GUI Management Tools" feature
                                 docs: |-
@@ -19547,7 +19547,7 @@ actions:
                                     function: DisableWindowsFeature
                                     parameters:
                                         featureName: Microsoft-Hyper-V-Management-Clients # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-Clients' -Online
-                                        disabledByDefault: true
+                                        disabledByDefault: 'true'
                             -
                                 name: Disable "Hyper-V Management Tools" feature
                                 docs: |-
@@ -19564,7 +19564,7 @@ actions:
                                     function: DisableWindowsFeature
                                     parameters:
                                         featureName: Microsoft-Hyper-V-Tools-All # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Tools-All' -Online
-                                        disabledByDefault: true # Default: Disabled (tested: Windows 10 22H2, Windows 11 23H2)
+                                        disabledByDefault: 'true' # Default: Disabled (tested: Windows 10 22H2, Windows 11 23H2)
                             -
                                 name: Disable "Hyper-V Module for Windows PowerShell" feature
                                 docs: |-
@@ -19581,7 +19581,7 @@ actions:
                                     function: DisableWindowsFeature
                                     parameters:
                                         featureName: Microsoft-Hyper-V-Management-PowerShell # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-PowerShell' -Online
-                                        disabledByDefault: true
+                                        disabledByDefault: 'true'
                     -
                         category: Disable printing features
                         children:
@@ -19620,7 +19620,7 @@ actions:
                                             function: DisableWindowsFeature
                                             parameters:
                                                 featureName: Printing-Foundation-LPDPrintService # Get-WindowsOptionalFeature -FeatureName 'Printing-Foundation-LPDPrintService' -Online
-                                                disabledByDefault: true
+                                                disabledByDefault: 'true'
                                     -
                                         name: Disable "LPR Port Monitor" feature
                                         docs: |-
@@ -19637,7 +19637,7 @@ actions:
                                             function: DisableWindowsFeature
                                             parameters:
                                                 featureName: Printing-Foundation-LPRPortMonitor # Get-WindowsOptionalFeature -FeatureName 'Printing-Foundation-LPRPortMonitor' -Online
-                                                disabledByDefault: true
+                                                disabledByDefault: 'true'
                                     -
                                         name: Disable "Microsoft Print to PDF" feature
                                         docs: |-
@@ -19707,7 +19707,7 @@ actions:
                                             function: DisableWindowsFeature
                                             parameters:
                                                 featureName: Printing-XPSServices-Features # Get-WindowsOptionalFeature -FeatureName 'Printing-XPSServices-Features' -Online
-                                                disabledByDefault: true
+                                                disabledByDefault: 'true'
                                     -
                                         name: Disable "XPS Viewer" feature
                                         recommend: standard # Deprecated and missing on modern versions of Windows
@@ -19729,7 +19729,7 @@ actions:
                                             function: DisableWindowsFeature
                                             parameters:
                                                 featureName: Xps-Foundation-Xps-Viewer # Get-WindowsOptionalFeature -FeatureName 'Xps-Foundation-Xps-Viewer' -Online
-                                                ignoreMissingOnRevert: true
+                                                ignoreMissingOnRevert: 'true'
                     -
                         name: Disable "Media Features" feature
                         docs: |-
@@ -19767,7 +19767,7 @@ actions:
                             function: DisableWindowsFeature
                             parameters:
                                 featureName: ScanManagementConsole # Get-WindowsOptionalFeature -FeatureName 'ScanManagementConsole' -Online
-                                ignoreMissingOnRevert: true
+                                ignoreMissingOnRevert: 'true'
                     -
                         name: Disable "Windows Fax and Scan" feature
                         recommend: standard # Deprecated and missing on modern versions of Windows
@@ -19789,7 +19789,7 @@ actions:
                             function: DisableWindowsFeature
                             parameters:
                                 featureName: FaxServicesClientPackage # Get-WindowsOptionalFeature -FeatureName 'FaxServicesClientPackage' -Online
-                                ignoreMissingOnRevert: true
+                                ignoreMissingOnRevert: 'true'
                     -
                         name: Disable "Windows Media Player" feature
                         docs: |-
@@ -20667,8 +20667,8 @@ actions:
                                 function: ShowMessage
                                 parameters:
                                     message: Disabling Network settings on Windows 10 is known to break Network settings.
-                                    ignoreWindows11: true
-                                    warn: true
+                                    ignoreWindows11: 'true'
+                                    warn: 'true'
                             -
                                 function: DisableService
                                 parameters:

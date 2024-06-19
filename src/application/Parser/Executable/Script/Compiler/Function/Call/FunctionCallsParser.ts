@@ -1,24 +1,38 @@
-import type { FunctionCallData, FunctionCallsData, FunctionCallParametersData } from '@/application/collections/';
+import type {
+  FunctionCallData,
+  FunctionCallsData,
+  FunctionCallParametersData,
+} from '@/application/collections/';
 import { isArray, isPlainObject } from '@/TypeHelpers';
 import { createTypeValidator, type TypeValidator } from '@/application/Parser/Common/TypeValidator';
 import { FunctionCallArgumentCollection } from './Argument/FunctionCallArgumentCollection';
-import { FunctionCallArgument } from './Argument/FunctionCallArgument';
 import { ParsedFunctionCall } from './ParsedFunctionCall';
+import { createFunctionCallArgument, type FunctionCallArgumentFactory } from './Argument/FunctionCallArgument';
 import type { FunctionCall } from './FunctionCall';
 
 export interface FunctionCallsParser {
   (
     calls: FunctionCallsData,
-    validator?: TypeValidator,
+    utilities?: FunctionCallParsingUtilities,
   ): FunctionCall[];
 }
 
+interface FunctionCallParsingUtilities {
+  readonly typeValidator: TypeValidator;
+  readonly createCallArgument: FunctionCallArgumentFactory;
+}
+
+const DefaultUtilities: FunctionCallParsingUtilities = {
+  typeValidator: createTypeValidator(),
+  createCallArgument: createFunctionCallArgument,
+};
+
 export const parseFunctionCalls: FunctionCallsParser = (
   calls,
-  validator = createTypeValidator(),
+  utilities = DefaultUtilities,
 ) => {
-  const sequence = getCallSequence(calls, validator);
-  return sequence.map((call) => parseFunctionCall(call, validator));
+  const sequence = getCallSequence(calls, utilities.typeValidator);
+  return sequence.map((call) => parseFunctionCall(call, utilities));
 };
 
 function getCallSequence(calls: FunctionCallsData, validator: TypeValidator): FunctionCallData[] {
@@ -38,23 +52,27 @@ function getCallSequence(calls: FunctionCallsData, validator: TypeValidator): Fu
 
 function parseFunctionCall(
   call: FunctionCallData,
-  validator: TypeValidator,
+  utilities: FunctionCallParsingUtilities,
 ): FunctionCall {
-  validator.assertObject({
+  utilities.typeValidator.assertObject({
     value: call,
     valueName: 'function call',
     allowedProperties: ['function', 'parameters'],
   });
-  const callArgs = parseArgs(call.parameters);
+  const callArgs = parseArgs(call.parameters, utilities.createCallArgument);
   return new ParsedFunctionCall(call.function, callArgs);
 }
 
 function parseArgs(
   parameters: FunctionCallParametersData | undefined,
+  createArgument: FunctionCallArgumentFactory,
 ): FunctionCallArgumentCollection {
   const parametersMap = parameters ?? {};
   return Object.keys(parametersMap)
-    .map((parameterName) => new FunctionCallArgument(parameterName, parametersMap[parameterName]))
+    .map((parameterName) => {
+      const argumentValue = parametersMap[parameterName];
+      return createArgument(parameterName, argumentValue);
+    })
     .reduce((args, arg) => {
       args.addArgument(arg);
       return args;

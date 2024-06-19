@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import type { EnumParser } from '@/application/Common/Enum';
-import type { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICodeSubstituter';
+import type { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
 import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
@@ -83,7 +83,7 @@ describe('ScriptingDefinitionParser', () => {
           const context = new TestContext()
             .withData(data)
             .withProjectDetails(projectDetails)
-            .withSubstituter(substituterMock);
+            .withSubstituter(substituterMock.substitute);
           // act
           const definition = context.parseScriptingDefinition();
           // assert
@@ -99,7 +99,7 @@ class TestContext {
   private languageParser: EnumParser<ScriptingLanguage> = new EnumParserStub<ScriptingLanguage>()
     .setupDefaultValue(ScriptingLanguage.shellscript);
 
-  private codeSubstituter: ICodeSubstituter = new CodeSubstituterStub();
+  private codeSubstituter: CodeSubstituter = new CodeSubstituterStub().substitute;
 
   private validator: TypeValidator = new TypeValidatorStub();
 
@@ -122,7 +122,7 @@ class TestContext {
     return this;
   }
 
-  public withSubstituter(substituter: ICodeSubstituter): this {
+  public withSubstituter(substituter: CodeSubstituter): this {
     this.codeSubstituter = substituter;
     return this;
   }

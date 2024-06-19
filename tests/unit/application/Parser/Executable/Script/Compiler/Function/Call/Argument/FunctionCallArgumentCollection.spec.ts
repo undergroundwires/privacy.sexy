@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { FunctionCallArgumentCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgumentStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import type { IFunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
+import type { FunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 
 describe('FunctionCallArgumentCollection', () => {
   describe('addArgument', () => {
@@ -25,7 +25,7 @@ describe('FunctionCallArgumentCollection', () => {
       // arrange
       const testCases: ReadonlyArray<{
         readonly description: string;
-        readonly args: readonly IFunctionCallArgument[];
+        readonly args: readonly FunctionCallArgument[];
         readonly expectedParameterNames: string[];
       }> = [{
         description: 'no args',

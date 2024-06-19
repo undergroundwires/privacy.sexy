@@ -1,8 +1,22 @@
-export function ensureValidParameterName(parameterName: string) {
-  if (!parameterName) {
-    throw new Error('missing parameter name');
-  }
-  if (!parameterName.match(/^[0-9a-zA-Z]+$/)) {
-    throw new Error(`parameter name must be alphanumeric but it was "${parameterName}"`);
-  }
+import { createTypeValidator, type TypeValidator } from '@/application/Parser/Common/TypeValidator';
+
+export interface ParameterNameValidator {
+  (
+    parameterName: string,
+    typeValidator?: TypeValidator,
+  ): void;
 }
+
+export const validateParameterName = (
+  parameterName: string,
+  typeValidator = createTypeValidator(),
+) => {
+  typeValidator.assertNonEmptyString({
+    value: parameterName,
+    valueName: 'parameter name',
+    rule: {
+      expectedMatch: /^[0-9a-zA-Z]+$/,
+      errorMessage: `parameter name must be alphanumeric but it was "${parameterName}".`,
+    },
+  });
+};

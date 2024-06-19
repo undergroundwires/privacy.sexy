@@ -4,30 +4,32 @@ import { CompositeExpressionParser } from '@/application/Parser/Executable/Scrip
 import { ExpressionsCompiler } from '@/application/Parser/Executable/Script/Compiler/Expressions/ExpressionsCompiler';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { FunctionCallArgumentCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
-import { FunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import type { IExpressionParser } from '@/application/Parser/Executable/Script/Compiler/Expressions/Parser/IExpressionParser';
-import type { ICodeSubstituter } from './ICodeSubstituter';
+import { createFunctionCallArgument, type FunctionCallArgumentFactory } from '../Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 
-export class CodeSubstituter implements ICodeSubstituter {
-  constructor(
-    private readonly compiler: IExpressionsCompiler = createSubstituteCompiler(),
-    private readonly date = new Date(),
-  ) {
-
-  }
-
-  public substitute(code: string, projectDetails: ProjectDetails): string {
-    if (!code) { throw new Error('missing code'); }
-    const args = new FunctionCallArgumentCollection();
-    const substitute = (name: string, value: string) => args
-      .addArgument(new FunctionCallArgument(name, value));
-    substitute('homepage', projectDetails.homepage);
-    substitute('version', projectDetails.version.toString());
-    substitute('date', this.date.toUTCString());
-    const compiledCode = this.compiler.compileExpressions(code, args);
-    return compiledCode;
-  }
+export interface CodeSubstituter {
+  (
+    code: string,
+    projectDetails: ProjectDetails,
+    utilities?: CodeSubstitutionUtilities,
+  ): string;
 }
+
+export const substituteCode: CodeSubstituter = (
+  code,
+  projectDetails,
+  utilities = DefaultUtilities,
+) => {
+  if (!code) { throw new Error('missing code'); }
+  const args = new FunctionCallArgumentCollection();
+  const substitute = (name: string, value: string) => args
+    .addArgument(utilities.createCallArgument(name, value));
+  substitute('homepage', projectDetails.homepage);
+  substitute('version', projectDetails.version.toString());
+  substitute('date', utilities.provideDate().toUTCString());
+  const compiledCode = utilities.compiler.compileExpressions(code, args);
+  return compiledCode;
+};
 
 function createSubstituteCompiler(): IExpressionsCompiler {
   const parsers: readonly IExpressionParser[] = [
@@ -37,3 +39,15 @@ function createSubstituteCompiler(): IExpressionsCompiler {
   const expressionCompiler = new ExpressionsCompiler(parser);
   return expressionCompiler;
 }
+
+interface CodeSubstitutionUtilities {
+  readonly compiler: IExpressionsCompiler;
+  readonly provideDate: () => Date;
+  readonly createCallArgument: FunctionCallArgumentFactory;
+}
+
+const DefaultUtilities: CodeSubstitutionUtilities = {
+  compiler: createSubstituteCompiler(),
+  provideDate: () => new Date(),
+  createCallArgument: createFunctionCallArgument,
+};
