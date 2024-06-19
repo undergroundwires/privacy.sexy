@@ -1993,7 +1993,7 @@ actions:
                             -
                                 name: Disable app access to personal files
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • App Access Caution • Template as other other file access restriction scripts
+                                docs: |- # refactor-with-variable: Same • App Access Caution • Template as other file access restriction scripts
                                     This script restricts app access to the broader file system [1] [2].
                                     It restricts app access to files that the user has access to without user consent [2].
                                     After running this script, apps can still access the files when explicitly permitted [1].
@@ -7392,7 +7392,7 @@ actions:
                                 recommend: standard
                                 docs: |-
                                     This script stops Firefox from automatically checking its default browser status and reporting to Mozilla every 24 hours [1] [2] by
-                                    disabling specific scheduled tasks that initiate initiate Firefox's *Default Browser Agent*.
+                                    disabling specific scheduled tasks that initiate Firefox's *Default Browser Agent*.
                                     It protects your privacy by preventing regular data sharing.
 
                                     ### Overview of default task statuses
@@ -19991,7 +19991,7 @@ actions:
                             - `OneDrive Standalone Update Task-S-1-5-21-xxxxxx`
 
                             The SID, denoted by 'xxxxxx', varies per installation and represents the user account associated with the task.
-                            SID of user accounts always start with `S-1-5-21` [4], the rest of the number chages per user.
+                            SID of user accounts always start with `S-1-5-21` [4], the rest of the number changes per user.
                             To see all user SIDs, you can run `wmic useraccount get Name,sid`.
                             The SID for your account can be confirmed using `whoami /user`.
                             A SID which doesn't correspond to any user account may appear.
