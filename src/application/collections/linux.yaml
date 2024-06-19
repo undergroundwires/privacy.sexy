@@ -108,7 +108,7 @@ actions:
               name: Clear KornShell (ksh) history
               recommend: strict
               docs: |-
-                KornShell is a shell that has different versions by different maintainers and developers such as `ksh93+u`, `ksh93v-, and `ksh2020`.
+                KornShell is a shell that has different versions by different maintainers and developers such as `ksh93+u`, `ksh93v-`, and `ksh2020`.
                 The latest maintained version is `ksh93u+m`, see its [GitHub repository (ksh93/ksh)](https://web.archive.org/web/20221029212509/https://github.com/ksh93/ksh).
 
                 Its history file (histfile) is saved at `~/.sh_history` by default [1] [2].
