@@ -305,14 +305,12 @@ describe('NodeElectronSaveFileDialog', () => {
       {
         description: 'unexpected dialog return value failure',
         expectedErrorType: 'DialogDisplayError',
-        expectedErrorMessage: 'Unexpected Error: File path is undefined after save dialog completion.',
+        expectedErrorMessage: 'Unexpected Error: File path is empty after save dialog completion.',
         expectLogs: true,
         buildFaultyContext: (setup) => {
-          const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
-          electronMock.showSaveDialog = () => Promise.resolve({
-            canceled: false,
-            filePath: undefined,
-          });
+          const electronMock = new ElectronFileDialogOperationsStub()
+            .withUserSelectedFilePath('')
+            .withMimicUserCancel(false);
           return setup
             .withElectron(electronMock);
         },

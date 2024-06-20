@@ -59,7 +59,7 @@
     "@vue/test-utils": "^2.4.5",
     "autoprefixer": "^10.4.19",
     "cypress": "^13.7.3",
-    "electron": "^29.3.0",
+    "electron": "^31.0.2",
     "electron-builder": "^24.13.3",
     "electron-devtools-installer": "^3.2.0",
     "electron-vite": "^2.1.0",

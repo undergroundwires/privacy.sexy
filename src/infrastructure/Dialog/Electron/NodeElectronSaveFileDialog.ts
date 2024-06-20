@@ -90,7 +90,7 @@ export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
       if (!dialogResult.filePath) {
         return {
           success: false,
-          error: { type: 'DialogDisplayError', message: 'Unexpected Error: File path is undefined after save dialog completion.' },
+          error: { type: 'DialogDisplayError', message: 'Unexpected Error: File path is empty after save dialog completion.' },
         };
       }
       return { success: true, filePath: dialogResult.filePath };
