@@ -18,18 +18,26 @@ export const createExecutableContextErrorMessage: ExecutableContextErrorMessageC
     message += `${ExecutableType[context.type]}: `;
   }
   message += errorMessage;
-  message += `\n${getErrorContextDetails(context)}`;
+  message += `\n\n${getErrorContextDetails(context)}`;
   return message;
 };
 
 function getErrorContextDetails(context: ExecutableErrorContext): string {
-  let output = `Self: ${printExecutable(context.self)}`;
+  let output = `Executable: ${formatExecutable(context.self)}`;
   if (context.parentCategory) {
-    output += `\nParent: ${printExecutable(context.parentCategory)}`;
+    output += `\n\nParent category: ${formatExecutable(context.parentCategory)}`;
   }
   return output;
 }
 
-function printExecutable(executable: ExecutableData): string {
-  return JSON.stringify(executable, undefined, 2);
+function formatExecutable(executable: ExecutableData): string {
+  if (!executable) {
+    return 'Executable data is missing.';
+  }
+  const maxLength = 1000;
+  let output = JSON.stringify(executable, undefined, 2);
+  if (output.length > maxLength) {
+    output = `${output.substring(0, maxLength)}\n... [Rest of the executable trimmed]`;
+  }
+  return output;
 }
