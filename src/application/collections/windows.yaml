@@ -19301,17 +19301,22 @@ actions:
                                     valueName: AllowUninstall
                                     dataType: REG_DWORD
                                     data: "1"
-                                    deleteOnRevert: 'true' # Missing key since Windows 10 21H2, Windows 11 21H2 
+                                    deleteOnRevert: 'true' # Missing key since Windows 10 21H2, Windows 11 21H2
                             -
                                 function: RunPowerShell
                                 parameters:
+                                    codeComment: Uninstall running the official uninstaller
                                     code: |-
-                                        $installer = (Get-ChildItem "$($env:ProgramFiles)*\Microsoft\Edge\Application\*\Installer\setup.exe")
-                                        if (!$installer) {
+                                        $installers = (Get-ChildItem "$($env:ProgramFiles)*\Microsoft\Edge\Application\*\Installer\setup.exe")
+                                        if (!$installers) {
                                             Write-Host 'Installer not found. Microsoft Edge may already be uninstalled.'
                                         } else {
-                                            $installer | ForEach-Object {
-                                                $uninstallerPath = $_.FullName
+                                            foreach ($installer in $installers) {
+                                                $uninstallerPath = $installer.FullName
+                                                if (-Not (Test-Path "$uninstallerPath")) {
+                                                    Write-Host "Installer not found at `"$uninstallerPath`". Microsoft Edge may already be uninstalled."
+                                                    continue
+                                                }
                                                 $installerArguments = @("--uninstall", "--system-level", "--verbose-logging", "--force-uninstall")
                                                 Write-Output "Uninstalling through uninstaller: $uninstallerPath"
                                                 $process = Start-Process -FilePath "$uninstallerPath" -ArgumentList $installerArguments -Wait -PassThru
@@ -19322,6 +19327,7 @@ actions:
                                                 }
                                             }
                                         }
+                                    revertCodeComment: Download and run the official uninstaller
                                     revertCode: |-
                                         $edgeExePath = Get-ChildItem -Path "$($env:ProgramFiles)*\Microsoft\Edge\Application" -Filter 'msedge.exe' -Recurse
                                         if ($edgeExePath) {
