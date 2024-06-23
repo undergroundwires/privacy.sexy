@@ -19284,15 +19284,23 @@ actions:
                     -
                         name: Remove Edge through official installer
                         docs: |-
-                            This script uninstalls the Microsoft Edge using the official installer.
+                            This script uninstalls Microsoft Edge using the official installer.
+                            This script reliably uninstalls Microsoft Edge, even when direct removal is restricted by system settings.
 
-                            1. **Enable Uninstallation**: The script modifies a specific registry key to allow the uninstallation of Microsoft Edge. This step is crucial
-                            because, starting from version 116 of Edge, you cannot uninstall it unless this registry key is set.
-                            2. **Run Uninstaller**: The script then finds the Microsoft Edge installer (`setup.exe`) for every Microsoft Edge installation (it is possible
-                            to have multiple versions) and executes it to perform a system-level uninstall.
+                            1. **Enable Uninstallation**:
+                               The script modifies a registry key to permit the uninstallation of Microsoft Edge.
+                               This step is required because from version 116 onwards, Edge cannot be uninstalled without setting this registry key [1].
+                            2. **Mark Microsoft Edge (Legacy) as Installed**:
+                               It creates a placeholder file to simulate the presence of the Legacy version of Microsoft Edge (Legacy).
+                               This is necessary as the newer versions of the Edge installer check for Legacy Edge before allowing uninstallation [2].
+                            3. **Run Uninstaller:**
+                               The script finds and runs the Microsoft Edge installer (`setup.exe`) for each version of the browser installed on the system.
+                               This guarantees the complete removal of all Microsoft Edge versions from the system [1].
 
-                            There's no official documentation for the Edge installer or registry keys codes, which this script relies on. However, these have been verified
-                            through testing and community support to work as expected.
+                            **Note:** This script uses methods not officially documented but confirmed effective by community testing and support.
+
+                            [1]: https://archive.ph/2024.06.21-133029/https://github.com/undergroundwires/privacy.sexy/issues/236 "[BUG]: Edge Browser uninstall process no longer works · Issue #236 · undergroundwires/privacy.sexy | github.com"
+                            [2]: https://archive.ph/2024.06.21-133037/https://github.com/undergroundwires/privacy.sexy/issues/309 "[BUG]: Microsoft Edge still alive after removal · Issue #309 · undergroundwires/privacy.sexy"
                         call:
                             -
                                 function: SetRegistryValue
@@ -19302,6 +19310,10 @@ actions:
                                     dataType: REG_DWORD
                                     data: "1"
                                     deleteOnRevert: 'true' # Missing key since Windows 10 21H2, Windows 11 21H2
+                            -
+                                function: CreatePlaceholderFile
+                                parameters:
+                                    placeholderFilePath: '%SYSTEMROOT%\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe'
                             -
                                 function: RunPowerShell
                                 parameters:
@@ -22169,7 +22181,8 @@ functions:
                 function: RunPowerShell
                 parameters:
                     # Marked: refactor-with-variables
-                    #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
+                    #   - Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
+                    #   - Creating the marker file is same as in script `CreatePlaceholderFile`
                     code: |-
                         $serviceName = '{{ $serviceName }}'
                         Write-Host "Stopping service: `"$serviceName`"."
@@ -22233,7 +22246,8 @@ functions:
                 function: RunPowerShell
                 parameters:
                     # Marked: refactor-with-variables
-                    #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
+                    #   - Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
+                    #   - Removing the marker file is same as in script `CreatePlaceholderFile`
                     code: |-
                         $serviceName = '{{ $serviceName }}'
                         {{ with $serviceRestartStateFile }}
@@ -24283,3 +24297,77 @@ functions:
                 function: BlockExecutablesFromRunningViaShell
                 parameters:
                     executableNameWithExtension: '{{ $executableNameWithExtension }}'
+    -
+        name: CreatePlaceholderFile
+        parameters:
+            - name: placeholderFilePath
+        call:
+            function: RunPowerShell
+            parameters:
+                codeComment: 'Create a placeholder file at "{{ $placeholderFilePath }}".'
+                code: |-
+                    $filePath = '{{ $placeholderFilePath }}'
+                    $expandedFilePath = [System.Environment]::ExpandEnvironmentVariables($filePath)
+                    $placeholderText = 'privacy.sexy placeholder'
+                    Write-Output "Creating placeholder file at `"$expandedFilePath`"."
+                    $parentDirectory = [System.IO.Path]::GetDirectoryName($expandedFilePath)
+                    if (Test-Path $expandedFilePath -PathType Leaf) {
+                        Write-Host "Skipping file creation as `"$expandedFilePath`" already exists."
+                        Exit 0
+                    }
+                    if (Test-Path $parentDirectory -PathType Container) {
+                        Write-Host "Skipping parent directory creation as `"$parentDirectory`" already exists."
+                    } else {
+                        try {
+                            New-Item `
+                                -ItemType Directory `
+                                -Path "$parentDirectory" `
+                                -Force `
+                                -ErrorAction Stop `
+                                | Out-Null
+                            Write-Output "Successfully created directory for placeholder file at `"$parentDirectory`"."
+                        }  catch {
+                            Write-Error "Failed to create directory for placeholder at `"$parentDirectory`": $_"
+                            Exit 1
+                        }
+                    }
+                    try {
+                        New-Item `
+                            -ItemType File `
+                            -Path $expandedFilePath `
+                            -Value "$placeholderText" `
+                            -Force `
+                            -ErrorAction Stop `
+                            | Out-Null
+                        Write-Host "Successfully created a placeholder file at `"$expandedFilePath`"."
+                    } catch {
+                        Write-Error "Failed to create placeholder file at `"$expandedFilePath`": $_"
+                        Exit 1
+                    }
+                revertCodeComment: 'Remove the placeholder file at "{{ $placeholderFilePath }}".'
+                revertCode: |-
+                    $filePath = '{{ $placeholderFilePath }}'
+                    $expandedFilePath = [System.Environment]::ExpandEnvironmentVariables($filePath)
+                    $placeholderText = 'privacy.sexy placeholder'
+                    Write-Output "Attempting to remove placeholder file at `"$expandedFilePath`"."
+                    if (-Not (Test-Path $expandedFilePath -PathType Leaf)) {
+                        Write-Host "Skipping file removal as `"$expandedFilePath`" does not exist, no action needed."
+                        Exit 0
+                    }
+                    $currentContent = Get-Content $expandedFilePath `
+                        -ErrorAction SilentlyContinue
+                    if ($currentContent -ne $placeholderText) {
+                        Write-Output "Skipping removal as the file at `"$expandedFilePath`" was not created by privacy.sexy."
+                        Exit 0
+                    }
+                    Write-Output "File contents match the placeholder content. Proceeding to remove the file."
+                    try {
+                        Remove-Item `
+                            -Path $expandedFilePath `
+                            -Force `
+                            -ErrorAction Stop
+                        Write-Host "Successfully removed the placeholder file at `"$expandedFilePath`"."
+                    } catch {
+                        Write-Error "Failed to delete the placeholder file at `"$expandedFilePath`": $_"
+                        Exit 1
+                    }
