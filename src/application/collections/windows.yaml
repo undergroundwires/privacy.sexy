@@ -1604,7 +1604,7 @@ actions:
                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
             -
                 category: Disable app access to personal information
-                docs: |- # refactor-with-variables: Same • Caution
+                docs: |- # refactor-with-variables: Same • App Access Caution
                     This category enhances your privacy by restricting app access to sensitive personal data.
                     These scripts enable you to enforce the *principle of least privilege* ensuring that apps only have
                     access to the information absolutely necessary for their legitimate function, thereby minimizing potential
@@ -1627,7 +1627,7 @@ actions:
                     -
                         name: Disable app access to location
                         recommend: standard
-                        docs: |-  # refactor-with-variables: Same • Caution
+                        docs: |-  # refactor-with-variables: Same • App Access Caution
                             This script prevents Windows apps from accessing your location [1].
                             It restricts access to location-specific network information [2] and sensors [2] [3],
                             enhancing your privacy and security.
@@ -1676,7 +1676,7 @@ actions:
                                     deviceAccessId: '{E6AD100E-5F4E-44CD-BE0F-2265D88D14F5}'
                     -
                         name: Disable app access to account information, name, and picture
-                        recommend: standard # refactor-with-variables: Same • Caution
+                        recommend: standard # refactor-with-variables: Same • App Access Caution
                         docs: |-
                             This script prevents Windows apps from accessing account information [1].
                             This includes your name and picture [2] [3].
@@ -1711,7 +1711,7 @@ actions:
                                     deviceAccessId: '{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}'
                     -
                         name: Disable app access to motion activity
-                        recommend: standard # refactor-with-variables: Same • Caution
+                        recommend: standard # refactor-with-variables: Same • App Access Caution
                         docs: |-
                             This script prevents Windows apps from accessing motion data [1] [2] [3].
 
@@ -1741,7 +1741,7 @@ actions:
                                     appCapability: activity
                     -
                         name: Disable app access to trusted devices
-                        recommend: standard # refactor-with-variables: Same • Caution
+                        recommend: standard # refactor-with-variables: Same • App Access Caution
                         docs: |-
                             This script prevents Windows apps from accessing trusted devices [1].
                             It restricts apps from automatically connecting to or controlling trusted devices without your
@@ -1761,7 +1761,7 @@ actions:
                                 policyName: LetAppsAccessTrustedDevices
                     -
                         name: Disable app access to unpaired wireless devices
-                        recommend: standard # refactor-with-variables: Same • Caution
+                        recommend: standard # refactor-with-variables: Same • App Access Caution
                         docs: |-
                             This script prevents Windows apps from communicating with unpaired wireless devices [1].
                             It prevents automatic sharing and synchronization of information with devices that aren't paired [2] [3] [4].
@@ -1792,7 +1792,7 @@ actions:
                                     deviceAccessId: LooselyCoupled
                     -
                         name: Disable app access to camera
-                        docs: |- # refactor-with-variables: Same • Caution
+                        docs: |- # refactor-with-variables: Same • App Access Caution
                             This script prevents Windows apps from accessing the camera [1] [2].
 
                             By disabling access, it ensures that no app can use the camera to capture photos or videos [3]
@@ -1826,7 +1826,7 @@ actions:
                                     deviceAccessId: '{E5323777-F976-4f5b-9B55-B94699C46E44}'
                     -
                         name: Disable app access to microphone (breaks Sound Recorder)
-                        docs: |- # refactor-with-variables: Same • Caution
+                        docs: |- # refactor-with-variables: Same • App Access Caution
                             This script prevents Windows apps from accessing the microphone [1] [2].
                             It enhances privacy by preventing apps from recording audio [3], which may include sensitive conversations.
 
@@ -1860,7 +1860,7 @@ actions:
                                     deviceAccessId: '{2EEF81BE-33FA-4800-9670-1CD474972C3F}'
                     -
                         name: Disable app access to information about other apps
-                        recommend: standard # refactor-with-variables: Same • Caution
+                        recommend: standard # refactor-with-variables: Same • App Access Caution
                         docs: |-
                             This script prevents Windows apps from accessing diagnostic information about other apps [1] [2] [3] [4].
                             This includes details like user names [1], package information, memory usage, and account
@@ -1894,7 +1894,7 @@ actions:
                                     deviceAccessId: '{2297E4E2-5DBE-466D-A12B-0F8286F0D9CA}'
                     -
                         category: Disable app access to your files
-                        docs: |- # refactor-with-variables: Same • Caution
+                        docs: |- # refactor-with-variables: Same • App Access Caution
                             This category limits the access of Windows apps to various user-specific folders and other file systems.
                             It enhances privacy by restricting apps from accessing and manipulating files without explicit user permission.
 
@@ -1993,7 +1993,7 @@ actions:
                             -
                                 name: Disable app access to personal files
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • Caution • Template as other other file access restriction scripts
+                                docs: |- # refactor-with-variable: Same • App Access Caution • Template as other other file access restriction scripts
                                     This script restricts app access to the broader file system [1] [2].
                                     It restricts app access to files that the user has access to without user consent [2].
                                     After running this script, apps can still access the files when explicitly permitted [1].
@@ -2014,7 +2014,7 @@ actions:
                                         appCapability: broadFileSystemAccess
                     -
                         name: Disable app access to your contacts
-                        recommend: standard # refactor-with-variable: Same • Caution
+                        recommend: standard # refactor-with-variable: Same • App Access Caution
                         docs: |-
                             This script prevents Windows apps from accessing your contact list [1] [2] [3] [4] [5].
                             Your contact list may include sensitive details synced from various networks [2].
@@ -2050,7 +2050,7 @@ actions:
                     -
                         name: Disable app access to notifications
                         recommend: strict # User may be in need of notifications from apps like Instagram and Whatsapp #339
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents Windows apps from accessing notifications [1] [2] [3].
                             It enhances privacy by ensuring that apps cannot access [1] [2] [3] or manage [4] notifications
                             without explicit user permission.
@@ -2086,7 +2086,7 @@ actions:
                                     deviceAccessId: '{52079E78-A92B-413F-B213-E8FE35712E72}'
                     -
                         name: Disable app access to calendar
-                        recommend: standard # refactor-with-variable: Same • Caution
+                        recommend: standard # refactor-with-variable: Same • App Access Caution
                         docs: |-
                             This script prevents Windows apps from accessing the calendar data [1] [2] [3] [4] [5].
                             This includes information about appointments from your synced network accounts [2].
@@ -2121,7 +2121,7 @@ actions:
                                     deviceAccessId: '{D89823BA-7180-4B81-B50C-7E471E6121A3}'
                     -
                         category: Disable app access to phone
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This category contains scripts that restrict app access to phone-related functionalities.
 
                             They protect your privacy and security by ensuring communication details remain private and
@@ -2133,7 +2133,7 @@ actions:
                             -
                                 name: Disable app access to call history
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • Caution
+                                docs: |- # refactor-with-variable: Same • App Access Caution
                                     This script prevents Windows apps from accessing your call history [1] [2] [3] [4] [5].
                                     It protects past communication records by blocking apps from
                                     automatically reading and deleting call history [1] without explicit user permission.
@@ -2167,7 +2167,7 @@ actions:
                             -
                                 name: Disable app access to phone calls (breaks phone calls through Phone Link)
                                 recommend: strict # Breaks "Calls" feature (making and receiving phone calls) of Microsoft Phone Link #350
-                                docs: |- # refactor-with-variable: Same • Caution
+                                docs: |- # refactor-with-variable: Same • App Access Caution
                                     This script prevents Windows apps from accessing phone calls [1] [2] [3].
                                     This includes reading phone call data [1] and making phone calls [1] [2] [3].
 
@@ -2207,7 +2207,7 @@ actions:
                             -
                                 name: Disable app access to messaging (SMS / MMS)
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • Caution
+                                docs: |- # refactor-with-variable: Same • App Access Caution
                                     This script prevents Windows apps from accessing messages [1] [2] [3] [4] [5],
                                     securing message content from unauthorized access and improving privacy.
 
@@ -2247,7 +2247,7 @@ actions:
                     -
                         name: Disable app access to email
                         recommend: standard
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents Windows apps from accessing email [1] [2] [3] [4] [5].
 
                             It protects your privacy by blocking apps from automatically reading [1],
@@ -2282,7 +2282,7 @@ actions:
                     -
                         name: Disable app access to tasks
                         recommend: standard
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents Windows apps from accessing task data [1] [2] [3] [4] [5].
                             These task items may be stored by Exchange ActiveSync (EAS) connections and other provider apps [1].
 
@@ -2318,7 +2318,7 @@ actions:
                     -
                         name: Disable app access to radios
                         recommend: standard
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents Windows apps from controlling radios [1] [2] [3] [4] [5],
                             improving privacy by preventing unauthorized use or toggling of these components.
 
@@ -2353,7 +2353,7 @@ actions:
                                     deviceAccessId: '{A8804298-2D5F-42E3-9531-9C8C39EB29CE}'
                     -
                         category: Disable app access to Bluetooth devices
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This category enhances user privacy by blocking unauthorized access to Bluetooth devices through Windows apps.
                             It restricts Bluetooth connections, preventing apps from initiating unwanted communication or data exchange.
 
@@ -2363,7 +2363,7 @@ actions:
                             -
                                 name: Disable app access to paired Bluetooth devices
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • Caution
+                                docs: |- # refactor-with-variable: Same • App Access Caution
                                     This script prevents Windows apps from accessing paired Bluetooth devices [1].
 
                                     This script improves your privacy by preventing apps from automatically interacting
@@ -2385,7 +2385,7 @@ actions:
                             -
                                 name: Disable app access to unpaired Bluetooth devices
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • Caution
+                                docs: |- # refactor-with-variable: Same • App Access Caution
                                     This script prevents Windows apps from accessing unpaired Bluetooth devices [1] [2].
 
                                     This script protects your privacy by blocking apps from automatically sharing and synchronizing
@@ -2407,7 +2407,7 @@ actions:
                                         appCapability: bluetoothSync
                     -
                         category: Disable app access to voice activation
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This category safeguards against unauthorized app activation via voice commands.
 
                             It includes measures to disable voice activation for apps, ensuring that apps cannot be triggered
@@ -2420,7 +2420,7 @@ actions:
                             -
                                 name: Disable app access to voice activation
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • Caution
+                                docs: |- # refactor-with-variable: Same • App Access Caution
                                     This script prevents Windows apps from voice activation [1] [2] [3] [4].
 
                                     This script improves privacy by preventing apps from being activated [1] [2] [3] [4]
@@ -2456,7 +2456,7 @@ actions:
                             -
                                 name: Disable app access to voice activation on locked system
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • Caution
+                                docs: |- # refactor-with-variable: Same • App Access Caution
                                     This script prevents Windows apps from voice activation when the system is locked [1] [2] [3] [4].
 
                                     This script improves privacy by preventing apps from being activated [1] [2] [3] [4]
@@ -2492,7 +2492,7 @@ actions:
                     -
                         name: Disable app access to physical movement
                         recommend: standard
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents Windows apps from accessing spatial perception data [1] [2].
                             This includes movement of the user's head, hands, motion controllers, and other tracked objects [1],
                             as well as nearby surfaces [2].
@@ -2528,7 +2528,7 @@ actions:
                     -
                         name: Disable app access to eye tracking
                         recommend: standard
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents Windows apps from accessing the eye tracker [1] [2].
 
                             This script improves privacy by blocking apps from tracking users' eye automatically
@@ -2559,7 +2559,7 @@ actions:
                     -
                         name: Disable app access to human presence
                         recommend: standard
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents Windows apps from accessing presence sensing [1] [2].
 
                             Presence data includes information on user presence and engagement [2].
@@ -2590,7 +2590,7 @@ actions:
                     -
                         name: Disable app access to screen capture
                         recommend: standard # It does not affect built-in Snipping Tool
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script restricts Windows apps from taking screenshots of the user's screen [1] [2] [3].
 
                             This script improves privacy by blocking apps from taking screenshots programatically [1] [3],
@@ -2626,7 +2626,7 @@ actions:
                                     appCapability: graphicsCaptureWithoutBorder
                     -
                         name: Disable app access to background activity (breaks Cortana, Search, live tiles, notifications)
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents Windows apps from running in the background [1] [2] [3].
 
                             This script may improve system performance by reducing resource usage.
@@ -2660,7 +2660,7 @@ actions:
                     -
                         name: Disable app access to input devices
                         recommend: standard
-                        docs: |- # refactor-with-variable: Same • Caution
+                        docs: |- # refactor-with-variable: Same • App Access Caution
                             This script prevents apps from accessing Human Interface Device (HID) capabilities [1].
                             HIDs include a wide range of devices such as keyboards, mice, and other input devices that can
                             communicate directly with the system.
@@ -6420,125 +6420,239 @@ actions:
                                 #   but runs the `OLicenseHeartbeat.exe` process from the Office16 folder.
             -
                 category: Configure browsers
+                docs: |-
+                    This category includes scripts that enhance privacy by adjusting browsers to prevent tracking,
+                    minimize data leaks, and restrict personalized ads.
+
+                    These changes help protect user privacy across different web browsers and optimize system performance
+                    by reducing privacy-invasive processing.
                 children:
                     -
                         category: Configure Edge
+                        docs: |- # Similar to "Configure Chrome"
+                            This category contains scripts that adjust Microsoft Edge settings to enhance privacy, security,
+                            and potentially improve system performance
+                            
+                            This category is designed for Chromium-based Edge only, not for legacy Edge.
+                            Edge (Chromium) is the current version of Microsoft Edge, replacing Edge (Legacy) [1] [2].
+                            It comes pre-installed on all Windows versions starting from Windows 10 20H2 [2].
+                            Older versions are automatically upgraded to Edge (Chromium) through Windows updates [1].
+
+                            Edge collects personal data, including browsing history, favorite sites, usage data, web content, and device
+                            information [3].
+                            This data is used for personal identification, targeted advertising, and product improvement, raising privacy concerns [3].
+                            The scripts in this category are designed to enhance your privacy by offering options to disable data collection
+                            and improve security while using Microsoft Edge.
+
+                            These scripts enable you to configure Microsoft Edge to limit these data collection practices,
+                            enhancing your online privacy, security, and system performance.
+
+                            [1]: https://web.archive.org/web/20240517223534/https://techcommunity.microsoft.com/t5/microsoft-365-blog/new-microsoft-edge-to-replace-microsoft-edge-legacy-with-april-s/ba-p/2114224 "New Microsoft Edge to replace Microsoft Edge Legacy with April’s Windows 10 Update Tuesday release - Microsoft Community Hub | techcommunity.microsoft.com"
+                            [2]: https://web.archive.org/web/20240517225921/https://blogs.windows.com/windowsexperience/2020/06/16/whats-next-for-windows-10-updates/ "What’s next for Windows 10 updates | Windows Experience Blog | blogs.windows.com"
+                            [3]: https://web.archive.org/web/20240623170024/https://support.microsoft.com/en-us/microsoft-edge/microsoft-edge-browsing-activity-for-personalized-advertising-and-experiences-37aa831e-6372-238e-f33f-7cd3f0e53679 "Microsoft Edge browsing activity for personalized advertising and experiences - Microsoft Support | support.microsoft.com"
                         children:
                             -
-                                category: Configure Edge (Chromium) settings
+                                category: Disable Edge telemetry
+                                docs: |-
+                                    This category includes scripts that enhance privacy by disabling Microsoft Edge telemetry.
+                                    Telemetry is the automatic collection and sharing of data about you and your usage patterns of a software.
+
+                                    These scripts prevent the automatic transmission of diagnostic and usage data to Microsoft, optimize system
+                                    performance by reducing background data transmission, and safeguard personal data by limiting third-party sharing.
                                 children:
                                     -
-                                        name: Disable Edge diagnostic data sending (shows "Your browser is managed")
+                                        name: Disable Edge diagnostic data sending
                                         recommend: standard
-                                        docs:
-                                            - https://archive.ph/2023.08.26-152941/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::DiagnosticData
-                                            - https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#diagnosticdata
-                                            - https://archive.ph/2023.08.26-152952/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::MetricsReportingEnabled
-                                            - https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#metricsreportingenabled
-                                            - https://archive.ph/2023.08.26-153019/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SendSiteInfoToImproveServices
-                                            - https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#sendsiteinfotoimproveservices
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+                                            This script disables the sending of diagnostic data in Edge.
+
+                                            This script blocks all diagnostic data about your browser usage [1] [2].
+                                            This may cover details like websites you visit, feature usage and browser configuration [1] [2].
+                                            This enhances your privacy by preventing sensitive data exposure to Microsoft and
+                                            improves browser performance by reducing unnecessary data sharing.
+
+                                            This script configures the `DiagnosticData` policy [1] [2].
+                                            Changes will take effect after restarting the browser [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#diagnosticdata "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240624083056/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::DiagnosticData "Send required and optional diagnostic data about browser usage | admx.help"
                                         call:
                                             -
-                                                function: SetRegistryValue # Disable metrics for ≤ Edge v88
+                                                function: SetEdgePolicyViaRegistry
                                                 parameters:
-                                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Edge
-                                                    valueName: MetricsReportingEnabled
-                                                    dataType: REG_DWORD
-                                                    data: "0"
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    valueName: DiagnosticData # Edge ≥ 122
+                                                    dwordData: '0'
                                             -
-                                                function: SetRegistryValue # Disable site info sending for ≤ Edge v88
-                                                parameters:
-                                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Edge
-                                                    valueName: SendSiteInfoToImproveServices
-                                                    dataType: REG_DWORD
-                                                    data: "0"
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                                            -
-                                                function: SetRegistryValue # Replace metrics and site info sending since Edge ≥ v89
-                                                parameters:
-                                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Edge
-                                                    valueName: DiagnosticData
-                                                    dataType: REG_DWORD
-                                                    data: "0"
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                function: ShowEdgeRestartSuggestion
                                     -
-                                        name: Disable automatic installation of Edge (Chromium)
-                                        docs:
-                                            - https://admx.help/?Category=EdgeChromium_Blocker&Policy=Microsoft.Policies.EdgeUpdate::NoUpdate
-                                            - https://web.archive.org/web/20210118230052/https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit
+                                        name: Disable outdated Edge metrics data sending
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+                                            This script stops Edge from reporting metrics data.
+
+                                            This script stops the reporting of usage and crash-related data [1] [2].
+                                            This data includes information about how the browser operates and the causes of any failures [1] [2].
+                                            This enhances your privacy by preventing sensitive data exposure to Microsoft and
+                                            improves browser performance by reducing unnecessary data sharing.
+
+                                            This script is applicable for Edge versions between 77 and 89 [1] [2].
+                                            It does not affect newer versions of Edge as this settings is deprecated [1] [2].
+
+                                            This script configures the `MetricsReportingEnabled` policy [1] [2].
+                                            Changes will take effect after restarting the browser [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#metricsreportingenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240624083344/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::MetricsReportingEnabled "Enable usage and crash-related data reporting (deprecated) | admx.help"
                                         call:
-                                            function: SetRegistryValue
-                                            parameters:
-                                                keyPath: HKLM\SOFTWARE\Microsoft\EdgeUpdate
-                                                valueName: DoNotUpdateToEdgeWithChromium
-                                                dataType: REG_DWORD
-                                                data: "1"
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: MetricsReportingEnabled # Edge ≥ 77 and Edge ≤ 89
+                                                    dwordData: '0'
+                                            -
+                                                function: ShowEdgeRestartSuggestion
+                                    -
+                                        name: Disable outdated Edge site information sending
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+                                            This script prevents Edge from sending site-related information.
+
+                                            This prevents the browser from sending site information used to improve Microsoft services [1] [2].
+                                            This may might include URLs and page interaction data [1] [2].
+                                            This improves your privacy by not sharing your personal data with third-parties, and improves performance by eliminating
+                                            unnecessary data sharing.
+
+                                            This script configures the `SendSiteInfoToImproveServices` policy [1] [2].
+                                            Changes will take effect after restarting the browser [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#sendsiteinfotoimproveservices "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240624083104/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SendSiteInfoToImproveServices "Send site information to improve Microsoft services (deprecated) | admx.help"
+                                        call:
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: SendSiteInfoToImproveServices # Edge ≥ 77 and Edge ≤ 89
+                                                    dwordData: '0'
+                                            -
+                                                function: ShowEdgeRestartSuggestion
                             -
-                                name: Disable Live Tile data collection
-                                recommend: standard
-                                docs:
-                                    - https://web.archive.org/web/20240314101034/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/group-policies/telemetry-management-gp
-                                    - https://web.archive.org/web/20240314125209/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-browser#browser-preventlivetiledatacollection
+                                name: Disable automatic installation of Edge
+                                docs: |-
+                                    This script prevents the automatic installation of Edge (Chromium) via Windows Update.
+                                    
+                                    Microsoft Edge (Chromium), designed to replace Edge (Legacy), is automatically distributed
+                                    to devices running Windows 10 version 1803 or newer [1] [2] [3].
+                                    This script does not impact Windows 10, version 20H2 and later [3].
+                                    Windows 10 version 20H2 and later already include Edge (Chromium) by default [4].
+
+                                    This script only blocks the automatic installation of Edge (Chromium) through Windows Update,
+                                    without affecting other installation methods [2] [3] or system updates [2].
+                                    
+                                    As Microsoft has ceased support for Edge (Legacy), including security updates [1], this script
+                                    enables you to manage the installation timing and method for Edge (Chromium),
+                                    aligning the updates with your preferences.
+                                    
+                                    This script modifies the `HKLM\SOFTWARE\Microsoft\EdgeUpdate!DoNotUpdateToEdgeWithChromium` [2] [3] registry
+                                    key to to configure this setting.
+
+                                    [1]: https://web.archive.org/web/20240517223534/https://techcommunity.microsoft.com/t5/microsoft-365-blog/new-microsoft-edge-to-replace-microsoft-edge-legacy-with-april-s/ba-p/2114224 "New Microsoft Edge to replace Microsoft Edge Legacy with April’s Windows 10 Update Tuesday release - Microsoft Community Hub | techcommunity.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240517225010/https://admx.help/?Category=EdgeChromium_Blocker&Policy=Microsoft.Policies.EdgeUpdate::NoUpdate "Do not allow delivery of Microsoft Edge (Chromium-Based) through Automatic Updates | admx.help"
+                                    [3]: https://web.archive.org/web/20210118230052/https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit "Blocker Toolkit to disable automatic delivery of Microsoft Edge | Microsoft Docs | docs.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240517225921/https://blogs.windows.com/windowsexperience/2020/06/16/whats-next-for-windows-10-updates/ "What’s next for Windows 10 updates | Windows Experience Blog | blogs.windows.com"
                                 call:
                                     function: SetRegistryValue
                                     parameters:
-                                        keyPath: HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main
+                                        keyPath: HKLM\SOFTWARE\Microsoft\EdgeUpdate
+                                        valueName: DoNotUpdateToEdgeWithChromium
+                                        dataType: REG_DWORD
+                                        data: "1"
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                    -
+                        category: Configure Edge (Legacy)
+                        docs: |-
+                            This category contains scripts for configuring Edge (Legacy).
+
+                            Edge (Legacy) has been replaced by Edge (Chromium) [1] [2].
+                            It is no longer included on modern Windows versions starting with Windows 10 20H2 [1].
+                            Additionally, it is systematically removed from older Windows versions through updates [2].
+
+                            [1]: https://web.archive.org/web/20240517225921/https://blogs.windows.com/windowsexperience/2020/06/16/whats-next-for-windows-10-updates/ "What’s next for Windows 10 updates | Windows Experience Blog | blogs.windows.com"
+                            [2]: https://web.archive.org/web/20240517223534/https://techcommunity.microsoft.com/t5/microsoft-365-blog/new-microsoft-edge-to-replace-microsoft-edge-legacy-with-april-s/ba-p/2114224 "New Microsoft Edge to replace Microsoft Edge Legacy with April’s Windows 10 Update Tuesday release - Microsoft Community Hub | techcommunity.microsoft.com"
+                        children:
+                            -
+                                name: Disable Edge (Legacy) Live Tile data collection
+                                recommend: standard
+                                docs: |- # refactor-with-variables: Same • live tiles • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+                                    This script disables Live Tile data collection in Edge (Legacy).
+
+                                    **Live Tiles**, a feature within UWP apps, automatically collect and display updated information
+                                    directly on the Start menu, without opening the app [1].
+                                    The Live Tiles feature, once available on Windows 8.1 and 10 [2], has been replaced by the
+                                    **Widgets** feature in Windows 11 [3].
+
+                                    By default, pinning a Live Tile to the Start menu allows Microsoft Edge to collect and send metadata to Microsoft [4] [5] [6].
+                                    This script prevents Edge from sending this metadata [4] [5] [6].
+                                    It also blocks the collection of Live Tile metadata from `ieonline.microsoft.com` when you pin a Live Tile to the Start menu [6].
+                                    This limitation may affect the user experience [4] [5] [6].
+
+                                    Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                    This may also improve system performance by reducing processing workload.
+
+                                    This script configures the `PreventLiveTileDataCollection` policy [4] [5] [6].
+                                    This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
+
+                                    [1]: https://web.archive.org/web/20240502092842/https://learn.microsoft.com/en-us/archive/msdn-magazine/2017/april/uwp-apps-develop-hosted-web-apps-for-uwp#getting-started "UWP Apps - Develop Hosted Web Apps for UWP | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240502095239/https://answers.microsoft.com/en-us/windows/forum/all/live-tiles-what-are-they/71084023-f50b-4531-973d-3ba03d2c0d44 "Live Tiles, what are they? - Microsoft Community | answers.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240502093116/https://www.microsoft.com/en-ca/windows/windows-11-specifications "Windows 11 Specs and System Requirements | Microsoft | www.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240314101034/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/group-policies/telemetry-management-gp#prevent-microsoft-edge-from-gathering-live-tile-information-when-pinning-a-site-to-start "Microsoft Edge - Telemetry and data collection group policies | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies#prevent-microsoft-edge-from-gathering-live-tile-information-when-pinning-a-site-to-start "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240314125209/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-browser#browser-preventlivetiledatacollection "Browser Policy CSP - Windows Client Management | Microsoft Learn  | learn.microsoft.com"
+                                call:
+                                    function: SetLegacyEdgePolicyViaRegistry
+                                    parameters:
+                                        policySubkey: Main
                                         valueName: PreventLiveTileDataCollection
-                                        dataType: REG_DWORD
-                                        data: "1"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                        dwordData: "1"
                             -
-                                name: Disable MFU tracking
+                                name: Disable Edge (Legacy) search suggestions
                                 recommend: standard
-                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableMFUTracking
+                                docs: |- # refactor-with-variables: Same • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+                                    This script disables the search suggestions feature in the Address bar of Edge (Legacy).
+
+                                    By default, typing in the Address bar of Edge (Legacy) displays search suggestions [1] [2] [3],
+                                    potentially compromising privacy by sending typed data to Microsoft.
+                                    
+                                    This script prevents such data sharing by disabling the search suggestions feature [1] [2] [3].
+                                    As a result, users will no longer receive search suggestions when typing in the Address bar,
+                                    thereby enhancing privacy [1] [2] [3].
+
+                                    Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                    This may also improve system performance by reducing processing workload.
+
+                                    This script configures the `ShowSearchSuggestionsGlobal` policy [1] [2] [3].
+                                    This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
+
+                                    [1]: https://web.archive.org/web/20240314100851/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/group-policies/address-bar-settings-gp "Microsoft Edge - Address bar group policies | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240624135139/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.MicrosoftEdge::AllowSearchSuggestionsinAddressBar "Configure search suggestions in Address bar | admx.help"
+                                    [3]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/configure-search-suggestions-in-address-bar "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
                                 call:
-                                    function: SetRegistryValue
+                                    function: SetLegacyEdgePolicyViaRegistry
                                     parameters:
-                                        keyPath: HKCU\Software\Policies\Microsoft\Windows\EdgeUI
-                                        valueName: DisableMFUTracking
-                                        dataType: REG_DWORD
-                                        data: "1"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                            -
-                                name: Disable recent apps
-                                recommend: standard
-                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableRecentApps
-                                call:
-                                    function: SetRegistryValue
-                                    parameters:
-                                        keyPath: HKCU\Software\Policies\Microsoft\Windows\EdgeUI
-                                        valueName: DisableRecentApps
-                                        dataType: REG_DWORD
-                                        data: "1"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                            -
-                                name: Disable backtracking
-                                recommend: standard
-                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::TurnOffBackstack
-                                call:
-                                    function: SetRegistryValue
-                                    parameters:
-                                        keyPath: HKCU\Software\Policies\Microsoft\Windows\EdgeUI
-                                        valueName: TurnOffBackstack
-                                        dataType: REG_DWORD
-                                        data: "1"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                            -
-                                name: Disable Search Suggestions in Edge
-                                recommend: standard
-                                docs:
-                                    - https://web.archive.org/web/20240314100851/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/group-policies/address-bar-settings-gp
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.MicrosoftEdge::AllowSearchSuggestionsinAddressBar
-                                call:
-                                    function: SetRegistryValue
-                                    parameters:
-                                        keyPath: HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\SearchScopes
+                                        policySubkey: SearchScopes
                                         valueName: ShowSearchSuggestionsGlobal
-                                        dataType: REG_DWORD
-                                        data: "0"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                        dwordData: "0"
                     -
                         category: Configure Internet Explorer
                         children:
@@ -6609,11 +6723,39 @@ actions:
                                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                     -
                         category: Configure Chrome
+                        docs: |- # Similar to "Configure Edge"
+                            This category contains scripts that adjust Google Chrome settings to enhance privacy, security, and
+                            potentially improve system performance
+
+                            Google Chrome collects a variety of data:
+
+                            - **Browsing Data**: URLs, cached content, and IP addresses from visited pages [1].
+                            - **Personal Information and Passwords**: Data used to autofill forms and sign into sites [1].
+                            - **Cookies and Site Data**: Information from websites you visit [1].
+                            - **Download Records**: Details of your internet downloads [1].
+                            - **Usage Statistics and Crash Reports**: Includes performance stats and crash data [1].
+                            - **Media Licenses and Identifiers**: Locally stored session identifiers and media licenses [1].
+                            - **Location Data**: Estimated location based on Wi-Fi and cell signal data [1].
+                            - **Information for Web Services**: Data sent to Google during the use of web services [1].
+                            - **Search and Navigation Data**: Data typed into the omnibox for search predictions [1].
+                            - **Autofill and Payment Information**: Information about web forms, passwords, and payment methods stored for autofill [1].
+                            - **Sync Data**: Browsing history and other browser settings synced across devices [1].
+                            - **Incognito and Guest Mode Data**: Data not saved when using these browser modes [1].
+
+                            This data collection raises privacy concerns because it can be used for personal identification,
+                            targeted advertising, and product improvement [1].
+                            Additionally, Google Chrome may share aggregated, non-personally identifiable information with third parties
+                            like publishers and advertisers [1].
+
+                            These scripts enable you to configure Google Chrome to limit these data collection practices,
+                            enhancing your online privacy, security, and system performance.
+
+                            [1]: https://web.archive.org/web/20230402091425/https://www.google.com/chrome/privacy/ "Chrome Browser Privacy Policy - Google Chrome | www.google.com"
                         children:
                             -
                                 name: Disable outdated Chrome Software Reporter Tool
                                 recommend: standard # Outdated component, removal improves security and privacy
-                                docs: |-
+                                docs: |- # refactor-with-variables: • Performance + Privacy
                                     This script blocks the execution of the Chrome Software Reporter Tool, enhancing your privacy by preventing
                                     unnecessary data transmissions to Google, and boosting system performance through reduced resource consumption.
 
@@ -6634,6 +6776,9 @@ actions:
                                     Its executable name is `software_reporter_tool.exe` [1] [2] [3] [4] [5] [6].
                                     This file reappears with each update of Chrome [3].
                                     Instead of deleting or moving the file, the script blocks its execution to ensure it remains disabled after Chrome updates.
+
+                                    Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                    This may also improve system performance by reducing processing workload.
 
                                     Disabling this tool protects your privacy by:
 
@@ -6657,45 +6802,122 @@ actions:
                                 category: Configure Chrome cleanup
                                 children:
                                     -
-                                        name: Disable sharing scanned software data with Google (shows "Your browser is managed")
-                                        recommend: standard
-                                        docs:
-                                            - https://web.archive.org/web/20200606120247/https://www.chromium.org/administrators/policy-list-3#ChromeCleanupReportingEnabled
-                                            - https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81593
+                                        name: Disable sharing scanned software data with Google
+                                        recommend: standard # DISA recommends
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+                                            This script stops the Chrome Cleanup Tool from sending scan data to Google, enhancing privacy.
+
+                                            By default, when the Chrome Cleanup Tool detects unwanted software, it reports metadata about the scan and the software to Google [1] [2].
+                                            The reported data includes file metadata, automatically installed extensions, and registry keys [1] [2].
+                                            Users can choose to share cleanup results with Google to enhance future software detection [1] [2].
+
+                                            Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            Authorities like The Defense Information Systems Agency (DISA) [2]
+                                            recommend this script for enhanced security.
+                                            DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            This script configures the `ChromeCleanupReportingEnabled` policy [1] [2].
+                                            Changing this policy does not require restarting the browser to take effect [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20200606120247/https://www.chromium.org/administrators/policy-list-3#ChromeCleanupReportingEnabled "Policy List - The Chromium Projects | www.chromium.org"
+                                            [2]: https://web.archive.org/web/20240624111317/https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81593 "Chrome Cleanup reporting must be disabled. | www.stigviewer.com"
                                         call:
-                                            function: SetRegistryValue
+                                            function: SetChromePolicyViaRegistry
                                             parameters:
-                                                keyPath: HKLM\SOFTWARE\Policies\Google\Chrome
-                                                valueName: ChromeCleanupReportingEnabled
-                                                dataType: REG_DWORD
-                                                data: "0"
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2), last tested on Chrome v125
+                                                valueName: ChromeCleanupReportingEnabled # Chrome ≥ 68
+                                                dwordData: "0"
                                     - 
-                                        name: Disable Chrome system cleanup scans (shows "Your browser is managed")
-                                        recommend: standard
-                                        docs:
-                                            - https://web.archive.org/web/20200606120247/https://www.chromium.org/administrators/policy-list-3#ChromeCleanupEnabled
-                                            - https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81591
+                                        name: Disable Chrome system cleanup scans
+                                        recommend: standard # DISA recommends
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+                                            This script disables Chrome system cleanup scans to enhance user privacy and improve system performance.
+
+                                            By default, Chrome Cleanup Tool periodically scans the system for unwanted software and prompts the user for removal [1] [2].
+                                            This feature can also be manually triggered from the `chrome://settings/cleanup` page [1] [2].
+
+                                            Running this script stops the Chrome Cleanup Tool from performing system scans and cleanups [1] [2],
+                                            which protects your system's information from being analyzed and shared.
+                                            It also disables the manual trigger of this feature from the settings page [1] [2].
+
+                                            Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            Authorities like The Defense Information Systems Agency (DISA) [2]
+                                            recommend this script for enhanced security.
+                                            DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            This script configures the `ChromeCleanupEnabled` policy [1] [2].
+                                            Changes will take effect after restarting the browser [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20200606120247/https://www.chromium.org/administrators/policy-list-3#ChromeCleanupEnabled "Policy List - The Chromium Projects | www.chromium.org"
+                                            [2]: https://web.archive.org/web/20240624112722/https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81591 "Chrome Cleanup must be disabled. | www.stigviewer.com"
                                         call:
-                                            function: SetRegistryValue
-                                            parameters:
-                                                keyPath: HKLM\SOFTWARE\Policies\Google\Chrome
-                                                valueName: ChromeCleanupEnabled
-                                                dataType: REG_DWORD
-                                                data: "0"
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2), last tested on Chrome v125
+                                            -
+                                                function: SetChromePolicyViaRegistry
+                                                parameters:
+                                                    valueName: ChromeCleanupEnabled # Chrome ≥ 68
+                                                    dwordData: "0"
+                                            -
+                                                function: ShowChromeRestartSuggestion
                             -
-                                name: Disable Chrome metrics reporting (shows "Your browser is managed")
-                                recommend: standard
-                                docs: https://www.stigviewer.com/stig/google_chrome_v23_windows/2013-01-11/finding/V-35780
+                                name: Disable Chrome metrics reporting
+                                recommend: standard # DISA recommends
+                                docs: |-  # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+                                    This script disables Chrome's metrics reporting, enhancing user privacy and system performance.
+
+                                    By default, Chrome may send anonymous usage and crash-related data to Google [1] [2].
+                                    If no user preference is set, Chrome follows the initial choice made during installation or first run [1] [2].
+
+                                    This script ensures that anonymous reporting of usage and crash-related data is stopped, preventing this data from
+                                    being sent to Google [1] [2].
+                                    Additionally, it locks this setting, making it immutable by users [1] [2].
+
+                                    Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                    This may also improve system performance by reducing processing workload.
+
+                                    Authorities like The Defense Information Systems Agency (DISA) [2]
+                                    recommend this script for enhanced security.
+                                    DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
+
+                                    This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
+                                    It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                    It's not applicable to personal computers that are not managed by an organization.
+
+                                    This script configures the `MetricsReportingEnabled` policy [1] [2].
+                                    Changes will take effect after restarting the browser [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20200606120247/https://www.chromium.org/administrators/policy-list-3#MetricsReportingEnabled "Policy List - The Chromium Projects | www.chromium.org"
+                                    [2]: https://web.archive.org/web/20240624113958/https://www.stigviewer.com/stig/google_chrome_v23_windows/2013-01-11/finding/V-35780 "Metrics reporting to Google must be disabled | www.stigviewer.com"
                                 call:
-                                    function: SetRegistryValue
-                                    parameters:
-                                        keyPath: HKLM\SOFTWARE\Policies\Google\Chrome
-                                        valueName: MetricsReportingEnabled
-                                        dataType: REG_DWORD
-                                        data: "0"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2), last tested on Chrome v125
+                                    -
+                                        function: SetChromePolicyViaRegistry
+                                        parameters:
+                                            valueName: MetricsReportingEnabled # Chrome ≥ 8
+                                            dwordData: "0"
+                                    -
+                                        function: ShowChromeRestartSuggestion
                     -
                         category: Configure Firefox
                         docs: |-
@@ -7371,7 +7593,7 @@ actions:
                 children:
                     -
                         category: Enable strong secret key requirements
-                        docs: |- # refactor-with-variables: Same **Caution** text as rest of the `RequireTLSMinimumKeySize` scripts.
+                        docs: |- # refactor-with-variables: Same • Key Size Caution
                             This category contains scripts that enhance system security by implementing stronger encryption key lengths.
                             Stronger keys help prevent unauthorized data access and potential leaks.
                             These scripts aim to protect your data when sent over network (Internet), making sure your security matches up with the
@@ -7384,7 +7606,7 @@ actions:
                             -
                                 name: Enable strong Diffie-Hellman key requirement
                                 recommend: standard # Default on modern Windows, less size considered insecure
-                                docs: |- # refactor-with-variables: Same • Caution • handshake
+                                docs: |- # refactor-with-variables: Same • Key Size Caution • handshake
                                     This script improves your security by setting the `Diffie-Hellman` [1] [2] [3] key exchange
                                     to a minimum of 2048 bits.
                                     This is a secure way to exchange keys over public networks.
@@ -7419,7 +7641,7 @@ actions:
                             -
                                 name: Enable strong RSA key requirement (breaks Hyper-V VMs)
                                 recommend: strict # Microsoft deprecated it and will end support; but breaks Hyper-V VMs, see #363
-                                docs: |- # refactor-with-variables: Same • Caution • handshake
+                                docs: |- # refactor-with-variables: Same • Key Size Caution • handshake
                                     This script improves your security by enforcing a minimum of 2048 bits for RSA encryption keys (`PKCS` [1] [2]).
                                     RSA encryption keys play a crucial role in securing communications over the internet.
                                     The Public-Key Cryptography Standards (PKCS) define how to use RSA keys for secure communication encryption.
@@ -7471,7 +7693,7 @@ actions:
                                         ignoreServerSide: 'true' # Controlled by the specified server certificate
                     -
                         category: Disable insecure connections
-                        docs: |- # refactor-with-variables: Same • Caution
+                        docs: |- # refactor-with-variables: Same • Compatibility Caution
                             This category includes scripts designed to enhance users' security and privacy by disabling outdated or
                             vulnerable connections across the system.
                             It safeguards data against interception, unauthorized access, and attacks that exploit outdated technology
@@ -7484,7 +7706,7 @@ actions:
                         children:
                             -
                                 category: Disable insecure ciphers
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Compatibility Caution
                                     This category improves network security by disabling outdated and less secure cipher suites.
 
                                     **Cipher suites** are sets of cryptographic algorithms used to secure network connections [1].
@@ -7512,7 +7734,7 @@ actions:
                                     -
                                         name: Disable insecure "RC2" ciphers
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • handshake • authorities • cipher suite
                                             This script disables RC2 ciphers.
 
                                             This script only affects the *SSL/TLS handshake* process.
@@ -7567,7 +7789,7 @@ actions:
                                     -
                                         name: Disable insecure "RC4" ciphers
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • handshake • authorities • cipher suite
                                             This script disables the RC4 ciphers.
 
                                             This script only affects the *SSL/TLS handshake* process.
@@ -7632,7 +7854,7 @@ actions:
                                     -
                                         name: Disable insecure "DES" cipher
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • handshake • authorities • cipher suite
                                             This script disables the `DES 56/56` [1] [2] [3] [4] cipher, also known as *DES 56* [2] or *56-bit DES* [2].
 
                                             This script only affects the *SSL/TLS handshake* process.
@@ -7669,7 +7891,7 @@ actions:
                                     -
                                         name: Disable insecure "Triple DES" cipher
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • handshake • authorities • cipher suite
                                             This script disables the `Triple DES 168` [1] [2] [3] (`Triple DES 168/168` before Windows Vista [2] [4]) cipher,
                                             also known as *3DES* [1] [3] [5] [6], *The Triple Data Encryption Algorithm (TDEA)* [6] [7] and **TDES** [8].
 
@@ -7717,7 +7939,7 @@ actions:
                                     -
                                         name: Disable insecure "NULL" cipher
                                         recommend: standard # Disables encryption, turned off by default.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • handshake • authorities • cipher suite
                                             This script disables the `NULL` [1] [2] [3] [4] cipher.
 
                                             This script only affects the *SSL/TLS handshake* process.
@@ -7754,7 +7976,7 @@ actions:
                                                 algorithmName: 'NULL'
                             -
                                 category: Disable insecure hashes
-                                docs: |- # refactor-with-variables: Same • Caution • vulnerability
+                                docs: |- # refactor-with-variables: Same • Compatibility Caution • vulnerability
                                     This category includes scripts to disable insecure hash algorithms during cryptographic operations.
 
                                     Hash algorithms are essential for internet security, electronic banking, and document signing.
@@ -7773,7 +7995,7 @@ actions:
                                     -
                                         name: Disable insecure "MD5" hash
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, incompatible with third-party apps such as MEGA.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • handshake • vulnerability • authorities • cipher suite
                                             This script disables the use of the `MD5` [1] [2] [3] hash algorithm during the SSL/TLS handshake process.
 
                                             This script only affects the *SSL/TLS handshake* process.
@@ -7826,7 +8048,7 @@ actions:
                                     -
                                         name: Disable insecure "SHA-1" hash
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • handshake • vulnerability • authorities • cipher suite
                                             This script disables `SHA` [1] [2] [3] hash algorithm, also known as *Secure Hash Algorithm (SHA-1)* [2].
 
                                             This script only affects the *SSL/TLS handshake* process.
@@ -7897,7 +8119,7 @@ actions:
                             -
                                 name: Disable insecure renegotiation
                                 recommend: strict # Important security improvement, but may limit compatibility with older software.
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Compatibility Caution
                                     This script enhances your security by reducing risks associated with secure communications.
                                     By running this script, you proactively enhance your online privacy and secure against
                                     well-known TLS vulnerabilities.
@@ -7990,7 +8212,7 @@ actions:
                                             deleteOnRevert: 'true' # Missing default value since Windows 10 Pro (≥ 22H1) and Windows 11 Pro (≥ 23H2)
                             -
                                 category: Disable insecure protocols
-                                docs: |- # refactor-with-variables: Same • Caution • authorities
+                                docs: |- # refactor-with-variables: Same • Compatibility Caution • authorities
                                     This category focuses on enhancing user privacy by disabling legacy and insecure communication
                                     protocols.
                                     It targets protocols that expose users to security vulnerabilities due to their outdated nature.
@@ -8036,7 +8258,7 @@ actions:
                                     -
                                         name: Disable insecure "SMBv1" protocol
                                         recommend: standard # Recommended by Microsoft, very old, has significant security vulnerabilities
-                                        docs: |- # refactor-with-variables: Same • Caution
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution
                                             This script improves network security by disabling the outdated SMBv1 protocol.
 
                                             **SMBv1**, or **Server Message Block version 1**, is an outdated network protocol developed
@@ -8177,7 +8399,7 @@ actions:
                                     -
                                         name: Disable insecure "NetBios" protocol
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: Same • Caution
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution
                                             This script enhances your network's security by turning off NetBIOS over TCP/IP for all network interfaces.
 
                                             NetBIOS is a protocol primarily used for backward compatibility with older Windows systems [1] [2].
@@ -8220,7 +8442,7 @@ actions:
                                     -
                                         name: Disable insecure "SSL 2.0" protocol
                                         recommend: standard # Outdated protocol, removed from Windows
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • previously enabled 
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • identified as • authorities • previously enabled 
                                             This script disables the SSL 2.0 protocol.
                                             This protocol is identified as `SSL 2.0` on Windows [1] [2] [3],
                                             and also known as *SSL2* [4] [5].
@@ -8251,7 +8473,7 @@ actions:
                                     -
                                         name: Disable insecure "SSL 3.0" protocol
                                         recommend: standard # Outdated protocol, disabled by default
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • previously enabled
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • identified as • authorities • previously enabled
                                             This script disables the SSL 3.0.
                                             This protocol is identified as `SSL 3.0` on Windows [1] [2] [3],
                                             and also known as *SSL3* [4] or *SSLv3* [5].
@@ -8285,7 +8507,7 @@ actions:
                                     -
                                         name: Disable insecure "TLS 1.0" protocol
                                         recommend: strict # Newly disabled by Microsoft, but may lead to compatibility issues
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • browsers • previously enabled
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • identified as • authorities • browsers • previously enabled
                                             This script disables the TLS 1.0 [1] [2] [3] protocol.
                                             This protocol is identified as `TLS 1.0` on Windows [1] [2] [3].
 
@@ -8330,7 +8552,7 @@ actions:
                                     -
                                         name: Disable insecure "TLS 1.1" protocol
                                         recommend: strict # Deprecated by Microsoft, but may lead to compatibility issues
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • browsers • previously enabled
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • identified as • authorities • browsers • previously enabled
                                             This protocol is identified as `TLS 1.1` on Windows [1] [2] [3].
 
                                             Although deprecated and unsupported in newer Windows versions [4],
@@ -8371,7 +8593,7 @@ actions:
                                                 protocolName: TLS 1.1
                                     -
                                         name: Disable insecure "DTLS 1.0" protocol
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • DTLS explanation
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • identified as • authorities • DTLS explanation
                                             This script disables the DTLS 1.0 protocol.
                                             This protocol is identified as `DTLS 1.0` on Windows [1] [2].
                                             It is enabled by default [2].
@@ -8472,18 +8694,20 @@ actions:
                                         function: ShowComputerRestartSuggestion
                     -
                         category: Enable secure connections
-                        docs: |- # refactor-with-variables: Same • Caution
+                        docs: |- # refactor-with-variables: Same • Compatibility Caution
                             This category configures essential security settings to protect network communications.
                             Newer security standards offer improved protection against vulnerabilities found in older versions [1].
                             Scripts within this category enhance your privacy and security by enabling these standards to
                             maintain the integrity of network communications.
+
+                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                             [1]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"                                    
                         children:
                             -
                                 name: Enable secure "DTLS 1.2" protocol
                                 recommend: standard # Enabled by default ≥ Windows 10, version 1607, script does not run on older versions
-                                docs: |- # refactor-with-variables: Same • Caution • DTLS explanation • minimum version safeguard
+                                docs: |- # refactor-with-variables: Same • Compatibility Caution • DTLS explanation • minimum version safeguard
                                     This script enables the DTLS 1.2 protocol.
                                     This protocol is identified as `DTLS 1.2` on Windows [1] [2].
 
@@ -8522,7 +8746,7 @@ actions:
                             -
                                 name: Enable secure "TLS 1.3" protocol
                                 recommend: standard # Enabled by default ≥ Windows 11, script does not run on older versions
-                                docs: |- # refactor-with-variables: Same • Caution • Authorities • minimum version safeguard
+                                docs: |- # refactor-with-variables: Same • Compatibility Caution • Authorities • minimum version safeguard
                                     This script enables the TLS 1.3 protocol.
                                     This protocol is identified as `TLS 1.3` on Windows [1].
 
@@ -8560,7 +8784,7 @@ actions:
                             -
                                 name: Enable secure connections for legacy .NET apps
                                 recommend: strict # Default since .NET 4.6 and above, but can still break legacy apps
-                                docs: |- # refactor-with-variables: Same • Caution • applies to all .NET
+                                docs: |- # refactor-with-variables: Same • Compatibility Caution • applies to all .NET
                                     This script provides secure connections for older .NET Framework applications.
 
                                     It enables the automatic adoption of newer, more secure protocols as supported by the operating system [1].
@@ -8600,7 +8824,7 @@ actions:
                                         valueData: '1'
                     -
                         category: Disable insecure remote administration access
-                        docs: |- # refactor-with-variables: Same • Caution
+                        docs: |- # refactor-with-variables: Same • Remote Connectivity Caution
                             This category improves security by disabling insecure remote administration features.
                             Organizations use remote administration tools to manage multiple systems from a central location,
                             performing tasks such as software updates, system checks, and configuration changes.
@@ -8620,7 +8844,7 @@ actions:
                             -
                                 name: Disable basic authentication in WinRM
                                 recommend: standard
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Remote Connectivity Caution
                                     This script configures the Windows Remote Management (WinRM) client to disable **basic authentication** [1] [2].
                                     Basic authentication is a security protocol where a user provides a username and password in plain text for verification [3].
                                     It improves security by preventing the interception and misuse of plain text passwords [1].
@@ -8649,7 +8873,7 @@ actions:
                             -
                                 name: Disable unauthorized user account discovery (anonymous SAM enumeration)
                                 recommend: standard
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Remote Connectivity Caution
                                     This script increases your system's security by preventing unauthorized users from seeing account names in the
                                     Security Accounts Manager (SAM) [1] [2] [3] [4] [5] [6].
                                     The Security Accounts Manager (SAM) is a database in Windows that stores user account information and
@@ -8695,7 +8919,7 @@ actions:
                             -
                                 name: Disable anonymous access to named pipes and shares
                                 recommend: standard
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Remote Connectivity Caution
                                     This script restricts anonymous access to Named Pipes and Shares [1] [2].
                                     It reduces security risks by preventing unauthorized access [1] [2].
                                     *Named Pipes* allow programs on a computer or network to communicate with each other.
@@ -8718,7 +8942,7 @@ actions:
                             -
                                 name: Disable hidden remote file access via administrative shares (breaks remote system management software)
                                 recommend: strict
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Remote Connectivity Caution
                                     This script improves your privacy and security by disabling Windows administrative shares,
                                     which are typically used for remote access to your computer's file system.
 
@@ -8757,7 +8981,7 @@ actions:
                             -
                                 name: Disable anonymous enumeration of shares
                                 recommend: standard
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Remote Connectivity Caution
                                     This script disables the anonymous enumeration of shares to prevent unauthorized users from
                                     listing account names and shared resources, which could serve as a roadmap for attackers [1].
 
@@ -8775,7 +8999,7 @@ actions:
                             -
                                 name: Disable "Telnet Client" feature
                                 recommend: standard # Already disabled by default in Windows
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Remote Connectivity Caution
                                     This script disables the **Telnet Client** feature in Windows.
 
                                     The Telnet Client enables remote server connections [1].
@@ -8812,7 +9036,7 @@ actions:
                                         disabledByDefault: 'true'
                             -
                                 name: Remove "RAS Connection Manager Administration Kit (CMAK)" capability
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Remote Connectivity Caution
                                     This script removes the "RAS Connection Manager Administration Kit (CMAK)" (`RasCMAK.Client` [1]) capability.
 
                                     CMAK is a tool that allows the creation of profiles for connecting to remote servers and networks [1].
@@ -8905,7 +9129,7 @@ actions:
                             -
                                 name: Disable "Net.TCP Port Sharing" feature
                                 recommend: strict
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Generic Connectivity Caution
                                     This script disables the "Net.TCP Port Sharing" feature.
 
                                     This feature is part of Windows Communication Foundation (WCF) [1].
@@ -8945,7 +9169,7 @@ actions:
                             -
                                 name: Disable "SMB Direct" feature
                                 recommend: strict
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Generic Connectivity Caution
                                     This script disables "SMB Direct" feature.
 
                                     SMB Direct improves file transfer speeds across networks by utilizing network adapters that are
@@ -8975,7 +9199,7 @@ actions:
                             -
                                 name: Disable "TFTP Client" feature
                                 recommend: standard # Disabled by default
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Generic Connectivity Caution
                                     This script disables the "TFTP Client" feature.
 
                                     The TFTP Client supports file transfers using the *Trivial File Transfer Protocol (TFTP)*.
@@ -9028,7 +9252,7 @@ actions:
                                         capabilityName: RIP.Listener
                             -
                                 name: Remove "Simple Network Management Protocol (SNMP)" capability
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Generic Connectivity Caution
                                     This script removes the "Simple Network Management Protocol (SNMP)" (`SNMP.Client` [1]) capability.
 
                                     SNMP is used for monitoring and managing network devices [1].
@@ -9047,7 +9271,7 @@ actions:
                                         capabilityName: SNMP.Client
                             -
                                 name: Remove "SNMP WMI Provider" capability
-                                docs: |- # refactor-with-variables: Same • Caution
+                                docs: |- # refactor-with-variables: Same • Generic Connectivity Caution
                                     This script removes the "SNMP WMI Provider" (`WMI-SNMP-Provider.Client` [1]) capability.
 
                                     This feature enables Windows Management Instrumentation (WMI) clients to access SNMP information [1].
@@ -10399,7 +10623,7 @@ actions:
                                         name: >-
                                             Disable "Windows Defender Firewall Authorization Driver" service
                                             (breaks Microsoft Store, `netsh advfirewall`, winget, Windows Sandbox, Docker, WSL)
-                                        docs: |- # refactor-with-variables: Same caution text as `MpsSvc`
+                                        docs: |- # refactor-with-variables: Same • Firewall Service Caution
                                             This script disables the **Windows Defender Firewall Authorization Driver** service.
 
                                             This service is a kernel mode driver crucial for inspecting network traffic entering and exiting your computer [1] [2].
@@ -10463,7 +10687,7 @@ actions:
                                         name: >-
                                             Disable "Windows Defender Firewall" service
                                             (breaks Microsoft Store, `netsh advfirewall`, winget, Windows Sandbox, Docker, WSL)
-                                        docs: |- # refactor-with-variables: Same caution text as `mpsdrv`
+                                        docs: |- # refactor-with-variables: Same • Firewall Service Caution
                                             This script disables the **Windows Defender Firewall** service (identified as `MpsSvc` [1] [2] [3] [4]).
                                             This component acts as a gatekeeper for your computer, filtering incoming and outgoing network traffic based on
                                             established security rules [1] [5] to prevent unauthorized access [3] [4].
@@ -12999,75 +13223,182 @@ actions:
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 category: Disable SmartScreen in Microsoft browsers
+                                docs: |-
+                                    This category provides scripts to disable SmartScreen in Microsoft browsers.
+                                    
+                                    SmartScreen is a security feature in Edge.
+                                    When you visit websites or download files, SmartScreen checks the reputation of the URL or file [1].
+                                    If SmartScreen determines that the site or file is malicious, it blocks access or download [1].
+                                    SmartScreen is enabled by default in Microsoft Edge [1].
+
+                                    SmartScreen feature raises privacy concerns because it sends unhashed URLs, downloaded files, applications being run, IP addresses,
+                                    and the user's Security Identifier (SID) to Microsoft [1] [2] [3].
+
+                                    This data transmission can potentially allow the company to track browsing history and user activities.                                   
+                                    The transmission of full file paths and download URLs can expose a significant amount of sensitive and private information about a
+                                    user's system and network structure.
+                                    The combination of these data points could enable Microsoft to build a comprehensive profile of user activities and behavior.
+
+                                    [1]: https://web.archive.org/web/20240623123514/https://learn.microsoft.com/en-us/microsoft-edge/privacy-whitepaper/#smartscreen  "Microsoft Edge Privacy Whitepaper - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240624121703/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-potentially-unwanted-apps "Use Microsoft Edge to protect against potentially unwanted applications | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240624143449/https://www.bleepingcomputer.com/news/microsoft/windows-10-smartscreen-sends-urls-and-app-names-to-microsoft/ "Windows 10 SmartScreen Sends URLs and App Names to Microsoft | www.bleepingcomputer.com"
                                 children:
                                     -
-                                        name: Disable SmartScreen in Edge (Chromium) for potentially unwanted apps
-                                        docs: https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SmartScreenPuaEnabled
-                                        call:
-                                            function: SetRegistryValue
-                                            parameters:
-                                                keyPath: HKLM\SOFTWARE\Policies\Microsoft\Edge
-                                                valueName: SmartScreenPuaEnabled
-                                                dataType: REG_DWORD
-                                                data: '0'
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                                    -
                                         name: Disable Edge SmartScreen
-                                        docs:
-                                            - https://www.bleepingcomputer.com/news/microsoft/windows-10-smartscreen-sends-urls-and-app-names-to-microsoft/ # Privacy concerns
-                                            - https://web.archive.org/web/20240314103356/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-security-smartscreen
-                                            - https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#smartscreen-settings
-                                            - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63713
-                                            - https://web.archive.org/web/20231206191447/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SmartScreenEnabled
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+                                            This script disables the SmartScreen feature in Edge.
+
+                                            SmartScreen provides warning messages to help protect users from potential phishing scams and malicious software [1] [2].
+                                            By default, Microsoft Defender SmartScreen is enabled and users can choose whether to use it [1] [2].
+
+                                            Once you run this script, Microsoft Defender SmartScreen will be turned off [1] [2].
+
+                                            Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            While enabling this setting may increase user autonomy and privacy, it reduces security
+                                            by allowing access to potentially malicious websites and software [2].
+                                            Users should be cautious and understand the risks involved.
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            Changing this policy does not require restarting the browser to take effect [1].
+                                            This script configures the `SmartScreenEnabled` policy [1] [2].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#smartscreenenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240624143208/https://www.stigviewer.com/stig/microsoft_edge/2021-02-16/finding/V-235763 "Microsoft Defender SmartScreen must be enabled. | www.stigviewer.com"
                                         call:
-                                            -
-                                                function: SetRegistryValue
-                                                parameters:
-                                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter
-                                                    valueName: EnabledV9
-                                                    dataType: REG_DWORD
-                                                    data: '0'
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                                            -
-                                                function: SetRegistryValue
-                                                parameters:
-                                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter
-                                                    valueName: PreventOverride
-                                                    dataType: REG_DWORD
-                                                    data: '0'
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                                            -
-                                                function: SetRegistryValue
-                                                parameters:
-                                                    keyPath: HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\PhishingFilter
-                                                    valueName: EnabledV9
-                                                    dataType: REG_DWORD
-                                                    data: '0'
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                                            -
-                                                function: SetRegistryValue
-                                                parameters:
-                                                    keyPath: HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\PhishingFilter
-                                                    valueName: PreventOverride
-                                                    dataType: REG_DWORD
-                                                    data: '0'
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                                            - # For Microsoft Edge version 77 or later
-                                                function: SetRegistryValue
-                                                parameters:
-                                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Edge
-                                                    valueName: SmartScreenEnabled
-                                                    dataType: REG_DWORD
-                                                    data: '0'
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                                            - # For Microsoft Edge version 77 or later
-                                                function: SetRegistryValue
-                                                parameters:
-                                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Edge
-                                                    valueName: PreventSmartScreenPromptOverride
-                                                    dataType: REG_DWORD
-                                                    data: '0'
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: SmartScreenEnabled # Edge ≥ 77
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge SmartScreen for potentially unwanted apps
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+                                            This script disables the SmartScreen feature in Edge that specifically targets potentially unwanted applications (PUAs).
+
+                                            Microsoft Edge's SmartScreen PUA feature protects against adware, coin miners, bundleware, and other low-reputation software [1] [2].
+                                            This feature warns users about potentially harmful applications [1] [2].
+
+                                            Although this feature is turned off by default [2], this script explicitly disables it
+                                            to ensure it remains inactive, safeguarding against automatic or unintended activations.
+
+                                            Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            This script configures the `SmartScreenPuaEnabled` policy [1] [2].
+                                            Changing this policy does not require restarting the browser to take effect [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#smartscreenpuaenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240624121549/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SmartScreenPuaEnabled "Configure Microsoft Defender SmartScreen to block potentially unwanted apps | admx.help"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: SmartScreenPuaEnabled # Edge ≥ 80
+                                                dwordData: '0'
+                                    -
+                                        name: Enable Edge SmartScreen bypass
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+                                            This script allows users to bypass Edge SmartScreen warnings.
+                                            
+                                            SmartScreen in Edge displays warnings about potentially malicious websites [1] [2].
+                                            By default, users can bypass Microsoft Defender SmartScreen warnings and proceed to the site [1].
+                                            This script keeps this option, enhancing user privacy by minimizing data sent to Microsoft.
+
+                                            Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            While enabling this setting may increase user autonomy and privacy, it reduces security
+                                            by allowing access to potentially malicious websites [2].
+                                            Users should be cautious and understand the risks involved.
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            This script configures the `PreventSmartScreenPromptOverride` policy [1] [2].
+                                            Changing this policy does not require restarting the browser to take effect [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#preventsmartscreenpromptoverride "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240624152821/https://www.stigviewer.com/stig/microsoft_edge/2021-06-23/finding/V-235720 "Bypassing Microsoft Defender SmartScreen prompts for sites must be disabled. | www.stigviewer.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: PreventSmartScreenPromptOverride # Edge ≥ 77
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge (Legacy) SmartScreen
+                                        docs: |- # refactor-with-variables: Same • Policy "This script configures" • Edge (Legacy) only
+                                            This script disables the SmartScreen feature in Edge (Legacy).
+                                            
+                                            Edge (Legacy) uses the Windows Defender SmartScreen by default to protect users from phishing scams and malicious software [1] [2].
+                                            This feature is enabled by default and cannot be turned off by users [2].
+
+                                            This script disables SmartScreen and prevents users from turning it back on [2].
+                                            As a result, users will not receive alerts about potential threats [2].
+
+                                            Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            While enabling this setting may increase user autonomy and privacy, it reduces security [1].
+                                            Users should be cautious and understand the risks involved.
+
+                                            This script configures the `EnabledV9` policy [1] [2].
+                                            This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
+
+                                            [1]: https://web.archive.org/web/20240624152134/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63713 "The Windows Defender SmartScreen filter for Microsoft Edge must be enabled. | www.stigviewer.com"
+                                            [2]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies#configure-windows-defender-smartscreen "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            function: SetLegacyEdgePolicyViaRegistry
+                                            parameters:
+                                                policySubkey: PhishingFilter
+                                                valueName: EnabledV9
+                                                dwordData: "0"
+                                    -
+                                        name: Enable Edge (Legacy) SmartScreen bypass
+                                        docs: |- # refactor-with-variables: Same • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+                                            This script allows users to bypass SmartScreen warnings in Edge (Legacy).
+                                            
+                                            Edge (Legacy) features a SmartScreen filter that warns users about potentially malicious websites and file downloads [1].
+                                            By default, this feature allows users to ignore these warnings and proceed to download files [1].
+                                            This script keeps this option, enhancing user privacy by minimizing data sent to Microsoft.
+
+                                            Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            While enabling this setting may increase user autonomy and privacy, it reduces security by allowing downloads from
+                                            potentially malicious sources [2].
+                                            Users should be cautious and understand the risks involved.
+
+                                            This script configures the `PreventOverride` policy [1] [2].
+                                            This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
+    
+                                            [1]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies#configure-windows-defender-smartscreen "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240624140451/https://www.stigviewer.com/stig/windows_10/2017-02-21/finding/V-63699 "Users must not be allowed to ignore SmartScreen filter warnings for malicious websites in Microsoft Edge. | www.stigviewer.com"
+                                        call:
+                                            function: SetLegacyEdgePolicyViaRegistry
+                                            parameters:
+                                                policySubkey: PhishingFilter
+                                                valueName: PreventOverride
+                                                dwordData: "0"
                                     -
                                         name: Disable SmartScreen in Internet Explorer
                                         docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetExplorer::IZ_Policy_Phishing_9
@@ -15149,6 +15480,42 @@ actions:
                         revertCode: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+            -
+                name: Disable app usage tracking
+                recommend: standard
+                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableMFUTracking
+                call:
+                    function: SetRegistryValue
+                    parameters:
+                        keyPath: HKCU\Software\Policies\Microsoft\Windows\EdgeUI
+                        valueName: DisableMFUTracking
+                        dataType: REG_DWORD
+                        data: "1"
+                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+            -
+                name: Disable recent apps
+                recommend: standard
+                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableRecentApps
+                call:
+                    function: SetRegistryValue
+                    parameters:
+                        keyPath: HKCU\Software\Policies\Microsoft\Windows\EdgeUI
+                        valueName: DisableRecentApps
+                        dataType: REG_DWORD
+                        data: "1"
+                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+            -
+                name: Disable backtracking
+                recommend: standard
+                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::TurnOffBackstack
+                call:
+                    function: SetRegistryValue
+                    parameters:
+                        keyPath: HKCU\Software\Policies\Microsoft\Windows\EdgeUI
+                        valueName: TurnOffBackstack
+                        dataType: REG_DWORD
+                        data: "1"
+                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
     -
         category: Remove bloatware
         children:
@@ -17856,7 +18223,7 @@ actions:
                                     -
                                         name: Remove "Microsoft Edge" app
                                         recommend: strict
-                                        docs: |-
+                                        docs: |- # refactor-with-variables: Same • Edge (Legacy) only
                                             This script uninstalls the "Microsoft Edge" Windows app.
 
                                             This app comes pre-installed on certain versions of Windows [1] [2] [3].
@@ -17866,6 +18233,8 @@ actions:
                                             access this data [5] and it remains stored locally, leaving traces of your behavior [5].
 
                                             Removing this software not only minimizes potential security threats but also improves your privacy by preventing data accumulation.
+
+                                            This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
 
                                             ### Overview of default preinstallation
 
@@ -17928,7 +18297,7 @@ actions:
                                     -
                                         name: Remove Edge (legacy) file and URL associations
                                         recommend: strict
-                                        docs: |-
+                                        docs: |- # refactor-with-variables: Same • Edge (Legacy) only
                                             This script unlinks file and URL associations from the legacy Microsoft Edge, ensuring that it is not mistakenly recognized as
                                             the default browser on your system.
 
@@ -17955,6 +18324,8 @@ actions:
 
                                             By running this script, you help in enhancing your system's privacy and ensuring that no unintended associations remain that could potentially cause
                                             vulnerabilities or other issues.
+
+                                            This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
 
                                             [1]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
                                             [2]: https://web.archive.org/web/20231001221635/https://learn.microsoft.com/en-us/deployedge/edge-default-browser "Set Microsoft Edge as the default browser on Windows and macOS | Microsoft Learn"
@@ -18651,7 +19022,7 @@ actions:
                                         publisherId: cw5n1h2txyewy
                             -
                                 category: Remove printing user interface
-                                docs: |- # refactor-with-variables: • Caution
+                                docs: |- # refactor-with-variables: • Printing Caution
                                     This category includes scripts that remove applications providing printing-related user interfaces.
                                     These interfaces manage printing tasks from the desktop environment.
                                     Both system and third-party applications use these interfaces.
@@ -18669,7 +19040,7 @@ actions:
                                 children:
                                     -
                                         name: Remove "Print Queue" app (breaks printing)
-                                        docs: |- # refactor-with-variables: • Caution
+                                        docs: |- # refactor-with-variables: • Printing Caution
                                             This script removes the "Print Queue" app [1] [2] [3],
                                             also known as the *Print Queue Action Center* [1] [2] [3] [4] [5].
 
@@ -18722,7 +19093,7 @@ actions:
                                                 publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Print UI" app (breaks printing for some apps)
-                                        docs: |- # refactor-with-variables: • Caution
+                                        docs: |- # refactor-with-variables: • Printing Caution
                                             This script removes the "Print UI" system application.
                                             This app comes pre-installed on certain versions of Windows [1] [2].
 
@@ -19265,7 +19636,7 @@ actions:
                             [2]: https://stackoverflow.com/questions/46744840/export-registry-value-to-file-and-then-set-a-variable-in-batch "Export registry value to file and then set a variable in Batch - Stack Overflow | stackoverflow.com"
                         code: reg delete "HKCU\Environment" /v "OneDrive" /f 2>nul
             -
-                category: Remove Edge (Chromium)
+                category: Remove Edge
                 docs: |-
                     This category automates the uninstallation of Microsoft Edge (also known as "Chromium Edge" or "New Edge" [1]), the web browser that comes
                     pre-installed with many versions of Windows.
@@ -19360,7 +19731,8 @@ actions:
                                             Write-Error "Failed to reinstall Microsoft Edge. Installer failed with exit code $($process.ExitCode)."
                                         }
                     -
-                        name: Remove Edge (Chromium) file and URL associations
+                        name: Remove Edge file and URL associations
+                        recommend: strict
                         docs: |-
                             This script disconnects file and URL associations related to the Microsoft Edge browser on your computer. When you uninstall Edge, these
                             associations remain intact, leading to potential unexpected behaviors [1] and vulnerabilities when opening specific file types or URLs.
@@ -19379,7 +19751,6 @@ actions:
 
                             [1]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
                             [2]: https://web.archive.org/web/20231001221635/https://learn.microsoft.com/en-us/deployedge/edge-default-browser "Set Microsoft Edge as the default browser on Windows and macOS | Microsoft Learn"
-                        recommend: strict
                         call:
                             # Exclude:
                             #   - Cleanup of keys under `HKLM\SOFTWARE\Clients\StartMenuInternet` as default uninstaller already cleans it.
@@ -20263,7 +20634,7 @@ actions:
 
                     Windows Copilot is an AI assistant within Windows [1] [2].
                     It helps with a wide range of tasks, like adjusting system settings [1] [2].
-                    It integrates with Bing Chat to deliver web results [1], and supports generating creative content, like images [1] [2],
+                    It can deliver web results [1], and supports generating creative content, like images [1] [2],
                     and providing personalized suggestions based on user data analysis [2].
 
                     While these features enhance user experience, they raise privacy concerns due to the extensive personal
@@ -24371,3 +24742,161 @@ functions:
                         Write-Error "Failed to delete the placeholder file at `"$expandedFilePath`": $_"
                         Exit 1
                     }
+    -
+        name: SetChromePolicyViaRegistry
+        parameters:
+            - name: valueName
+            - name: dwordData
+        docs: |-
+            This function sets a specified Google Chrome policy value to given REG_DWORD data.
+
+            This script applies these policies via the Windows Registry at HKLM\SOFTWARE\Policies\Google\Chrome [1].
+            These policies are also known as *platform policies* [2].
+            They take the highest precedence, meaning that they override user settings [2].
+
+            By default, no policies are configured under this registry path.
+            This has been tested on Windows 10 from version 22H2 onwards and Windows 11 from version 23H2 onwards,
+            with Google Chrome starting from version 125.
+
+            [1]: https://web.archive.org/web/20240624102414/https://support.google.com/chrome/a/answer/10407780?hl=en "Manage Chrome browser with Windows device management - Chrome Enterprise and Education Help | support.google.com"
+            [2]: https://web.archive.org/web/20240624102622/https://support.google.com/chrome/a/answer/9037717?hl=en#zippy=%2Cplatform-policies "Understand Chrome policy management - Chrome Enterprise and Education Help | support.google.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Configure "{{ $valueName }}" Chrome policy
+                    revertCodeComment: Restore "{{ $valueName }}" Chrome policy
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Policies\Google\Chrome
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: "{{ $dwordData }}"
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since Chrome v125
+    -
+        name: ShowChromeRestartSuggestion
+        docs: |-
+            This function alerts users to restart Google Chrome to activate changes.
+
+            It may be necessary to restart the browser following policy modifications for settings to be applied [1] [2].
+            This is named "Dynamic Policy Refresh" (`dynamic_refresh`) [2].
+            This indicates that certain policy values might not be applied without restarting Chrome [2].
+
+            [1]: https://web.archive.org/web/20240624102414/https://support.google.com/chrome/a/answer/10407780?hl=en "Manage Chrome browser with Windows device management - Chrome Enterprise and Education Help | support.google.com"
+            [2]: https://web.archive.org/web/20240624105512/https://chromium.googlesource.com/chromium/src/+/main/docs/enterprise/add_new_policy.md "Chromium Docs - Policy Settings in Chrome | chromium.googlesource.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Suggest restarting Chrome for changes to take effect
+                    revertCodeComment: Suggest restarting Chrome for changes to take effect
+            -
+                function: ShowMessage
+                parameters:
+                    message: For the changes to fully take effect, please restart Google Chrome.
+                    showOnRevert: 'true'
+    -
+        name: SetEdgePolicyViaRegistry
+        parameters:
+            - name: valueName
+            - name: dwordData
+        docs: |-
+            This function sets a specific Microsoft Edge policy value using `REG_DWORD` data.
+            This determines the operational behavior of Microsoft Edge [1].
+
+            It configures *mandatory policies*.
+            These policies which override user preferences and cannot be changed by users [2].
+            In contrast, *recommended policies* set defaults that users may change [2].
+
+            This script applies this policies via the Windows Registry at `HKLM\SOFTWARE\Policies\Microsoft\Edge` [1] [2].
+            Alternatively, `HKCU` can be to apply settings for the current user only [3] [4].
+
+            By default, no policies are pre-configured at these registry paths.
+            This has been tested on Windows 10 from version 22H2 onwards and Windows 11 from version 23H2 onwards,
+            with Microsoft Edge starting from version 125.
+
+            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240519111447/https://learn.microsoft.com/en-us/deployedge/configure-microsoft-edge "Configure Microsoft Edge for Windows with policy settings | Microsoft Learn | learn.microsoft.com"
+            [3]: https://web.archive.org/web/20240624105249/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-manage-extensions-ref-guide#configure-using-the-windows-registry "Detailed guide to the ExtensionSettings policy | Microsoft Learn | learn.microsoft.com"
+            [4]: https://web.archive.org/web/20240624105313/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-management-service#control-userdevice-policy-precedence "Microsoft Edge management service | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Configure "{{ $valueName }}" Edge policy
+                    revertCodeComment: Restore "{{ $valueName }}" Edge policy
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Edge
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: "{{ $dwordData }}"
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since Edge ≥ 125
+    -
+        name: ShowEdgeRestartSuggestion
+        docs: |-
+            This function prompts users to restart Microsoft Edge to implement changes.
+
+            A restart may be required to apply settings after modifying Edge policies, referred to as "Dynamic Policy Refresh" [1].
+            This indicates that certain policy values might not be applied without restarting Edge [1].
+
+            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Suggest restarting Edge for changes to take effect
+                    revertCodeComment: Suggest restarting Edge for changes to take effect
+            -
+                function: ShowMessage
+                parameters:
+                    message: For the changes to fully take effect, please restart Microsoft Edge.
+                    showOnRevert: 'true'
+    -
+        name: SetLegacyEdgePolicyViaRegistry
+        parameters:
+            - name: policySubkey
+            - name: valueName
+            - name: dwordData
+        docs: |- 
+            This function configures policies specifically for Edge (Legacy) via the Windows Registry.
+
+            It configures two policies using different ways:
+
+            - **Via Group Policies**:
+              Policies for Edge (Legacy) are located at `HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge` [1] [2].
+              By default, no group policies are configured, tested since Windows 10 Pro ≥ 19H1 (1909).
+            - **Via User Settings**:
+              Local user settings for Edge (Legacy) are stored at
+              `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge` [3] [4].
+              This path is operational on versions of Windows with Legacy Edge installed and was tested on Windows 10 Pro 19H1 (1909).
+              The path does not exist in modern versions of Windows tested from Windows 10 Pro (≥ 22H2) onwards.
+
+            [1]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240314101034/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/group-policies/telemetry-management-gp#prevent-microsoft-edge-from-gathering-live-tile-information-when-pinning-a-site-to-start "Microsoft Edge - Telemetry and data collection group policies | Microsoft Learn | learn.microsoft.com"
+            [3]: https://web.archive.org/web/20240624133305/https://msrc.microsoft.com/update-guide/en-US/advisory/CVE-2018-8530 "CVE-2018-8530 - Security Update Guide - Microsoft - Microsoft Edge Security Feature Bypass Vulnerability | msrc.microsoft.com"
+            [4]: https://web.archive.org/web/20240624133326/https://learn.microsoft.com/en-us/skype-sdk/websdk/docs/troubleshooting/gatheringlogs/logs-media "Gathering Media Logs from the Skype Web SDK or Conversation Control | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Configure "{{ $valueName }}" Edge (Legacy) policy
+                    revertCodeComment: Restore "{{ $valueName }}" Edge (Legacy) policy
+            -
+                function: SetRegistryValue # Via GPO
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\{{ $policySubkey }}
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: "{{ $dwordData }}"
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 19H1) and Windows 11 Pro (≥ 23H2)
+            -
+                function: SetRegistryValue # Via user settings
+                parameters:
+                    keyPath: HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge\{{ $policySubkey }}
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: "{{ $dwordData }}"
+                    deleteOnRevert: 'true' # Exists by default on Windows 10 Pro (≥ 19H1), since Windows 10 Pro (≥ 21H2) and Windows 11 Pro (≥ 23H2)
