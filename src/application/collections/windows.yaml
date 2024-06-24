@@ -6421,11 +6421,17 @@ actions:
             -
                 category: Configure browsers
                 docs: |-
+<<<<<<< HEAD
                     This category includes scripts that enhance privacy by adjusting browsers to prevent tracking,
                     minimize data leaks, and restrict personalized ads.
 
                     These changes help protect user privacy across different web browsers and optimize system performance
                     by reducing privacy-invasive processing.
+=======
+                    This category includes scripts that enhance privacy by adjusting browser settings to prevent tracking,
+                    minimize data leaks, and restrict personalized ads.
+                    These changes help protect user privacy across different web platforms.
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                 children:
                     -
                         category: Configure Edge
@@ -6455,7 +6461,11 @@ actions:
                                 category: Disable Edge telemetry
                                 docs: |-
                                     This category includes scripts that enhance privacy by disabling Microsoft Edge telemetry.
+<<<<<<< HEAD
                                     Telemetry is the automatic collection and sharing of data about you and your usage patterns of a software.
+=======
+                                    Telemetry is the automatic collection and sharing of data about you and how you use an application.
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
 
                                     These scripts prevent the automatic transmission of diagnostic and usage data to Microsoft, optimize system
                                     performance by reducing background data transmission, and safeguard personal data by limiting third-party sharing.
@@ -6463,7 +6473,11 @@ actions:
                                     -
                                         name: Disable Edge diagnostic data sending
                                         recommend: standard
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
+=======
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script disables the sending of diagnostic data in Edge.
 
                                             This script blocks all diagnostic data about your browser usage [1] [2].
@@ -6491,7 +6505,11 @@ actions:
                                     -
                                         name: Disable outdated Edge metrics data sending
                                         recommend: standard
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
+=======
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script stops Edge from reporting metrics data.
 
                                             This script stops the reporting of usage and crash-related data [1] [2].
@@ -6520,9 +6538,15 @@ actions:
                                             -
                                                 function: ShowEdgeRestartSuggestion
                                     -
+<<<<<<< HEAD
                                         name: Disable outdated Edge site information sending
                                         recommend: standard
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
+=======
+                                        name: Disable outdated edge site information sending
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script prevents Edge from sending site-related information.
 
                                             This prevents the browser from sending site information used to improve Microsoft services [1] [2].
@@ -6547,6 +6571,7 @@ actions:
                                                     dwordData: '0'
                                             -
                                                 function: ShowEdgeRestartSuggestion
+<<<<<<< HEAD
                             -
                                 category: Disable Edge and WebView2 automatic updates
                                 docs: |- # refactor-with-variable: Same • Edge Update Caution
@@ -7017,6 +7042,8 @@ actions:
                                                     parameters:
                                                         valueName: Install{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5} # Microsoft Edge Update ≥ 1.3.155.43
                                                         dwordData: '0'
+=======
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                     -
                         category: Configure Edge (Legacy)
                         docs: |-
@@ -7032,7 +7059,11 @@ actions:
                             -
                                 name: Disable Edge (Legacy) Live Tile data collection
                                 recommend: standard
+<<<<<<< HEAD
                                 docs: |- # refactor-with-variables: Same • live tiles • Performance + Privacy • Edge (Legacy) only
+=======
+                                docs: |- # refactor-with-variables: Same • live tiles • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                     This script disables Live Tile data collection in Edge (Legacy).
 
                                     **Live Tiles**, a feature within UWP apps, automatically collect and display updated information
@@ -7066,7 +7097,11 @@ actions:
                             -
                                 name: Disable Edge (Legacy) search suggestions
                                 recommend: standard
+<<<<<<< HEAD
                                 docs: |- # refactor-with-variables: Same • Performance + Privacy • Edge (Legacy) only
+=======
+                                docs: |- # refactor-with-variables: Same • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                     This script disables the search suggestions feature in the Address bar of Edge (Legacy).
 
                                     By default, typing in the Address bar of Edge (Legacy) displays search suggestions [1] [2] [3],
@@ -7242,8 +7277,13 @@ actions:
                                     -
                                         name: Disable sharing scanned software data with Google
                                         recommend: standard # DISA recommends
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities • Performance + Privacy • Active Directory only
                                             This script stops the Chrome Cleanup Tool from sending scan data to Google, enhancing privacy.
+=======
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+                                            This script prevents the Chrome Cleanup Tool from sending scan data to Google, thus enhancing user privacy.
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
 
                                             By default, when the Chrome Cleanup Tool detects unwanted software, it reports metadata about the scan and the software to Google [1] [2].
                                             The reported data includes file metadata, automatically installed extensions, and registry keys [1] [2].
@@ -7256,11 +7296,16 @@ actions:
                                             recommend this script for enhanced security.
                                             DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
 
+<<<<<<< HEAD
                                             This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
                                             It is effective only on computers under organizational management, such as those in workplaces or schools.
                                             It's not applicable to personal computers that are not managed by an organization.
 
                                             This script configures the `ChromeCleanupReportingEnabled` policy [1] [2].
+=======
+                                            This script configures the `ChromeCleanupReportingEnabled` policy [1] [2].
+                                            This policy only affects Windows devices in a Microsoft Active Directory domain or those managed via device management [1] [2].
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             Changing this policy does not require restarting the browser to take effect [1].
 
                                             > **Caution**:
@@ -7277,7 +7322,11 @@ actions:
                                     - 
                                         name: Disable Chrome system cleanup scans
                                         recommend: standard # DISA recommends
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities • Performance + Privacy • Active Directory only
+=======
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script disables Chrome system cleanup scans to enhance user privacy and improve system performance.
 
                                             By default, Chrome Cleanup Tool periodically scans the system for unwanted software and prompts the user for removal [1] [2].
@@ -7294,17 +7343,26 @@ actions:
                                             recommend this script for enhanced security.
                                             DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
 
+<<<<<<< HEAD
                                             This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
                                             It is effective only on computers under organizational management, such as those in workplaces or schools.
                                             It's not applicable to personal computers that are not managed by an organization.
 
                                             This script configures the `ChromeCleanupEnabled` policy [1] [2].
+=======
+                                            This script configures the `ChromeCleanupEnabled` policy [1] [2].
+                                            This policy only affects Windows devices in a Microsoft Active Directory domain or those managed via device management [1] [2].
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             Changes will take effect after restarting the browser [1].
 
                                             > **Caution**:
                                             > - This will display the message "Your browser is managed by your organization" on the settings page.
                                             > - This locks settings and prevents them from being changed on the settings page.
+<<<<<<< HEAD
 
+=======
+                                            
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             [1]: https://web.archive.org/web/20200606120247/https://www.chromium.org/administrators/policy-list-3#ChromeCleanupEnabled "Policy List - The Chromium Projects | www.chromium.org"
                                             [2]: https://web.archive.org/web/20240624112722/https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81591 "Chrome Cleanup must be disabled. | www.stigviewer.com"
                                         call:
@@ -7318,14 +7376,22 @@ actions:
                             -
                                 name: Disable Chrome metrics reporting
                                 recommend: standard # DISA recommends
+<<<<<<< HEAD
                                 docs: |-  # refactor-with-variables: • Chromium Policy Caution • Authorities • Performance + Privacy • Active Directory only
+=======
+                                docs: |-  # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                     This script disables Chrome's metrics reporting, enhancing user privacy and system performance.
 
                                     By default, Chrome may send anonymous usage and crash-related data to Google [1] [2].
                                     If no user preference is set, Chrome follows the initial choice made during installation or first run [1] [2].
 
+<<<<<<< HEAD
                                     This script ensures that anonymous reporting of usage and crash-related data is stopped, preventing this data from
                                     being sent to Google [1] [2].
+=======
+                                    This script ensures that anonymous reporting of usage and crash-related data is stopped, preventing this data from being sent to Google [1] [2].
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                     Additionally, it locks this setting, making it immutable by users [1] [2].
 
                                     Disabling this feature reduces potential privacy risks by preventing data sharing.
@@ -7335,11 +7401,16 @@ actions:
                                     recommend this script for enhanced security.
                                     DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
 
+<<<<<<< HEAD
                                     This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
                                     It is effective only on computers under organizational management, such as those in workplaces or schools.
                                     It's not applicable to personal computers that are not managed by an organization.
 
                                     This script configures the `MetricsReportingEnabled` policy [1] [2].
+=======
+                                    This script configures the `MetricsReportingEnabled` policy [1] [2].
+                                    This policy only affects Windows devices in a Microsoft Active Directory domain or those managed via device management [1] [2].
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                     Changes will take effect after restarting the browser [1].
 
                                     > **Caution**:
@@ -13683,7 +13754,11 @@ actions:
                                 children:
                                     -
                                         name: Disable Edge SmartScreen
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
+=======
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script disables the SmartScreen feature in Edge.
 
                                             SmartScreen provides warning messages to help protect users from potential phishing scams and malicious software [1] [2].
@@ -13698,11 +13773,16 @@ actions:
                                             by allowing access to potentially malicious websites and software [2].
                                             Users should be cautious and understand the risks involved.
 
+<<<<<<< HEAD
                                             This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
                                             It is effective only on computers under organizational management, such as those in workplaces or schools.
                                             It's not applicable to personal computers that are not managed by an organization.
 
                                             Changing this policy does not require restarting the browser to take effect [1].
+=======
+                                            Changing this policy does not require restarting the browser to take effect [1].
+                                            This policy only affects Windows devices in a Microsoft Active Directory domain or those managed via device management [1] [2].
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script configures the `SmartScreenEnabled` policy [1] [2].
 
                                             > **Caution**:
@@ -13718,7 +13798,11 @@ actions:
                                                 dwordData: '0'
                                     -
                                         name: Disable Edge SmartScreen for potentially unwanted apps
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
+=======
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script disables the SmartScreen feature in Edge that specifically targets potentially unwanted applications (PUAs).
 
                                             Microsoft Edge's SmartScreen PUA feature protects against adware, coin miners, bundleware, and other low-reputation software [1] [2].
@@ -13730,12 +13814,18 @@ actions:
                                             Disabling this feature reduces potential privacy risks by preventing data sharing.
                                             This may also improve system performance by reducing processing workload.
 
+<<<<<<< HEAD
                                             This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
                                             It is effective only on computers under organizational management, such as those in workplaces or schools.
                                             It's not applicable to personal computers that are not managed by an organization.
 
                                             This script configures the `SmartScreenPuaEnabled` policy [1] [2].
                                             Changing this policy does not require restarting the browser to take effect [1].
+=======
+                                            This script configures the `SmartScreenPuaEnabled` policy [1] [2].
+                                            Changing this policy does not require restarting the browser to take effect [1].
+                                            This policy only affects Windows devices in a Microsoft Active Directory domain or those managed via device management [1] [2].
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
 
                                             > **Caution**:
                                             > - This will display the message "Your browser is managed by your organization" on the settings page.
@@ -13750,7 +13840,11 @@ actions:
                                                 dwordData: '0'
                                     -
                                         name: Enable Edge SmartScreen bypass
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
+=======
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script allows users to bypass Edge SmartScreen warnings.
                                             
                                             SmartScreen in Edge displays warnings about potentially malicious websites [1] [2].
@@ -13764,11 +13858,16 @@ actions:
                                             by allowing access to potentially malicious websites [2].
                                             Users should be cautious and understand the risks involved.
 
+<<<<<<< HEAD
                                             This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1].
                                             It is effective only on computers under organizational management, such as those in workplaces or schools.
                                             It's not applicable to personal computers that are not managed by an organization.
 
                                             This script configures the `PreventSmartScreenPromptOverride` policy [1] [2].
+=======
+                                            This script configures the `PreventSmartScreenPromptOverride` policy [1] [2].
+                                            This policy only affects Windows devices in a Microsoft Active Directory domain or those managed via device management [1].
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             Changing this policy does not require restarting the browser to take effect [1].
 
                                             > **Caution**:
@@ -13784,7 +13883,11 @@ actions:
                                                 dwordData: '0'
                                     -
                                         name: Disable Edge (Legacy) SmartScreen
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: Same • Edge (Legacy) only
+=======
+                                        docs: |- # refactor-with-variables: Same • Policy "This script configures" • Edge (Legacy) only
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script disables the SmartScreen feature in Edge (Legacy).
                                             
                                             Edge (Legacy) uses the Windows Defender SmartScreen by default to protect users from phishing scams and malicious software [1] [2].
@@ -13812,7 +13915,11 @@ actions:
                                                 dwordData: "0"
                                     -
                                         name: Enable Edge (Legacy) SmartScreen bypass
+<<<<<<< HEAD
                                         docs: |- # refactor-with-variables: Same • Performance + Privacy • Edge (Legacy) only
+=======
+                                        docs: |- # refactor-with-variables: Same • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
                                             This script allows users to bypass SmartScreen warnings in Edge (Legacy).
                                             
                                             Edge (Legacy) features a SmartScreen filter that warns users about potentially malicious websites and file downloads [1].
@@ -20273,6 +20380,38 @@ actions:
                                     @{ Revert = $True;  Path = "$env:Public\Desktop\Microsoft Edge.lnk"; }
                                     @{ Revert = $True;  Path = "$env:SystemRoot\System32\config\systemprofile\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk"; }
                                     @{ Revert = $False; Path = "$env:UserProfile\Desktop\Microsoft Edge.lnk"; }
+                    -
+                        name: Disable automatic installation of Edge
+                        docs: |-
+                            This script prevents the automatic installation of Edge (Chromium) via Windows Update.
+                            
+                            Microsoft Edge (Chromium), designed to replace Edge (Legacy), is automatically distributed
+                            to devices running Windows 10 version 1803 or newer [1] [2] [3].
+                            This script does not impact Windows 10, version 20H2 and later [3].
+                            Windows 10 version 20H2 and later already include Edge (Chromium) by default [4].
+
+                            This script only blocks the automatic installation of Edge (Chromium) through Windows Update,
+                            without affecting other installation methods [2] [3] or system updates [2].
+                            
+                            As Microsoft has ceased support for Edge (Legacy), including security updates [1], this script
+                            enables you to manage the installation timing and method for Edge (Chromium),
+                            aligning the updates with your preferences.
+                            
+                            This script modifies the `HKLM\SOFTWARE\Microsoft\EdgeUpdate!DoNotUpdateToEdgeWithChromium` [2] [3] registry
+                            key to to configure this setting.
+
+                            [1]: https://web.archive.org/web/20240517223534/https://techcommunity.microsoft.com/t5/microsoft-365-blog/new-microsoft-edge-to-replace-microsoft-edge-legacy-with-april-s/ba-p/2114224 "New Microsoft Edge to replace Microsoft Edge Legacy with April’s Windows 10 Update Tuesday release - Microsoft Community Hub | techcommunity.microsoft.com"
+                            [2]: https://web.archive.org/web/20240517225010/https://admx.help/?Category=EdgeChromium_Blocker&Policy=Microsoft.Policies.EdgeUpdate::NoUpdate "Do not allow delivery of Microsoft Edge (Chromium-Based) through Automatic Updates | admx.help"
+                            [3]: https://web.archive.org/web/20210118230052/https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit "Blocker Toolkit to disable automatic delivery of Microsoft Edge | Microsoft Docs | docs.microsoft.com"
+                            [4]: https://web.archive.org/web/20240517225921/https://blogs.windows.com/windowsexperience/2020/06/16/whats-next-for-windows-10-updates/ "What’s next for Windows 10 updates | Windows Experience Blog | blogs.windows.com"
+                        call:
+                            function: SetRegistryValue
+                            parameters:
+                                keyPath: HKLM\SOFTWARE\Microsoft\EdgeUpdate
+                                valueName: DoNotUpdateToEdgeWithChromium
+                                dataType: REG_DWORD
+                                data: "1"
+                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
             -
                 category: Disable built-in Windows features
                 children:
@@ -25240,7 +25379,11 @@ functions:
             - name: valueName
             - name: dwordData
         docs: |-
+<<<<<<< HEAD
             This function sets a specific Microsoft Edge policy value using `REG_DWORD` data.
+=======
+            This script function a specific Microsoft Edge policy value using `REG_DWORD` data.
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
             This determines the operational behavior of Microsoft Edge [1].
 
             It configures *mandatory policies*.
@@ -25304,6 +25447,7 @@ functions:
             It configures two policies using different ways:
 
             - **Via Group Policies**:
+<<<<<<< HEAD
               Policies for Edge (Legacy) are located at `HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge` [1] [2].
               By default, no group policies are configured, tested since Windows 10 Pro ≥ 19H1 (1909).
             - **Via User Settings**:
@@ -25311,6 +25455,15 @@ functions:
               `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge` [3] [4].
               This path is operational on versions of Windows with Legacy Edge installed and was tested on Windows 10 Pro 19H1 (1909).
               The path does not exist in modern versions of Windows tested from Windows 10 Pro (≥ 22H2) onwards.
+=======
+               Policies for Edge (Legacy) are located at `HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge` [1] [2].
+               By default, no group policies are configured, tested since Windows 10 Pro ≥ 19H1 (1909).
+            - **Via User Settings**:
+               Local user settings for Edge (Legacy) are stored at
+               `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Storage\microsoft.microsoftedge_8wekyb3d8bbwe\MicrosoftEdge` [3] [4].
+               This path is operational on versions of Windows with Legacy Edge installed and was tested on Windows 10 Pro 19H1 (1909).
+               The path does not exist in modern versions of Windows tested from Windows 10 Pro (≥ 22H2) onwards.
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
 
             [1]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
             [2]: https://web.archive.org/web/20240314101034/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/group-policies/telemetry-management-gp#prevent-microsoft-edge-from-gathering-live-tile-information-when-pinning-a-site-to-start "Microsoft Edge - Telemetry and data collection group policies | Microsoft Learn | learn.microsoft.com"
@@ -25338,6 +25491,7 @@ functions:
                     dataType: REG_DWORD
                     data: "{{ $dwordData }}"
                     deleteOnRevert: 'true' # Exists by default on Windows 10 Pro (≥ 19H1), since Windows 10 Pro (≥ 21H2) and Windows 11 Pro (≥ 23H2)
+<<<<<<< HEAD
     -
         name: SetEdgeUpdatePolicyViaRegistry
         parameters:
@@ -25363,3 +25517,5 @@ functions:
                 dataType: REG_DWORD
                 data: "{{ $dwordData }}"
                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since EdgeUpdate ≥ 1.3.187.41
+=======
+>>>>>>> 93da6246 (win: recategorize, rename, doc Chrome and Edge)
