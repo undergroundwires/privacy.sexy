@@ -6463,7 +6463,7 @@ actions:
                                     -
                                         name: Disable Edge diagnostic data sending
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
                                             This script disables the sending of diagnostic data in Edge.
 
                                             This script blocks all diagnostic data about your browser usage [1] [2].
@@ -6491,7 +6491,7 @@ actions:
                                     -
                                         name: Disable outdated Edge metrics data sending
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
                                             This script stops Edge from reporting metrics data.
 
                                             This script stops the reporting of usage and crash-related data [1] [2].
@@ -6522,7 +6522,7 @@ actions:
                                     -
                                         name: Disable outdated Edge site information sending
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • "This enhances your privacy"
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
                                             This script prevents Edge from sending site-related information.
 
                                             This prevents the browser from sending site information used to improve Microsoft services [1] [2].
@@ -6548,37 +6548,475 @@ actions:
                                             -
                                                 function: ShowEdgeRestartSuggestion
                             -
-                                name: Disable automatic installation of Edge
-                                docs: |-
-                                    This script prevents the automatic installation of Edge (Chromium) via Windows Update.
-                                    
-                                    Microsoft Edge (Chromium), designed to replace Edge (Legacy), is automatically distributed
-                                    to devices running Windows 10 version 1803 or newer [1] [2] [3].
-                                    This script does not impact Windows 10, version 20H2 and later [3].
-                                    Windows 10 version 20H2 and later already include Edge (Chromium) by default [4].
+                                category: Disable Edge and WebView2 automatic updates
+                                docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                    This category encompasses scripts that disable automatic updates for Microsoft Edge and its WebView2 component.
 
-                                    This script only blocks the automatic installation of Edge (Chromium) through Windows Update,
-                                    without affecting other installation methods [2] [3] or system updates [2].
-                                    
-                                    As Microsoft has ceased support for Edge (Legacy), including security updates [1], this script
-                                    enables you to manage the installation timing and method for Edge (Chromium),
-                                    aligning the updates with your preferences.
-                                    
-                                    This script modifies the `HKLM\SOFTWARE\Microsoft\EdgeUpdate!DoNotUpdateToEdgeWithChromium` [2] [3] registry
-                                    key to to configure this setting.
+                                    Disabling updates for Edge and WebView2 prevents automatic download and installation of new versions and patches.
+                                    Both Edge and WebView2 share the same mechanisms for updates [1] [2].
+                                    This mechanism is a way Microsoft collects user data [1].
 
-                                    [1]: https://web.archive.org/web/20240517223534/https://techcommunity.microsoft.com/t5/microsoft-365-blog/new-microsoft-edge-to-replace-microsoft-edge-legacy-with-april-s/ba-p/2114224 "New Microsoft Edge to replace Microsoft Edge Legacy with April’s Windows 10 Update Tuesday release - Microsoft Community Hub | techcommunity.microsoft.com"
-                                    [2]: https://web.archive.org/web/20240517225010/https://admx.help/?Category=EdgeChromium_Blocker&Policy=Microsoft.Policies.EdgeUpdate::NoUpdate "Do not allow delivery of Microsoft Edge (Chromium-Based) through Automatic Updates | admx.help"
-                                    [3]: https://web.archive.org/web/20210118230052/https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit "Blocker Toolkit to disable automatic delivery of Microsoft Edge | Microsoft Docs | docs.microsoft.com"
-                                    [4]: https://web.archive.org/web/20240517225921/https://blogs.windows.com/windowsexperience/2020/06/16/whats-next-for-windows-10-updates/ "What’s next for Windows 10 updates | Windows Experience Blog | blogs.windows.com"
-                                call:
-                                    function: SetRegistryValue
-                                    parameters:
-                                        keyPath: HKLM\SOFTWARE\Microsoft\EdgeUpdate
-                                        valueName: DoNotUpdateToEdgeWithChromium
-                                        dataType: REG_DWORD
-                                        data: "1"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                    WebView2 uses Edge technologies to render web content within applications [3].
+                                    It's widely integrated across various software products.
+                                    This widespread integration exposes users to significant privacy risks associated with web browsing and data
+                                    collection [4].
+
+                                    Both Edge and WebView2 collect extensive user data, including browsing and download history [5] [6].
+                                    Disabling updates blocks tracking features from being introduced, thus significantly enhancing your control
+                                    over personal data privacy.
+
+                                    Disabling updates increases privacy by reducing data shared with update servers.
+                                    However, this could leave your system vulnerable to security risks if attackers exploit unpatched vulnerabilities in
+                                    older versions.
+
+                                    Disabling updates is beneficial if you do not rely on Edge or WebView2 daily, as it reduces unnecessary data
+                                    transmission and unwanted system changes.
+
+                                    > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+
+                                    [1]: https://archive.ph/2024.06.21-133037/https://github.com/undergroundwires/privacy.sexy/issues/309 "[BUG]: Microsoft Edge still alive after removal · Issue #309 · undergroundwires/privacy.sexy"
+                                    [2]: https://web.archive.org/web/20240621150615/https://joji.me/en-us/blog/understanding-the-edge-and-edge-webview2-update-logs/ "Understanding the Edge and Edge WebView2 Update Logs | joji.me"
+                                    [3]: https://web.archive.org/web/20240623112820/https://learn.microsoft.com/en-us/microsoft-edge/webview2/ "Introduction to Microsoft Edge WebView2 - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://archive.today/2022.12.15-232158/https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/distribution%23evergreen-distribution-mode "Distribute your app and the WebView2 Runtime - Microsoft Edge Development | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240623112758/https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/data-privacy?tabs=dotnetcsharp "Data and privacy in WebView2 - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240623112809/https://support.microsoft.com/en-us/windows/microsoft-edge-browsing-data-and-privacy-bb8174ba-9d73-dcf2-9b4a-c582b4e640dd "Microsoft Edge, browsing data, and privacy - Microsoft Support | support.microsoft.com"
+                                children:
+                                    -
+                                        name: Disable Edge automatic update services
+                                        recommend: standard # Safe-to-disable as they're stopped by default
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                            This script disables services responsible for automatically updating Microsoft Edge.
+
+                                            It disables the `edgeupdate` [1] [2] [3] and `edgeupdatem` [1] [2] [4] services.
+                                            These services keep your Microsoft software up to date [1] [3] [4].
+
+                                            Disabling these services:
+
+                                            - Enhances privacy by stopping automatic data transmission, preventing background data collection.
+                                            - Improves system performance by reducing background processes.
+                                            - Allows more control over which updates are installed.
+
+                                            Keep in mind:
+
+                                            - Security vulnerabilities and issues in Edge won't be fixed if updates are disabled [1] [3] [4]. 
+                                            - Manual updates are still possible as these services start automatically for manual updates.
+
+                                            ### Overview of default service statuses
+
+                                            Microsoft Edge Update Service (`edgeupdate`) (tested on version Edge 126.0.2592.68):
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 21H1) | 🔴 Stopped | Automatic |
+                                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Automatic |
+
+                                            Microsoft Edge Update Service (`edgeupdatem`) (tested on version Edge 126.0.2592.68):
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
+
+                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+
+                                            [1]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                                            [2]: https://archive.ph/2024.06.21-133037/https://github.com/undergroundwires/privacy.sexy/issues/309 "[BUG]: Microsoft Edge still alive after removal · Issue #309 · undergroundwires/privacy.sexy"
+                                            [3]: https://web.archive.org/web/20240621143823/https://revertservice.com/10/edgeupdate/ "Microsoft Edge Update Service (edgeupdate) Defaults in Windows 10 | revertservice.com"
+                                            [4]: https://web.archive.org/web/20240621143835/https://revertservice.com/10/edgeupdatem/ "Microsoft Edge Update Service (edgeupdatem) Defaults in Windows 10 | revertservice.com"
+                                        call:
+                                            -
+                                                function: DisableService
+                                                parameters:
+                                                    serviceName: edgeupdate # Check: (Get-Service -Name edgeupdate).StartType
+                                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                                            -
+                                                function: DisableService
+                                                parameters:
+                                                    serviceName: edgeupdatem # Check: (Get-Service -Name edgeupdatem).StartType
+                                                    defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                                    -
+                                        name: Disable Edge automatic update scheduled tasks
+                                        recommend: strict
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                            This script stops Microsoft Edge from updating automatically by disabling specific scheduled tasks.
+                                            
+                                            Specifically, it targets two tasks:
+
+                                            - `MicrosoftEdgeUpdateTaskMachineCore` [1] [2] [3]
+                                            - `MicrosoftEdgeUpdateTaskMachineUA` [3]
+
+                                            These tasks:
+
+                                            - Start Edge at logon [1]
+                                            - Run updates at least every hour [3]
+                                            - Update Edge and its WebView2 components [3]
+
+                                            Disabling these tasks:
+
+                                            - Enhances privacy by preventing automatic data transmission for updates.
+                                            - Improves system performance by reducing background tasks.
+                                            - Reduces your attack surface, as these tasks can be targeted by malware [4].
+
+                                            However, remember that disabling updates means security vulnerabilities in Edge won't be fixed automatically;
+                                            manual updates will be necessary.
+
+                                            > **Caution:** Disabling updates may lead to decreased security if you rely on Edge and its components (WebView2).
+
+                                            ### Overview of default task statuses
+
+                                            `\MicrosoftEdgeUpdateTaskMachineCore{RandomString}` (tested since Edge version 126):
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+
+                                            `\MicrosoftEdgeUpdateTaskMachineUA{RandomString}` (tested since Edge version 126):
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+
+                                            [1]: https://web.archive.org/web/20220112180622/https://techcommunity.microsoft.com/t5/discussions/edge-97-starting-automatically-at-logon/m-p/3057166 "Edge 97 starting automatically at logon - Microsoft Community Hub | techcommunity.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240621141001/https://www.file.net/process/microsoftedgeupdate.exe.html "MicrosoftEdgeUpdate.exe Windows process - What is it? | www.file.net"
+                                            [3]: https://web.archive.org/web/20240621150615/https://joji.me/en-us/blog/understanding-the-edge-and-edge-webview2-update-logs/ "Understanding the Edge and Edge WebView2 Update Logs | joji.me"
+                                            [4]: https://archive.today/2024.06.21-151340/https://vms.drweb.com/virus/?i=25158791 "Trojan.Siggen17.58258 — Dr.Web Malware description library | vms.drweb.com"
+                                        call:
+                                            -
+                                                function: DisableScheduledTask
+                                                parameters:
+                                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'MicrosoftEdgeUpdateTaskMachineCore{*}'
+                                                    taskPathPattern: \
+                                                    taskNamePattern: MicrosoftEdgeUpdateTaskMachineCore{*}
+                                            -
+                                                function: DisableScheduledTask
+                                                parameters:
+                                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'MicrosoftEdgeUpdateTaskMachineUA{*}'
+                                                    taskPathPattern: \
+                                                    taskNamePattern: MicrosoftEdgeUpdateTaskMachineUA{*}
+                                    -
+                                        name: Disable Edge update executable
+                                        recommend: strict
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                            This script disables the Microsoft Edge Update executable to enhance your privacy and control over system updates.
+
+                                            `MicrosoftEdgeUpdate.exe` is responsible for updating Microsoft Edge as part of the Microsoft Edge Update system [1] [2] [3].
+                                            It's also responsible for updating Edge WebView2 [3].
+
+                                            Blocking this executable:
+
+                                            - Enhances privacy by preventing communication with the update server [4] [5].
+                                            - Increases security by giving you control over software installations.
+                                            - Boosts system performance by reducing background processes.
+                                            - May decrease security if you rely on Edge or WebView2, as missing updates can lead to security vulnerabilities.
+
+                                            Executable locations:
+
+                                            - `%PROGRAMFILES(x86)%\Microsoft\EdgeUpdate\<version>\MicrosoftEdgeUpdate.exe` [4]
+                                            - `%PROGRAMFILES(x86)%\Microsoft\EdgeUpdate\MicrosoftEdgeUpdate.exe` [1] [2] [4] [5] [6].
+
+                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+
+                                            [1]: https://web.archive.org/web/20240621140833/https://learn.microsoft.com/en-us/deployedge/deploy-edge-with-windows-10-updates "Deploy Microsoft Edge with Windows 10 updates | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240621141001/https://www.file.net/process/microsoftedgeupdate.exe.html "MicrosoftEdgeUpdate.exe Windows process - What is it? | www.file.net"
+                                            [3]: https://web.archive.org/web/20240621150615/https://joji.me/en-us/blog/understanding-the-edge-and-edge-webview2-update-logs/ "Understanding the Edge and Edge WebView2 Update Logs | joji.me"
+                                            [4]: https://web.archive.org/web/20240621141128/https://support.microsoft.com/en-us/microsoft-edge/troubleshooting-tips-for-installing-and-updating-microsoft-edge-a5eceb94-c2b1-dfab-6569-e79d0250317b "Troubleshooting tips for installing and updating Microsoft Edge - Microsoft Support | support.microsoft.com"
+                                            [5]: https://archive.ph/2024.06.21-133037/https://github.com/undergroundwires/privacy.sexy/issues/309 "[BUG]: Microsoft Edge still alive after removal · Issue #309 · undergroundwires/privacy.sexy"
+                                            [6]: https://web.archive.org/web/20240621141031/https://strontic.github.io/xcyclopedia/library/MicrosoftEdgeUpdate.exe-0F11E6717C1FE6DD20AE2D12F63AF3F7.html "MicrosoftEdgeUpdate.exe | Microsoft Edge Update | STRONTIC | strontic.github.io"
+                                        call:
+                                            -
+                                                function: TerminateAndBlockExecution
+                                                parameters:
+                                                    executableNameWithExtension: MicrosoftEdgeUpdate.exe
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%PROGRAMFILES(x86)%\Microsoft\EdgeUpdate\MicrosoftEdgeUpdate.exe'
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%PROGRAMFILES(x86)%\Microsoft\EdgeUpdate\*\MicrosoftEdgeUpdate.exe'
+                                                    # Version specific e.g. C:\Program Files (x86)\Microsoft\EdgeUpdate\1.3.181.5\MicrosoftEdgeUpdate.exe
+                                    -
+                                        name: Disable Edge automatic updates across all channels
+                                        recommend: strict
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution • Active Directory only • Edge Channels
+                                            This script prevents Microsoft Edge from automatically updating across all channels.
+
+                                            Microsoft Edge offers four update channels—Stable, Beta, Dev, and Canary—each designed with different stability
+                                            levels and update frequencies [1].
+                                            This script disables updates for all of these channels.
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [2] [3].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            Disabling automatic updates enhances privacy by controlling data sharing during updates and improves
+                                            system performance by reducing background activities.
+
+                                            If you use Edge, manually check for and distribute updates after using this script to maintain security [2] [3] [4].
+
+                                            This script configures update policies for different Edge channels:
+
+                                            - `UpdateDefault` to configure all channels [3].
+                                            - `56EB18F8-B008-4CBD-B6D2-8C97FE7E9062` for Edge (Stable) [2] [4] [5].
+                                            - `2CD8A007-E189-409D-A2C8-9AF4EF3C72AA` to Edge (Beta) [2] [4] [6].
+                                            - `65C35B14-6C1D-4122-AC46-7148CC9D6497` to Edge (Canary) [2] [4] [7].
+                                            - `0D50BFEC-CD6A-4F9A-964C-C7416E3ACB10` to Edge (Dev) [2] [4] [8].
+                                            - `F3C4FE00-EFD5-403B-9569-398A20F1BA4A` to Edge Insider [9].
+
+                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+
+                                            [1]: https://web.archive.org/web/20240624181311/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-channels "Microsoft Edge channel overview | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#update "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#updatedefault "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240623111327/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_DefaultUpdatePolicy "Update policy override default | admx.help"
+                                            [5]: https://web.archive.org/web/20240623111917/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_UpdatePolicyMicrosoftEdge "Update policy override | admx.help"
+                                            [6]: https://web.archive.org/web/20240623111334/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_UpdatePolicyMicrosoftEdgeBeta "Update policy override | admx.help"
+                                            [7]: https://web.archive.org/web/20240623111327/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_UpdatePolicyMicrosoftEdgeCanary "Update policy override | admx.help"
+                                            [8]: https://web.archive.org/web/20240623111849/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_UpdatePolicyMicrosoftEdgeDev "Update policy override | admx.help"
+                                            [9]: https://web.archive.org/web/20240623111904/https://www.bleepingcomputer.com/news/microsoft/what-we-know-about-microsoft-s-chromium-based-edge-browser/ "What We Know About Microsoft’s Chromium-Based Edge Browser | bleepingcomputer.com"
+                                        call:
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: UpdateDefault # Microsoft Edge Update ≥ 1.2.145.5
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: Update{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062} # Microsoft Edge Update ≥ 1.2.145.5
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: Update{2CD8A007-E189-409D-A2C8-9AF4EF3C72AA} # Microsoft Edge Update ≥ 1.2.145.5
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: Update{65C35B14-6C1D-4122-AC46-7148CC9D6497} # Microsoft Edge Update ≥ 1.2.145.5
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: Update{0D50BFEC-CD6A-4F9A-964C-C7416E3ACB10} # Microsoft Edge Update ≥ 1.2.145.5
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: Update{F3C4FE00-EFD5-403B-9569-398A20F1BA4A}
+                                                    dwordData: '0'
+                                    -
+                                        name: Disable Edge WebView and WebView2 updates
+                                        recommend: strict
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                            This script disables automatic updates for Microsoft Edge WebView components.
+
+                                            Microsoft Edge WebView and WebView2 Runtime are components that enable applications to display web content [1] [2].
+                                            By default, these components receive updates automatically [1] [2].
+
+                                            Running this script will prevent automatic downloading and application of updates for both older WebView [1] and newer WebView2 [2].
+                                            This action might lead to compatibility issues with applications relying on the latest features of WebView [1] [2].
+
+                                            This script configures `Update{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}` Edge Policy [1] [2].
+
+                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+
+                                            [1]: https://web.archive.org/web/20240622124745/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_UpdatePolicyMicrosoftEdgeWebView "Update policy override | admx.help"
+                                            [2]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#update-webview "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            function: SetEdgeUpdatePolicyViaRegistry
+                                            parameters:
+                                                valueName: Update{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5} # Microsoft Edge Update ≥ 1.3.127.1
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge automatic update checks
+                                        recommend: strict
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                            This script stops the Microsoft Edge Update agent from automatically checking for updates.
+
+                                            This script prevents the Microsoft Edge Update agent from performing any automatic update checks [1].
+                                            This includes updates for all Edge applications [2], including WebView2.
+                                            Disabling these updates enhances privacy by eliminating the regular network activity initiated
+                                            by Microsoft Edge Update [2]. It can also improve performance due to the reduction of background
+                                            network operations.
+
+                                            If you choose not to run this script, Microsoft Edge will continue to check for updates every 10 hours [1].
+                                            Although disabling updates can enhance privacy, it may compromise security, particularly if you rely
+                                            on Edge and its components like WebView2.
+                                            Automatic updates help ensure that the browser and its components receive stability and security updates promptly [1].
+
+                                            This script configures `AutoUpdateCheckPeriodMinutes` [1] [2] Edge policy.
+                                            Setting to `0` disables all periodic network traffic by Microsoft Edge Update [1] [2].
+
+                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+
+                                            [1]: https://web.archive.org/web/20240622121922/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_AutoUpdateCheckPeriod "Auto-update check period override | admx.help"
+                                            [2]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#autoupdatecheckperiodminutes "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            function: SetEdgeUpdatePolicyViaRegistry
+                                            parameters:
+                                                valueName: AutoUpdateCheckPeriodMinutes # Microsoft Edge Update ≥ 1.2.145.5
+                                                dwordData: '0'
+                                    -
+                                        name: Maximize Edge update suppression duration
+                                        recommend: strict
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                            This script suppresses automatic updates for Microsoft Edge for the longest possible duration.
+
+                                            If you do not run this script, Microsoft Edge checks for updates periodically throughout the day by default [1] [2].
+                                            This script limits update checks to the least frequent interval permitted by policy settings.
+                                            This reduces network traffic and decreases system load, thereby enhancing both privacy and performance.
+
+                                            However, this delay in updates can expose you to security risks, especially if you depend on Edge for critical tasks.
+                                            Keep in mind, automatic updates play a crucial role in protecting your system against emerging security threats.
+
+                                            The script configures the `UpdatesSuppressedDurationMin`, `UpdatesSuppressedStartHour`, and `UpdatesSuppressedStartMin`
+                                            Edge policies [1] [2].
+
+                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+
+                                            [1]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#updatessuppressed "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240622123413/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_UpdateCheckSuppressedPeriod "Time period in each day to suppress auto-update check | admx.help"
+                                        call:
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: UpdatesSuppressedDurationMin # Microsoft Edge Update ≥ 1.3.33.5
+                                                    dwordData: '1440' # Total number of minutes in a day = 24×60 minutes = 1440 minutes.
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: UpdatesSuppressedStartHour # Microsoft Edge Update ≥ 1.3.33.5
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgeUpdatePolicyViaRegistry
+                                                parameters:
+                                                    valueName: UpdatesSuppressedStartMin # Microsoft Edge Update ≥ 1.3.33.5
+                                                    dwordData: '0'
+                                    -
+                                        category: Disable automatic installation of Edge and WebView
+                                        docs: |-
+                                            This category contains scripts that prevent the automatic installation of Microsoft Edge, allowing users
+                                            to maintain control over software installations on their systems.
+                                            These scripts help ensure that Edge and its components like WebView and WebView2 are only installed when explicitly
+                                            approved by the user, which can significantly enhance privacy and security.
+
+                                            Automatic installations can potentially introduce unwanted features or security vulnerabilities, and by preventing
+                                            these installations, users can manage their system's exposure to such risks.
+
+                                            Overall, these scripts help to:
+                                            
+                                            - Prevent unsolicited installations of Microsoft Edge.
+                                            - Enable users to decide when and if Edge WebView should be installed, aligning with best practices for security and privacy.
+                                            - Provide users with tools to manage software deployment in a controlled manner.
+                                        children:
+                                            -
+                                                name: Disable automatic installation of Edge
+                                                recommend: standard # Preventing automatic installation helps control unwanted software without impacting system stability or security
+                                                docs: |-
+                                                    This script prevents the automatic installation of Edge (Chromium) via Windows Update.
+                                                    
+                                                    Microsoft Edge (Chromium), designed to replace Edge (Legacy), is automatically distributed
+                                                    to devices running Windows 10 version 1803 or newer [1] [2] [3].
+                                                    This script does not impact Windows 10, version 20H2 and later [3].
+                                                    Windows 10 version 20H2 and later already include Edge (Chromium) by default [4].
+
+                                                    This script only blocks the automatic installation of Edge (Chromium) through Windows Update,
+                                                    without affecting other installation methods [2] [3] or system updates [2].
+                                                    
+                                                    As Microsoft has ceased support for Edge (Legacy), including security updates [1], this script
+                                                    enables you to manage the installation timing and method for Edge (Chromium),
+                                                    aligning the updates with your preferences.
+                                                    
+                                                    This script modifies the `HKLM\SOFTWARE\Microsoft\EdgeUpdate!DoNotUpdateToEdgeWithChromium` [2] [3] registry
+                                                    key to to configure this setting.
+
+                                                    [1]: https://web.archive.org/web/20240517223534/https://techcommunity.microsoft.com/t5/microsoft-365-blog/new-microsoft-edge-to-replace-microsoft-edge-legacy-with-april-s/ba-p/2114224 "New Microsoft Edge to replace Microsoft Edge Legacy with April’s Windows 10 Update Tuesday release - Microsoft Community Hub | techcommunity.microsoft.com"
+                                                    [2]: https://web.archive.org/web/20240517225010/https://admx.help/?Category=EdgeChromium_Blocker&Policy=Microsoft.Policies.EdgeUpdate::NoUpdate "Do not allow delivery of Microsoft Edge (Chromium-Based) through Automatic Updates | admx.help"
+                                                    [3]: https://web.archive.org/web/20210118230052/https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit "Blocker Toolkit to disable automatic delivery of Microsoft Edge | Microsoft Docs | docs.microsoft.com"
+                                                    [4]: https://web.archive.org/web/20240517225921/https://blogs.windows.com/windowsexperience/2020/06/16/whats-next-for-windows-10-updates/ "What’s next for Windows 10 updates | Windows Experience Blog | blogs.windows.com"
+                                                call:
+                                                    function: SetRegistryValue
+                                                    parameters:
+                                                        keyPath: HKLM\SOFTWARE\Microsoft\EdgeUpdate
+                                                        valueName: DoNotUpdateToEdgeWithChromium
+                                                        dataType: REG_DWORD
+                                                        data: "1"
+                                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                name: Disable automatic installation of Edge across all channels
+                                                recommend: standard # Preventing automatic installation helps control unwanted software without impacting system stability or security
+                                                docs: |- # refactor-with-variables: Same • Active Directory only • Edge Channels
+                                                    This script disables the automatic installation of Microsoft Edge across all update channels, enhancing
+                                                    user control over their systems and privacy.
+
+                                                    Microsoft Edge offers four update channels—Stable, Beta, Dev, and Canary—each designed with different stability
+                                                    levels and update frequencies [1].
+                                                    This script blocks automatic installations for all these channels [2] [3].
+                                                    This allows users to manually manage their updates and potentially reduce exposure to unstable or privacy-intrusive software.
+
+                                                    This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [2] [3].
+                                                    It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                                    It's not applicable to personal computers that are not managed by an organization.
+
+                                                    This script configures update policies for different Edge channels:
+
+                                                    - `InstallDefault` to configure all channels [3].
+                                                    - `56EB18F8-B008-4CBD-B6D2-8C97FE7E9062` for Edge (Stable) [2].
+                                                    - `2CD8A007-E189-409D-A2C8-9AF4EF3C72AA` to Edge (Beta) [2].
+                                                    - `65C35B14-6C1D-4122-AC46-7148CC9D6497` to Edge (Canary) [2].
+                                                    - `0D50BFEC-CD6A-4F9A-964C-C7416E3ACB10` to Edge (Dev) [2].
+
+                                                    [1]: https://web.archive.org/web/20240624181311/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-channels "Microsoft Edge channel overview | Microsoft Learn | learn.microsoft.com"
+                                                    [2]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#install "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                                    [3]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#installdefault "Microsoft Edge Update Policy Documentation | Microsoft Learn  | learn.microsoft.com"
+                                                call:
+                                                    -
+                                                        function: SetEdgeUpdatePolicyViaRegistry
+                                                        parameters:
+                                                            valueName: InstallDefault # Microsoft Edge Update ≥ 1.2.145.5
+                                                            dwordData: '0'
+                                                    -
+                                                        function: SetEdgeUpdatePolicyViaRegistry
+                                                        parameters:
+                                                            valueName: Install{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062} # Microsoft Edge Update ≥ 1.3.155.43
+                                                            dwordData: '0'
+                                                    -
+                                                        function: SetEdgeUpdatePolicyViaRegistry
+                                                        parameters:
+                                                            valueName: Install{2CD8A007-E189-409D-A2C8-9AF4EF3C72AA} # Microsoft Edge Update ≥ 1.3.155.43
+                                                            dwordData: '0'
+                                                    -
+                                                        function: SetEdgeUpdatePolicyViaRegistry
+                                                        parameters:
+                                                            valueName: Install{65C35B14-6C1D-4122-AC46-7148CC9D6497} # Microsoft Edge Update ≥ 1.3.155.43
+                                                            dwordData: '0'
+                                                    -
+                                                        function: SetEdgeUpdatePolicyViaRegistry
+                                                        parameters:
+                                                            valueName: Install{0D50BFEC-CD6A-4F9A-964C-C7416E3ACB10} # Microsoft Edge Update ≥ 1.3.155.43
+                                                            dwordData: '0'
+                                            -
+                                                name: Disable automatic installation of WebView and WebView2
+                                                recommend: standard # Preventing automatic installation helps control unwanted software without impacting system stability or security
+                                                docs: |-
+                                                    This script prevents the automatic installation of Microsoft Edge WebView and WebView2 components.
+
+                                                    By default, the WebView2 Runtime is installed automatically through Microsoft Edge Update [1].
+                                                    After applying this script, automatic installation of the WebView2 Runtime via Microsoft Edge Update is blocked [1].
+                                                    This improves your privacy and control over installed software on your system.
+
+                                                    This script configures the `Install{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}` policy [1].
+ 
+                                                    [1]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#install-webview "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                                call:
+                                                    function: SetEdgeUpdatePolicyViaRegistry
+                                                    parameters:
+                                                        valueName: Install{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5} # Microsoft Edge Update ≥ 1.3.155.43
+                                                        dwordData: '0'
                     -
                         category: Configure Edge (Legacy)
                         docs: |-
@@ -6594,7 +7032,7 @@ actions:
                             -
                                 name: Disable Edge (Legacy) Live Tile data collection
                                 recommend: standard
-                                docs: |- # refactor-with-variables: Same • live tiles • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+                                docs: |- # refactor-with-variables: Same • live tiles • Performance + Privacy • Edge (Legacy) only
                                     This script disables Live Tile data collection in Edge (Legacy).
 
                                     **Live Tiles**, a feature within UWP apps, automatically collect and display updated information
@@ -6628,7 +7066,7 @@ actions:
                             -
                                 name: Disable Edge (Legacy) search suggestions
                                 recommend: standard
-                                docs: |- # refactor-with-variables: Same • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+                                docs: |- # refactor-with-variables: Same • Performance + Privacy • Edge (Legacy) only
                                     This script disables the search suggestions feature in the Address bar of Edge (Legacy).
 
                                     By default, typing in the Address bar of Edge (Legacy) displays search suggestions [1] [2] [3],
@@ -6804,7 +7242,7 @@ actions:
                                     -
                                         name: Disable sharing scanned software data with Google
                                         recommend: standard # DISA recommends
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities • Performance + Privacy • Active Directory only
                                             This script stops the Chrome Cleanup Tool from sending scan data to Google, enhancing privacy.
 
                                             By default, when the Chrome Cleanup Tool detects unwanted software, it reports metadata about the scan and the software to Google [1] [2].
@@ -6839,7 +7277,7 @@ actions:
                                     - 
                                         name: Disable Chrome system cleanup scans
                                         recommend: standard # DISA recommends
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities • Performance + Privacy • Active Directory only
                                             This script disables Chrome system cleanup scans to enhance user privacy and improve system performance.
 
                                             By default, Chrome Cleanup Tool periodically scans the system for unwanted software and prompts the user for removal [1] [2].
@@ -6880,7 +7318,7 @@ actions:
                             -
                                 name: Disable Chrome metrics reporting
                                 recommend: standard # DISA recommends
-                                docs: |-  # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Authorities • Performance + Privacy • Active Directory only
+                                docs: |-  # refactor-with-variables: • Chromium Policy Caution • Authorities • Performance + Privacy • Active Directory only
                                     This script disables Chrome's metrics reporting, enhancing user privacy and system performance.
 
                                     By default, Chrome may send anonymous usage and crash-related data to Google [1] [2].
@@ -7033,7 +7471,7 @@ actions:
                     #   - https://github.com/google/omaha: The open-source version of Google Update
                     -
                         name: Disable "Google Update Service" services
-                        recommend: standard
+                        recommend: standard # Safe-to-disable as they're stopped by default
                         docs: |-
                             This script disables the "Google Update Service" services
                             These services are identified as `gupdate` and `gupdatem` [1] [2] [3].
@@ -13245,7 +13683,7 @@ actions:
                                 children:
                                     -
                                         name: Disable Edge SmartScreen
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
                                             This script disables the SmartScreen feature in Edge.
 
                                             SmartScreen provides warning messages to help protect users from potential phishing scams and malicious software [1] [2].
@@ -13280,7 +13718,7 @@ actions:
                                                 dwordData: '0'
                                     -
                                         name: Disable Edge SmartScreen for potentially unwanted apps
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
                                             This script disables the SmartScreen feature in Edge that specifically targets potentially unwanted applications (PUAs).
 
                                             Microsoft Edge's SmartScreen PUA feature protects against adware, coin miners, bundleware, and other low-reputation software [1] [2].
@@ -13312,7 +13750,7 @@ actions:
                                                 dwordData: '0'
                                     -
                                         name: Enable Edge SmartScreen bypass
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Chromium Policy Restart • Policy "This script configures" • Active Directory only • Performance + Privacy
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
                                             This script allows users to bypass Edge SmartScreen warnings.
                                             
                                             SmartScreen in Edge displays warnings about potentially malicious websites [1] [2].
@@ -13346,7 +13784,7 @@ actions:
                                                 dwordData: '0'
                                     -
                                         name: Disable Edge (Legacy) SmartScreen
-                                        docs: |- # refactor-with-variables: Same • Policy "This script configures" • Edge (Legacy) only
+                                        docs: |- # refactor-with-variables: Same • Edge (Legacy) only
                                             This script disables the SmartScreen feature in Edge (Legacy).
                                             
                                             Edge (Legacy) uses the Windows Defender SmartScreen by default to protect users from phishing scams and malicious software [1] [2].
@@ -13374,7 +13812,7 @@ actions:
                                                 dwordData: "0"
                                     -
                                         name: Enable Edge (Legacy) SmartScreen bypass
-                                        docs: |- # refactor-with-variables: Same • Policy "This script configures" • Performance + Privacy • Edge (Legacy) only
+                                        docs: |- # refactor-with-variables: Same • Performance + Privacy • Edge (Legacy) only
                                             This script allows users to bypass SmartScreen warnings in Edge (Legacy).
                                             
                                             Edge (Legacy) features a SmartScreen filter that warns users about potentially malicious websites and file downloads [1].
@@ -24900,3 +25338,28 @@ functions:
                     dataType: REG_DWORD
                     data: "{{ $dwordData }}"
                     deleteOnRevert: 'true' # Exists by default on Windows 10 Pro (≥ 19H1), since Windows 10 Pro (≥ 21H2) and Windows 11 Pro (≥ 23H2)
+    -
+        name: SetEdgeUpdatePolicyViaRegistry
+        parameters:
+            - name: valueName
+            - name: dwordData
+        docs: |-
+            This function configures update policies for the Microsoft Edge update mechanism via the Windows Registry.
+
+            The function affects both Edge and the Microsoft Edge WebView2 Runtime [1].
+            It modifies settings within the `HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate` registry key [1].
+            These settings are applicable to Microsoft Edge version 77 or later [1].
+
+            By default, no policies are configured under this registry path.
+            This has been tested on Windows 10 from version 22H2 onwards and Windows 11 from version 23H2 onwards,
+            with Microsoft Edge updates starting from version 1.3.187.41.
+
+            [1]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
+        call:
+            function: SetRegistryValue
+            parameters:
+                keyPath: HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate
+                valueName: "{{ $valueName }}"
+                dataType: REG_DWORD
+                data: "{{ $dwordData }}"
+                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since EdgeUpdate ≥ 1.3.187.41
