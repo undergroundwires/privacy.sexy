@@ -3710,7 +3710,7 @@ actions:
                                             function: SetRegistryValue
                                             parameters:
                                                 keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection
-                                                valueName: MicrosoftEdgeDataOptIn
+                                                valueName: MicrosoftEdgeDataOptIn # MDM name: ConfigureTelemetryForMicrosoft365Analytics
                                                 dataType: REG_DWORD
                                                 data: "0"
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
@@ -6463,13 +6463,14 @@ actions:
                                     -
                                         name: Disable Edge diagnostic data sending
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "Disabling this telemetry.."
                                             This script disables the sending of diagnostic data in Edge.
 
-                                            This script blocks all diagnostic data about your browser usage [1] [2].
-                                            This may cover details like websites you visit, feature usage and browser configuration [1] [2].
-                                            This enhances your privacy by preventing sensitive data exposure to Microsoft and
-                                            improves browser performance by reducing unnecessary data sharing.
+                                            This script blocks all diagnostic data related to your browser usage, including websites
+                                            visited, feature usage, and browser configuration [1] [2].
+
+                                            Disabling this telemetry reduces potential privacy risks by preventing data sharing with third parties.
+                                            This may also improve system performance by reducing processing workload.
 
                                             This script configures the `DiagnosticData` policy [1] [2].
                                             Changes will take effect after restarting the browser [1].
@@ -6491,15 +6492,16 @@ actions:
                                     -
                                         name: Disable outdated Edge metrics data sending
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "Disabling this telemetry.."
                                             This script stops Edge from reporting metrics data.
 
                                             This script stops the reporting of usage and crash-related data [1] [2].
                                             This data includes information about how the browser operates and the causes of any failures [1] [2].
-                                            This enhances your privacy by preventing sensitive data exposure to Microsoft and
-                                            improves browser performance by reducing unnecessary data sharing.
 
-                                            This script is applicable for Edge versions between 77 and 89 [1] [2].
+                                            Disabling this telemetry potential privacy risks by preventing data sharing with third-parties.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            This script applies to Edge versions between 77 and 89 [1] [2].
                                             It does not affect newer versions of Edge as this settings is deprecated [1] [2].
 
                                             This script configures the `MetricsReportingEnabled` policy [1] [2].
@@ -6522,13 +6524,14 @@ actions:
                                     -
                                         name: Disable outdated Edge site information sending
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "This enhances your privacy"
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "Disabling this telemetry.." 
                                             This script prevents Edge from sending site-related information.
 
                                             This prevents the browser from sending site information used to improve Microsoft services [1] [2].
                                             This may might include URLs and page interaction data [1] [2].
-                                            This improves your privacy by not sharing your personal data with third-parties, and improves performance by eliminating
-                                            unnecessary data sharing.
+
+                                            Disabling this telemetry potential privacy risks by preventing data sharing with third-parties.
+                                            This may also improve system performance by reducing processing workload.
 
                                             This script configures the `SendSiteInfoToImproveServices` policy [1] [2].
                                             Changes will take effect after restarting the browser [1].
@@ -6544,6 +6547,45 @@ actions:
                                                 function: SetEdgePolicyViaRegistry
                                                 parameters:
                                                     valueName: SendSiteInfoToImproveServices # Edge ≥ 77 and Edge ≤ 89
+                                                    dwordData: '0'
+                                            -
+                                                function: ShowEdgeRestartSuggestion
+                                    -
+                                        name: Disable Edge Feedback
+                                        recommend: standard # DISA recommended
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                            This script disables the Edge Feedback feature in Microsoft Edge, enhancing user privacy by preventing feedback and data
+                                            from being sent to Microsoft.
+                                            
+                                            The feature is enabled by default and cannot be disabled through standard browser settings [1] [2].
+                                            When signed into Microsoft Edge with a work or school account, feedback is linked to the user's account and organization,
+                                            potentially exposing sensitive information [1].
+
+                                            Disabling this feature addresses privacy concerns by ensuring that feedback does not inadvertently share usage data or
+                                            personal information with external servers.
+                                            This may also improve system performance by reducing processing workload.
+
+                                            Authorities like The Defense Information Systems Agency (DISA) [2] and The Center for Internet Security (CIS) [3]
+                                            recommend this script for enhanced security.
+                                            DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
+
+                                            Once applied, this script prevents the Edge Feedback feature from being used [1] [2].
+
+                                            This script configures the `UserFeedbackAllowed` Edge policy [1] [2].
+                                            The change takes effect after restarting the browser [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#userfeedbackallowed "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240624221221/https://www.stigviewer.com/stig/microsoft_edge/2021-06-23/finding/V-235769 "User feedback must be disabled. | www.stigviewer.com"
+                                            [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                        call:
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: UserFeedbackAllowed # Edge ≥ 77
                                                     dwordData: '0'
                                             -
                                                 function: ShowEdgeRestartSuggestion
@@ -6741,7 +6783,7 @@ actions:
                                     -
                                         name: Disable Edge automatic updates across all channels
                                         recommend: strict
-                                        docs: |- # refactor-with-variable: Same • Edge Update Caution • Active Directory only • Edge Channels
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution • Chromium Policy Caution • Active Directory only • Edge Channels
                                             This script prevents Microsoft Edge from automatically updating across all channels.
 
                                             Microsoft Edge offers four update channels—Stable, Beta, Dev, and Canary—each designed with different stability
@@ -6766,7 +6808,10 @@ actions:
                                             - `0D50BFEC-CD6A-4F9A-964C-C7416E3ACB10` to Edge (Dev) [2] [4] [8].
                                             - `F3C4FE00-EFD5-403B-9569-398A20F1BA4A` to Edge Insider [9].
 
-                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+                                            > **Caution:**
+                                            > - Disabling updates may reduce security if you use Edge and its components (WebView2).
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
 
                                             [1]: https://web.archive.org/web/20240624181311/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-channels "Microsoft Edge channel overview | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#update "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
@@ -6811,7 +6856,7 @@ actions:
                                     -
                                         name: Disable Edge WebView and WebView2 updates
                                         recommend: strict
-                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution • Chromium Policy Caution
                                             This script disables automatic updates for Microsoft Edge WebView components.
 
                                             Microsoft Edge WebView and WebView2 Runtime are components that enable applications to display web content [1] [2].
@@ -6822,7 +6867,10 @@ actions:
 
                                             This script configures `Update{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}` Edge Policy [1] [2].
 
-                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+                                            > **Caution:**
+                                            > - Disabling updates may reduce security if you use Edge and its components (WebView2).
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
 
                                             [1]: https://web.archive.org/web/20240622124745/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_UpdatePolicyMicrosoftEdgeWebView "Update policy override | admx.help"
                                             [2]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#update-webview "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
@@ -6834,7 +6882,7 @@ actions:
                                     -
                                         name: Disable Edge automatic update checks
                                         recommend: strict
-                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution • Chromium Policy Caution
                                             This script stops the Microsoft Edge Update agent from automatically checking for updates.
 
                                             This script prevents the Microsoft Edge Update agent from performing any automatic update checks [1].
@@ -6851,7 +6899,10 @@ actions:
                                             This script configures `AutoUpdateCheckPeriodMinutes` [1] [2] Edge policy.
                                             Setting to `0` disables all periodic network traffic by Microsoft Edge Update [1] [2].
 
-                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+                                            > **Caution:**
+                                            > - Disabling updates may reduce security if you use Edge and its components (WebView2).
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
 
                                             [1]: https://web.archive.org/web/20240622121922/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_AutoUpdateCheckPeriod "Auto-update check period override | admx.help"
                                             [2]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#autoupdatecheckperiodminutes "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
@@ -6863,7 +6914,7 @@ actions:
                                     -
                                         name: Maximize Edge update suppression duration
                                         recommend: strict
-                                        docs: |- # refactor-with-variable: Same • Edge Update Caution
+                                        docs: |- # refactor-with-variable: Same • Edge Update Caution • Chromium Policy Caution
                                             This script suppresses automatic updates for Microsoft Edge for the longest possible duration.
 
                                             If you do not run this script, Microsoft Edge checks for updates periodically throughout the day by default [1] [2].
@@ -6876,7 +6927,10 @@ actions:
                                             The script configures the `UpdatesSuppressedDurationMin`, `UpdatesSuppressedStartHour`, and `UpdatesSuppressedStartMin`
                                             Edge policies [1] [2].
 
-                                            > **Caution:** Disabling updates may reduce security if you use Edge and its components (WebView2).
+                                            > **Caution:**
+                                            > - Disabling updates may reduce security if you use Edge and its components (WebView2).
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
 
                                             [1]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#updatessuppressed "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240622123413/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Update::Pol_UpdateCheckSuppressedPeriod "Time period in each day to suppress auto-update check | admx.help"
@@ -6949,7 +7003,7 @@ actions:
                                             -
                                                 name: Disable automatic installation of Edge across all channels
                                                 recommend: standard # Preventing automatic installation helps control unwanted software without impacting system stability or security
-                                                docs: |- # refactor-with-variables: Same • Active Directory only • Edge Channels
+                                                docs: |- # refactor-with-variables: Same • Active Directory only • Edge Channels • Chromium Policy Caution
                                                     This script disables the automatic installation of Microsoft Edge across all update channels, enhancing
                                                     user control over their systems and privacy.
 
@@ -6969,6 +7023,10 @@ actions:
                                                     - `2CD8A007-E189-409D-A2C8-9AF4EF3C72AA` to Edge (Beta) [2].
                                                     - `65C35B14-6C1D-4122-AC46-7148CC9D6497` to Edge (Canary) [2].
                                                     - `0D50BFEC-CD6A-4F9A-964C-C7416E3ACB10` to Edge (Dev) [2].
+
+                                                    > **Caution**:
+                                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                                    > - This locks settings and prevents them from being changed on the settings page.
 
                                                     [1]: https://web.archive.org/web/20240624181311/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-channels "Microsoft Edge channel overview | Microsoft Learn | learn.microsoft.com"
                                                     [2]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#install "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
@@ -7002,7 +7060,7 @@ actions:
                                             -
                                                 name: Disable automatic installation of WebView and WebView2
                                                 recommend: standard # Preventing automatic installation helps control unwanted software without impacting system stability or security
-                                                docs: |-
+                                                docs: |- # refactor-with-variables: Same • Chromium Policy Caution
                                                     This script prevents the automatic installation of Microsoft Edge WebView and WebView2 components.
 
                                                     By default, the WebView2 Runtime is installed automatically through Microsoft Edge Update [1].
@@ -7011,12 +7069,1432 @@ actions:
 
                                                     This script configures the `Install{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}` policy [1].
  
+                                                    > **Caution**:
+                                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                                    > - This locks settings and prevents them from being changed on the settings page.
+
                                                     [1]: https://web.archive.org/web/20240622121924/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#install-webview "Microsoft Edge Update Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                                 call:
                                                     function: SetEdgeUpdatePolicyViaRegistry
                                                     parameters:
                                                         valueName: Install{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5} # Microsoft Edge Update ≥ 1.3.155.43
                                                         dwordData: '0'
+                            -
+                                category: Disable Copilot in Edge
+                                docs: |-
+                                    This category contains scripts to disable Copilot features in Microsoft Edge.
+
+                                    Copilot, initially known as *Bing Chat* [1], integrates generative AI into Edge [1] [2].
+                                    Despite its capabilities, it raises significant privacy and security concerns:
+
+                                    - **Privacy Concerns**:
+                                      Microsoft may retain chat data, which could include sensitive information [2].
+                                      It also collects personal data, such as URLs, page titles, user queries, and browsing context [2].
+                                    - **Security Risks**:
+                                      Language models like those used in Copilot are susceptible to specific attacks and vulnerabilities [3].
+                                      Read more: [Attacks on language models](https://erkinekici.com/articles/attacks-on-language-models/).
+                                    - **Targeted Advertising**:
+                                      Copilot can display targeted ads based on chat interactions, raising further privacy issues [4].
+
+                                    Disabling Copilot capabilities bolsters privacy, reduces security threats, improves browser speed, and provides
+                                    a cleaner browsing experience.
+
+                                    [1]: https://web.archive.org/web/20240623213328/https://blogs.bing.com/search/november-2023/our-vision-to-bring-microsoft-copilot-to-everyone-and-more "Our vision to bring Microsoft Copilot to everyone, and more | Bing Search Blog | blogs.bing.com"
+                                    [2]: https://web.archive.org/web/20240519104435/https://learn.microsoft.com/en-us/copilot/edge "Copilot in Edge | Microsoft Learn | learn.microsoft.com" "Copilot in Edge | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://erkinekici.com/articles/attacks-on-language-models/ "Attacks on language models :: Erkin Ekici | erkinekici.com"
+                                    [4]: https://web.archive.org/web/20240623220035/https://learn.microsoft.com/en-us/copilot/privacy-and-protections "Copilot Privacy and Protections | Microsoft Learn | learn.microsoft.com"
+                                children:
+                                    -
+                                        name: Disable Edge Copilot and Hubs Sidebar
+                                        docs: |- # refactor-with-variables: Same • Chromium Policy Caution
+                                            This script enhances your privacy and system performance by disabling multiple
+                                            linked features in Microsoft Edge.
+
+                                            This script primarily disables the **Hubs Sidebar**.
+                                            This is a launcher bar on the right side of Microsoft Edge's screen [1].
+                                            By default, the Sidebar is visible [1], but running this script will permanently hide it [1].
+
+                                            Disabling the Hubs Sidebar also deactivates the following features:
+
+                                            - **Copilot in Edge**:
+                                              This feature was known as *Bing Chat* [11], *Discover in Edge* [2], *Bing Discover* [2], *Edge Discover* [3],
+                                              *Discover app* [4], *Discover experience* [4], or simply *Discover* [4].
+                                              It collects personal data including URLs, page titles, user queries, browsing context, and
+                                              conversation histories [5].
+                                              It enables the discovery of content relevant to the page you are browsing, such as summaries and
+                                              source information [4].
+                                              By default, this feature sends URLs to Microsoft Bing for related recommendations [3]
+                                              Disabling the Hubs Sidebar is the recommended method to also disable Copilot in Edge [3] [4].
+                                              Disabling it stops this data collection, improving your privacy.
+                                            - **Sidebar apps**:
+                                              Disabling the Hubs Sidebar also deactivates all sidebar apps [6].
+                                              This script disables also the sidebar in Progressive Web Apps (PWAs) [6].
+                                              This script prevents all sidebar apps from being activated [6].
+                                            - **Standalone Sidebar**:
+                                              Disabling the Hubs Sidebar also turns off any standalone sidebar modes [7].
+                                              This mode displays the Sidebar in a fixed position on the desktop, separate from the browser frame [7].
+                                              Disabling this reduces background resource usage, thereby optimizing system performance [8].
+
+                                            The script configures the following Edge policies:
+
+                                            | Edge policy                             | Affected Edge versions       |
+                                            |-----------------------------------------|------------------------------|
+                                            | `HubsSidebarEnabled` [1] [2] [6] [9] [10] | Edge ≥ 99 [1]               |
+                                            | `StandaloneHubsSidebarEnabled` [7] [8]  | Edge ≥ 88 and ≤ 119 [7]     |
+
+                                            The new settings will take effect after you restart the browser [6].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#hubssidebarenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240328062746/https://techcommunity.microsoft.com/t5/discussions/copilot-or-discover-browser-extension-not-working-as-expected/m-p/4097297 "Copilot or Discover browser extension not working as expected for managed Edge browser - Microsoft Community Hub | techcommunity.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240101215939/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-archive-beta-channel "Archived release notes for Microsoft Edge Beta Channel | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20240519104435/https://learn.microsoft.com/en-us/copilot/edge#data-used-by--in-edge "Copilot in Edge | Microsoft Learn | learn.microsoft.com"
+                                            [6]: https://web.archive.org/web/20240519104338/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-sidebar#allow-or-block-the-sidebar-in-group-policy "Manage the sidebar in Microsoft Edge | Microsoft Learn | learn.microsoft.com"
+                                            [7]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#standalonehubssidebarenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [8]: https://web.archive.org/web/20240519104546/https://answers.microsoft.com/en-us/microsoftedge/forum/all/microsoft-edge-running-in-the-background/b827d6dc-8853-4258-a2e1-a760e93df561 "Microsoft Edge running in the background - Microsoft Community | answers.microsoft.com"
+                                            [9]: https://web.archive.org/web/20240519104435/https://learn.microsoft.com/en-us/copilot/edge#manage--in-edge "Copilot in Edge | Microsoft Learn | learn.microsoft.com"
+                                            [10]: https://web.archive.org/web/20240122064120/https://learn.microsoft.com/en-us/windows/client-management/manage-windows-copilot "Manage Copilot in Windows - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [11]: https://web.archive.org/web/20240623213328/https://blogs.bing.com/search/november-2023/our-vision-to-bring-microsoft-copilot-to-everyone-and-more "Our vision to bring Microsoft Copilot to everyone, and more | Bing Search Blog | blogs.bing.com"
+                                        call:
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: HubsSidebarEnabled # Edge ≥ 99
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: StandaloneHubsSidebarEnabled # Edge ≥ 114
+                                                    dwordData: '0'
+                                            -
+                                                function: ShowEdgeRestartSuggestion
+                                    -
+                                        name: Disable Edge Copilot browsing data collection
+                                        recommend: strict
+                                        docs: |- # refactor-with-variables: Same • Chromium Policy Caution
+                                            This script limits data access for Copilot in Microsoft Edge to enhance user privacy.
+
+                                            This script blocks Copilot's access to web pages in the Edge sidebar [1] [2] [3].
+                                            This stops Microsoft from collecting page contents, browser history, and user preferences [2] [3].
+                                            Otherwise, this data would automatically be sent to Bing [1].
+                                            This setting is specific to Microsoft Entra ID profiles [2], previously called AAD profiles [1].
+                                            Additionally, this script applies to "Copilot with Commercial Data Protection" [3]
+
+                                            By default, Copilot has access to page contents [1] [2] [3].
+                                            This access enables summarizing pages and interacting with text selections [1] [2].
+                                            This feature was previously known as **Discover** [1] and is based on Bing Chat [1].
+
+                                            > **Caution**:
+                                            > Disabling this feature will disable Copilot's abilities to summarize pages and
+                                            > interact with text selections in Edge.
+
+                                            The script configures the following Edge policies:
+
+                                            | Edge policy                         | Affected Edge versions        |
+                                            |-------------------------------------|-------------------------------|
+                                            | `DiscoverPageContextEnabled` [1]    | Edge ≥ 113 and Edge ≤ 127 [1] |
+                                            | `CopilotPageContext` [2]            | Edge ≥ 124 [2]                |
+                                            | `CopilotCDPPageContext` [2]         | Edge ≥ 124 [2]                |
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#discoverpagecontextenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#copilotpagecontext "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#copilotcdppagecontext "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: DiscoverPageContextEnabled # Edge ≥ 113 and Edge ≤ 127
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: CopilotPageContext # Edge ≥ 124
+                                                    dwordData: '0'
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: CopilotCDPPageContext # Edge ≥ 124
+                                                    dwordData: '0'
+                                    -
+                                        name: Disable Edge Copilot access on new tab page
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                            This script disables the Copilot access on the new tab page of Microsoft Edge.
+                                            
+                                            Originally known as Bing Chat, Copilot is a generative AI solution developed by Microsoft, integrated
+                                            directly into the Edge browser [2].
+                                            By default, the new tab page in Edge features two access points to Copilot: within the search box and in
+                                            the Bing Autosuggest drawer upon clicking [1].
+
+                                            Without this script, these Copilot entry-points remain active, offering AI-driven assistance directly
+                                            from the new tab page [1].
+                                            Running this script removes these, ensuring a simpler, distraction-free new tab page experience
+                                            in Microsoft Edge [1].
+
+                                            This script configures the `NewTabPageBingChatEnabled` Edge policy [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#newtabpagebingchatenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240623213328/https://blogs.bing.com/search/november-2023/our-vision-to-bring-microsoft-copilot-to-everyone-and-more "Our vision to bring Microsoft Copilot to everyone, and more | Bing Search Blog | blogs.bing.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: NewTabPageBingChatEnabled # Edge ≥ 117
+                                                dwordData: '0'
+                                    -
+                                        name: Disable outdated Edge Discover button
+                                        docs: |- # refactor-with-variables: Same • Chromium Policy Caution
+                                            This script disables the outdated Discover feature in Microsoft Edge.
+
+                                            Initially called *Bing Chat* [1] [2] or *Bing Discover* [2], this feature has evolved into what is now known as **Copilot** [1] [2].
+                                            In recent versions of Edge, the Discover button in the toolbar has been replaced with the new Copilot button [2].
+
+                                            This script is applicable only to versions of Edge between 97 and 105 [3].
+                                            It disables the obsolete Discover feature and button on older versions of Edge [3] [4].
+                                            When enabled, this feature used to send URLs to Microsoft Bing to search for related content [3].
+                                            By default, the Discover feature remains accessible in earlier Edge versions [3].
+
+                                            This script configures the `EdgeDiscoverEnabled` Edge policy [3] [4].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240623213328/https://blogs.bing.com/search/november-2023/our-vision-to-bring-microsoft-copilot-to-everyone-and-more "Our vision to bring Microsoft Copilot to everyone, and more | Bing Search Blog | blogs.bing.com"
+                                            [2]: https://archive.today/2024.06.23-222710/https://www.askvg.com/disable-or-remove-bing-chat-button-or-icon-from-microsoft-edge-toolbar/ "How to Disable or Remove Bing Chat Button from Microsoft Edge Toolbar – AskVG | www.askvg.com"
+                                            [3]: https://web.archive.org/web/20220930193320/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#edgediscoverenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240101215939/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-archive-beta-channel "Archived release notes for Microsoft Edge Beta Channel | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: EdgeDiscoverEnabled # Edge ≥ 97 and Edge ≤ 105
+                                                dwordData: '0'
+                            -
+                                category: Disable Edge ads
+                                docs: |-
+                                    ### Overview
+
+                                    This category blocks several types of advertisements in Microsoft Edge,
+                                    such as promotional suggestions, notifications, and recommendations.
+
+                                    ### Impact
+
+                                    - **User Experience**:
+                                      Provides a cleaner, less distracting browsing experience.
+                                    - **Privacy**:
+                                      Enhances privacy by reducing potential tracking mechanisms.
+                                    - **Performance**:
+                                      Improves system performance by reducing unnecessary processing.
+
+                                    ### Scope
+
+                                    - **Targeted Ad Blocking**:
+                                      Disables only those ads that can be suppressed without affecting other features.
+                                    - **Feature Integrity**:
+                                      Blocks ads selectively, ensuring the functionality of Edge's features is not compromised.
+                                    - **External Ads**:
+                                      Does not affect advertisements displayed by external websites.
+                                children:
+                                    -
+                                        name: Disable Edge spotlight recommendations
+                                        recommend: standard # Recommended by CIS
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                            This script disables spotlight recommendations in Microsoft Edge to enhance privacy protection.
+
+                                            By default, Microsoft Edge offers spotlight experiences and recommendations [1] [2] [3].
+                                            These include personalized background images, text, suggestions, notifications, and tips based on your browsing activities [1] [2] [3].
+                                            These features collect data about you and your interactions with Microsoft services [1].
+
+                                            Disabling these recommendations helps protect your privacy by preventing Microsoft from using your browsing data to personalize and display content [1].
+                                            This is especially important because such data could inadvertently be exposed or shared with unauthorized third parties [1].
+
+                                            The Center for Internet Security recommends disabling these features as they consider them a potential security risk [1].
+
+                                            This script configures the `SpotlightExperiencesAndRecommendationsEnabled` [2] [3] Edge policy.
+
+                                            After running this script, users will no longer receive any spotlight experiences or recommendations from Microsoft Edge [1] [2] [3], maintaining
+                                            a more generic and less intrusive browsing environment.
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20231129023615/https://www.tenable.com/audits/items/CIS_Microsoft_Edge_v1.1.0_L2.audit:399926c716539508b62eeb5dfec08582 "1.3.2 Ensure 'Choose whether users can receive customized back... | Tenable® | www.tenable.com"
+                                            [2]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#spotlightexperiencesandrecommendationsenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240618225121/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SpotlightExperiencesAndRecommendationsEnabled "Choose whether users can receive customized background images and text, suggestions, notifications, and tips for Microsoft services | admx.help"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: SpotlightExperiencesAndRecommendationsEnabled # Edge ≥ 86
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge feature ads
+                                        recommend: standard # Recommended by Microsoft
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Microsoft recommends
+                                            This script disables promotional notifications and feature recommendations in Microsoft Edge, providing a distraction-free browsing experience.
+
+                                            By default, Microsoft Edge may show notifications encouraging users to explore various features [1] [2],
+                                            such as using vertical tabs for improved tab management [1].
+                                            These notifications typically appear in situations like having multiple tabs open [1], and can include suggestions
+                                            to link Edge with a smartphone [3] or to use Bing as a search engine in Chrome [4].
+
+                                            Running this script stops these notifications [1], ensuring users do not receive prompts even in scenarios where they are
+                                            typically triggered [1].
+
+                                            Such recommendations may pose privacy concerns by potentially tracking user interactions and preferences.
+                                            By disabling these features, the script helps safeguard user privacy by reducing exposure to tracking mechanisms.
+
+                                            This action is beneficial for those who prefer a less intrusive interface while browsing.
+                                            Microsoft recommends this script for users who favor a streamlined browser setup without unsolicited suggestions or interruptions [2].
+
+                                            This script configures the `ShowRecommendationsEnabled` [1] [2] Edge policy.
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#allow-feature-recommendations-and-browser-assistance-notifications-from-microsoft-edge "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240618223116/https://www.tenforums.com/browsers-email/204773-microsoft-edge-promotional-messages-homepage.html "Microsoft Edge Promotional Messages On Homepage - Windows 10 Forums | www.tenforums.com"
+                                            [4]: https://archive.ph/2024.06.18-223049/https://www.reddit.com/r/windows/comments/15yo389/this_popped_up_on_my_desktop_while_i_was_using/ "This popped up on my desktop while I was using Firefox and I am unreasonably annoyed. I feel like I have less and less control over my OS each year. : r/windows | www.reddit.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: ShowRecommendationsEnabled # Edge ≥ 89
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge Bing ads
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                            This script blocks all advertisements on Bing when using Edge,
+                                            enhancing the search experience by eliminating interruptions and unwanted content.
+
+                                            By default, `bing.com` displays ads within search results [1].
+                                            This intrudes on privacy by tracking user behavior.
+                                            This script blocks these ads [1], providing a cleaner and more private search environment.
+
+                                            It also sets the SafeSearch filter to 'Strict' [1].
+                                            This limits adult content for safer browsing, particularly in educational settings.
+                                            The 'Strict' setting may also limit the accessibility of some legitimate search results,
+                                            which can affect search efficiency.
+
+                                            Once applied, these settings cannot be changed by the user [1], solidifying the search environment
+                                            configuration. You will need to run the revert script.
+
+                                            This script applies only on K-12 SKUs identified as educational tenants by Microsoft [1].
+                                            It is effective only in educational institutions recognized by Microsoft.
+
+                                            This script configures the `BingAdsSuppression` [1] Edge policy.
+                                            The changes will take effect upon the next restart of the Edge browser [1].
+
+                                            > **Caution**:
+                                            > - While this script offers an ad-free experience on Bing.com, it also enforces strict content filtering
+                                            >   which may overly restrict search results.
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#bingadssuppression "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            -
+                                                function: SetEdgePolicyViaRegistry
+                                                parameters:
+                                                    valueName: BingAdsSuppression # Edge ≥ 83
+                                                    dwordData: '0'
+                                            -
+                                                function: ShowEdgeRestartSuggestion
+                                    -
+                                        name: Disable Edge promotional pages
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                            This script disables full-tab promotional content in Microsoft Edge.
+
+                                            By default, Microsoft Edge may display full-tab content [1] [2].
+                                            These promotions may include product feature highlights, sign-in assistance, default browser selection, or tutorials on new features [1] [2].
+                                            This content can include welcome pages and educational material [1] [2].
+
+                                            Running this script modifies the `PromotionalTabsEnabled` policy [1] [2] to prevent Microsoft Edge from showing this
+                                            type of promotional content. After executing the script, Edge will no longer display these full-tab promotions [1] [2].
+
+                                            This improves user privacy by reducing exposure to unsolicited promotional material and helps streamline the browsing experience
+                                            by eliminating potential distractions. Additionally, it improves system performance by reducing the load times associated with
+                                            these promotional tabs.
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#promotionaltabsenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240414222217/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge%3A%3APromotionalTabsEnabled "Enable full-tab promotional content | admx.help"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: PromotionalTabsEnabled # Edge ≥ 77
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge browsing history collection for ads
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities
+                                            This script stops Microsoft from personalizing ads and content using your browsing data across its services,
+                                            thereby enhancing your privacy.
+
+                                            Microsoft Edge collects and transmits your browsing history, favorites, usage data, and other web activities to Microsoft [1] [2] [3].
+                                            This data is used to personalize advertisements and content to your interests [1] [2] [3] [4].
+                                            This information is shared with other Microsoft services, such as Microsoft Edge, Bing, and News [1] [2] [3] [4].
+                                            For instance, based on your activity, Microsoft may show you ads for products from stores you frequently visit or
+                                            news related to topics you often read about [1] [3].
+
+                                            By executing this script, you prevent Microsoft from utilizing your browsing data to personalize ads and content [1].
+                                            This ensures your browsing habits are kept private and not used for advertising purposes.
+
+                                            Authorities like The Defense Information Systems Agency (DISA) [5] and The Center for Internet Security (CIS) [6]
+                                            recommend this script for enhanced security.
+                                            DISA categorizes the absence of this setting as a medium severity security vulnerability [5].
+
+                                            This setting is applicable only to personal Microsoft accounts and does not apply to child or enterprise accounts [2] [4].
+                                            Once applied, the setting cannot be altered by the user, indicating that the browser is being managed [2] [4].
+
+                                            This script configures the `PersonalizationReportingEnabled` [2] [3] [4] [5] [6] Edge policy.
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240623170024/https://support.microsoft.com/en-us/microsoft-edge/microsoft-edge-browsing-activity-for-personalized-advertising-and-experiences-37aa831e-6372-238e-f33f-7cd3f0e53679 "Microsoft Edge browsing activity for personalized advertising and experiences - Microsoft Support | support.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#personalizationreportingenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240623151609/https://www.elevenforum.com/t/enable-or-disable-personalize-advertising-and-experiences-in-microsoft-edge.16986/ "Enable or Disable Personalize Advertising and Experiences in Microsoft Edge Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                            [4]: https://web.archive.org/web/20240623151615/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::PersonalizationReportingEnabled "Allow personalization of ads, search and news by sending browsing history to Microsoft | admx.help"
+                                            [5]: https://web.archive.org/web/20240623151630/https://www.stigviewer.com/stig/microsoft_edge/2021-02-16/finding/V-235748 "Personalization of ads, search, and news by sending browsing history to Microsoft must be disabled. | www.stigviewer.com"
+                                            [6]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: PersonalizationReportingEnabled # Edge ≥ 80
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge Insider ads
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Microsoft recommends
+                                            This script disables Microsoft Edge Insider promotions to create a cleaner and more streamlined browser experience.
+                                            
+                                            By default, Edge displays content promoting its Insider channels on the "About Microsoft Edge" settings page [1].
+                                            Running this script prevents these promotional materials from appearing [1] [2].
+
+                                            Disabling these ads helps maintain a more private and less cluttered browsing interface.
+                                            Microsoft recommends this script for users who favor a streamlined browser setup without unsolicited suggestions or interruptions [2].
+
+                                            This script configures the `MicrosoftEdgeInsiderPromotionEnabled` Edge policy to stop these promotions [1] [2] [3].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#microsoftedgeinsiderpromotionenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240104223003/https://borncity.com/win/2022/03/10/edge-99-0-1150-36-edge-insider-werbung-endlich-per-gpo-abschaltbar/ "Edge 99.0.1150.36: Edge Insider ads can finally be deactivated via GPO | Born's Tech and Windows World | borncity.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: MicrosoftEdgeInsiderPromotionEnabled # Edge ≥ 98
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge Adobe Acrobat subscription ads
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                            This script removes the Adobe Acrobat subscription button from Microsoft Edge's PDF viewer.
+
+                                            In 2023, Microsoft integrated Adobe's PDF viewer into Edge and added a subscription button
+                                            for purchasing Acrobat services [1].
+                                            This button is visible by default [2] and prompts users to subscribe to Adobe Acrobat,
+                                            offering access to premium features [1] [2].
+
+                                            This script conceals the subscription button, thus preventing direct prompts to
+                                            purchase Adobe's premium services from the PDF viewer [1].
+                                            This action creates a cleaner interface and minimizes commercial distractions.
+
+                                            This script configures the `ShowAcrobatSubscriptionButton` [1] [2] Edge policy
+                                            to hide the subscription button.
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240623192157/https://www.ghacks.net/2023/03/19/how-to-remove-the-try-acrobat-advertisement-from-microsoft-edges-new-pdf-viewer/ "How to remove the Try Acrobat advertisement from Microsoft Edge's new PDF Viewer - gHacks Tech News | www.ghacks.net"
+                                            [2]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#showacrobatsubscriptionbutton "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: ShowAcrobatSubscriptionButton # Edge ≥ 111
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge top sites and sponsored links on new tab page
+                                        recommend: standard # Remove ads and increase privacy without compromising essential functionality
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                            This script disables the display of default top sites and sponsored links on Microsoft Edge's new tab page, enhancing privacy by
+                                            eliminating commercial content and preventing the exposure of your frequently visited sites.
+
+                                            By default, Microsoft Edge displays tiles of frequently visited sites, known as top sites, on the new tab page [1].
+                                            These sites, saved from your browsing history, facilitate quick access to frequently visited destinations [2].
+                                            The display also includes sponsored links [3], which are advertisements.
+
+                                            Running this script will hide these default top site tiles and remove all sponsored quick links from the new tab page [3].
+                                            Removing these links helps minimize tracking from your visits and interactions with ads, promoting a more private browsing environment.
+                                            Microsoft recommends this script for users who favor a streamlined browser setup without unsolicited suggestions or interruptions [4].
+
+                                            Furthermore, removing these top sites and sponsored links protects sensitive browsing data from exposure to others, including friends,
+                                            family, and potential attackers, maintaining your privacy and security.
+
+                                            This script configures the `NewTabPageHideDefaultTopSites` Edge policy [1] [3] [4].
+                                            Running this script does not require a browser restart for the changes to take effect [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#newtabpagehidedefaulttopsites "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240625091756/https://www.anoopcnair.com/how-to-add-remove-top-sites-in-edge-browser/ "How To Add Remove Top Sites In Edge Browser HTMD Blog | www.anoopcnair.com"
+                                            [3]: https://web.archive.org/web/20240623123512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-archive-stable-channel#feature-updates-4 "Archived release notes for Microsoft Edge Stable Channel | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: NewTabPageHideDefaultTopSites # Edge ≥ 77
+                                                dwordData: '0'
+                            -
+                                name: Disable Edge Follow feature
+                                recommend: standard # Recommended by CIS
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the Follow feature in Microsoft Edge.
+
+                                    The Follow feature in Edge allows users to receive updates from influencers, websites,
+                                    or topics directly in the browser [1].
+                                    By default, this feature is enabled [1].
+                                    The feature sends the URLs of websites you visit to Microsoft's Bing API, compromising privacy [2] [3].
+                                    It risks exposing sensitive information, such as search terms and personal details.
+                                    It creates a personalized feed in Edge's Collections by collecting browsing data [4].
+                                    To protect privacy, it's advisable not to send browsing data to third parties [4].
+
+                                    Disabling this feature stops Edge from sending visited URLs to Microsoft [2] [3],
+                                    and prevents communication with the Follow service [1],
+                                    keeping browsing data private and local.
+
+                                    The Center for Internet Security (CIS) advises disabling this feature to bolster security [4].
+
+                                    This script configures the `EdgeFollowEnabled` Edge policy [1] [3] [5].
+                                    Running this script does not require a browser restart for the changes to take effect [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#edgefollowenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240625101642/https://www.theverge.com/2023/4/25/23697532/microsoft-edge-browser-url-leak-bing-privacy "Microsoft Edge is leaking the sites you visit to Bing - The Verge | www.theverge.com"
+                                    [3]: https://web.archive.org/web/20240625101605/https://borncity.com/win/2023/04/27/microsoft-edge-feature-follow-creators-sends-nerly-all-visited-website-urls-to-bing-api/ "Microsoft Edge feature \"Follow creators\" sends nerly all visited website URLs to Bing API | Born's Tech and Windows World | borncity.com"
+                                    [4]: https://web.archive.org/web/20240625100526/https://www.syxsense.com/syxsense-securityarticles/cis_benchmarks/syx-1033-12814.html "Follow Service Enabled (CIS LEVEL 1 MS Edge) | www.syxsense.com"
+                                    [5]: https://github.com/privacysexy-forks/Audit-Test-Automation/blob/2ad030524021e94dbd09c7771e6ee4d9794bb4af/ATAPAuditor/AuditGroups/Microsoft%20Edge-CIS-2.0.0%23RegistrySettings.ps1#L3381-L3416 "Audit-Test-Automation/ATAPAuditor/AuditGroups/Microsoft Edge-CIS-2.0.0#RegistrySettings.ps1 at 2ad030524021e94dbd09c7771e6ee4d9794bb4af · fbprogmbh/Audit-Test-Automation | github.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: EdgeFollowEnabled # Edge ≥ 98
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge Shopping Assistant
+                                recommend: strict # Recommended by DISA
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities • Microsoft recommends
+                                    This script disables Microsoft Edge's shopping features.
+                                    Microsoft refers to these features as *shopping assistant* [1] [2] [3] [4], *shopping features* [2] [5], or *Microsoft Shopping* [5].
+
+                                    These features allow users to compare prices, receive coupons, and use autofill during checkout to speed up the process [2].
+                                    They also provide notifications for coupons and rebates when shopping online [5].
+
+                                    Disabling these features addresses several privacy concerns:
+
+                                    - **Data Collection and Profiling:**
+                                      Microsoft collects extensive data about users' shopping habits and online activities.
+                                      This includes users' shopping habits [5], preferences [5], websites visited [4] [5], and search history [4].
+                                      This contributes to detailed user profiling.
+                                    - **Continuous Network Communication:**
+                                      The browser continuously communicates with Microsoft servers.
+                                      It receives retailer information [5].
+                                      It sends data about visited shopping sites and system details to Microsoft servers [5].
+                                    - **Email Scanning:**
+                                      Microsoft Edge scans users' email accounts for promotional coupons [5].
+                                      The email data sent may include sensitive information.
+                                    - **Targeted Advertising and Tracking:**
+                                      Collected data can be used to tailor precise ads, enhancing targeted advertising efforts.
+                                      Edge modifies URLs for affiliate tracking, which aids persistent online tracking [5].
+                                    - **Persistent Cookies:**
+                                      Persistent cookies are used for various functions including debugging, fraud detection, and analytics [5], further compromising
+                                      user privacy.
+                                    - **Data Sharing:**
+                                      Data is shared with Bing Rebates and Shopping services [5], potentially exposing sensitive user information to third parties [4].
+                                      This aggregation of data could lead to more detailed collection of personal information.
+
+                                    Running this script prevents the automatic activation of features such as price comparison, coupons, and express checkout on retail websites [2].
+
+                                    Authorities like The Center for Internet Security (CIS) [1] [4] recommend this script for enhanced security.
+                                    Microsoft recommends this script for users who favor a streamlined browser setup without unsolicited suggestions or interruptions [3].
+
+                                    This script configures the `EdgeShoppingAssistantEnabled` Edge policy to disable Edge's shopping features [1] [2] [3].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://github.com/privacysexy-forks/Audit-Test-Automation/blob/2ad030524021e94dbd09c7771e6ee4d9794bb4af/ATAPAuditor/AuditGroups/Microsoft%20Edge-CIS-2.0.0%23RegistrySettings.ps1#L4315-L4350 "Audit-Test-Automation/ATAPAuditor/AuditGroups/Microsoft Edge-CIS-2.0.0#RegistrySettings.ps1 at 2ad030524021e94dbd09c7771e6ee4d9794bb4af · fbprogmbh/Audit-Test-Automation | github.com"
+                                    [2]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#edgeshoppingassistantenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://archive.ph/2024.06.26-144015/https://www.syxsense.com/syxsense-securityarticles/cis_benchmarks/syx-1033-12839.html "Edge Shopping Assistant Enabled (CIS LEVEL 1 MS Edge) | www.syxsense.com"
+                                    [5]: https://web.archive.org/web/20240623123514/https://learn.microsoft.com/en-us/microsoft-edge/privacy-whitepaper/#shopping  "Microsoft Edge Privacy Whitepaper - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: EdgeShoppingAssistantEnabled # Edge ≥ 87
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge Search bar on desktop
+                                recommend: strict # refactor-with-variables: • Chromium Policy Caution
+                                docs: |-
+                                    This script disables the **Search bar** feature.
+                                    This feature is formerly known as **Edge bar** [1] [2] [3] [4] [5] and **Web Widget** [1] [2] [3] [4] [6] [7].
+
+                                    This feature allows users to perform web searches directly from their desktop or within applications [5] [8].
+                                    The search is powered by Bing [6] [7], or the default search engine of Microsoft Edge [6] [7] [8].
+                                    It provides search and URL suggestions [6] [7] [8].
+                                    It also displays personalized news and content such as headlines, weather, sports, traffic, along with some tools [4] [5].
+                                    Users can access the Search bar from the "More tools" menu or jump list in Microsoft Edge [6] [7] [8].
+
+                                    The Search bar is enabled by default across all profiles unless disabled [6] [7] [8].
+                                    It does not start at Windows startup by default [1] [2] [9].
+
+                                    This feature raises privacy concerns as it collects data to provide personalized content [4] [5].
+                                    Once opened, it remains active even after you close Microsoft Edge [3].
+                                    You must explicitly close it using the "Quit" option in the System tray or the 3-dot menu [6] [7].
+
+                                    Running this script will disable:
+
+                                    - The Search bar [6] [7] [8].
+                                    - The option to launch the Search bar from Microsoft Edge "More tools" menu [6] [7] [8]
+                                    - The option to launch the Search bar from Microsoft Edge jump list menu [6] [7] [8]
+                                    - Automatical launch of the Search bar at Windows startup [1] [2] [9].
+                                    - The option to start the Edge bar at Windows startup in Microsoft Edge settings [1] [2] [9].
+
+                                    The script configures the following Edge policies:
+
+                                    | Edge policy                             | Affected Edge versions        |
+                                    |-----------------------------------------|-------------------------------|
+                                    | `WebWidgetAllowed` [3] [6] [7]          | Edge ≥ 88 and ≤ 119 [6] [7]   |
+                                    | `WebWidgetIsEnabledOnStartup` [1] [2]   | Edge ≥ 88 and ≤ 119 [1] [2]   |
+                                    | `SearchbarAllowed` [8]                  | Edge ≥ 117 [8]                |
+                                    | `SearchbarIsEnabledOnStartup` [9]       | Edge ≥ 117 [9]                |
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#webwidgetisenabledonstartup "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240517212629/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::WebWidgetIsEnabledOnStartup "Enable the Web widget | admx.help"
+                                    [3]: https://web.archive.org/web/20240517212623/https://www.elevenforum.com/t/enable-or-disable-edge-bar-in-microsoft-edge.6001/ "Enable or Disable Edge Bar in Microsoft Edge Tutorial | Windows 11 Forum | elevenforum.com"
+                                    [4]: https://web.archive.org/web/20210506115349/https://blogs.msn.com/enus-get-started-with-the-web-widget/ "EN-US - Get started with the Web widget - Microsoft News | blogs.msn.com"
+                                    [5]: https://web.archive.org/web/20240517205709/https://ntp.msn.com/web-widget "Edge bar | ntp.msn.com"
+                                    [6]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#webwidgetallowed "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [7]: https://web.archive.org/web/20240517212639/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::WebWidgetAllowed "Allow the Web widget at Windows startup | admx.help"
+                                    [8]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#searchbarallowed "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [9]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#searchbarisenabledonstartup "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: WebWidgetAllowed # Edge ≥ 88 and ≤ 119
+                                            dwordData: '0'
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: WebWidgetIsEnabledOnStartup # Edge ≥ 88 and ≤ 119
+                                            dwordData: '0'
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: SearchbarAllowed # Edge ≥ 117
+                                            dwordData: '0'
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: SearchbarIsEnabledOnStartup # Edge ≥ 117
+                                            dwordData: '0'
+                            -
+                                name: Disable Edge Microsoft Rewards
+                                recommend: strict
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables Microsoft Rewards in Edge.
+
+                                    This feature is enabled by default, activating the Microsoft Rewards experience in Edge [1].
+                                    Users participating in search and earn markets will notice this feature within their Microsoft Edge user profile [1] [2].
+
+                                    Microsoft Rewards encourages users to earn points through Bing searches, which can be redeemed for items at the Microsoft Store [1].
+                                    However, this feature involves tracking user activities, which may pose privacy risks by potentially sharing sensitive data with third parties [1].
+                                    
+                                    Running this script prevents Microsoft Rewards notifications and features from appearing in Edge [1], enhancing privacy.
+                                    The script modifies the `ShowMicrosoftRewards` policy to turn off these features [2] [3]
+                                    It's recommended for those who prefer not to have their search activities monitored or used for advertising purposes.
+                                    The Center for Internet Security suggests disabling these features, viewing them as a potential security risk [1].
+
+                                    After applying this script, the Microsoft Rewards experience will no longer be visible in the Edge user profile [1].
+                                    Changes will take effect after restarting the browser [3].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240618232029/https://www.tenable.com/audits/items/CIS_Microsoft_Edge_v1.1.0_L2.audit:e25958b42c6f13d957a456bfbfd06744 "1.106 Ensure 'Show Microsoft Rewards experiences' is set to 'D... | Tenable® | www.tenable.com"
+                                    [2]: https://web.archive.org/web/20240618232113/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::ShowMicrosoftRewards_recommended "Show Microsoft Rewards experiences | admx.help"
+                                    [3]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#showmicrosoftrewards "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: ShowMicrosoftRewards # Edge ≥ 88
+                                            dwordData: '0'
+                                    -
+                                        function: ShowEdgeRestartSuggestion
+                            -
+                                name: Disable Edge Bing suggestions in address bar
+                                recommend: strict
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables suggestions from Microsoft Search in Bing within the address bar.
+                                    This enhances privacy by reducing unsolicited data sharing with Bing.
+
+                                    By default, Microsoft Edge may display results powered by Microsoft Search in Bing within the address bar suggestions [1] [2].
+                                    This occurs even if Bing is not the default search provider [1].
+                                    This feature can raise privacy concerns, as it involves sending query data to Bing.
+
+                                    This script stops the display of Microsoft Search in Bing suggestions in the address bar as users type their search terms [1] [2].
+                                    It modifies the `AddressBarMicrosoftSearchInBingProviderEnabled` Edge policy [1] [2].
+
+                                    This script specifically targets Bing suggestions without affecting other search providers [1] [2].
+                                    Additionally, the script disables internal search results for users logged in with an Entra ID (Azure AD) within their organization [1] [2].
+
+                                    The changes take effect after restarting the browser [1].
+
+                                    > **Caution**:
+                                    > - This will block the display of internal search results within an organization when logged in.
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#addressbarmicrosoftsearchinbingproviderenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240619091742/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::AddressBarMicrosoftSearchInBingProviderEnabled "Enable Microsoft Search in Bing suggestions in the address bar | admx.help"
+                                call:
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: AddressBarMicrosoftSearchInBingProviderEnabled # Edge ≥ 81
+                                            dwordData: '0'
+                                    -
+                                        function: ShowEdgeRestartSuggestion
+                            -
+                                name: Disable Edge "Find on Page" data collection
+                                recommend: standard # Recommended by CIS
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script stops Edge from sending data to Microsoft during 'Find on Page' searches, enhancing privacy.
+
+                                    'Find on Page' allows users to search for text on a webpage, highlighting matches and suggesting related terms [1] [2] [3] [4] [5].
+                                    This feature sends data to Microsoft for processing [1] [3] [4].
+                                    This data transmission is enabled by default [1] [3].
+                                    The data includes the text of the webpage, search terms, and a service token [5].
+                                    Sharing browsing and search history may expose data to third parties [3].
+
+                                    After applying this script, the 'Find on Page' feature remains usable, but without sending data to Microsoft [1] [3].
+                                    Instead, all related matches are generated on the user's device, significantly enhancing privacy without sacrificing functionality.
+                                    Local processing minimizes exposure of sensitive data and aligns with security best practices from the CIS (Center for Internet Security) [3] [6].
+
+                                    This script configures the `RelatedMatchesCloudServiceEnabled` Edge policy [1] [3] [4] [6].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#relatedmatchescloudserviceenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240623123237/https://www.microsoft.com/en-us/edge/features/find-on-page?ch=1&form=MA13FJ "Find on Page | Microsoft Edge | www.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240623123235/https://www.syxsense.com/syxsense-securityarticles/cis_benchmarks/syx-1033-12793.html "Related Matches Cloud Service Enabled (CIS LEVEL 1 MS Edge) | www.syxsense.com"
+                                    [4]: https://web.archive.org/web/20240623123512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-archive-stable-channel#feature-updates-4 "Archived release notes for Microsoft Edge Stable Channel | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240623123514/https://learn.microsoft.com/en-us/microsoft-edge/privacy-whitepaper/#find-on-page "Microsoft Edge Privacy Whitepaper - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://github.com/privacysexy-forks/Audit-Test-Automation/blob/72d878930bc5b31295d50271314e591fa087ee42/ATAPAuditor/AuditGroups/Microsoft%20Edge-CIS-1.1.0%23RegistrySettings.ps1#L2159-L2193 "Audit-Test-Automation/ATAPAuditor/AuditGroups/Microsoft Edge-CIS-1.1.0#RegistrySettings.ps1 at 72d878930bc5b31295d50271314e591fa087ee42 · privacysexy-forks/Audit-Test-Automation | github.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: RelatedMatchesCloudServiceEnabled # Edge ≥ 99
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge sign-in prompt on new tab page
+                                recommend: standard
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script removes the sign-in prompt from the new tab page in Microsoft Edge to
+                                    minimize distractions and protect your privacy.
+                                    
+                                    By default, Microsoft Edge shows a sign-in prompt on the new tab page, asking users to log in [1].
+                                    This prompt, which resembles advertising, can compromise your privacy by encouraging the sharing of
+                                    personal information.
+
+                                    After applying this script, the sign-in prompt will no longer appear on the new tab page [1].
+                                    This change leads to a cleaner and more private browsing environment.
+
+                                    This script configures the `SignInCtaOnNtpEnabled` Edge policy [1].
+                                    This change only takes effect after restarting the browser [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#signinctaonntpenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: SignInCtaOnNtpEnabled # Edge ≥ 99
+                                            dwordData: '0'
+                                    -
+                                        function: ShowEdgeRestartSuggestion
+                            -
+                                category: Harden Edge privacy # Same name as Linux > "Harden Firefox privacy"
+                                docs: |-
+                                    This category contains scripts designed to enhance privacy settings in Microsoft Edge
+                                    by reducing tracking mechanisms encountered during web browsing.
+
+                                    These scripts do not block data collection conducted directly by Microsoft through Edge.
+                                    Instead, these scripts empower users by providing control over the exposure of their
+                                    browsing data to external entities, thereby significantly enhancing privacy.
+                                children:
+                                    -
+                                        name: Enable Edge tracking prevention
+                                        recommend: strict # Recommended by DISA
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities
+                                            This script configures Microsoft Edge's tracking prevention to the 'Strict' level,
+                                            enhancing user privacy by blocking extensive web tracking
+
+                                            The tracking prevention feature in Microsoft Edge restricts online trackers from accessing
+                                            browser storage and network resources, which helps safeguard user data [1].
+                                            By default, the 'Balanced' level is activated [1] [2].
+                                            While the 'Balanced' level does not block ads or analytics [1], this script activates the 'Strict'
+                                            level to provide a higher degree of privacy by blocking these elements [1].
+                                            Although recommended for maximum privacy, the 'Strict' level may disrupt some website functionalities [3] [4].
+
+                                            Authorities like The Defense Information Systems Agency (DISA) [4] and The Center for Internet Security (CIS) [2]
+                                            recommend this script for enhanced security.
+                                            DISA categorizes the absence of this setting as a medium severity security vulnerability [4].
+
+                                            Once applied, this script prevents users from changing the tracking prevention level themselves [3] [4].
+
+                                            This script configures the `TrackingPrevention` Edge policy [1] [2] [3] [4].
+                                            Running this script does not require a browser restart for the changes to take effect [2].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+                                            > - Aggressive tracking prevention may cause some websites to not function properly.
+
+                                            [1]: https://web.archive.org/web/20240623143037/https://learn.microsoft.com/en-us/microsoft-edge/web-platform/tracking-prevention "Tracking prevention in Microsoft Edge - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                            [3]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#trackingprevention "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240623143146/https://www.stigviewer.com/stig/microsoft_edge/2023-06-02/finding/V-235766 "Tracking of browsing activity must be disabled. | www.stigviewer.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: TrackingPrevention # Edge ≥ 78
+                                                dwordData: '3' # 3: Strict | 2: Balanced | 1: Basic | 0: Off (no tracking prevention)
+                                    -
+                                        name: Block Edge third party cookies
+                                        recommend: strict # refactor-with-variables: • Chromium Policy Caution • Authorities
+                                        docs: |-
+                                            This script blocks third-party cookies in Microsoft Edge, enhancing your privacy by reducing
+                                            tracking across various webpages.
+
+                                            It prevents websites from setting cookies unless they match the domain in the address bar [1].
+                                            This action limits potential tracking activities by third-party entities, which could otherwise
+                                            track your web activities and gather information about you [2].
+
+                                            Third-party cookies are enabled and not blocked by default on Edge [1].
+
+                                            Disabling third-party cookies may impact the performance of websites like Microsoft 365 or
+                                            Salesforce, which depend on these cookies for some of their features [2].
+
+                                            Authorities like The Center for Internet Security (CIS) [1]
+                                            recommend this script for enhanced security.
+
+                                            This script configures the `BlockThirdPartyCookies` Edge policy [1] [2].
+                                            Running this script does not require a browser restart for the changes to take effect [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+                                            > - Some websites may not function properly without third-party cookies.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#blockthirdpartycookies "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: BlockThirdPartyCookies # Edge ≥ 77
+                                                dwordData: '0'
+                                    -
+                                        name: Enable Do Not Track requests
+                                        recommend: standard # refactor-with-variables: • Chromium Policy Caution
+                                        docs: |-
+                                            This script enables Do Not Track requests in Microsoft Edge.
+
+                                            Do Not Track communicates to websites that you prefer not to have your browsing activity tracked [1].
+                                            It enhances privacy by signaling your tracking preferences to websites, though compliance is not guaranteed.
+
+                                            By default, Edge does not send Do Not Track requests [1].
+                                            This script ensures these requests are always sent to websites that seek tracking information [1].
+
+                                            Additionally, Microsoft endorses this script as it helps create a cleaner browser interface by reducing
+                                            unsolicited suggestions [2] and improves privacy by better controlling data connections [3].
+
+                                            This script configures the `ConfigureDoNotTrack` Edge policy [1] [2].
+                                            Running this script does not require a browser restart for the changes to take effect [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - This locks settings and prevents them from being changed on the settings page.
+
+                                            [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#configuredonottrack "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge
+                                            [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: ConfigureDoNotTrack # Edge ≥ 77
+                                                dwordData: '0'
+                            -
+                                name: Disable Edge search and site suggestions
+                                recommend: strict
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities
+                                    This script disables search suggestions based on typed characters in Microsoft Edge,
+                                    enhancing user privacy by preventing typed data collection.
+
+                                    When you type in the address bar, Microsoft Edge sends characters to Microsoft servers to provide search
+                                    and site suggestions [1] [2].
+                                    This data-sharing feature is enabled by default [1].
+                                    Running this script prevents these suggestions from appearing [3].
+                                    It ensures your inputs remain private and are not used to generate suggestions or telemetry [1] [2].
+
+                                    Authorities like The Defense Information Systems Agency (DISA) [2] and The Center for Internet Security (CIS) [4]
+                                    recommend this script for enhanced security.
+                                    DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
+                                    Microsoft recommends this script for privacy and managing connections [5].
+
+                                    Impacts of running this script:
+
+                                    - Disables search suggestions and auto-suggest features in the address bar [1] [2].
+                                    - Blocks the collection of typed characters and visited URLs for telemetry by Microsoft [1] [2].
+                                    - Retains local history and favorites suggestions, without sending this data to Microsoft [1] [2].
+                                    - Prevents users from changing this configuration [1] [2].
+
+                                    This script configures the `SearchSuggestEnabled` Edge policy [1] [2] [3] [4] [5].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#searchsuggestenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240623154047/https://www.stigviewer.com/stig/microsoft_edge/2021-02-16/finding/V-235729 "Search suggestions must be disabled. | www.stigviewer.com"
+                                    [3]: https://web.archive.org/web/20240623153945/https://learn.microsoft.com/en-us/microsoftsearch/edge-shortcuts "Customize address bar shortcuts for Microsoft Edge | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [5]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: SearchSuggestEnabled # Edge ≥ 77
+                                        dwordData: '0'
+                            -
+                                name: Disable outdated Edge automatic image enhancement
+                                recommend: standard # Removed feature
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the automatic image enhancement feature.
+
+                                    This feature is present in Microsoft Edge versions 97 to 121 [1].
+                                    It improves image sharpness, color, lighting, and contrast [1].
+                                    This feature uploads viewed images online to Microsoft for processing [2].
+
+                                    Starting with version 122, Microsoft Edge has removed this feature, limiting this
+                                    script's use to versions 97 to 121 [1].
+
+                                    This script configures the `EdgeEnhanceImagesEnabled` Edge policy [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#edgeenhanceimagesenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240623171433/https://www.malwarebytes.com/blog/news/2023/06/edge-browser-feature-sends-images-you-view-back-to-microsoft "Edge browser feature sends images you view back to Microsoft | www.malwarebytes.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: EdgeEnhanceImagesEnabled # Edge ≥ 97 and Edge ≤ 121
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge quick links on the new tab page
+                                recommend: strict # May reduce productivity / personal preferences
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the display of quick links on the new tab page in Microsoft Edge.
+
+                                    By default, Microsoft Edge displays quick links on the new tab page [1].
+                                    This feature provides one-click access to your most frequently visited sites by automatically adding them to this menu [2].
+
+                                    Running this script will hide these quick links and disable the user's ability to modify this setting in the NTP settings flyout [1].
+
+                                    This may reduce convenience as users will need to manually enter website addresses, but it enhances privacy by preventing
+                                    the inadvertent exposure of frequently visited sites.
+
+                                    The changes made by this script apply only to Microsoft Edge profiles associated with local user accounts, Microsoft Accounts,
+                                    or Active Directory accounts [1]. They do not affect Enterprise new tab pages configured through Azure Active Directory [1].
+
+                                    This script configures the `NewTabPageQuickLinksEnabled` Edge policy [1] [2].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#newtabpagequicklinksenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240623172131/https://www.thewindowsclub.com/hide-quick-links-on-a-new-tab-page-in-edge "How to hide Quick Links on a New tab page in Edge using Registry Editor | www.thewindowsclub.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: NewTabPageQuickLinksEnabled # Edge ≥ 91
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge remote background images on new tab page
+                                recommend: strict # Minor privacy impact
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables background images recevied by Microsoft servers on new tab.
+
+                                    By default, if you do not run this script, all background image types on the new tab page are enabled [1] [2].
+                                    It allows using custom image disabling only daily background image type [1] [2].
+
+                                    Disabling this feature removes unecessary network traffic with Microsoft servers that may leak data
+                                    and your usage of behavior. It also optimizes system by simplifying the browser usage and removing nunnecssary network traffic.
+
+                                    This script configures the `NewTabPageAllowedBackgroundTypes` Edge policy to value `1` (`DisableImageOfTheDay`) [1] [2].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#newtabpageallowedbackgroundtypes "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240623173326/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::NewTabPageAllowedBackgroundTypes "Configure the background types allowed for the new tab page layout | admx.help"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: NewTabPageAllowedBackgroundTypes # Edge ≥ 86
+                                        dwordData: '1' # DisableImageOfTheDay (1) = Disable daily background image type | DisableCustomImage (2) = Disable custom background image type | DisableAll (3) = Disable all background image types
+                            -
+                                name: Disable Edge Collections feature
+                                recommend: strict
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities
+                                    This script disables the Collections feature in Microsoft Edge.
+
+                                    By default, if this script is not executed, users can access and use the Collections feature in Microsoft Edge [1].
+                                    The Collections feature in Edge compiles and manages web content—articles, images, and videos—for activities like shopping, trip planning, or research [2] [3].
+                                    This feature syncs across devices when logged into Microsoft Edge, keeping your collections updated no matter where you access the browser [2].
+                                    The Collections feature enables efficient collection, organization, sharing, and exporting of content, with seamless integration into Office [1] [4].
+                                    The feature lets users save and categorize web pages, text, images, and videos into groups for specific projects or interests [3].
+                                    Additionally, it enhances saved items with thumbnails and metadata, such as price and star ratings [3].
+
+                                    This feature raises several privacy concerns:
+
+                                    - Microsoft analyzes saved web pages to understand item names and primary images [3].
+                                    - Data is stored on Microsoft servers once a user signs into Edge [2].
+                                    - Microsoft analyzes data from Collections to personalize advertising and user experiences [5].
+
+                                    Authorities like The Defense Information Systems Agency (DISA) [4]
+                                    recommend this script for enhanced security.
+                                    DISA categorizes the absence of this setting as a medium severity security vulnerability [4].
+
+                                    Running this script prevents access to this feature [1] [6], thereby mitigating associated privacy risks and
+                                    adhering to security recommendations
+
+                                    This script configures the `EdgeCollectionsEnabled` Edge policy [1] [4] [6].
+                                    This change only takes effect after restarting the browser [6].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240623183109/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::EdgeCollectionsEnabled "Enable the Collections feature | admx.help"
+                                    [2]: https://web.archive.org/web/20240623182734/https://support.microsoft.com/en-us/microsoft-edge/organize-your-ideas-with-collections-in-microsoft-edge-60fd7bba-6cfd-00b9-3787-b197231b507e "Organize your ideas with Collections in Microsoft Edge - Microsoft Support | support.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240623123514/https://learn.microsoft.com/en-us/microsoft-edge/privacy-whitepaper/#collections  "Microsoft Edge Privacy Whitepaper - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240623183057/https://www.stigviewer.com/stig/microsoft_edge/2021-02-16/finding/V-235770 "The collections feature must be disabled. | www.stigviewer.com"
+                                    [5]: https://web.archive.org/web/20240623170024/https://support.microsoft.com/en-us/microsoft-edge/microsoft-edge-browsing-activity-for-personalized-advertising-and-experiences-37aa831e-6372-238e-f33f-7cd3f0e53679 "Microsoft Edge browsing activity for personalized advertising and experiences - Microsoft Support | support.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#edgecollectionsenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: EdgeCollectionsEnabled # Edge ≥ 78
+                                            dwordData: '0'
+                                    -
+                                        function: ShowEdgeRestartSuggestion
+                            -
+                                name: Disable Edge failed page data collection and suggestions
+                                recommend: standard
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities
+                                    This script prevents Microsoft Edge from sending data to Microsoft and
+                                    suggesting alternatives when URLs fail to load.
+
+                                    By default, Edge contacts a web service to suggest URLs and searches upon
+                                    encountering network errors like DNS failures [1] [2] [3].
+
+                                    This feature presents several privacy concerns, including:
+
+                                    - Exposing the websites a user visits [4]
+                                    - Redirecting to potentially malicious sites if the service is compromised [4].
+
+                                    Authorities like The Defense Information Systems Agency (DISA) [2]
+                                    recommend this script for enhanced security.
+                                    DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
+
+                                    Running this script ensures:
+
+                                    - Edge will not request suggestions from the web service but will display
+                                      a standard error page instead [1] [2] [3].
+                                    - Once applied, users cannot change the setting [1] [2] [3].
+
+                                    This script configures the `AlternateErrorPagesEnabled` Edge policy [1] [2] [3] [4] [5].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#alternateerrorpagesenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240623190006/https://www.stigviewer.com/stig/microsoft_edge/2021-02-16/finding/V-235768 "Suggestions of similar web pages in the event of a navigation error must be disabled. | www.stigviewer.com"
+                                    [3]: https://web.archive.org/web/20240623185848/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::AlternateErrorPagesEnabled "Suggest similar pages when a webpage can't be found | admx.help"
+                                    [4]: https://web.archive.org/web/20240623185753/https://www.syxsense.com/syxsense-securityarticles/cis_benchmarks/syx-1033-12845.html "Alternate Error Pages Enabled (CIS LEVEL 1 MS Edge) | www.syxsense.com"
+                                    [5]: https://github.com/privacysexy-forks/Audit-Test-Automation/blob/2ad030524021e94dbd09c7771e6ee4d9794bb4af/ATAPAuditor/AuditGroups/Microsoft%20Edge-CIS-2.0.0%23RegistrySettings.ps1#L4603-L4637 "Audit-Test-Automation/ATAPAuditor/AuditGroups/Microsoft Edge-CIS-2.0.0#RegistrySettings.ps1 at 2ad030524021e94dbd09c7771e6ee4d9794bb4af · fbprogmbh/Audit-Test-Automation | github.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: AlternateErrorPagesEnabled # Edge ≥ 80
+                                        dwordData: '0'
+                            -
+                                name: Disable outdated Edge games menu
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the outdated games menu in older versions of Microsoft Edge.
+
+                                    The games menu in Microsoft Edge offers one-click access to various free-to-play casual and arcade games,
+                                    including Microsoft Solitaire, Microsoft Jewel, Microsoft Mahjong, and the Microsoft Edge Surf Game [1].
+                                    In modern versions, this menu is integrated into the sidebar [2] [3].
+
+                                    Disabling the games menu leads to a less cluttered browser interface.
+                                    Microsoft recommends this script for those favoring a streamlined browser setup without unsolicited suggestions or interruptions [3].
+                                    Minimizing unnecessary features enhances security and privacy by reducing data exposure and attack surface.
+                                    Moreover, removing these features can improve system performance by reducing resource usage.
+
+                                    This script targets older versions of Edge where games were accessible from the options menu [1].
+                                    By default, this menu is enabled and accessible on these versions [2].
+                                    It configures the `AllowGamesMenu` Edge policy to prevent access to the games menu [2] [3].
+                                    The change takes effect after restarting the browser [2].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240623225633/https://blogs.windows.com/windowsexperience/2022/06/23/welcome-to-the-best-browser-for-gamers/ "Welcome to the best browser for gamers | Windows Experience Blog | blogs.windows.com"
+                                    [2]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#allowgamesmenu "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240623225719/https://www.microsoft.com/en-us/edge/features/games-menu?ch=1&form=MA13FJ "Games menu | www.microsoft.com"
+                                call:
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: AllowGamesMenu # Edge ≥ 99
+                                            dwordData: '0'
+                                    -
+                                        function: ShowEdgeRestartSuggestion
+                            -
+                                name: Disable Edge in-app support
+                                recommend: strict
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities • Microsoft recommends
+                                    This script disables the in-app support feature of Microsoft Edge.
+                                    
+                                    The in-app support allows users to contact Microsoft support directly from the browser [1].
+                                    This feature is enabled by default, activating the Microsoft Rewards experience in Edge [1].
+                                    It cannot be disabled by users through the standard browser settings [1].
+                                    This feature leads to sharing of browser usage data with Microsoft.
+                                    Microsoft support agents directly from the browser [1]. 
+
+                                    Authorities like The Center for Internet Security (CIS) [2]
+                                    recommend this script for enhanced security.
+                                    Microsoft recommends this script for users who favor a streamlined browser setup without unsolicited suggestions or interruptions [3].
+
+                                    This script configures the `InAppSupportEnabled` Edge policy [1] [2] [3].
+                                    The change takes effect after restarting the browser [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#inappsupportenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://github.com/privacysexy-forks/Audit-Test-Automation/blob/2ad030524021e94dbd09c7771e6ee4d9794bb4af/ATAPAuditor/AuditGroups/Microsoft%20Edge-CIS-2.0.0%23RegistrySettings.ps1#L4029-L4063 "Audit-Test-Automation/ATAPAuditor/AuditGroups/Microsoft Edge-CIS-2.0.0#RegistrySettings.ps1 at 2ad030524021e94dbd09c7771e6ee4d9794bb4af · fbprogmbh/Audit-Test-Automation | github.com"
+                                    [3]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: SetEdgePolicyViaRegistry
+                                        parameters:
+                                            valueName: InAppSupportEnabled # Edge ≥ 98
+                                            dwordData: '0'
+                                    -
+                                        function: ShowEdgeRestartSuggestion
+                            -
+                                name: Disable Edge payment data storage and ads
+                                recommend: standard
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities
+                                    This script disables Microsoft Edge's AutoFill feature for payment data and suppresses payment-related advertisements, 
+                                    enhancing privacy by preventing the storage and suggestion of unsolicited financial information.
+
+                                    By default, Microsoft Edge allows users to save and autofill payment information, such as credit and debit card details,
+                                    for quicker transactions in web forms [1] [2].
+                                    This script prevents the browser from storing new payment data [1] [2] and stops suggestions for financial instruments like
+                                    'Buy Now, Pay Later' options during checkout [1].
+
+                                    Authorities like The Defense Information Systems Agency (DISA) [2] and The Center for Internet Security (CIS) [3]
+                                    recommend this script for enhanced security.
+                                    DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
+
+                                    Furthermore, Microsoft recommends the use of this script for a cleaner browser interface free from unsolicited suggestions [4]
+                                    and to improve privacy by controlling data connections [5].
+
+                                    This script configures the `AutofillCreditCardEnabled` Edge policy [1] [2] [3] [4] [5].
+                                    Running this script does not require a browser restart for the changes to take effect [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#autofillcreditcardenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240624224149/https://www.stigviewer.com/stig/microsoft_edge/2022-09-09/finding/V-235745 "AutoFill for credit cards must be disabled. | www.stigviewer.com"
+                                    [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [4]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: AutofillCreditCardEnabled # Edge ≥ 77
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge address data storage
+                                recommend: strict
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities
+                                    This script disables the AutoFill feature for addresses in Microsoft Edge, ensuring that address data
+                                    is not stored or automatically completed in web forms.
+
+                                    The AutoFill feature, by default, allows users to quickly complete address forms using previously stored information [1] [2].
+                                    
+                                    Running this script results in:
+                                    - No new address information being saved  [1] [2].
+                                    - AutoFill not suggesting or filling in any previously stored address information  [1] [2].
+                                    - AutoFill remaining inactive for address forms, except in payment and password fields  [1].
+                                    - Microsoft Edge will not suggest, store, or AutoFill any new address entries  [1].
+
+                                    Authorities like The Defense Information Systems Agency (DISA) [2] and The Center for Internet Security (CIS) [3]
+                                    recommend this script for enhanced security.
+                                    DISA categorizes the absence of this setting as a medium severity security vulnerability [2].
+
+                                    Furthermore, Microsoft supports the use of this script for a cleaner browser interface free from unsolicited suggestions [4]
+                                    and to improve privacy by controlling data connections [5].
+
+                                    This script configures the `AutofillAddressEnabled` Edge policy [1] [2] [3] [4] [5].
+                                    Running this script does not require a browser restart for the changes to take effect [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#autofilladdressenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240624224149/https://www.stigviewer.com/stig/microsoft_edge/2022-09-09/finding/V-235745 "Autofill for addresses must be disabled. | www.stigviewer.com"
+                                    [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [4]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: AutofillAddressEnabled # Edge ≥ 77
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge experimentation and remote configurations
+                                recommend: standard
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the Experimentation and Configuration Service in Microsoft Edge, effectively stopping
+                                    automatic updates and data exchanges that are typically used for testing new features and optimizing the user
+                                    experience.
+
+                                    This service sends payloads to Edge that may contain experimental features and settings recommendations designed
+                                    to improve user experience [1].
+                                    It may also change the browser's behavior on specific websites, for example, by overriding the User Agent string [1].
+
+                                    By default, the service operates in `FullMode`, downloading both experimental and configuration data [1].
+                                    In certain configurations, the service may download only the settings recommendations (`ConfigurationsOnlyMode`) [1].
+                                    Disabling this service through this script sets it to `RestrictedMode`, meaning no data will be sent back
+                                    to Microsoft [2], and no payloads will be delivered [1].
+
+                                    This setting is recommended by authorities like The Center for Internet Security (CIS) for enhanced security [2]
+                                    and by Microsoft to control data connections more securely [3].
+
+                                    This service can potentially compromise privacy because it involves sending data back to Microsoft,
+                                    which includes feedback on development features and actions taken on certain domains [2].
+                                    It can also deliver a payload that contains a list of actions to take on certain domains [2].
+
+                                    This script configures the `ExperimentationAndConfigurationServiceControl` Edge policy [1].
+                                    Running this script does not require a browser restart for the changes to take effect [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#experimentationandconfigurationservicecontrol "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: ExperimentationAndConfigurationServiceControl # Edge ≥ 77
+                                        dwordData: '0' # RestrictedMode (0) = Disable | ConfigurationsOnlyMode (1) = Configurations | FullMode (2) = Configurations + Experiments
+                            -
+                                name: Disable Edge automatic startup
+                                recommend: standard
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the Startup Boost feature in Microsoft Edge.
+                                    
+                                    Startup Boost enables Edge to launch more quickly by allowing certain processes to start at OS sign-in [1].
+                                    It keeps running in the background even after all browser windows are closed [1] [2].
+                                    While this can decrease the browser's start time [2], it might also pose privacy and security risks.
+
+                                    Disabling this feature prevents Edge from starting automatically with your computer, enhancing privacy
+                                    by stopping the background processes that could transmit data without active user interaction.
+                                    This also bolsters security by ensuring no residual or malicious scripts continue to operate after the browser is closed [3].
+                                    Additionally, it may improve system performance by freeing up resources otherwise used by these background processes.
+
+                                    The Center for Internet Security (CIS) recommends disabling this feature to secure personal data and reduce potential
+                                    vulnerabilities [3].
+
+                                    This script configures the `StartupBoostEnabled` Edge policy [1] [4].
+                                    Running this script does not require a browser restart for the changes to take effect [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#startupboostenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240625103236/https://support.microsoft.com/en-us/topic/get-help-with-startup-boost-ebef73ed-5c72-462f-8726-512782c5e442 "Get help with startup boost - Microsoft Support | support.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240625103212/https://www.syxsense.com/syxsense-securityarticles/cis_benchmarks/syx-1033-12749.html "Startup Boost Enabled (CIS LEVEL 1 MS Edge) | www.syxsense.com"
+                                    [4]: https://github.com/privacysexy-forks/Audit-Test-Automation/blob/2ad030524021e94dbd09c7771e6ee4d9794bb4af/ATAPAuditor/AuditGroups/Microsoft%20Edge-CIS-2.0.0%23RegistrySettings.ps1#L685-L720
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: StartupBoostEnabled # Edge ≥ 88
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge external connectivity checks
+                                recommend: standard # Edge can still rely on native connectivity check APIs
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the automatic use of a web service for resolving navigation errors in Microsoft Edge.
+
+                                    By default, Microsoft Edge contacts a web service to diagnose connectivity issues, especially in public
+                                    networks such as those in hotels and airports [1] [2].
+                                    This functionality can unintentionally reveal network-related information, potentially including sensitive
+                                    personal data [2].
+
+                                    The Center for Internet Security (CIS) recommends deactivating this feature to prevent potential privacy breaches
+                                    and security threats from network data leaks [2].
+
+                                    Running this script ensures that Edge relies solely on native APIs to handle network connectivity and navigation errors,
+                                    enhancing privacy by not transmitting data to external services [1] [2].
+                                    It ensures that all navigational errors are managed locally without external web services, maintaining the resolution
+                                    process entirely within the system [1] [2].
+
+                                    This action does not impede Edge's ability to resolve connectivity issues using its native capabilities [1] [2].
+
+                                    This script configures the `ResolveNavigationErrorsUseWebService` Edge policy [1].
+                                    Running this script does not require a browser restart for the changes to take effect [1].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#resolvenavigationerrorsusewebservice "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: ResolveNavigationErrorsUseWebService # Edge ≥ 77
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge Family Safety settings
+                                recommend: strict
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the Family Safety settings in Microsoft Edge.
+
+                                    Microsoft Family Safety collects personal information such as names, email addresses, birth dates, and other
+                                    diagnostic data [1].
+                                    By default, Edge features a dedicated family settings page and offers a Kids Mode for safer browsing experiences
+                                    tailored for children [2].
+
+                                    This script:
+
+                                    - Removes the Family page from the settings menu, which provides information on features associated with Microsoft Family Safety [2].
+                                    - Blocks navigation to the `edge://settings/family` URL [2].
+                                    - Disables Kids Mode, a child-friendly environment that includes custom themes and restricted browsing, and requires a device password to exit [2].
+
+                                    Disabling these features helps protect privacy by preventing the collection of personal and diagnostic data associated with family settings.
+                                    It prevents the unintentional sharing or management of children's browsing data and other sensitive details via Edge's Family Safety protocols.
+
+                                    This script configures the `FamilySafetySettingsEnabled` Edge policy [2].
+                                    Running this script does not require a browser restart for the changes to take effect [2].
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20231008130529/https://support.microsoft.com/en-us/account-billing/family-safety-data-collection-and-privacy-options-3d01b791-e48a-498f-bfa6-97f0d373cd9c "Family Safety data collection and privacy options - Microsoft Support"
+                                    [2]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#familysafetysettingsenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: FamilySafetySettingsEnabled # Edge ≥ 83
+                                        dwordData: '0'
+                            -
+                                name: Disable Edge site information gathering from Bing
+                                recommend: strict
+                                docs: |- # refactor-with-variables: • Chromium Policy Caution
+                                    This script disables the Site Safety Services in Microsoft Edge.
+                                    
+                                    By default, this service displays top site information in the page information dialog [1].
+                                    Clicking the lock icon in the address bar causes Edge to retrieve detailed site information from Microsoft Bing [2] [3].
+
+                                    Although intended to enhance security by providing detailed website information [3], this feature also collects data
+                                    about your visits, posing privacy risks.
+                                    This script stops Edge from displaying this information [1], enhancing your privacy by reducing data transmission to Microsoft.
+                                    It prevents Microsoft from automatically querying or storing information about the sites you visit, thereby
+                                    maintaining greater control over your personal browsing data.
+
+                                    > **Caution**:
+                                    > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                    > - This locks settings and prevents them from being changed on the settings page.
+
+                                    [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#sitesafetyservicesenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240625110427/https://www.tenforums.com/browsers-email/148535-latest-microsoft-edge-released-windows-212.html#post2292645 "Latest Microsoft Edge released for Windows - Page 212 - Windows 10 Forums | www.tenforums.com"
+                                    [3]: https://web.archive.org/web/20240625111427/https://www.digitalinformationworld.com/2021/09/microsoft-edge-to-soon-have-feature.html "Microsoft Edge to soon have a feature that will allow its users to be able to know more about a site in its information box | www.digitalinformationworld.com"
+                                call:
+                                    function: SetEdgePolicyViaRegistry
+                                    parameters:
+                                        valueName: SiteSafetyServicesEnabled # Edge ≥ 101
+                                        dwordData: '0'
                     -
                         category: Configure Edge (Legacy)
                         docs: |-
@@ -7090,6 +8568,26 @@ actions:
                                     parameters:
                                         policySubkey: SearchScopes
                                         valueName: ShowSearchSuggestionsGlobal
+                                        dwordData: "0"
+                            -
+                                name: Disable Edge (Legacy) Books telemetry
+                                recommend: standard
+                                docs: |- # refactor-with-variables: • Edge (Legacy) only
+                                    This script prevents Microsoft Edge (Legacy) from sending additional telemetry data from the Books tab.
+
+                                    By default, Edge collects basic telemetry data based on your device settings [1].
+                                    This script ensures that only this basic telemetry is collected, and no extra data is transmitted when accessing
+                                    the Books feature.
+
+                                    This script configures the `EnableExtendedBooksTelemetry` Edge policy [1].
+                                    This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
+
+                                    [1]: https://web.archive.org/web/20240314125209/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-browser#enableextendedbookstelemetry "Browser Policy CSP - Windows Client Management | Microsoft Learn  | learn.microsoft.com"
+                                call:
+                                    function: SetLegacyEdgePolicyViaRegistry
+                                    parameters:
+                                        policySubkey: BooksLibrary
+                                        valueName: EnableExtendedBooksTelemetry
                                         dwordData: "0"
                     -
                         category: Configure Internet Explorer

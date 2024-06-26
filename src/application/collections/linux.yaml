@@ -2627,7 +2627,7 @@ actions:
           [3]: https://web.archive.org/web/20221008150941/https://support.mozilla.org/en-US/kb/how-does-phishing-and-malware-protection-work "How does built-in Phishing and Malware Protection work? | Firefox Help | support.mozilla.org"
         children:
           -
-            category: Harden Firefox privacy
+            category: Harden Firefox privacy # Same name as Windows > "Harden Edge privacy"
             docs: |-
               The following are privacy-focused tweaks to prevent browser fingerprinting and tracking.
 
