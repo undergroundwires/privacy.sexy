@@ -558,10 +558,10 @@ actions:
                                         parameters:
                                             directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files'
                                             # This directory consists of 4 additional folders:
-                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5
-                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\IE
-                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Low
-                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Virtualized
+                                            #  - %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files\Content.IE5
+                                            #  - %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files\IE
+                                            #  - %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files\Low
+                                            #  - %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files\Virtualized
                                             # Since Windows 10 22H2 and Windows 11 22H2, data files are observed in this subdirectories but not on the parent.
                                             # Especially in `IE` folder includes many files. These folders are protected and hidden by default.
                                             grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
@@ -1577,7 +1577,7 @@ actions:
                       and that all analysis is conducted locally [1] [2] [3] [7].
                       However, Microsoft has not specified whether it collects the results of these analyses or any related diagnostic data.
                       United Kingdom's data protection agency finds this lack of transparency worrying [4] [7].
-                    - **Language model vulnerbailities:**
+                    - **Language model vulnerabilities:**
                       Language models susceptibility to attacks like prompt engineering underlines its security risks [8].
                       More about security vulnerabilities: [Attacks on language models](https://erkinekici.com/articles/attacks-on-language-models/).
 
@@ -1611,7 +1611,7 @@ actions:
                     data misuse.
 
                     It specifically targets UWP (Universal Windows Platform) apps.
-                    These apps can be both native system apps [1] and third-party apps [2] [3].
+                    These apps can be both native system apps [1] and third-party apps [2].
                     They are typically available through the Microsoft Store [1] [2].
                     These scripts only affect UWP apps, not desktop applications outside the UWP ecosystem.
 
@@ -1993,7 +1993,7 @@ actions:
                             -
                                 name: Disable app access to personal files
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Same • App Access Caution • Template as other other file access restriction scripts
+                                docs: |- # refactor-with-variable: Same • App Access Caution • Template as other file access restriction scripts
                                     This script restricts app access to the broader file system [1] [2].
                                     It restricts app access to files that the user has access to without user consent [2].
                                     After running this script, apps can still access the files when explicitly permitted [1].
@@ -2593,7 +2593,7 @@ actions:
                         docs: |- # refactor-with-variable: Same • App Access Caution
                             This script restricts Windows apps from taking screenshots of the user's screen [1] [2] [3].
 
-                            This script improves privacy by blocking apps from taking screenshots programatically [1] [3],
+                            This script improves privacy by blocking apps from taking screenshots programmatically [1] [3],
                             and without showing a screenshot border [3], without explicit user instruction.
 
                             This script configures:
@@ -5863,7 +5863,7 @@ actions:
                             Visual Studio Standard Collector Service is a service that is part of
                             [Microsoft Visual Studio and .NET Log Collection Tool](https://web.archive.org/web/20231207105404/https://www.microsoft.com/en-us/download/details.aspx?id=12493) [1].
                             This service collects logs for Diagnostics Hub just like Diagnostic Hub Standard Collector [2].
-                            It has been known to be vulnerable to privilege elavation [3] [4].
+                            It has been known to be vulnerable to privilege elevation [3] [4].
 
                             Disabling this service is recommended because otherwise it would:
                             - Increase the attack surface of your computer, making it open to potential future vulnerabilities.
@@ -7231,7 +7231,7 @@ actions:
                                     [3]: https://web.archive.org/web/20240528101406/https://www.thewindowsclub.com/disable-google-chrome-software-reporter-tool "How to disable Google Chrome Software Reporter Tool | www.thewindowsclub.com"
                                     [4]: https://web.archive.org/web/20240528101617/https://support.google.com/chrome/a/thread/99323901/the-software-reporter-tool-exe-is-malware-admins-need-control-back-over-this-unwanted-software?hl=en "The software_reporter_tool.exe is malware - admins need control back over this unwanted software. - Chrome Enterprise & Education Community | support.google.com"
                                     [5]: https://web.archive.org/web/20240528101401/https://appuals.com/how-to-fix-software-reporter-tool-high-cpu-usage/ "How to Fix Software Reporter Tool High CPU usage | appuals.com"
-                                    [6]: https://archive.today/2018.05.24-082444/https://productforums.google.com/forum/%23!topic/chrome/bFhfVkR-ENo "Clarification from a Google community specialist | What is software_reporter_tool in this version of Chrome? Software Reporter Tool - Google Product Forums | productforums.google.com"
+                                    [6]: https://archive.ph/2018.05.24-082444/https://productforums.google.com/forum/%23!topic/chrome/bFhfVkR-ENo "Clarification from a Google community specialist | What is software_reporter_tool in this version of Chrome? Software Reporter Tool - Google Product Forums | productforums.google.com"
                                 call:
                                     function: TerminateAndBlockExecution
                                     parameters:
@@ -7392,7 +7392,7 @@ actions:
                                 recommend: standard
                                 docs: |-
                                     This script stops Firefox from automatically checking its default browser status and reporting to Mozilla every 24 hours [1] [2] by
-                                    disabling specific scheduled tasks that initiate initiate Firefox's *Default Browser Agent*.
+                                    disabling specific scheduled tasks that initiate Firefox's *Default Browser Agent*.
                                     It protects your privacy by preventing regular data sharing.
 
                                     ### Overview of default task statuses
@@ -7473,7 +7473,7 @@ actions:
                         name: Disable "Google Update Service" services
                         recommend: standard # Safe-to-disable as they're stopped by default
                         docs: |-
-                            This script disables the "Google Update Service" services
+                            This script disables the "Google Update Service" services.
                             These services are identified as `gupdate` and `gupdatem` [1] [2] [3].
                             They are responsible for keeping Google software up to date by initiating updates [4].
                             They are linked to the `GoogleUpdate.exe` executable located in the `%PROGRAMFILES%\Google\Update` directory [5] [6] [7].
@@ -16002,7 +16002,7 @@ actions:
                         name: Remove "App Connector" app
                         recommend: strict
                         docs: |-
-                            This script unininstalls the "App Connector" Windows app.
+                            This script uninstalls the "App Connector" Windows app.
 
                             The App Connector app accesses elements like your location, camera, contacts, and calendars [1] [2] [3].
                             This raises some concerns about user privacy [2].
@@ -16106,7 +16106,7 @@ actions:
                                     | Windows 11 | 23H2 | ❌ |
 
                                     [1]: https://web.archive.org/web/20231003172322/https://apps.microsoft.com/store/detail/3d-builder/9WZDNCRFJ3T6?hl=en-us "3D Builder - Microsoft Store Apps | apps.microsoft.com"
-                                    [2]: https://archive.today/2024.05.20-104104/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-23378 "CVE-2023-23378 - Security Update Guide - Microsoft - Print 3D Remote Code Execution Vulnerability | msrc.microsoft.com"
+                                    [2]: https://archive.ph/2024.05.20-104104/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-23378 "CVE-2023-23378 - Security Update Guide - Microsoft - Print 3D Remote Code Execution Vulnerability | msrc.microsoft.com"
                                     [3]: https://web.archive.org/web/20240403064138/https://learn.microsoft.com/en-us/windows/whats-new/deprecated-features "Deprecated features in the Windows client - What's new in Windows | Microsoft Learn | learn.microsoft.com"
                                     [4]: https://web.archive.org/web/20240520104135/https://github.com/MicrosoftDocs/windows-itpro-docs/pull/4153#issuecomment-519160643 "Provisioned Apps list + System Apps list for Windows 10 1903 by RAJU2529 · Pull Request #4153 · MicrosoftDocs/windows-itpro-docs | github.com"
                                     [5]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
@@ -19577,8 +19577,8 @@ actions:
                                             [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                             [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                             [3]: https://web.archive.org/web/20240515081857/https://betawiki.net/wiki/Windows_10_build_10041_(fbl_impressive) "Windows 10 build 10041 (fbl_impressive) - BetaWiki | betawiki.net"
-                                            [4]: https://archive.today/2024.05.15-082810/https://thecollectionbook.info/windows/10/1432 "Microsoft Windows 10, 10.0.9909.0 - The Collection Book | thecollectionbook.info"
-                                            [5]: https://archive.today/2024.05.15-082800/https://www.betaworld.cn/index.php?title=Windows_10:10.0.9909.0.fbl_awesome1501.141213-2119&mobileaction=toggle_view_desktop "Windows 10:10.0.9909.0.fbl_awesome1501.141213-2119 - BetaWorld 百科 | betaworld.cn"
+                                            [4]: https://archive.ph/2024.05.15-082810/https://thecollectionbook.info/windows/10/1432 "Microsoft Windows 10, 10.0.9909.0 - The Collection Book | thecollectionbook.info"
+                                            [5]: https://archive.ph/2024.05.15-082800/https://www.betaworld.cn/index.php?title=Windows_10:10.0.9909.0.fbl_awesome1501.141213-2119&mobileaction=toggle_view_desktop "Windows 10:10.0.9909.0.fbl_awesome1501.141213-2119 - BetaWorld 百科 | betaworld.cn"
                                             [6]: https://web.archive.org/web/20240515081804/https://github.com/microsoft/microsoft-ui-xaml/issues/2669 "Faulting module name: Windows.UI.Xaml.dll, version: 10.0.18362.815 · Issue #2669 · microsoft/microsoft-ui-xaml | github.com"
                                             [7]: https://web.archive.org/web/20240515081814/https://administrator.de/forum/drucken-aus-microsoft-windows-photos-funktioniert-nicht-3790564489.html "Drucken aus Microsoft.Windows.Photos funktioniert nicht - Administrator | administrator.de"
                                             [8]: https://web.archive.org/web/20240515081823/https://www.winhelponline.com/blog/restore-legacy-print-dialog-windows-11/?expand_article=1 "Restore the Legacy Print Dialog in Windows 11 22H2 » Winhelponline | winhelponline.com"
@@ -19991,7 +19991,7 @@ actions:
                             - `OneDrive Standalone Update Task-S-1-5-21-xxxxxx`
 
                             The SID, denoted by 'xxxxxx', varies per installation and represents the user account associated with the task.
-                            SID of user accounts always start with `S-1-5-21` [4], the rest of the number chages per user.
+                            SID of user accounts always start with `S-1-5-21` [4], the rest of the number changes per user.
                             To see all user SIDs, you can run `wmic useraccount get Name,sid`.
                             The SID for your account can be confirmed using `whoami /user`.
                             A SID which doesn't correspond to any user account may appear.
