@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.13.5 (2024-06-26)
+
+* ci/cd: centralize and bump artifact uploads | [22d6c79](https://github.com/undergroundwires/privacy.sexy/commit/22d6c7991eb2c138578a7d41950f301906dbf703)
+* win: document and improve Firefox telemetry #259 | [8341411](https://github.com/undergroundwires/privacy.sexy/commit/8341411be434c6d145e942b1792020ccf02f58c8)
+* Add image to `README.md` to thank supporters | [fa2a92b](https://github.com/undergroundwires/privacy.sexy/commit/fa2a92bf893933bf5cd04512a712b7aa1b921277)
+* win: improve executable blocking, Chrome reporting | [f21ef92](https://github.com/undergroundwires/privacy.sexy/commit/f21ef9250a2f459dbd4f789d857c78298fc202e6)
+* mac: discourage and document captive portal script | [b29cd7b](https://github.com/undergroundwires/privacy.sexy/commit/b29cd7b5f74accf92c9700c3171670f82c8cb3b3)
+* win: fix revert scripts for removing shortcuts | [8becc7d](https://github.com/undergroundwires/privacy.sexy/commit/8becc7dbc46af4441900e9841a716a53735bc82e)
+* Refactor to unify scripts/categories as Executable | [c138f74](https://github.com/undergroundwires/privacy.sexy/commit/c138f74460bafaba3da55a65f3942bb6f95b1d99)
+* Add object property validation in parser #369 | [6ecfa9b](https://github.com/undergroundwires/privacy.sexy/commit/6ecfa9b954edc10401acaf5c735eec0fc9f991cd)
+* win: fix missing app access recommendations #369 | [1c2d82d](https://github.com/undergroundwires/privacy.sexy/commit/1c2d82dc9bd412ea601ab2550ba0b4f7d144f8e8)
+* win: fix text and handwriting script omission #369 | [1a10cf2](https://github.com/undergroundwires/privacy.sexy/commit/1a10cf2e5f87cd8eb421ef77f6ce764b5482515e)
+* mac: document, improve, encourage clearing logs | [e9a5285](https://github.com/undergroundwires/privacy.sexy/commit/e9a52859f63609c3f56def0b3e4d1ac6e5661536)
+* Add schema validation for collection files #369 | [dc03bff](https://github.com/undergroundwires/privacy.sexy/commit/dc03bff324d673101002bb16f14e0429e8170fbb)
+* win: fix incomplete VSCEIP, location scripts | [48761f6](https://github.com/undergroundwires/privacy.sexy/commit/48761f62a242f0910307994271cbe6730fb30f7e)
+* Add type validation for parameters and fix types | [fac26a6](https://github.com/undergroundwires/privacy.sexy/commit/fac26a6ca07479c84fe62c5ea2a572dad1898ef8)
+* Bump Electron to latest | [ed93614](https://github.com/undergroundwires/privacy.sexy/commit/ed93614ca34b1ab166e645cc5bedd497b0caeaac)
+* Trim compiler error output for better readability | [78c62cf](https://github.com/undergroundwires/privacy.sexy/commit/78c62cfc953dbba543d8bdc42828a4ef4b13a7c7)
+* win: fix errors due to missing Edge uninstaller | [2f82873](https://github.com/undergroundwires/privacy.sexy/commit/2f828735a87f98ba87b4fc826823d1482d4f2db2)
+* win: fix latest Edge removal on Windows 10 #309 | [e7031a3](https://github.com/undergroundwires/privacy.sexy/commit/e7031a3ae4e57b6522c6ca67fc30e8a8718506b2)
+* win: categorize, rename, doc Chrome & Edge scripts | [f286f92](https://github.com/undergroundwires/privacy.sexy/commit/f286f92b1fec49e89eea8982dffbc3d6ef1defde)
+* win: add disabling Edge/WebView2 auto-updates #309 | [ed7e69c](https://github.com/undergroundwires/privacy.sexy/commit/ed7e69c07efe83fdb7f4af13aa220ff991fbbe59)
+* win, linux, mac: fix typos #373 | [c09c5ff](https://github.com/undergroundwires/privacy.sexy/commit/c09c5ffa47865f7c76910644558b6783ed44f1e4)
+* win: add more Edge scripts including AI & ads | [1430d52](https://github.com/undergroundwires/privacy.sexy/commit/1430d5215ab094d8201710761d631dc2bd740918)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.13.4...0.13.5)
+
 ## 0.13.4 (2024-05-27)
 
 * Add specific empty function name compiler error | [870120b](https://github.com/undergroundwires/privacy.sexy/commit/870120bc13909a3681e0f0a2351806849476342f)
