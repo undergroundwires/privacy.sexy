@@ -14957,10 +14957,10 @@ actions:
                                                 taskNamePattern: Windows Defender Verification
                             -
                                 category: Disable Defender services and drivers
-                                # Normally users can disable services on GUI or using commands like "sc config"
-                                # However Defender services are protected with different ways
-                                #   1. Some cannot be disabled (access error) normally but only with DisableServiceInRegistry
-                                #   2. Some cannot be disabled even using DisableServiceInRegistry, must be disabled as TrustedInstaller using RunInlineCodeAsTrustedInstaller
+                                # Windows Defender services are protected, requiring escalated methods to disable them:
+                                #   1. Try `DisableService` first, as this is the standard method recommended for disabling services.
+                                #   2. Try `DisableServiceInRegistry` if the first attempt fails due to access errors.
+                                #   3. Try `DisableServiceInRegistryAsTrustedInstaller` as last effort.
                                 children:
                                     -
                                         name: Disable "Microsoft Defender Antivirus Service"
@@ -14968,13 +14968,23 @@ actions:
                                         #   E.g. `Set-MpPreference -Force -MAPSReporting 0` throws:
                                         #       `Set-MpPreference: Operation failed with the following error: 0x800106ba. Operation: Set-MpPreference.`
                                         #       `Target: MAPS_MAPSReporting. FullyQualifiedErrorId : HRESULT 0x800106ba,Set-MpPreference`
-                                        docs: https://web.archive.org/web/20240314091238/https://batcmd.com/windows/10/services/windefend/
+                                        docs: |-
+                                            https://web.archive.org/web/20240314091238/https://batcmd.com/windows/10/services/windefend/
+
+                                            ### Overview of default service statuses
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
+                                            | Windows 11 (≥ 23H2) | 🟢 Running | Automatic |
                                         call:
                                             -
-                                                function: RunInlineCodeAsTrustedInstaller
+                                                # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                function: DisableServiceInRegistryAsTrustedInstaller
                                                 parameters:
-                                                    code: sc stop "WinDefend" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "4" /f
-                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "2" /f & sc start "WinDefend" >nul 2>&1
+                                                    serviceName: WinDefend # Check: (Get-Service -Name 'WinDefend').StartType
+                                                    defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
                                             # - # ❌ "Access is denied" when renaming file, cannot grant permissions (Attempted to perform an unauthorized operation) since Windows 10 22H2 and Windows 11 22H2
                                             #     function: SoftDeleteFiles
                                             #     parameters:
@@ -14986,16 +14996,26 @@ actions:
                                             # - Skipping wdnsfltr ("Windows Defender Network Stream Filter Driver") as it's Windows 1709 only
                                             -
                                                 name: Disable "Microsoft Defender Antivirus Network Inspection System Driver" service
-                                                docs: https://web.archive.org/web/20240314062056/https://batcmd.com/windows/10/services/wdnisdrv/
+                                                docs: |-
+                                                    https://web.archive.org/web/20240314062056/https://batcmd.com/windows/10/services/wdnisdrv/
+
+                                                    ### Overview of default service statuses
+
+                                                    | OS Version | Status | Start type |
+                                                    | ---------- | -------| ---------- |
+                                                    | Windows 10 (≥ 22H2) | 🟢 Running | Manual |
+                                                    | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
                                                 call:
                                                     # Excluding:
                                                     #   - `%SYSTEMROOT%\System32\drivers\wd\WdNisDrv.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
-                                                        function: RunInlineCodeAsTrustedInstaller
+                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                        function: DisableServiceInRegistryAsTrustedInstaller
                                                         parameters:
-                                                            # "net stop" is used to stop dependent services as well, "sc stop" fails
-                                                            code: net stop "WdNisDrv" /yes >nul & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "4" /f
-                                                            revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "3" /f & sc start "WdNisDrv" >nul
+                                                            serviceName: WdNisDrv # Check: (Get-Service -Name 'WdNisDrv').StartType
+                                                            defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
+                                                            waitForDependentServicesOnStop: 'true' # Or it fails, `Microsoft Defender Antivirus Network Inspection Service (WdNisSvc)` depends on this
                                                     -
                                                         function: SoftDeleteFiles
                                                         parameters:
@@ -15003,17 +15023,27 @@ actions:
                                                             grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                             -
                                                 name: Disable "Microsoft Defender Antivirus Mini-Filter Driver" service
-                                                docs:
+                                                docs: |-
                                                     - https://web.archive.org/web/20240314091638/https://n4r1b.com/posts/2020/01/dissecting-the-windows-defender-driver-wdfilter-part-1/
                                                     - https://web.archive.org/web/20240314062047/https://batcmd.com/windows/10/services/wdfilter/
+
+                                                    ### Overview of default service statuses
+
+                                                    | OS Version | Status | Start type |
+                                                    | ---------- | -------| ---------- |
+                                                    | Windows 10 (≥ 22H2) | 🟢 Running | Boot |
+                                                    | Windows 11 (≥ 23H2) | 🟢 Running | Boot |
                                                 call:
                                                     # Excluding:
                                                     #   - `%SYSTEMROOT%\System32\drivers\wd\WdFilter.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
-                                                        function: RunInlineCodeAsTrustedInstaller
+                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                        function: DisableServiceInRegistryAsTrustedInstaller
                                                         parameters:
-                                                            code: sc stop "WdFilter" >nul & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "4" /f
-                                                            revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "0" /f & sc start "WdFilter" >nul
+                                                            serviceName: WdFilter # Check: (Get-Service -Name 'WdFilter').StartType
+                                                            defaultStartupMode: Boot # Allowed values: Boot | System | Automatic | Manual
+                                                            # notStoppable: true # See `sc queryex WdFilter`, tested since Windows 10 22H2, Windows 11 22H2.
                                                     -
                                                         function: SoftDeleteFiles
                                                         parameters:
@@ -15021,15 +15051,25 @@ actions:
                                                             grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                             -
                                                 name: Disable "Microsoft Defender Antivirus Boot Driver" service
-                                                docs: https://web.archive.org/web/20240314062057/https://batcmd.com/windows/10/services/wdboot/
+                                                docs: |-
+                                                    https://web.archive.org/web/20240314062057/https://batcmd.com/windows/10/services/wdboot/
+
+                                                    ### Overview of default service statuses
+
+                                                    | OS Version | Status | Start type |
+                                                    | ---------- | -------| ---------- |
+                                                    | Windows 10 (≥ 22H2) | 🔴 Stopped | Boot |
+                                                    | Windows 11 (≥ 23H2) | 🔴 Stopped | Boot |
                                                 call:
                                                     # Excluding:
                                                     #   - `%SYSTEMROOT%\System32\drivers\wd\WdBoot.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
-                                                        function: RunInlineCodeAsTrustedInstaller
+                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                        function: DisableServiceInRegistryAsTrustedInstaller
                                                         parameters:
-                                                            code: sc stop "WdBoot" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "4" /f
-                                                            revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "0" /f & sc start "WdBoot" >nul 2>&1
+                                                            serviceName: WdBoot # Check: (Get-Service -Name 'WdBoot').StartType
+                                                            defaultStartupMode: Boot # Allowed values: Boot | System | Automatic | Manual
                                                     -
                                                         function: SoftDeleteFiles
                                                         parameters:
@@ -15037,15 +15077,24 @@ actions:
                                                             grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Microsoft Defender Antivirus Network Inspection" service
-                                        docs:
+                                        docs: |-
                                             - https://web.archive.org/web/20240314091310/https://batcmd.com/windows/10/services/wdnissvc/
                                             - https://www.howtogeek.com/357184/what-is-microsoft-network-realtime-inspection-service-nissrv.exe-and-why-is-it-running-on-my-pc/
+
+                                            ### Overview of default service statuses
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🟢 Running | Manual |
+                                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
                                         call:
                                             -
-                                                function: RunInlineCodeAsTrustedInstaller
+                                                # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                function: DisableServiceInRegistryAsTrustedInstaller
                                                 parameters:
-                                                    code: sc stop "WdNisSvc" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "4" /f
-                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "2" /f & sc start "WdNisSvc" >nul 2>&1
+                                                    serviceName: WdNisSvc # Check: (Get-Service -Name 'WdNisSvc').StartType
+                                                    defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
                                             # - # ❌ "Access is denied" when renaming file, cannot grant permissions (Attempted to perform an unauthorized operation) since Windows 10 22H2 and Windows 11 22H2
                                             #     function: SoftDeleteFiles
                                             #     parameters:
@@ -15053,13 +15102,24 @@ actions:
                                             #       grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Windows Defender Advanced Threat Protection Service" service
-                                        docs: https://web.archive.org/web/20240314091443/https://batcmd.com/windows/10/services/sense/
+                                        docs: |-
+                                            https://web.archive.org/web/20240314091443/https://batcmd.com/windows/10/services/sense/
+
+                                            ### Overview of default service statuses
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
                                         call:
                                             -
-                                                function: RunInlineCodeAsTrustedInstaller # We must disable it on registry level, "Access is denied" for sc config
+                                                function: DisableServiceInRegistry
+                                                # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                # Windows 11 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                # Windows 11 (23H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
                                                 parameters:
-                                                    code: sc stop "Sense" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "4" /f
-                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "3" /f & sc start "Sense" >nul 2>&1 # Allowed values: Boot | System | Automatic | Manual
+                                                    serviceName: Sense # Check: (Get-Service -Name 'Sense').StartType
+                                                    defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
                                             -
                                                 function: SoftDeleteFiles
                                                 parameters:
@@ -15077,24 +15137,25 @@ actions:
 
                                             The "Windows Security" interface relies on the "Windows Security Service" which further depends on the "Windows Security Center Service" (`wscsvc`) [1].
 
+                                            ### Overview of default service statuses
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🟢 Running | Manual |
+                                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
+
                                             [1]: https://web.archive.org/web/20231013153902/https://learn.microsoft.com/en-us/windows/security/operating-system-security/system-security/windows-defender-security-center/windows-defender-security-center "Windows Security - Windows Security | Microsoft Learn"
                                             [2]: https://web.archive.org/web/20231013160338/http://batcmd.com/windows/10/services/securityhealthservice/ "Windows Security Service - Windows 10 Service - batcmd.com"
                                             [3]: https://web.archive.org/web/20231013160352/https://strontic.github.io/xcyclopedia/library/SecurityHealthService.exe-96BE970B2CB0BB0A86D8F74C1A3F8596.html "SecurityHealthService.exe | Windows Security Health Service | STRONTIC | strontic.github.io"
                                             [4]: https://web.archive.org/web/20231013160458/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-antivirus-compatibility?view=o365-worldwide#notes-about-protection-states
                                         call:
                                             -
-                                                # Windows 10:
-                                                #   ❌ Cannot disable through sc config as Administrator; throws "Access is denied"
-                                                #   ✅ Can disable using registry as Administrator; "DisableServiceInRegistry" function works
-                                                #   ✅ Can disable using registry as TrustedInstaller
-                                                # Windows 11:
-                                                #   ❌ Cannot disable through sc config as administrator; throws "Access is denied"
-                                                #   ❌ Cannot disable using registry as Administrator; using DisableServiceInRegistry throws "Requested registry access is not allowed."
-                                                #   ✅ Can disable using registry as TrustedInstaller
-                                                function: RunInlineCodeAsTrustedInstaller
+                                                # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                                function: DisableServiceInRegistryAsTrustedInstaller
                                                 parameters:
-                                                    code: sc stop "SecurityHealthService" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 4 /f
-                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 3 /f & sc start "SecurityHealthService" >nul 2>&1
+                                                    serviceName: SecurityHealthService # Check: (Get-Service -Name 'SecurityHealthService').StartType
+                                                    defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
                                             -
                                                 function: SoftDeleteFiles
                                                 parameters:
@@ -15668,9 +15729,12 @@ actions:
                                     [9]: https://web.archive.org/web/20231129203543/https://call4cloud.nl/2022/03/before-we-wipe/ "KB5011487 | KB5011493 | 2022-03 | Windows.old wipe Issue | call4cloud.nl"
                                 call:
                                     -
+                                        # Windows 10 (21H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                        # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                        # Windows 11 (21H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                        # Windows 11 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                        # Windows 11 (23H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
                                         function: DisableServiceInRegistry
-                                        # Since Windows 10 21H2 and Windows 11 21H2:
-                                        #   - ❗️ Using `sc config` results in "Access in denied", so registry should be used to disable the service.
                                         parameters:
                                             serviceName: WaaSMedicSvc # Check: (Get-Service -Name 'WaaSMedicSvc').StartType
                                             defaultStartupMode: Manual # Allowed values: Automatic | Manual
@@ -23453,7 +23517,7 @@ functions:
             - name: featureName             # The name of the Windows feature to be disabled
             - name: disabledByDefault       # Specifies whether the feature is disabled by default in the operating system.
               optional: true                # If set to true, the function will not re-enable the feature during a revert operation.
-            - name: ignoreMissingOnRevert   # When set to true, the revert operation will skip any actions for services that cannot be found, instead of failing.
+            - name: ignoreMissingOnRevert   # When set to true, the revert operation will skip any actions for features that cannot be found, instead of failing.
               optional: false
         call:
             -
@@ -24149,7 +24213,9 @@ functions:
                 #           - ✅ Using `schtasks.exe /delete /tn "$taskName" /f` with additional `| Out-Null` or `2>&1 | Out-Null`
                 #                to suppress errors.
                 code: |-
-                    $command = '{{ $code }}'
+                    $command = @'
+                        {{ $code }}
+                    '@
                     $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
                     $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
                     $streamOutFile = New-TemporaryFile
@@ -24192,9 +24258,13 @@ functions:
                     } finally {
                         Remove-Item $streamOutFile, $batchFile
                     }
-                revertCode: |- # Duplicated until custom pipes are implemented
+                # Marked: refactor-with-variables
+                #   `revertCode` is complete duplicate of `code`.
+                revertCode: |-
                     {{ with $revertCode }}
-                    $command = '{{ . }}'
+                    $command = @'
+                        {{ . }}
+                    '@
                     $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
                     $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
                     $streamOutFile = New-TemporaryFile
@@ -24240,7 +24310,10 @@ functions:
                     {{ end }}
     -
         name: DisableServiceInRegistry
-        parameters:
+        # 💡 Purpose:
+        #   Disables a specified service via the registry.
+        #   Use this method only if `DisableService` does not work.
+        parameters: # Ensure that this function has the same parameters as `DisableService` and `DisableServiceInRegistryAsTrustedInstaller` to simplify testing and interchangeability.
             - name: serviceName
             - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
         call:
@@ -24248,7 +24321,7 @@ functions:
             # Marked: refactor-with-revert-call, refactor-with-variables
             #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
             parameters:
-                code: |- # We do registry way because GUI, "sc config" or "Set-Service" won't not work
+                code: |- # We do the registry way because GUI, "sc config" or "Set-Service" will not work
                     $serviceQuery = '{{ $serviceName }}'
                     # -- 1. Skip if service does not exist
                     $service = Get-Service -Name $serviceQuery -ErrorAction SilentlyContinue
@@ -24337,6 +24410,99 @@ functions:
                             Write-Host "`"$serviceName`" is already running, no need to start."
                         }
                     }
+    -
+        name: DisableServiceInRegistryAsTrustedInstaller
+        # 💡 Purpose:
+        #   Disables a specified service via the registry with TrustedInstaller privileges for higher access rights.
+        #   Use this method only if `DisableServiceInRegistry` fails due to permission issues.
+        # Marked: refactor-with-variables
+        #   The logic is almost same as `DisableServiceInRegistry`, but this is executed as TrustedInstaller.
+        #   The logic should be reused.
+        parameters: # Ensure that this function has the same parameters as `DisableService` and `DisableServiceInRegistry` to simplify testing and interchangeability.
+            - name: serviceName
+            - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
+            - name: waitForDependentServicesOnStop  # Set to `true` to stop the service and wait for all dependent services to stop as well.
+              optional: true                        # Set to `false` to stop the service immediately without waiting for dependents.
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: "Disable the service `{{ $serviceName }}` using TrustedInstaller privileges"
+                    revertCodeComment: "Restore the service `{{ $serviceName }}` using TrustedInstaller privileges"
+            -
+                function: RunInlineCodeAsTrustedInstaller
+                parameters:
+                    # Some services are not stoppable (i.e. WdFilter) and attempting to stop it with `sc stop` returns:
+                    # `[SC] ControlService FAILED 1052: The requested control is not valid for this service.`. This code
+                    # handles it, and provides an user-friendly error message. If the error is something else, it prints the error
+                    # to the console.
+                    # Marked refactor-with-if-syntax:
+                    #   {{ with }} is used awkwardly with commented out code.
+                    code: |-
+                        setlocal EnableDelayedExpansion
+                            set "serviceName={{ $serviceName }}"
+                            {{ with $waitForDependentServicesOnStop }}set "stopWithDependencies=true"{{ end }}
+                            {{ with $waitForDependentServicesOnStop }}:: {{ end }}set "stopWithDependencies=false"
+                            if "!stopWithDependencies!"=="true" (
+                                echo Stopping the service "!serviceName!" and waiting for its dependencies to stop.
+                                net stop "!serviceName!" /yes
+                            ) else (
+                                echo Stopping the service "!serviceName!".
+                                sc stop "!serviceName!" >nul 2>&1
+                            )
+                            if !ERRORLEVEL! EQU 0 (
+                                echo Successfully stopped the service "!serviceName!".
+                            ) else (
+                                if !ERRORLEVEL! EQU 1052 (
+                                    echo Warning: The service "!serviceName!" does not accept a stop command and may need to be stopped manually or on reboot.
+                                ) else (
+                                    echo Error: Failed to stop service "!serviceName!" with exit code: !ERRORLEVEL!. Retrieving more information...
+                                    >&2 net helpmsg !ERRORLEVEL!
+                                )
+                            )
+                            echo Updating registry settings to disable service "!serviceName!"...
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\!serviceName!" /v "Start" /t REG_DWORD /d "4" /f
+                            if !ERRORLEVEL! EQU 0 (
+                                echo Service "!serviceName!" has been successfully disabled in the registry and will not start automatically on next boot.
+                            ) else (
+                                echo Error: Unable to disable service "!serviceName!" in the registry. Please check your permissions or contact your administrator.
+                            )
+                        endlocal
+                    revertCode: |-
+                        setlocal EnableDelayedExpansion
+                            set "serviceName={{ $serviceName }}"
+                            set "defaultStartupMode={{ $defaultStartupMode }}"
+                            set "defaultStartupRegValue=-1"
+                            echo Restoring changes for "!serviceName!"...
+                            if /i "!defaultStartupMode!"=="Boot" (
+                                set "defaultStartupRegValue=0"
+                            ) else if /i "!defaultStartupMode!"=="System" (
+                                set "defaultStartupRegValue=1"
+                            ) else if /i "!defaultStartupMode!"=="Automatic" (
+                                set "defaultStartupRegValue=2"
+                            ) else if /i "!defaultStartupMode!"=="Manual" (
+                                set "defaultStartupRegValue=3"
+                            ) else (
+                                echo Error: Unknown startup mode specified: "!defaultStartupMode!". Revert cannot proceed.
+                                exit /b 1
+                            )
+                            echo Restoring registry settings for service "!serviceName!" to default startup mode "!defaultStartupMode!"...
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\!serviceName!" /v "Start" /t REG_DWORD /d "!defaultStartupRegValue!" /f
+                            if !ERRORLEVEL! EQU 0 (
+                                echo Successfully restored the registry settings for "!serviceName!".
+                            ) else (
+                                echo Error: Failed to update registry settings for "!serviceName!". Check permissions or contact your administrator.
+                            )
+                            if /i not "!defaultStartupMode!"=="Manual" (
+                                echo Attempting to restart service "!serviceName!"...
+                                sc start "!serviceName!" >nul 2>&1
+                                if !ERRORLEVEL! EQU 0 (
+                                    echo Service "!serviceName!" restarted successfully.
+                                ) else (
+                                    echo Warning: Unable to restart service "!serviceName!". It may require a manual start or system reboot.
+                                )
+                            )
+                        endlocal
     -
         name: SetMpPreference
         # Configures preferences for Microsoft Defender scans and updates.
@@ -24589,7 +24755,7 @@ functions:
                         }
     -
         name: DisableService
-        parameters:
+        parameters: # Ensure that this function has the same parameters as `DisableServiceInRegistry` and `DisableServiceInRegistryAsTrustedInstaller` to simplify testing and interchangeability.
             - name: serviceName
             - name: defaultStartupMode      # Allowed values: Automatic | Manual
             - name: ignoreMissingOnRevert   # When set to true, the revert operation will skip any actions for services that cannot be found, instead of failing.
