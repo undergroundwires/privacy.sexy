@@ -72,6 +72,7 @@ export default defineComponent({
   .header {
     display: flex;
     flex-direction: row;
+    gap: $spacing-relative-small; // Adjusts spacing between documentation button and adjacent text to prevent visual crowding.
     .content {
       flex: 1; // Expands the content to fill available width, aligning the documentation button to the right.
     }
