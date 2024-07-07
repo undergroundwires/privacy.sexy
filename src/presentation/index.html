@@ -13,6 +13,8 @@
     "
   />
   <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="manifest.json">
   <link rel="icon" href="/favicon.ico">
 
   <!--
@@ -63,5 +65,18 @@
   </noscript>
   <div id="app"></div>
   <script type="module" src="/main.ts"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
