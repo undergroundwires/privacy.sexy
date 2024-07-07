@@ -8,10 +8,9 @@ self.addEventListener('install', (event) => {
     caches.open('app-cache').then((cache) => {
       return cache.addAll([
         '/', // root URL
-        '/index.html', // main HTML file
-        '/app.js', // main JavaScript file
-        '/styles.css', // main CSS file
-        '/images/logo.png', // logo image
+        '/icon.png',
+        '/favicon.ico',
+        '/main.ts',
       ]);
     }),
   );
