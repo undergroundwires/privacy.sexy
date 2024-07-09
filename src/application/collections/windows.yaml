@@ -21488,6 +21488,7 @@ actions:
                                     deleteOnRevert: 'true' # Missing key since Windows 10 21H2, Windows 11 21H2
                     -
                         name: Disable automatic OneDrive installation
+                        recommend: strict
                         docs: |-
                             Windows 10 comes with `OneDriveSetup` entry in startup for automatic reinstallations even though
                             OneDrive is uninstalled. This entry is missing in Windows 11 by default.
@@ -21496,22 +21497,18 @@ actions:
                             as recommended by Microsoft for optimizing Windows VDIs [1].
 
                             [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
-                        recommend: strict
                         call:
-                            function: RunPowerShell
+                            function: RunPowerShellWithWindowsVersionSpecificSetup
                             parameters:
+                                windows11SpecificSetupCode: |-
+                                    Write-Host 'Skipping, no action needed on Windows 11.'
+                                    Exit 0
                                 code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f 2>$null
                                 revertCode: |-
-                                    $osVersion = [System.Environment]::OSVersion.Version
-                                    function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
-                                    if (Test-IsWindows11) {
-                                        Write-Host 'Skipping, no action needed on Windows 11.'
+                                    if([Environment]::Is64BitOperatingSystem) {
+                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe /silent" /f
                                     } else {
-                                        if([Environment]::Is64BitOperatingSystem) {
-                                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe /silent" /f
-                                        } else {
-                                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\System32\OneDriveSetup.exe /silent" /f
-                                        }
+                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\System32\OneDriveSetup.exe /silent" /f
                                     }
                     -
                         name: Remove OneDrive folder from File Explorer
@@ -24880,23 +24877,21 @@ functions:
             - name: warn
               optional: true
         call:
-            function: RunPowerShell
+            function: RunPowerShellWithWindowsVersionSpecificSetup
             parameters:
+                windows10SpecificSetupCode: |-
+                    $ignoreWindows10 = {{ with $ignoreWindows10 }} $true # {{ end }} $false
+                    if ($ignoreWindows10) {
+                        Exit 0 # Skip
+                    }
+                windows11SpecificSetupCode: |-
+                    $ignoreWindows11 = {{ with $ignoreWindows11 }} $true # {{ end }} $false
+                    if ($ignoreWindows11) {
+                        Exit 0 # Skip
+                    }
                 code: |-
                     $message = '{{ $message }}'
-                    $ignoreWindows10 = {{ with $ignoreWindows10 }} $true # {{ end }} $false
-                    $ignoreWindows11 = {{ with $ignoreWindows11 }} $true # {{ end }} $false
                     $warn = {{ with $warn }} $true # {{ end }} $false
-
-                    $osVersion = [System.Environment]::OSVersion.Version
-                    function Test-IsWindows10 { ($osVersion.Major -eq 10) -and ($osVersion.Build -lt 22000) }
-                    function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
-
-                    if (($ignoreWindows10 -and (Test-IsWindows10)) -or ($ignoreWindows11 -and (Test-IsWindows11))) {
-                        echo "Skipping"
-                        exit 0 # Skip
-                    }
-
                     if ($warn) {
                         Write-Warning "$message"
                     } else {
@@ -24908,19 +24903,7 @@ functions:
                 revertCode: |-
                     {{ with $showOnRevert }}
                         $message = '{{ $message }}'
-                        $ignoreWindows10 = {{ with $ignoreWindows10 }} $true # {{ end }} $false
-                        $ignoreWindows11 = {{ with $ignoreWindows11 }} $true # {{ end }} $false
                         $warn = {{ with $warn }} $true # {{ end }} $false
-
-
-                        $osVersion = [System.Environment]::OSVersion.Version
-                        function Test-IsWindows10 { ($osVersion.Major -eq 10) -and ($osVersion.Build -lt 22000) }
-                        function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
-
-                        if (($ignoreWindows10 -and (Test-IsWindows10)) -or ($ignoreWindows11 -and (Test-IsWindows11))) {
-                            exit 0 # Skip
-                        }
-
                         if ($warn) {
                             Write-Warning "$message"
                         } else {
@@ -27027,3 +27010,37 @@ functions:
                 dataType: REG_DWORD
                 data: "{{ $dwordData }}"
                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since EdgeUpdate ≥ 1.3.187.41
+    -
+        name: RunPowerShellWithWindowsVersionSpecificSetup
+        # 💡 Purpose:
+        #   Executes PowerShell code conditionally based on the Windows version.
+        #   This function allows for running different PowerShell commands specifically tailored
+        #   for different Windows versions, alongside universal PowerShell code.
+        parameters:
+            - name: code                        # PowerShell code executed on all Windows versions
+            - name: revertCode                  # Optional PowerShell code to revert changes on all Windows versions
+              optional: true
+            - name: windows10SpecificSetupCode  # Optional PowerShell code executed only on Windows 10 before the main code
+              optional: true
+            - name: windows11SpecificSetupCode  # Optional PowerShell code executed only on Windows 11 before the main code
+              optional: true
+        call:
+            function: RunPowerShellWithSetup
+            parameters:
+                setupCode: |-
+                    {{ with $windows11SpecificSetupCode }}
+                        $osVersion = [System.Environment]::OSVersion.Version
+                        function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
+                        if (Test-IsWindows11) {
+                            {{ . }}
+                        }
+                    {{ end }}
+                    {{ with $windows10SpecificSetupCode }}
+                        $osVersion = [System.Environment]::OSVersion.Version
+                        function Test-IsWindows10 { ($osVersion.Major -eq 10) -and ($osVersion.Build -lt 22000) }
+                        if (Test-IsWindows10) {
+                            {{ . }}
+                        }
+                    {{ end }}
+                code: '{{ $code }}'
+                revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
