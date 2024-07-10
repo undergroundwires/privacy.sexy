@@ -747,6 +747,10 @@ actions:
                                         function: ClearDirectoryContents
                                         parameters:
                                             directoryGlob: '%APPDATA%\Mozilla\Firefox\Profiles'
+                                    - # Firefox installations from Microsoft Store
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Packages\Mozilla.Firefox_n80bbvh6b1yt2\LocalCache\Roaming\Mozilla\Firefox\Profiles'
                     -
                         name: Clear Opera history (user profiles, settings, and data)
                         call:
@@ -25546,6 +25550,10 @@ functions:
                 function: DeleteFiles
                 parameters:
                     fileGlob: '%APPDATA%\Mozilla\Firefox\Profiles\*\{{ $pathGlob }}'
+            - # Firefox installations from Microsoft Store
+                function: DeleteFiles
+                parameters:
+                    fileGlob: '%LOCALAPPDATA%\Packages\Mozilla.Firefox_n80bbvh6b1yt2\LocalCache\Roaming\Mozilla\Firefox\Profiles\*\{{ $pathGlob }}'
     -
         name: DisableScheduledTask
         parameters:
