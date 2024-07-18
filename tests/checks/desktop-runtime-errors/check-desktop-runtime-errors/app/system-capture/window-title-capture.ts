@@ -1,4 +1,5 @@
-import { filterEmpty } from '@tests/shared/Text';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
+import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
 import { runCommand } from '../../utils/run-command';
 import { log, LogLevel } from '../../utils/log';
 import { SupportedPlatform, CURRENT_PLATFORM } from '../../utils/platform';
@@ -56,7 +57,7 @@ async function captureTitlesOnLinux(processId: number): Promise<string[]> {
     return [];
   }
 
-  const windowIds = windowIdsOutput.trim().split('\n');
+  const windowIds = splitTextIntoLines(windowIdsOutput.trim());
 
   const titles = await Promise.all(windowIds.map(async (windowId) => {
     const { stdout: titleOutput, error: titleError } = await runCommand(
@@ -68,7 +69,7 @@ async function captureTitlesOnLinux(processId: number): Promise<string[]> {
     return titleOutput.trim();
   }));
 
-  return filterEmpty(titles);
+  return filterEmptyStrings(titles);
 }
 
 let hasAssistiveAccessOnMac = true;
@@ -78,7 +79,7 @@ async function captureTitlesOnMac(processId: number): Promise<string[]> {
   if (!hasAssistiveAccessOnMac) {
     return [];
   }
-  const script = `
+  const command = constructAppleScriptCommand(`
     tell application "System Events"
       try
         set targetProcess to first process whose unix id is ${processId}
@@ -93,13 +94,8 @@ async function captureTitlesOnMac(processId: number): Promise<string[]> {
         return allWindowNames
       end tell
     end tell
-  `;
-  const argument = script.trim()
-    .split(/[\r\n]+/)
-    .map((line) => `-e '${line.trim()}'`)
-    .join(' ');
-
-  const { stdout: titleOutput, error } = await runCommand(`osascript ${argument}`);
+  `);
+  const { stdout: titleOutput, error } = await runCommand(command);
   if (error) {
     let errorMessage = '';
     if (error.includes('-25211')) {
@@ -115,4 +111,14 @@ async function captureTitlesOnMac(processId: number): Promise<string[]> {
     return [];
   }
   return [title];
+}
+
+function constructAppleScriptCommand(appleScriptCode: string): string {
+  const scriptLines = splitTextIntoLines(appleScriptCode.trim());
+  const trimmedLines = scriptLines.map((line) => line.trim());
+  const nonEmptyLines = filterEmptyStrings(trimmedLines);
+  const formattedArguments = nonEmptyLines
+    .map((line) => `-e '${line.trim()}'`)
+    .join(' ');
+  return `osascript ${formattedArguments}`;
 }

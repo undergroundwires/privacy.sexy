@@ -9,6 +9,7 @@ import { NoDuplicatedLines } from '@/application/Parser/Executable/Script/Valida
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
 import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { parseFunctionCalls, type FunctionCallsParser } from './Call/FunctionCallsParser';
@@ -82,8 +83,7 @@ function validateCode(
   syntax: ILanguageSyntax,
   validator: ICodeValidator,
 ): void {
-  [data.code, data.revertCode]
-    .filter((code): code is string => Boolean(code))
+  filterEmptyStrings([data.code, data.revertCode])
     .forEach(
       (code) => validator.throwIfInvalid(
         code,
@@ -204,9 +204,9 @@ function ensureNoDuplicateCode(functions: readonly FunctionData[]) {
   if (duplicateCodes.length > 0) {
     throw new Error(`duplicate "code" in functions: ${printList(duplicateCodes)}`);
   }
-  const duplicateRevertCodes = getDuplicates(callFunctions
-    .map((func) => func.revertCode)
-    .filter((code): code is string => Boolean(code)));
+  const duplicateRevertCodes = getDuplicates(filterEmptyStrings(
+    callFunctions.map((func) => func.revertCode),
+  ));
   if (duplicateRevertCodes.length > 0) {
     throw new Error(`duplicate "revertCode" in functions: ${printList(duplicateRevertCodes)}`);
   }

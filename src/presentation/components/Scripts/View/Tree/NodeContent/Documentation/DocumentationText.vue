@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, type PropType, computed } from 'vue';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 import MarkdownText from '../Markdown/MarkdownText.vue';
 
 export default defineComponent({
@@ -43,7 +44,7 @@ function formatAsMarkdownListItem(content: string): string {
   if (content.length === 0) {
     throw new Error('missing content');
   }
-  const lines = content.split(/\r\n|\r|\n/);
+  const lines = splitTextIntoLines(content);
   return `- ${lines[0]}${lines.slice(1)
     .map((line) => `\n  ${line}`)
     .join()}`;
@@ -61,3 +62,4 @@ function formatAsMarkdownListItem(content: string): string {
   font-size: $font-size-absolute-normal;
 }
 </style>
+@/application/Text/SplitTextIntoLines

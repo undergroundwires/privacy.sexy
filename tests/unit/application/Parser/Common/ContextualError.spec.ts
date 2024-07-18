@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { CustomError } from '@/application/Common/CustomError';
 import { wrapErrorWithAdditionalContext } from '@/application/Parser/Common/ContextualError';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 
 describe('wrapErrorWithAdditionalContext', () => {
   it('preserves the original error when wrapped', () => {
@@ -81,7 +82,7 @@ describe('wrapErrorWithAdditionalContext', () => {
         .wrap();
 
       // assert
-      const messageLines = secondError.message.split('\n');
+      const messageLines = splitTextIntoLines(secondError.message);
       expect(messageLines).to.contain(`1: ${expectedFirstContext}`);
       expect(messageLines).to.contain(`2: ${expectedSecondContext}`);
     });

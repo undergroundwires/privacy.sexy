@@ -6,6 +6,7 @@ import {
 import { TimerStub } from '@tests/unit/shared/Stubs/TimerStub';
 import { watchPromiseState, flushPromiseResolutionQueue } from '@tests/unit/shared/PromiseInspection';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 describe('UseExpandCollapseAnimation', () => {
   describe('useExpandCollapseAnimation', () => {
@@ -85,7 +86,7 @@ function runSharedTestsForAnimation(
         `Initial style value: ${expectedStyleValues}`,
         'All styles:',
         ...Object.entries(expectedStyleValues)
-          .map(([k, value]) => `\t- ${k} > actual: "${element.style[k]}" | expected: "${value}"`),
+          .map(([k, value]) => indentText(`- ${k} > actual: "${element.style[k]}" | expected: "${value}"`)),
       ]));
     });
   });

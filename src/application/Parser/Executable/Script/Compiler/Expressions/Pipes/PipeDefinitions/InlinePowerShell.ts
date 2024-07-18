@@ -1,3 +1,4 @@
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 import type { IPipe } from '../IPipe';
 
 export class InlinePowerShell implements IPipe {
@@ -89,10 +90,6 @@ function inlineComments(code: string): string {
     */
 }
 
-function getLines(code: string): string[] {
-  return (code?.split(/\r\n|\r|\n/) || []);
-}
-
 /*
   Merges inline here-strings to a single lined string with Windows line terminator (\r\n)
   https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.4#here-strings
@@ -102,7 +99,7 @@ function mergeHereStrings(code: string) {
   return code.replaceAll(regex, (_$, quotes, scope) => {
     const newString = getHereStringHandler(quotes);
     const escaped = scope.replaceAll(quotes, newString.escapedQuotes);
-    const lines = getLines(escaped);
+    const lines = splitTextIntoLines(escaped);
     const inlined = lines.join(newString.separator);
     const quoted = `${newString.quotesAround}${inlined}${newString.quotesAround}`;
     return quoted;
@@ -159,7 +156,7 @@ function mergeLinesWithBacktick(code: string) {
 }
 
 function mergeNewLines(code: string) {
-  return getLines(code)
+  return splitTextIntoLines(code)
     .map((line) => line.trim())
     .filter((line) => line.length > 0)
     .join('; ');

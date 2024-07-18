@@ -5,6 +5,7 @@ import { itEachAbsentCollectionValue, itEachAbsentStringValue } from '@tests/uni
 import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFactoryTests';
 import type { ICodeLine } from '@/application/Parser/Executable/Script/Validation/ICodeLine';
 import type { ICodeValidationRule, IInvalidCodeLine } from '@/application/Parser/Executable/Script/Validation/ICodeValidationRule';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 describe('CodeValidator', () => {
   describe('instance', () => {
@@ -63,6 +64,19 @@ describe('CodeValidator', () => {
         expect(spy.receivedLines).has.lengthOf(1);
         const actualLineIndexes = spy.receivedLines[0].map((line) => line.index);
         expect(actualLineIndexes).to.deep.equal(expectedIndexes);
+      });
+      it('counts empty lines', () => {
+        // arrange
+        const expectedTotalEmptyLines = 4;
+        const code = '\n'.repeat(expectedTotalEmptyLines - 1);
+        const spy = new CodeValidationRuleStub();
+        const sut = new CodeValidator();
+        // act
+        sut.throwIfInvalid(code, [spy]);
+        // expect
+        expect(spy.receivedLines).has.lengthOf(1);
+        const actualLines = spy.receivedLines[0];
+        expect(actualLines).to.have.lengthOf(expectedTotalEmptyLines);
       });
       it('matches texts with indexes as expected', () => {
         // arrange
@@ -145,7 +159,7 @@ class ExpectedErrorBuilder {
   public withErrorLine(text: string, error: string) {
     return this
       .withNumberedLine(`❌ ${text}`)
-      .withLine(`\t⟶ ${error}`);
+      .withLine(indentText(`⟶ ${error}`));
   }
 
   public buildError(): string {

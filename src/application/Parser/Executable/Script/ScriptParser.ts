@@ -10,6 +10,7 @@ import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptC
 import { createScriptCode } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { createEnumParser, type EnumParser } from '@/application/Common/Enum';
+import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
 import { parseDocs, type DocsParser } from '../DocumentationParser';
 import { ExecutableType } from '../Validation/ExecutableType';
 import { createExecutableDataValidator, type ExecutableValidator, type ExecutableValidatorFactory } from '../Validation/ExecutableValidator';
@@ -86,8 +87,7 @@ function validateHardcodedCodeWithoutCalls(
   validator: ICodeValidator,
   syntax: ILanguageSyntax,
 ) {
-  [scriptCode.execute, scriptCode.revert]
-    .filter((code): code is string => Boolean(code))
+  filterEmptyStrings([scriptCode.execute, scriptCode.revert])
     .forEach(
       (code) => validator.throwIfInvalid(
         code,

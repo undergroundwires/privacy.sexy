@@ -1,4 +1,4 @@
-import { indentText } from '@tests/shared/Text';
+import { indentText } from '@/application/Common/Text/IndentText';
 import { retryWithExponentialBackOff } from './ExponentialBackOffRetryHandler';
 import { fetchFollow, type FollowOptions } from './FetchFollow';
 import { getRandomUserAgent } from './UserAgents';

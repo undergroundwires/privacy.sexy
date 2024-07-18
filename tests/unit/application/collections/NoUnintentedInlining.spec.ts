@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { resolve, join, basename } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 
 /*
   A common mistake when working with yaml files to forget mentioning that a value should
@@ -42,8 +43,7 @@ async function findBadLineNumbers(fileContent: string): Promise<number[]> {
 
 function findLineNumbersEndingWith(content: string, ending: string): number[] {
   sanityCheck(content, ending);
-  return content
-    .split(/\r\n|\r|\n/)
+  return splitTextIntoLines(content)
     .map((line, index) => ({ text: line, index }))
     .filter((line) => line.text.trim().endsWith(ending))
     .map((line) => line.index + 1 /* first line is 1, not 0 */);

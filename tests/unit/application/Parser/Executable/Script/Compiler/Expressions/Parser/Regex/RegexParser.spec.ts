@@ -16,8 +16,8 @@ import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParamete
 import type { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 import type { ExpressionPositionFactory } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/ExpressionPositionFactory';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import { indentText } from '@tests/shared/Text';
 import type { FunctionParameterCollectionFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterCollectionFactory';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 describe('RegexParser', () => {
   describe('findExpressions', () => {

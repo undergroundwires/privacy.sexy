@@ -6,6 +6,7 @@ import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { createScriptCode, type ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
+import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
 import { FunctionCallSequenceCompiler } from './Function/Call/Compiler/FunctionCallSequenceCompiler';
 import { parseFunctionCalls } from './Function/Call/FunctionCallsParser';
 import { parseSharedFunctions, type SharedFunctionsParser } from './Function/SharedFunctionsParser';
@@ -71,9 +72,7 @@ export class ScriptCompiler implements IScriptCompiler {
 }
 
 function validateCompiledCode(compiledCode: CompiledCode, validator: ICodeValidator): void {
-  [compiledCode.code, compiledCode.revertCode]
-    .filter((code): code is string => Boolean(code))
-    .map((code) => code as string)
+  filterEmptyStrings([compiledCode.code, compiledCode.revertCode])
     .forEach(
       (code) => validator.throwIfInvalid(
         code,

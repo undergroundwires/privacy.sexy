@@ -1,3 +1,4 @@
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 import type { ICodeLine } from './ICodeLine';
 import type { ICodeValidationRule, IInvalidCodeLine } from './ICodeValidationRule';
 import type { ICodeValidator } from './ICodeValidator';
@@ -24,12 +25,11 @@ export class CodeValidator implements ICodeValidator {
 }
 
 function extractLines(code: string): ICodeLine[] {
-  return code
-    .split(/\r\n|\r|\n/)
-    .map((lineText, lineIndex): ICodeLine => ({
-      index: lineIndex + 1,
-      text: lineText,
-    }));
+  const lines = splitTextIntoLines(code);
+  return lines.map((lineText, lineIndex): ICodeLine => ({
+    index: lineIndex + 1,
+    text: lineText,
+  }));
 }
 
 function printLines(

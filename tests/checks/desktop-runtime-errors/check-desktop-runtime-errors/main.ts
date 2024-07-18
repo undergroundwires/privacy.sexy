@@ -1,4 +1,4 @@
-import { indentText } from '@tests/shared/Text';
+import { indentText } from '@/application/Common/Text/IndentText';
 import { logCurrentArgs, CommandLineFlag, hasCommandLineFlag } from './cli-args';
 import { log, die } from './utils/log';
 import { ensureNpmProjectDir, npmInstall, npmBuild } from './utils/npm';

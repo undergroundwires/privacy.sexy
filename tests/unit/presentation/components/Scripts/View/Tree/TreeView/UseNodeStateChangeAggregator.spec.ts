@@ -16,6 +16,7 @@ import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeSt
 import { TreeNodeStateAccessStub } from '@tests/unit/shared/Stubs/TreeNodeStateAccessStub';
 import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 import type { FunctionKeys } from '@/TypeHelpers';
+import { indentText } from '@/application/Common/Text/IndentText';
 import type { Ref } from 'vue';
 
 describe('useNodeStateChangeAggregator', () => {
@@ -277,10 +278,10 @@ function buildAssertionMessage(
   return [
     '\n',
     `Expected nodes (${nodes.length}):`,
-    nodes.map((node) => `\tid: ${node.id}\n\tstate: ${JSON.stringify(node.state.current)}`).join('\n-\n'),
+    nodes.map((node) => indentText(`id: ${node.id}\nstate: ${JSON.stringify(node.state.current)}`)).join('\n-\n'),
     '\n',
     `Actual called args (${calledArgs.length}):`,
-    calledArgs.map((args) => `\tid: ${args.node.id}\n\tnewState: ${JSON.stringify(args.newState)}`).join('\n-\n'),
+    calledArgs.map((args) => indentText(`id: ${args.node.id}\nnewState: ${JSON.stringify(args.newState)}`)).join('\n-\n'),
     '\n',
   ].join('\n');
 }

@@ -1,6 +1,7 @@
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 import type { ICodeChangedEvent } from './ICodeChangedEvent';
 
 export class CodeChangedEvent implements ICodeChangedEvent {
@@ -52,12 +53,12 @@ export class CodeChangedEvent implements ICodeChangedEvent {
 }
 
 function ensureAllPositionsExist(script: string, positions: ReadonlyArray<ICodePosition>) {
-  const totalLines = script.split(/\r\n|\r|\n/).length;
+  const totalLines = splitTextIntoLines(script).length;
   const missingPositions = positions.filter((position) => position.endLine > totalLines);
   if (missingPositions.length > 0) {
     throw new Error(
       `Out of range script end line: "${missingPositions.map((pos) => pos.endLine).join('", "')}"`
-        + `(total code lines: ${totalLines}).`,
+        + ` (total code lines: ${totalLines}).`,
     );
   }
 }

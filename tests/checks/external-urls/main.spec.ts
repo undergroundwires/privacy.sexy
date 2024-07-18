@@ -1,8 +1,8 @@
 import { test, expect } from 'vitest';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
-import { indentText } from '@tests/shared/Text';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { shuffle } from '@/application/Common/Shuffle';
+import { indentText } from '@/application/Common/Text/IndentText';
 import { type UrlStatus, formatUrlStatus } from './StatusChecker/UrlStatus';
 import { getUrlStatusesInParallel, type BatchRequestOptions } from './StatusChecker/BatchStatusChecker';
 import { TestExecutionDetailsLogger } from './TestExecutionDetailsLogger';

@@ -91,7 +91,7 @@ async function verifyFilesExist(directoryPath, filePatterns) {
     if (!match) {
       die(
         `No file matches the pattern ${pattern.source} in directory \`${directoryPath}\``,
-        `\nFiles in directory:\n${files.map((file) => `\t- ${file}`).join('\n')}`,
+        `\nFiles in directory:\n${files.map((file) => `- ${file}`).join('\n')}`,
       );
     }
   }
