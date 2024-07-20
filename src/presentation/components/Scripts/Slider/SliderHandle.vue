@@ -58,8 +58,19 @@ $color-hover    : $color-primary;
 $cursor         : v-bind(cursorCssValue);
 
 .handle {
+  cursor: $cursor;
+
   @include reset-button;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  margin-right: $spacing-absolute-small;
+  margin-left: $spacing-absolute-small;
+
   @include clickable($cursor: $cursor);
+
   @include hover-or-touch {
     .line {
       background: $color-hover;
@@ -68,11 +79,7 @@ $cursor         : v-bind(cursorCssValue);
       color: $color-hover;
     }
   }
-  cursor: $cursor;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   .line {
     flex: 1;
     background: $color;
@@ -81,7 +88,5 @@ $cursor         : v-bind(cursorCssValue);
   .icon {
     color: $color;
   }
-  margin-right: $spacing-absolute-small;
-  margin-left: $spacing-absolute-small;
 }
 </style>

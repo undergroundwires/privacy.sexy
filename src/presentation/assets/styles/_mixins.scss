@@ -29,9 +29,9 @@
   for interactive elements during hover or touch interactions.
 */
 @mixin clickable($cursor: 'pointer') {
-  cursor: #{$cursor};
   user-select: none;
   -webkit-tap-highlight-color: transparent; // Removes blue tap highlight
+  cursor: #{$cursor};
 }
 
 @mixin fade-transition($name) {
@@ -120,13 +120,13 @@
 }
 
 @mixin set-property-ch-value-with-fallback($property, $value-in-ch) {
-  @supports (width: 1ch) {
-    #{$property}: #{$value-in-ch}ch;
-  }
-  // For browsers that does not support `ch` unit (e.g., Opera Mini):
+  // For browsers that do not support `ch` unit (e.g., Opera Mini):
   $estimated-width-per-character-in-em: calc(1em / 2); // 1 character is approximately half the font size
   $calculated-width-in-em: calc(#{$estimated-width-per-character-in-em} * #{$value-in-ch});
   #{$property}: $calculated-width-in-em;
+  @supports (width: 1ch) {
+    #{$property}: #{$value-in-ch}ch; // Override `em` value if `ch` is supported.
+  }
 }
 
 @mixin base-font-style {

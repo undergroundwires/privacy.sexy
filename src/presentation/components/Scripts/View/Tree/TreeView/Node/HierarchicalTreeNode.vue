@@ -133,13 +133,13 @@ export default defineComponent({
 .expansible-node {
   display: flex;
   flex-direction: row;
+
+  align-items: center;
+
   .leaf-node {
     flex: 1; // Expands the node horizontally, allowing its content to utilize full width for child item alignment, such as icons and text.
     overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
   }
-
-  flex-direction: row;
-  align-items: center;
 
   .expand-collapse-caret {
     $caret-size: 24px;

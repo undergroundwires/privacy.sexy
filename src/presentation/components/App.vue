@@ -78,15 +78,17 @@ function getOptionalDevToolkitComponent(): Component | undefined {
   margin-right: auto;
   margin-left: auto;
   max-width: 1600px;
+
   .app__wrapper {
+    display:flex;
+    flex-direction: column;
+
     background-color: $color-surface;
     color: $color-on-surface;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
 
     @include responsive-spacing;
 
-    display:flex;
-    flex-direction: column;
     .app__row {
       margin-bottom: $spacing-absolute-large;
     }

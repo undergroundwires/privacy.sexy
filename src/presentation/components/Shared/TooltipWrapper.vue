@@ -220,9 +220,6 @@ $color-tooltip-background: $color-primary-darkest;
 }
 
 .tooltip__overlay {
-  @include set-visibility(false);
-  @include fixed-fullscreen;
-
   /*
     The z-index is set for both visible and invisible states to ensure it maintains its stacking order
     above other elements during transitions. This approach prevents the tooltip from falling behind other
@@ -235,6 +232,9 @@ $color-tooltip-background: $color-primary-darkest;
     This prevents unintentional layout issues or overflow.
   */
   white-space: normal;
+
+  @include set-visibility(false);
+  @include fixed-fullscreen;
 }
 
 .tooltip__trigger {
