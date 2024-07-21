@@ -28,7 +28,7 @@ describe('CategoryCollectionParser', () => {
       const data = new CollectionDataStub();
       const expectedAssertion: ObjectAssertion<CollectionData> = {
         value: data,
-        valueName: 'collection',
+        valueName: 'Collection',
         allowedProperties: [
           'os', 'scripting', 'actions', 'functions',
         ],
@@ -48,7 +48,7 @@ describe('CategoryCollectionParser', () => {
         const actions = [getCategoryStub('test1'), getCategoryStub('test2')];
         const expectedAssertion: NonEmptyCollectionAssertion = {
           value: actions,
-          valueName: '"actions" in collection',
+          valueName: '\'actions\' in collection',
         };
         const validator = new TypeValidatorStub();
         const context = new TestContext()

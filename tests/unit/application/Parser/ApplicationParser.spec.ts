@@ -134,7 +134,7 @@ describe('ApplicationParser', () => {
         const data = [new CollectionDataStub()];
         const expectedAssertion: NonEmptyCollectionAssertion = {
           value: data,
-          valueName: 'collections',
+          valueName: 'Collections',
         };
         const validator = new TypeValidatorStub();
         const sut = new ApplicationParserBuilder()

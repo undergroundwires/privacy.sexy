@@ -217,7 +217,7 @@ describe('createTypeValidator', () => {
         }) => {
           it(description, () => {
             const valueName = 'invalidValue';
-            const expectedMessage = `'${valueName}' should be of type 'string', but is of type '${typeof invalidValue}'.`;
+            const expectedMessage = `${valueName} should be of type 'string', but is of type '${typeof invalidValue}'.`;
             const { assertNonEmptyString } = createTypeValidator();
             // act
             const act = () => assertNonEmptyString({ value: invalidValue, valueName });

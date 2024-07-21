@@ -84,7 +84,7 @@ function ensureValidCategory(
   });
   validator.assertType((v) => v.assertObject({
     value: category,
-    valueName: category.category ?? 'category',
+    valueName: `Category '${category.category}'` ?? 'Category',
     allowedProperties: [
       'docs', 'children', 'category',
     ],

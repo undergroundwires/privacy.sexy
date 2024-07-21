@@ -45,14 +45,14 @@ function validateCollection(
 ): void {
   validator.assertObject({
     value: content,
-    valueName: 'collection',
+    valueName: 'Collection',
     allowedProperties: [
       'os', 'scripting', 'actions', 'functions',
     ],
   });
   validator.assertNonEmptyCollection({
     value: content.actions,
-    valueName: '"actions" in collection',
+    valueName: '\'actions\' in collection',
   });
 }
 

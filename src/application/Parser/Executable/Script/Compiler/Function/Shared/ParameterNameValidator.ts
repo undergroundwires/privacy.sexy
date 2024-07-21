@@ -13,7 +13,7 @@ export const validateParameterName = (
 ) => {
   typeValidator.assertNonEmptyString({
     value: parameterName,
-    valueName: 'parameter name',
+    valueName: 'Parameter name',
     rule: {
       expectedMatch: /^[0-9a-zA-Z]+$/,
       errorMessage: `parameter name must be alphanumeric but it was "${parameterName}".`,
