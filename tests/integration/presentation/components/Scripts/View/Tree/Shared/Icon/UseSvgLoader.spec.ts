@@ -3,7 +3,7 @@ import {
 } from 'vitest';
 import { IconNames } from '@/presentation/components/Shared/Icon/IconName';
 import { useSvgLoader } from '@/presentation/components/Shared/Icon/UseSvgLoader';
-import { waitForValueChange } from '@tests/shared/WaitForValueChange';
+import { waitForValueChange } from '@tests/shared/Vue/WaitForValueChange';
 
 describe('useSvgLoader', () => {
   describe('can load all SVGs', () => {

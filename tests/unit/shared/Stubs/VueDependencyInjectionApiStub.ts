@@ -9,6 +9,10 @@ export class VueDependencyInjectionApiStub implements VueDependencyInjectionApi 
   }
 
   public inject<T>(key: InjectionKey<T>): T {
-    return this.injections.get(key) as T;
+    const providedValue = this.injections.get(key);
+    if (providedValue === undefined) {
+      throw new Error(`[VueDependencyInjectionApiStub] No value provided for key: ${String(key)}`);
+    }
+    return providedValue as T;
   }
 }

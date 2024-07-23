@@ -182,7 +182,7 @@ function mountComponent(options: {
         },
         [COMPONENT_MODAL_CONTENT_NAME]: {
           name: COMPONENT_MODAL_CONTENT_NAME,
-          template: '<slot />',
+          template: '<div><slot /></div>',
         },
       },
     },

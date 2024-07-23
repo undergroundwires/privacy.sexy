@@ -24,7 +24,7 @@ describe('useNodeStateChangeAggregator', () => {
     // arrange
     const expectedTreeRootRef = shallowRef(new TreeRootStub());
     const currentTreeNodesStub = new UseCurrentTreeNodesStub();
-    const builder = new UseNodeStateChangeAggregatorBuilder()
+    const builder = new TestContext()
       .withCurrentTreeNodes(currentTreeNodesStub.get())
       .withTreeRootRef(expectedTreeRootRef);
     // act
@@ -61,7 +61,7 @@ describe('useNodeStateChangeAggregator', () => {
             // arrange
             const nodesStub = new UseCurrentTreeNodesStub()
               .withQueryableNodes(createFlatCollection(expectedNodes));
-            const { returnObject } = new UseNodeStateChangeAggregatorBuilder()
+            const { returnObject } = new TestContext()
               .withCurrentTreeNodes(nodesStub.get())
               .mountWrapperComponent();
             const { callback, calledArgs } = createSpyingCallback();
@@ -81,7 +81,7 @@ describe('useNodeStateChangeAggregator', () => {
           it(description, async () => {
             // arrange
             const nodesStub = new UseCurrentTreeNodesStub();
-            const { returnObject } = new UseNodeStateChangeAggregatorBuilder()
+            const { returnObject } = new TestContext()
               .withCurrentTreeNodes(nodesStub.get())
               .mountWrapperComponent();
             const { callback, calledArgs } = createSpyingCallback();
@@ -104,7 +104,7 @@ describe('useNodeStateChangeAggregator', () => {
             // arrange
             const nodesStub = new UseCurrentTreeNodesStub()
               .withQueryableNodes(createFlatCollection(expectedNodes));
-            const { returnObject } = new UseNodeStateChangeAggregatorBuilder()
+            const { returnObject } = new TestContext()
               .withCurrentTreeNodes(nodesStub.get())
               .mountWrapperComponent();
             const { callback, calledArgs } = createSpyingCallback();
@@ -167,7 +167,7 @@ describe('useNodeStateChangeAggregator', () => {
               .withQueryableNodes(createFlatCollection(initialNodes));
             const nodeState = new TreeNodeStateAccessStub();
             changedNode.withState(nodeState);
-            const { returnObject } = new UseNodeStateChangeAggregatorBuilder()
+            const { returnObject } = new TestContext()
               .withCurrentTreeNodes(nodesStub.get())
               .mountWrapperComponent();
             const { callback, calledArgs } = createSpyingCallback();
@@ -216,7 +216,7 @@ describe('useNodeStateChangeAggregator', () => {
         const nodesStub = new UseCurrentTreeNodesStub()
           .withQueryableNodes(createFlatCollection(initialNodes));
         const eventsStub = new UseAutoUnsubscribedEventsStub();
-        const { returnObject } = new UseNodeStateChangeAggregatorBuilder()
+        const { returnObject } = new TestContext()
           .withCurrentTreeNodes(nodesStub.get())
           .withEventsStub(eventsStub)
           .mountWrapperComponent();
@@ -290,7 +290,7 @@ function createFlatCollection(nodes: readonly TreeNode[]): QueryableNodesStub {
   return new QueryableNodesStub().withFlattenedNodes(nodes);
 }
 
-class UseNodeStateChangeAggregatorBuilder {
+class TestContext {
   private treeRootRef: Readonly<Ref<TreeRoot>> = shallowRef(new TreeRootStub());
 
   private currentTreeNodes: typeof useCurrentTreeNodes = new UseCurrentTreeNodesStub().get();

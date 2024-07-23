@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
-import { ref, nextTick, defineComponent } from 'vue';
+import { ref, nextTick } from 'vue';
 import { useLockBodyBackgroundScroll } from '@/presentation/components/Shared/Modal/Hooks/ScrollLock/UseLockBodyBackgroundScroll';
 import type { ScrollDomStateAccessor } from '@/presentation/components/Shared/Modal/Hooks/ScrollLock/ScrollDomStateAccessor';
+import { executeInComponentSetupContext } from '@tests/shared/Vue/ExecuteInComponentSetupContext';
 import { DomStateChangeTestScenarios } from './DomStateChangeTestScenarios';
 
 describe('useLockBodyBackgroundScroll', () => {
@@ -13,7 +13,7 @@ describe('useLockBodyBackgroundScroll', () => {
         const isInitiallyActive = true;
 
         // act
-        createComponent(isInitiallyActive, dom);
+        mountWrapperComponent(isInitiallyActive, dom);
         await nextTick();
       });
     });
@@ -22,7 +22,7 @@ describe('useLockBodyBackgroundScroll', () => {
       const isInitiallyActive = false;
 
       // act
-      const { initialDomState, actualDomState } = createComponent(isInitiallyActive);
+      const { initialDomState, actualDomState } = mountWrapperComponent(isInitiallyActive);
       await nextTick();
 
       // assert
@@ -34,7 +34,7 @@ describe('useLockBodyBackgroundScroll', () => {
       itEachScrollBlockEffect(async (dom) => {
         // arrange
         const isInitiallyActive = false;
-        const { isActive } = createComponent(isInitiallyActive, dom);
+        const { isActive } = mountWrapperComponent(isInitiallyActive, dom);
 
         // act
         isActive.value = true;
@@ -44,7 +44,9 @@ describe('useLockBodyBackgroundScroll', () => {
     it('reverts to initial styles when deactivated', async () => {
       // arrange
       const isInitiallyActive = true;
-      const { isActive, initialDomState, actualDomState } = createComponent(isInitiallyActive);
+      const {
+        isActive, initialDomState, actualDomState,
+      } = mountWrapperComponent(isInitiallyActive);
 
       // act
       isActive.value = false;
@@ -57,7 +59,9 @@ describe('useLockBodyBackgroundScroll', () => {
   it('restores original styles on unmount', async () => {
     // arrange
     const isInitiallyActive = true;
-    const { component, initialDomState, actualDomState } = createComponent(isInitiallyActive);
+    const {
+      component, initialDomState, actualDomState,
+    } = mountWrapperComponent(isInitiallyActive);
 
     // act
     component.unmount();
@@ -68,19 +72,19 @@ describe('useLockBodyBackgroundScroll', () => {
   });
 });
 
-function createComponent(
+function mountWrapperComponent(
   initialIsActiveValue: boolean,
   dom?: ScrollDomStateAccessor,
 ) {
   const actualDomState = dom ?? createMockDomStateAccessor();
   const initialDomState = { ...actualDomState };
   const isActive = ref(initialIsActiveValue);
-  const component = shallowMount(defineComponent({
-    setup() {
+  const component = executeInComponentSetupContext({
+    setupCallback: () => {
       useLockBodyBackgroundScroll(isActive, actualDomState);
     },
-    template: '<div></div>',
-  }));
+    disableAutoUnmount: true,
+  });
   return {
     component, isActive, initialDomState, actualDomState,
   };

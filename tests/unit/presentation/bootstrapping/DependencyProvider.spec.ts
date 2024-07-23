@@ -6,6 +6,7 @@ import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationCont
 import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFactoryTests';
 import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { itIsTransientFactory } from '@tests/unit/shared/TestCases/TransientFactoryTests';
+import { executeInComponentSetupContext } from '@tests/shared/Vue/ExecuteInComponentSetupContext';
 
 describe('DependencyProvider', () => {
   describe('provideDependencies', () => {
@@ -55,9 +56,14 @@ function createTransientTests() {
         .provideDependencies();
       // act
       const getFactoryResult = () => {
-        const registeredObject = api.inject(injectionKey);
-        const factory = registeredObject as () => unknown;
-        return factory();
+        const registeredFactory = api.inject(injectionKey) as () => unknown;
+        let factoryResult: unknown;
+        executeInComponentSetupContext({
+          setupCallback: () => {
+            factoryResult = registeredFactory();
+          },
+        });
+        return factoryResult;
       };
       // assert
       itIsTransientFactory({
@@ -97,6 +103,7 @@ function createSingletonTests() {
     });
   };
 }
+
 class ProvideDependenciesBuilder {
   private context: IApplicationContext = new ApplicationContextStub();
 

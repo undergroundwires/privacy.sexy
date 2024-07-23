@@ -4,12 +4,17 @@ import {
   watch,
   type Ref,
 } from 'vue';
+import type { LifecycleHook } from './Common/LifecycleHook';
 
 export interface UseEventListener {
-  (): TargetEventListener;
+  (
+    onTeardown?: LifecycleHook,
+  ): TargetEventListener;
 }
 
-export const useAutoUnsubscribedEventListener: UseEventListener = () => ({
+export const useAutoUnsubscribedEventListener: UseEventListener = (
+  onTeardown = onBeforeUnmount,
+) => ({
   startListening: (eventTargetSource, eventType, eventHandler) => {
     const eventTargetRef = isEventTarget(eventTargetSource)
       ? shallowRef(eventTargetSource)
@@ -18,6 +23,7 @@ export const useAutoUnsubscribedEventListener: UseEventListener = () => ({
       eventTargetRef,
       eventType,
       eventHandler,
+      onTeardown,
     );
   },
 });
@@ -42,6 +48,7 @@ function startListeningRef<TEvent extends keyof HTMLElementEventMap>(
   eventTargetRef: Readonly<Ref<EventTarget | undefined>>,
   eventType: TEvent,
   eventHandler: (event: HTMLElementEventMap[TEvent]) => void,
+  onTeardown: LifecycleHook,
 ): void {
   const eventListenerManager = new EventListenerManager();
   watch(() => eventTargetRef.value, (element) => {
@@ -52,7 +59,7 @@ function startListeningRef<TEvent extends keyof HTMLElementEventMap>(
     eventListenerManager.addListener(element, eventType, eventHandler);
   }, { immediate: true });
 
-  onBeforeUnmount(() => {
+  onTeardown(() => {
     eventListenerManager.removeListenerIfExists();
   });
 }
