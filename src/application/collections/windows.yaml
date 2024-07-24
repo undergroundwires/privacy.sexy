@@ -2864,7 +2864,7 @@ actions:
                                     | Windows 11 23H2  | 🟡 N/A (missing) |
 
                                     [1]: https://web.archive.org/web/20231002104948/https://learn.microsoft.com/en-us/services-hub/health/other/work-with-results/assessmentplanreport_windowsclientassessmentplus.xlsx "Windows Client Assessment Recommendations Report generated on: 06/13/2019 | microsoft.com"
-                                    [2]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP"
+                                    [2]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP | plid.obywatel.gov.pl"
                                     [3]: https://archive.ph/2023.10.17-193954/http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml "A complete task sequence for deploying a client operating system (snapshot from http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml) | Government of Argentina"
                                     [4]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs"
                                 call:
@@ -4973,9 +4973,9 @@ actions:
                                     - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!ConnectedSearchUseWebOverMeteredConnections` [5].
 
                                     [1]: https://web.archive.org/web/20240120135419/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DoNotUseWebResults "Don't search the web or display web results in Search"
+                                    [2]: https://web.archive.org/web/20240120140023/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#donotusewebresults "Search Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                                     [4]: https://web.archive.org/web/20240120135454/https://www.winhelponline.com/blog/disable-web-results-windows-10-start-menu/ "How to Disable Web Search in Windows 10 Start menu | Winhelponline | www.winhelponline.com"
                                     [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
-                                    [2]: https://web.archive.org/web/20240120140023/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#donotusewebresults "Search Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                                     [5]: https://web.archive.org/web/20240120135331/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DoNotUseWebResultsOnMeteredConnections "Don't search the web or display web results in Search over metered connections | admx.help"
                                 call:
                                     -
@@ -6584,7 +6584,7 @@ actions:
 
                                             [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#userfeedbackallowed "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240624221221/https://www.stigviewer.com/stig/microsoft_edge/2021-06-23/finding/V-235769 "User feedback must be disabled. | www.stigviewer.com"
-                                            [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                            [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                         call:
                                             -
                                                 function: SetEdgePolicyViaRegistry
@@ -7477,7 +7477,7 @@ actions:
                                             [3]: https://web.archive.org/web/20240623151609/https://www.elevenforum.com/t/enable-or-disable-personalize-advertising-and-experiences-in-microsoft-edge.16986/ "Enable or Disable Personalize Advertising and Experiences in Microsoft Edge Tutorial | Windows 11 Forum | www.elevenforum.com"
                                             [4]: https://web.archive.org/web/20240623151615/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::PersonalizationReportingEnabled "Allow personalization of ads, search and news by sending browsing history to Microsoft | admx.help"
                                             [5]: https://web.archive.org/web/20240623151630/https://www.stigviewer.com/stig/microsoft_edge/2021-02-16/finding/V-235748 "Personalization of ads, search, and news by sending browsing history to Microsoft must be disabled. | www.stigviewer.com"
-                                            [6]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                            [6]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                         call:
                                             function: SetEdgePolicyViaRegistry
                                             parameters:
@@ -7905,7 +7905,7 @@ actions:
                                             > - Aggressive tracking prevention may cause some websites to not function properly.
 
                                             [1]: https://web.archive.org/web/20240623143037/https://learn.microsoft.com/en-us/microsoft-edge/web-platform/tracking-prevention "Tracking prevention in Microsoft Edge - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
-                                            [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                            [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                             [3]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#trackingprevention "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                             [4]: https://web.archive.org/web/20240623143146/https://www.stigviewer.com/stig/microsoft_edge/2023-06-02/finding/V-235766 "Tracking of browsing activity must be disabled. | www.stigviewer.com"
                                         call:
@@ -7941,7 +7941,7 @@ actions:
                                             > - Some websites may not function properly without third-party cookies.
 
                                             [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#blockthirdpartycookies "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
-                                            [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                            [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                         call:
                                             function: SetEdgePolicyViaRegistry
                                             parameters:
@@ -8011,7 +8011,7 @@ actions:
                                     [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#searchsuggestenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240623154047/https://www.stigviewer.com/stig/microsoft_edge/2021-02-16/finding/V-235729 "Search suggestions must be disabled. | www.stigviewer.com"
                                     [3]: https://web.archive.org/web/20240623153945/https://learn.microsoft.com/en-us/microsoftsearch/edge-shortcuts "Customize address bar shortcuts for Microsoft Edge | Microsoft Learn | learn.microsoft.com"
-                                    [4]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [4]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                     [5]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                                 call:
                                     function: SetEdgePolicyViaRegistry
@@ -8283,7 +8283,7 @@ actions:
 
                                     [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#autofillcreditcardenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240624224149/https://www.stigviewer.com/stig/microsoft_edge/2022-09-09/finding/V-235745 "AutoFill for credit cards must be disabled. | www.stigviewer.com"
-                                    [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                     [4]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
                                     [5]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                                 call:
@@ -8322,7 +8322,7 @@ actions:
 
                                     [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#autofilladdressenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240624224149/https://www.stigviewer.com/stig/microsoft_edge/2022-09-09/finding/V-235745 "Autofill for addresses must be disabled. | www.stigviewer.com"
-                                    [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                     [4]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge "Common Education Microsoft Edge configuration | Microsoft Learn | learn.microsoft.com"
                                     [5]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                                 call:
@@ -8362,7 +8362,7 @@ actions:
                                     > - This locks settings and prevents them from being changed on the settings page.
 
                                     [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#experimentationandconfigurationservicecontrol "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
-                                    [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                     [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#132-microsoft-edge-enterprise
                                 call:
                                     function: SetEdgePolicyViaRegistry
@@ -8432,7 +8432,7 @@ actions:
                                     > - This locks settings and prevents them from being changed on the settings page.
 
                                     [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#resolvenavigationerrorsusewebservice "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
-                                    [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0  | paper.bobylive.com"
+                                    [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                 call:
                                     function: SetEdgePolicyViaRegistry
                                     parameters:
@@ -15167,31 +15167,100 @@ actions:
                                                     grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                     -
                         category: Disable SmartScreen
-                        docs:
-                            - https://en.wikipedia.org/wiki/Microsoft_SmartScreen
-                            - https://web.archive.org/web/20240314131452/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/
+                        docs: |- # refactor-with-variables: • SmartScreen Caution
+                            This category focuses on disabling the SmartScreen and its features and components.
+
+                            SmartScreen is known also as "Windows SmartScreen" [1], "Windows Defender SmartScreen" [2], "Microsoft Defender SmartScreen" [3],
+                            "Phishing Filter" [4], and "SmartScreen Filter" [4].
+
+                            It protects users from phishing attacks, malware websites, and potentially harmful downloads by assessing webpage safety and
+                            comparing sites and downloads against lists of known threats [3].
+                            However, it also sends URLs and file information to Microsoft servers [4], which raises significant privacy concerns.
+
+                            Disabling SmartScreen through this category can enhance your privacy by stopping these data transmissions [5].
+                            However, be aware that this action may compromise your security by removing the protections that SmartScreen provides
+                            against malicious sites and downloads.
+
+                            > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                            [1]: https://web.archive.org/web/20240709105008/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/available-settings "Available Microsoft Defender SmartScreen Group Policy and mobile device management (MDM) settings - Windows Security | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240708201144/https://strontic.github.io/xcyclopedia/library/smartscreen.exe-B75FA41284409A6134BF824BEAE59B4E.html "smartscreen.exe | Windows Defender SmartScreen | STRONTIC | strontic.github.io"
+                            [3]: https://web.archive.org/web/20240709105002/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/ "Microsoft Defender SmartScreen overview - Windows Security | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240709102216/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetExplorer::IZ_Policy_Phishing_9 "Turn on SmartScreen Filter scan | admx.help"
+                            [5]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#241-microsoft-defender-smartscreen "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
                         children:
                             -
                                 category: Disable SmartScreen for apps and files
+                                docs: |- # refactor-with-variables: • SmartScreen Caution
+                                    This category includes scripts to disable SmartScreen for apps and files.
+
+                                    SmartScreen is a security feature that checks the reputation of apps and files you download or run [1] [2].
+                                    It's part of Windows' reputation-based protection system [1] [2] [3].
+
+                                    Key points about SmartScreen for apps and files:
+
+                                    - It blocks unrecognized apps and files that may be potentially harmful [2] [3].
+                                    - It performs reputation checks on downloaded programs and their digital signatures [1].
+                                    - If an app, file, or digital signature has an established good reputation, users don't see warnings [1].
+                                    - Items without a reputation are flagged as higher risk, prompting a warning to the user [1].
+
+                                    Disabling this feature can:
+
+                                    - Enhance privacy by reducing data sent to Microsoft for reputation checks [4].
+                                    - Improve system performance by eliminating background scanning and processing.
+                                    - Give users more freedom to run apps and files without interference.
+
+                                    However, disabling SmartScreen may also:
+
+                                    - Reduce protection against malware, potentially harmful applications, and suspicious files.
+                                    - Increase the risk of running malicious software unknowingly.
+
+                                    > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                    [1]: https://web.archive.org/web/20240709105002/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/#benefits-of-microsoft-defender-smartscreen "Microsoft Defender SmartScreen overview - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240709114232/https://support.microsoft.com/en-us/windows/app-browser-control-in-windows-security-8f68fb65-ebb4-3cfb-4bd7-ef0f376f3dc3 "App & browser control in Windows Security - Microsoft Support | support.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240724111947/https://support.microsoft.com/en-us/windows/reputation-based-protection-8d24aede-e932-4bc4-8bc6-6ccaf4d7b058 "Reputation-based protection - Microsoft Support | support.microsoft.com"
+                                    [4]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#241-microsoft-defender-smartscreen "Manage connections from Windows operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
                                 children:
                                     -
-                                        name: Disable SmartScreen for apps and files
-                                        docs:
-                                            - https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-63685
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsExplorer::EnableSmartScreen
-                                        call:
-                                            function: SetRegistryValue
-                                            parameters:
-                                                keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\System
-                                                valueName: EnableSmartScreen
-                                                dataType: REG_DWORD
-                                                data: '0'
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                                    -
-                                        name: Disable SmartScreen in File Explorer
-                                        docs:
-                                            - https://winaero.com/change-windows-smartscreen-settings-windows-10/
-                                            - https://www.technobezz.com/how-to-change-the-smartscreen-filter-settings-in-windows-10/
+                                        name: Disable SmartScreen checks for apps and files
+                                        docs: |- # refactor-with-variables: • SmartScreen Caution
+                                            This script disables the SmartScreen checks for apps and files.
+
+                                            SmartScreen protects users by warning them before running potentially malicious programs downloaded from the internet [1].
+                                            This warning appears as a dialog box before you run an unrecognized or known malicious app downloaded from the internet [1].
+                                            These checks are part of SmartScreen's *reputation-based protection* [2].
+                                            This feature is enabled by default [1].
+                                            Microsoft collects data about the files and programs you run when this feature is enabled [1] [3].
+
+                                            This script stops SmartScreen from alerting you about potentially malicious apps and files [1] [2] [4] [5].
+                                            It enhances privacy by stopping data collection required for SmartScreen checks.
+                                            Microsoft suggests disabling it to manage connections and protect your privacy [6].
+                                            The CIS Center for Internet Security mentions the potential privacy impact of keeping this feature enabled due to Microsoft data collection [3].
+                                            This script also boosts system performance by reducing the overhead of SmartScreen checks.
+                                            This gives users more freedom to choose applications and download files.
+
+                                            However, this change may increase the risk of downloading harmful apps and files by reducing safety checks.
+                                            Authorities like DISA [7] and the CIS Center for Internet Security [3] recommend keeping it enabled as a security measure.
+
+                                            This script configures the following registry keys:
+
+                                            - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer!SmartScreenEnabled` [4] [5] [8]:
+                                              This action simulates the action of turning off SmartScreen via the Windows user interface to change user settings [4] [5].
+                                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!EnableSmartScreen` [1] [3] [6] [7] [9]:
+                                              Sets Group Policy Object (GPO) to enforce this setting and prevent users from changing it [1].
+
+                                            > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                            [1]: https://web.archive.org/web/20240709110302/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen#enablesmartscreeninshell "SmartScreen Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240709114232/https://support.microsoft.com/en-us/windows/app-browser-control-in-windows-security-8f68fb65-ebb4-3cfb-4bd7-ef0f376f3dc3 "App & browser control in Windows Security - Microsoft Support | support.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240721083325/https://www.cisecurity.org/-/jssmedia/Project/cisecurity/cisecurity/data/media/files/uploads/2017/04/CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v220.pdf "CIS Microsoft Windows Server 2012 R2 Benchmark | cisecurity.org"
+                                            [4]: https://web.archive.org/web/20240709113919/https://www.elevenforum.com/t/enable-or-disable-microsoft-defender-smartscreen-check-apps-and-files-from-web-in-windows-11.5731/ "Enable or Disable Microsoft Defender SmartScreen Check Apps and Files from Web in Windows 11 Tutorial | Windows 11 Forum | elevenforum.com"
+                                            [5]: https://web.archive.org/web/20240709114219/https://www.technobezz.com/how-to-change-the-smartscreen-filter-settings-in-windows-10/ "How To Change The SmartScreen Filter Settings In Windows 10 | www.technobezz.com"
+                                            [6]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5187 "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
+                                            [7]: https://web.archive.org/web/20240721083748/https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-63685 "The Windows Defender SmartScreen for Explorer must be enabled. | www.stigviewer.com"
+                                            [8]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5181C51-L5181C66 "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
+                                            [9]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#241-microsoft-defender-smartscreen "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
                                         call:
                                             -
                                                 function: SetRegistryValue
@@ -15209,24 +15278,264 @@ actions:
                                                     dataType: REG_SZ
                                                     data: 'Off'
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                function: SetRegistryValue
+                                                parameters:
+                                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\System
+                                                    valueName: EnableSmartScreen
+                                                    dataType: REG_DWORD
+                                                    data: '0'
+                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        name: Disable SmartScreen's prevention of application execution
-                                        docs:
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.SmartScreen::ShellConfigureSmartScreen
-                                            - https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-63685
+                                        name: Enable SmartScreen warning dismissal for apps
+                                        docs: |- # refactor-with-variables: • SmartScreen Caution
+                                            This script disables SmartScreen app blocking, allowing apps to bypass its warnings.
+
+                                            SmartScreen is a security feature that protects users by displaying warnings before running potentially harmful programs [1] [2]  [3] [4].
+                                            These warnings help prevent the execution of suspicious applications [1] [2].
+                                            This feature is enabled by default on Windows [1].
+
+                                            SmartScreen sends data to Microsoft about the files and applications run on the system [1] [3].
+                                            This raises privacy concerns because it involves collecting user behavior data.
+                                            The Center for Internet Security (CIS) mentions disabling it for additional privacy [3].
+                                            Disabling SmartScreen can improve system performance by reducing the processing overhead.
+
+                                            However, this may decrease system security by reducing protection against malicious software and phishing attacks.
+                                            Authorities like DISA [4] and CIS [3] recommend keeping SmartScreen enabled and blocking suspicious apps as a security best practice.
+
+                                            SmartScreen has two configurations:
+
+                                            - **Warn and prevent bypass:**
+                                              The user cannot ignore the warnings, and SmartScreen will repeat the warnings for subsequent attempts to run the app [1] [2].
+                                            - **Warn:**
+                                              SmartScreen initially warns the user about a suspicious app but allows the user to override the warning and run the app [1] [2].
+                                              It will not issue further warnings for that app if the user chooses to proceed [1] [2].
+
+                                            This script modifies the `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!ShellSmartScreenLevel` registry key to enable bypass
+                                            through the **Warn** option [1] [2] [3].
+
+                                            > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                            [1]: https://web.archive.org/web/20240709110302/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen#enablesmartscreeninshell "SmartScreen Policy CSP - Windows Client Management | Microsoft Learn"
+                                            [2]: https://web.archive.org/web/20240713204839/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.SmartScreen::ShellConfigureSmartScreen "Configure Windows Defender SmartScreen | admx.help"
+                                            [3]: https://web.archive.org/web/20240722105035/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Windows_10_Enterprise_Release_21H1_Benchmark_v1_11_0.pdf "18.9.81.1.1 | CIS Microsoft Windows 10 Enterprise (Release 21H1 or older) Benchmark | paper.bobylive.com"
+                                            [4]: https://web.archive.org/web/20240713204739/https://www.stigviewer.com/stig/microsoft_windows_11/2023-09-29/finding/V-253395 "The Microsoft Defender SmartScreen for Explorer must be enabled. | www.stigviewer.com"
+                                            [5]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5188C44-L5188C65  "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
                                         call:
                                             function: SetRegistryValue
                                             parameters:
                                                 keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\System
                                                 valueName: ShellSmartScreenLevel
                                                 dataType: REG_SZ
-                                                data: Warn
+                                                data: Warn # Block: Prevent app from running | Warn: Notify user but allow continuation.
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                    -
+                                        category: Disable SmartScreen for Store apps
+                                        docs: |- # refactor-with-variables: • SmartScreen Caution
+                                            This category includes scripts to disable SmartScreen for Microsoft Store apps.
+
+                                            SmartScreen for Microsoft Store apps is a security feature that:
+
+                                            - Checks content used by Microsoft Store apps [1].
+                                            - Can restrict app installations to only those from the Microsoft Store [2].
+                                            - Scans web content (URLs) accessed by Microsoft Store apps [1] [3].
+
+                                            It's part of Windows' broader **Reputation-based protection** system [1].
+
+                                            Disabling this feature can:
+
+                                            - Enhance privacy by reducing data sent to Microsoft for content and app checks [3].
+                                            - Improve system performance by eliminating background scanning and processing.
+                                            - Give users more freedom to install and run apps from various sources without interference [2].
+
+                                            However, disabling SmartScreen for Store apps may also:
+
+                                            - Reduce protection against malware and potentially harmful applications.
+                                            - Increase the risk of running malicious software unknowingly.
+                                            - Allow Microsoft Store apps to access potentially dangerous web content without warning.
+
+                                            This category provides options to customize various aspects of SmartScreen's behavior for Store apps, balancing 
+                                            between security, privacy, and user freedom.
+
+                                            > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                            [1]: https://web.archive.org/web/20240724111947/https://support.microsoft.com/en-us/windows/reputation-based-protection-8d24aede-e932-4bc4-8bc6-6ccaf4d7b058 "Reputation-based protection - Microsoft Support | support.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240709110302/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen#enableappinstallcontrol "SmartScreen Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#181-general "Manage connections from Windows operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                        children:
+                                            -
+                                                name: Disable SmartScreen "App Install Control" feature
+                                                docs: |- # refactor-with-variables: • SmartScreen Caution
+                                                    This script disables the "App Install Control" feature of SmartScreen.
+
+                                                    This feature restricts app installations exclusively to those from the Microsoft Store [1] [2].
+                                                    It displays "The app you're trying to install isn't a Microsoft-verified app" message
+                                                    during app installation [3].
+                                                    By default, this feature is turned off [1] [2].
+                                                    Disabling SmartScreen automatically deactivates it as well [1] [2].
+                                                    This script explicitly deactivates the feature to guarantee it remains disabled.
+                                                    Once disabled, SmartScreen permits users to install apps from any source, including the Internet [1] [2].
+
+                                                    Disabling this feature enhances your privacy by limiting the data transmitted about your activities and behavior [4].
+                                                    It also improves system performance by removing the need for continuous monitoring and evaluation of app sources,
+                                                    which can reduce CPU and memory usage.
+                                                    However, this also introduces a security risk by potentially permitting the installation of malicious apps.
+
+                                                    The script specifically modifies the following registry keys to enforce these settings:
+
+                                                    - `HKLM\Software\Policies\Microsoft\Windows Defender\SmartScreen!ConfigureAppInstallControlEnabled` [1] [2] [4]
+                                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\SmartScreen!ConfigureAppInstallControl` [4] [5]
+                                                    - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer!AicEnabled` [3] [5] [6] [7]
+
+                                                    > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                                    [1]: https://web.archive.org/web/20240709110302/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen#enableappinstallcontrol "SmartScreen Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                                    [2]: https://web.archive.org/web/20240709110349/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.SmartScreen::ConfigureAppInstallControl "Configure App Install Control | admx.help"
+                                                    [3]: https://web.archive.org/web/20240713100611/https://answers.microsoft.com/en-us/windows/forum/all/i-am-having-issues-changing-my-app-recommendation/16b00c35-05fc-44bc-9e78-e9452cf8d862 "I am Having Issues Changing My App Recommendation Settings - Microsoft Community | answers.microsoft.com"
+                                                    [4]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#241-microsoft-defender-smartscreen "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                                    [5]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5182 "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
+                                                    [6]: https://web.archive.org/web/20240713100920/https://www.elevenforum.com/t/choose-where-to-get-apps-in-windows-11.7370/ "Choose where to get apps in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                                    [7]: https://web.archive.org/web/20240713101028/https://bugzilla.mozilla.org/show_bug.cgi?id=1659157 "1659157 - Add telemetry to track Win 10 installs in related to the system's MSFT verified app setting. | bugzilla.mozilla.org"
+                                                call:
+                                                    -
+                                                        function: SetRegistryValue
+                                                        parameters:
+                                                            keyPath: HKLM\Software\Policies\Microsoft\Windows Defender\SmartScreen
+                                                            valueName: ConfigureAppInstall
+                                                            dataType: REG_SZ
+                                                            data: Anywhere
+                                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    -
+                                                        function: SetRegistryValue
+                                                        parameters:
+                                                            keyPath: HKLM\Software\Policies\Microsoft\Windows Defender\SmartScreen
+                                                            valueName: ConfigureAppInstallControlEnabled
+                                                            dataType: REG_DWORD
+                                                            data: '0'
+                                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    -
+                                                        function: SetRegistryValue
+                                                        parameters:
+                                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer
+                                                            valueName: AicEnabled
+                                                            dataType: REG_SZ
+                                                            data: 'Anywhere'
+                                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                name: Disable SmartScreen web content checking for Store apps
+                                                docs: |- # refactor-with-variables: • SmartScreen Caution
+                                                    This script disables the web content checking feature of SmartScreen for Microsoft Store apps.
+
+                                                    SmartScreen scans web content (URLs) accessed by Microsoft Store apps to enhance security [1] [2].
+                                                    SmartScreen is enabled by default [2].
+                                                    Initially, this feature was known as *SmartScreen Filter* for Microsoft Store apps [3].
+                                                    Later, it was renamed to "SmartScreen for Microsoft Store apps" [2].
+                                                    It is part of SmartScreen's reputation-based protection [2] [3] [4].
+
+                                                    Disabling this feature enhances your privacy by reducing data shared with Microsoft.
+                                                    Microsoft acknowledges that turning off this feature limits the data transmitted about your activities and behavior [1].
+                                                    It can also improve system performance by reducing web content processing overhead.
+
+                                                    However, there is a trade-off between privacy and security:
+
+                                                    - Increased Privacy: Less data shared with Microsoft.
+                                                    - Decreased Security: Less protection against phishing and malware.
+
+                                                    The Polish Government advises turning this feature off to prioritize privacy over security [5].
+
+                                                    This script modifies the following Windows registry keys:
+
+                                                    - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost!EnableWebContentEvaluation`: [1] [2] [3] [4] [5] [6] [7]
+                                                    This key modifies the user interface setting [1] [3].
+                                                    - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost!EnableWebContentEvaluation` [4] [6] [7]
+                                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\AppHost!EnableWebContentEvaluation` [3] [6]
+
+                                                    > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                                    [1]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#181-general "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                                    [2]: https://web.archive.org/web/20240724093008/https://www.anoopcnair.com/smartscreen-for-microsoft-store-apps-windows-11/ "Enable Disable Defender SmartScreen For Microsoft Store Apps In Windows 11 HTMD Blog | www.anoopcnair.com"
+                                                    [3]: https://web.archive.org/web/20240724093046/https://www.thewindowsclub.com/enable-or-disable-smartscreen-filter-for-microsoft-store-apps "Enable or Disable SmartScreen for Microsoft Store apps | www.thewindowsclub.com"
+                                                    [4]: https://web.archive.org/web/20240724093031/https://r-pufky.github.io/docs/operating-systems/windows/10/20H2/security/app-and-browser-control/reputation-based-protection-setttings.html "3.1. Reputation-based protection settings — Generic service & computer documentation. documentation | r-pufky.github.io"
+                                                    [5]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP | plid.obywatel.gov.pl"
+                                                    [6]: https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/System32/urlmon.dll.strings "10_0_22622_601/C/Windows/System32/urlmon.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 | github.com"
+                                                    [7]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5180 "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
+                                                call:
+                                                    -
+                                                        function: SetRegistryValue
+                                                        parameters:
+                                                            keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost
+                                                            valueName: EnableWebContentEvaluation
+                                                            dataType: REG_DWORD
+                                                            data: '0'
+                                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d "0" /f
+                                                            revertCode: |- # Has "1" value in "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" as default
+                                                                reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d "1" /f
+                                                    -
+                                                        function: SetRegistryValue
+                                                        parameters:
+                                                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\AppHost
+                                                            valueName: EnableWebContentEvaluation
+                                                            dataType: REG_DWORD
+                                                            data: '0'
+                                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                name: Enable SmartScreen warning dismissal for Store apps
+                                                docs: |- # refactor-with-variables: • SmartScreen Caution
+                                                    This script allows users to bypass SmartScreen warnings for Microsoft Store apps.
+
+                                                    SmartScreen is a security feature that filters web content accessed by Microsoft Store apps [1] [2].
+                                                    By default, SmartScreen allows users to bypass its warnings [1] [3].
+                                                    This script keeps the default setting.
+
+                                                    Enabling SmartScreen bypass may enhance privacy by reducing data shared with Microsoft.
+                                                    It increases user control over security checks and may improve system
+                                                    performance by removing an additional security check.
+                                                    However, this reduces protection against malicious content, potentially exposing users to security risks.
+
+                                                    ### Technical Details
+
+                                                    This script modifies these Windows registry keys:
+
+                                                    - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost!PreventOverride` [1] [2] [4] [5]
+                                                    - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost!PreventOverride` [4] [5]
+
+                                                    These keys, although not officially documented, interact with the SmartScreen executable (`smartscreen.exe`) [3].
+                                                    Community reports confirm their role in controlling SmartScreen for Store apps [1] [2] [4].
+                                                    Setting `PreventOverride` to `0` allows users to bypass SmartScreen warnings [3].
+
+                                                    > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                                    [1]: https://web.archive.org/web/20240724102538/https://www.elevenforum.com/t/enable-or-disable-microsoft-defender-smartscreen-for-microsoft-store-apps-in-windows-11.5736/ "Enable or Disable Microsoft Defender SmartScreen for Microsoft Store Apps in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                                    [2]: https://web.archive.org/web/20240724102525/https://www.tenforums.com/tutorials/81139-turn-off-smartscreen-microsoft-store-apps-windows-10-a.html "Turn On or Off SmartScreen for Microsoft Store Apps in Windows 10 | Tutorials | tenforums.com"
+                                                    [3]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies#prevent-bypassing-windows-defender-smartscreen-prompts-for-sites "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
+                                                    [4]: https://web.archive.org/web/20240724093031/https://r-pufky.github.io/docs/operating-systems/windows/10/20H2/security/app-and-browser-control/reputation-based-protection-setttings.html "3.1. Reputation-based protection settings — Generic service & computer documentation. documentation | r-pufky.github.io"
+                                                    [5]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5181C51-L5181C66 "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
+                                                call:
+                                                    -
+                                                        function: SetRegistryValue
+                                                        parameters:
+                                                            keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost
+                                                            valueName: PreventOverride
+                                                            dataType: REG_DWORD
+                                                            data: '0'   
+                                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    -
+                                                        function: SetRegistryValue
+                                                        parameters:
+                                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost
+                                                            valueName: PreventOverride
+                                                            dataType: REG_DWORD
+                                                            data: '0'
+                                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 category: Disable SmartScreen in Microsoft browsers
-                                docs: |-
+                                docs: |- # refactor-with-variables: • SmartScreen Caution
                                     This category provides scripts to disable SmartScreen in Microsoft browsers.
-                                    
+
                                     SmartScreen is a security feature in Edge.
                                     When you visit websites or download files, SmartScreen checks the reputation of the URL or file [1].
                                     If SmartScreen determines that the site or file is malicious, it blocks access or download [1].
@@ -15240,40 +15549,44 @@ actions:
                                     user's system and network structure.
                                     The combination of these data points could enable Microsoft to build a comprehensive profile of user activities and behavior.
 
+                                    > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
                                     [1]: https://web.archive.org/web/20240623123514/https://learn.microsoft.com/en-us/microsoft-edge/privacy-whitepaper/#smartscreen  "Microsoft Edge Privacy Whitepaper - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240624121703/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-potentially-unwanted-apps "Use Microsoft Edge to protect against potentially unwanted applications | Microsoft Learn | learn.microsoft.com"
                                     [3]: https://web.archive.org/web/20240624143449/https://www.bleepingcomputer.com/news/microsoft/windows-10-smartscreen-sends-urls-and-app-names-to-microsoft/ "Windows 10 SmartScreen Sends URLs and App Names to Microsoft | www.bleepingcomputer.com"
                                 children:
                                     -
                                         name: Disable Edge SmartScreen
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy • SmartScreen Caution
                                             This script disables the SmartScreen feature in Edge.
 
-                                            SmartScreen provides warning messages to help protect users from potential phishing scams and malicious software [1] [2].
-                                            By default, Microsoft Defender SmartScreen is enabled and users can choose whether to use it [1] [2].
+                                            SmartScreen warns against potential phishing scams and malicious software [1] [2] [3].
+                                            By default, Microsoft Defender SmartScreen is active, but users can opt out [1] [2].
 
                                             Once you run this script, Microsoft Defender SmartScreen will be turned off [1] [2].
 
                                             Disabling this feature reduces potential privacy risks by preventing data sharing.
                                             This may also improve system performance by reducing processing workload.
 
-                                            While enabling this setting may increase user autonomy and privacy, it reduces security
-                                            by allowing access to potentially malicious websites and software [2].
-                                            Users should be cautious and understand the risks involved.
+                                            While disabling this feature increases user autonomy and privacy, it may reduce your security.
+                                            Authorities like DISA [2] and the CIS Center for Internet Security [3] discourage disabling it as a security best practice.
+                                            Disabling may allow access to potentially malicious websites and software [2] [3].
 
                                             This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
                                             It is effective only on computers under organizational management, such as those in workplaces or schools.
                                             It's not applicable to personal computers that are not managed by an organization.
 
                                             Changing this policy does not require restarting the browser to take effect [1].
-                                            This script configures the `SmartScreenEnabled` policy [1] [2].
+                                            This script configures the `SmartScreenEnabled` policy [1] [2] [3].
 
                                             > **Caution**:
                                             > - This will display the message "Your browser is managed by your organization" on the settings page.
                                             > - This locks settings and prevents them from being changed on the settings page.
+                                            > - Disabling SmartScreen may reduce your protection against phishing and malware.
 
                                             [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#smartscreenenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240624143208/https://www.stigviewer.com/stig/microsoft_edge/2021-02-16/finding/V-235763 "Microsoft Defender SmartScreen must be enabled. | www.stigviewer.com"
+                                            [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                         call:
                                             function: SetEdgePolicyViaRegistry
                                             parameters:
@@ -15281,73 +15594,230 @@ actions:
                                                 dwordData: '0'
                                     -
                                         name: Disable Edge SmartScreen for potentially unwanted apps
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
-                                            This script disables the SmartScreen feature in Edge that specifically targets potentially unwanted applications (PUAs).
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy • SmartScreen Caution
+                                            This script disables Edge's SmartScreen feature that targets potentially unwanted applications (PUAs).
 
-                                            Microsoft Edge's SmartScreen PUA feature protects against adware, coin miners, bundleware, and other low-reputation software [1] [2].
-                                            This feature warns users about potentially harmful applications [1] [2].
+                                            Edge's SmartScreen PUA feature aims to protect against adware, coin miners, bundleware, and other
+                                            low-reputation software [1] [2] [3].
+                                            This feature warns users about potentially harmful applications [1] [2] [3].
 
-                                            Although this feature is turned off by default [2], this script explicitly disables it
-                                            to ensure it remains inactive, safeguarding against automatic or unintended activations.
+                                            This feature is off by default [2].
+                                            This script keeps the feature inactive, preventing automatic or unintended activations.
 
                                             Disabling this feature reduces potential privacy risks by preventing data sharing.
                                             This may also improve system performance by reducing processing workload.
+
+                                            However, enabling it can boost your security by blocking the installation of apps that could harm your system [3].
+                                            Authorities like DISA [2] and the CIS Center for Internet Security [3] encourage
+                                            enabling it as a security best practice.
 
                                             This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1] [2].
                                             It is effective only on computers under organizational management, such as those in workplaces or schools.
                                             It's not applicable to personal computers that are not managed by an organization.
 
-                                            This script configures the `SmartScreenPuaEnabled` policy [1] [2].
+                                            This script configures the `SmartScreenPuaEnabled` policy [1] [2] [3].
                                             Changing this policy does not require restarting the browser to take effect [1].
 
                                             > **Caution**:
                                             > - This will display the message "Your browser is managed by your organization" on the settings page.
                                             > - This locks settings and prevents them from being changed on the settings page.
+                                            > - Disabling SmartScreen may reduce your protection against phishing and malware.
 
                                             [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#smartscreenpuaenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240624121549/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SmartScreenPuaEnabled "Configure Microsoft Defender SmartScreen to block potentially unwanted apps | admx.help"
+                                            [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
                                         call:
                                             function: SetEdgePolicyViaRegistry
                                             parameters:
                                                 valueName: SmartScreenPuaEnabled # Edge ≥ 80
                                                 dwordData: '0'
                                     -
-                                        name: Enable Edge SmartScreen bypass
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • Performance + Privacy
-                                            This script allows users to bypass Edge SmartScreen warnings.
-                                            
-                                            SmartScreen in Edge displays warnings about potentially malicious websites [1] [2].
-                                            By default, users can bypass Microsoft Defender SmartScreen warnings and proceed to the site [1].
-                                            This script keeps this option, enhancing user privacy by minimizing data sent to Microsoft.
+                                        name: Enable Edge SmartScreen warning dismissal
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • SmartScreen Caution
+                                            This script allows users to bypass SmartScreen warnings in Edge.
 
-                                            Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                            Edge's SmartScreen shows warnings about potentially malicious websites [1] [2] [3].
+                                            By default [1] [2], users can override SmartScreen warnings and visit the site [1].
+                                            This script maintains this option, enhancing privacy by minimizing data sent to Microsoft.
+
+                                            Maintaining this option in its default state reduces potential privacy risks by limiting data sharing with Microsoft.
                                             This may also improve system performance by reducing processing workload.
 
-                                            While enabling this setting may increase user autonomy and privacy, it reduces security
-                                            by allowing access to potentially malicious websites [2].
-                                            Users should be cautious and understand the risks involved.
+                                            While keeping this setting disabled may increase user autonomy and privacy, it may reduce security
+                                            by allowing access to potentially malicious websites [2] [3].
+                                            Authorities like CIS Center for Internet Security [2] and DISA [3] recommend enabling it as a security best practice.
 
                                             This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1].
                                             It is effective only on computers under organizational management, such as those in workplaces or schools.
                                             It's not applicable to personal computers that are not managed by an organization.
 
-                                            This script configures the `PreventSmartScreenPromptOverride` policy [1] [2].
+                                            This script configures the `PreventSmartScreenPromptOverride` policy [1] [2] [3].
                                             Changing this policy does not require restarting the browser to take effect [1].
 
                                             > **Caution**:
                                             > - This will display the message "Your browser is managed by your organization" on the settings page.
                                             > - This locks settings and prevents them from being changed on the settings page.
+                                            > - Disabling SmartScreen may reduce your protection against phishing and malware.
 
                                             [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#preventsmartscreenpromptoverride "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
-                                            [2]: https://web.archive.org/web/20240624152821/https://www.stigviewer.com/stig/microsoft_edge/2021-06-23/finding/V-235720 "Bypassing Microsoft Defender SmartScreen prompts for sites must be disabled. | www.stigviewer.com"
+                                            [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
+                                            [3]: https://web.archive.org/web/20240624152821/https://www.stigviewer.com/stig/microsoft_edge/2021-06-23/finding/V-235720 "Bypassing Microsoft Defender SmartScreen prompts for sites must be disabled. | www.stigviewer.com"
                                         call:
                                             function: SetEdgePolicyViaRegistry
                                             parameters:
                                                 valueName: PreventSmartScreenPromptOverride # Edge ≥ 77
                                                 dwordData: '0'
+                                    - 
+                                        name: Enable Edge SmartScreen warning dismissal for files
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • SmartScreen Caution
+                                            This script allows users to bypass Edge SmartScreen warnings when downloading files.
+
+                                            Microsoft Defender SmartScreen warns users about potentially unsafe downloads [1] [2] [3].
+                                            By default, users can bypass Microsoft Defender SmartScreen warnings and complete unverified downloads [1] [2].
+                                            This script maintains the default option, enabling users to bypass SmartScreen warnings if chosen.
+
+                                            This script allows users to override these warnings.
+                                            This enhances user privacy by reducing the amount of data sent to Microsoft for file scanning.
+                                            However, this may reduce security as it allows the completion of potentially harmful, unverified downloads.
+                                            Restricting downloads to verified sources significantly lowers the risk of acquiring viruses, spyware, or other malicious software [3].
+                                            Authorities like The Defense Information Systems Agency (DISA) [2] and The Center of Internet Security (CIS) [3] advise
+                                            against bypassing SmartScreen due to security concerns.
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            This script configures the `PreventSmartScreenPromptOverrideForFiles` policy [1] [2] [3].
+                                            Changing this policy does not require restarting the browser to take effect [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                            [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#preventsmartscreenpromptoverrideforfiles "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240712112844/https://www.stigviewer.com/stig/microsoft_edge/2021-11-19/finding/V-235721 "Bypassing of Microsoft Defender SmartScreen warnings about downloads must be disabled. | www.stigviewer.com"
+                                            [3]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: PreventSmartScreenPromptOverrideForFiles # Edge ≥ 77
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge SmartScreen DNS requests
+                                        recommend: strict # Recommended by CIS
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • SmartScreen Caution
+                                            This script stops Microsoft Defender SmartScreen from making DNS requests.
+
+                                            By default [1] [2], Microsoft Defender SmartScreen sends DNS requests [1] [2] to identify
+                                            potentially harmful websites, like those involved in phishing or malware [2] [3].
+                                            
+                                            Disabling DNS requests stops SmartScreen from obtaining IP addresses [1] [2],
+                                            which enhances privacy by reducing IP data sharing.
+                                            This script also improves security by reducing dependence on DNS servers.
+                                            Disabling DNS requests mitigates a security risk: if DNS fails to resolve a website,
+                                            the browser cannot isolate it through Web Isolation [2] [3].
+                                            The Center for Internet Security (CIS) recommends this action for its security benefits [2].
+                                            Additionally, disabling DNS requests can improve system performance by reducing processing workload.
+                                            However, this change may reduce IP-based protections [1] [2], posing a security trade-off.
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [2] [3].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            This script configures the `SmartScreenDnsRequestsEnabled` policy [1].
+                                            Changes will take effect after restarting the browser [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - Disabling SmartScreen may reduce your protection against phishing and malware.
+                                            > - Disabling DNS requests may prevent the browser from blocking harmful sites by not checking their IP addresses.
+
+                                            [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#smartscreendnsrequestsenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240712102959/https://www.syxsense.com/syxsense-securityarticles/cis_benchmarks_(ms_edge)/syx-1038-12753.html "Microsoft Defender SmartScreen DNS Requests Enabled (CIS LEVEL 1 MS Edge) | www.syxsense.com"
+                                            [3]: https://web.archive.org/web/20240712103006/https://knowledge.broadcom.com/external/article/200948/unable-to-isolate-websites-in-edge-brows.html "Unable to Isolate websites in Edge browser | knowledge.broadcom.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: SmartScreenDnsRequestsEnabled # Edge ≥ 97
+                                                dwordData: '0'
+                                    -
+                                        name: Disable Edge SmartScreen checks on downloads from trusted sources
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • SmartScreen Caution
+                                            This script lets you configure whether Microsoft Defender SmartScreen checks download reputation from a trusted source [1].
+
+                                            Edge determines a trusted source by checking its Internet zone [1].
+                                            If the source comes from the local system, intranet, or trusted sites zone, then the download
+                                            is considered trusted and safe [1].
+
+                                            By default, if you do not run this script, Microsoft Defender SmartScreen checks the download's reputation regardless of source [1].
+                                            Once you run this script, Microsoft Defender SmartScreen doesn't check the download's reputation when downloading from a trusted source [1].
+                                            This increases your privacy by removing the need to send data to Microsoft about downloaded files.
+                                            It can also increase your performance by removing the processing need for the check.
+                                            However, it may reduce your security against malicious software [2].
+                                            CIS (Center of Internet Security) discourage this script and recommend allowing the checks [2].
+                                            This increases security because SmartScreen can verify that downloads are from a trusted source will
+                                            downloading an infected package to their machine [2].
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [1].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            This script configures the `SmartScreenForTrustedDownloadsEnabled` policy [1] [2].
+                                            Changes will take effect after restarting the browser [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                            [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#smartscreenfortrusteddownloadsenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: SmartScreenForTrustedDownloadsEnabled # Edge ≥ 78
+                                                dwordData: '0'
+                                    -
+                                        name: Disable outdated Edge SmartScreen library update
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • SmartScreen Caution
+                                            This script prevents specific versions of Microsoft Edge from updating to the newer SmartScreen library.
+                                              
+                                            This script reverts Microsoft Edge to the previous SmartScreen library, used before version 103 [1] [2].
+                                            It blocks Edge from loading the new SmartScreen library (`libSmartScreenN`),
+                                            which is responsible for checking site URLs and application downloads [1].
+                                            By running this script, Edge will utilize the older library (`libSmartScreen`).
+
+                                            This script is effective only for Microsoft Edge versions 95 to 107 [1].
+                                            It does not function on versions older than 95, which always use the older library [1].
+                                            Similarly, versions newer than 107 always utilize the newer library [1] [2].
+
+                                            Disabling the updated SmartScreen library can increase privacy by limiting data collection but may reduce
+                                            security as it bypasses the latest updates that combat phishing and malware.
+                                            
+                                            This script may improve system performance since some users have reported slowdowns with the new
+                                            library [3]; these issues have probably already been resolved as the library has matured.
+
+                                            This script applies only to Windows devices within a Microsoft Active Directory domain or managed in similar way [2] [3].
+                                            It is effective only on computers under organizational management, such as those in workplaces or schools.
+                                            It's not applicable to personal computers that are not managed by an organization.
+
+                                            This script configures the `NewSmartScreenLibraryEnabled` policy [1] [2].
+                                            Changes will take effect after restarting the browser [1].
+
+                                            > **Caution**:
+                                            > - This will display the message "Your browser is managed by your organization" on the settings page.
+                                            > - Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                            [1]: https://web.archive.org/web/20240314103512/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#newsmartscreenlibraryenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240714085347/https://blogs.windows.com/msedgedev/2022/09/29/more-reliable-web-defense/ "More reliable web defense - Microsoft Edge Blog | blogs.windows.com"
+                                            [3]: https://web.archive.org/web/20240714090327/https://answers.microsoft.com/en-us/microsoftedge/forum/all/new-smartscreen-library-kills-edge/33ed19a4-ff7d-4939-8e0c-015eab7b0ae9 "\"New SmartScreen library\" kills Edge - Microsoft Community | answers.microsoft.com"
+                                        call:
+                                            function: SetEdgePolicyViaRegistry
+                                            parameters:
+                                                valueName: NewSmartScreenLibraryEnabled # Edge ≥ 95 and ≤ 107
+                                                dwordData: '0'
                                     -
                                         name: Disable Edge (Legacy) SmartScreen
-                                        docs: |- # refactor-with-variables: Same • Edge (Legacy) only
+                                        docs: |- # refactor-with-variables: Same • Edge (Legacy) only • SmartScreen Caution
                                             This script disables the SmartScreen feature in Edge (Legacy).
                                             
                                             Edge (Legacy) uses the Windows Defender SmartScreen by default to protect users from phishing scams and malicious software [1] [2].
@@ -15362,11 +15832,14 @@ actions:
                                             While enabling this setting may increase user autonomy and privacy, it reduces security [1].
                                             Users should be cautious and understand the risks involved.
 
-                                            This script configures the `EnabledV9` policy [1] [2].
+                                            This script configures the `EnabledV9` policy [1] [2] [3].
                                             This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
+
+                                            > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
 
                                             [1]: https://web.archive.org/web/20240624152134/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63713 "The Windows Defender SmartScreen filter for Microsoft Edge must be enabled. | www.stigviewer.com"
                                             [2]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies#configure-windows-defender-smartscreen "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5173 "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
                                         call:
                                             function: SetLegacyEdgePolicyViaRegistry
                                             parameters:
@@ -15374,8 +15847,8 @@ actions:
                                                 valueName: EnabledV9
                                                 dwordData: "0"
                                     -
-                                        name: Enable Edge (Legacy) SmartScreen bypass
-                                        docs: |- # refactor-with-variables: Same • Performance + Privacy • Edge (Legacy) only
+                                        name: Enable Edge (Legacy) SmartScreen warning dismissal
+                                        docs: |- # refactor-with-variables: Same • Performance + Privacy • Edge (Legacy) only • SmartScreen Caution
                                             This script allows users to bypass SmartScreen warnings in Edge (Legacy).
                                             
                                             Edge (Legacy) features a SmartScreen filter that warns users about potentially malicious websites and file downloads [1].
@@ -15389,11 +15862,14 @@ actions:
                                             potentially malicious sources [2].
                                             Users should be cautious and understand the risks involved.
 
-                                            This script configures the `PreventOverride` policy [1] [2].
+                                            This script configures the `PreventOverride` policy [1] [2] [3].
                                             This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
     
+                                            > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
                                             [1]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies#configure-windows-defender-smartscreen "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240624140451/https://www.stigviewer.com/stig/windows_10/2017-02-21/finding/V-63699 "Users must not be allowed to ignore SmartScreen filter warnings for malicious websites in Microsoft Edge. | www.stigviewer.com"
+                                            [3]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5174C163-L5174C178 "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
                                         call:
                                             function: SetLegacyEdgePolicyViaRegistry
                                             parameters:
@@ -15401,60 +15877,318 @@ actions:
                                                 valueName: PreventOverride
                                                 dwordData: "0"
                                     -
-                                        name: Disable SmartScreen in Internet Explorer
-                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetExplorer::IZ_Policy_Phishing_9
+                                        name: Disable outdated Internet Explorer SmartScreen
+                                        docs: |- # refactor-with-variables: • SmartScreen Caution
+                                            This script disables SmartScreen in outdated versions of Internet Explorer.
+
+                                            SmartScreen is also known as the *Phishing Filter* [1] [2] or *SmartScreen Filter* [2] [3].
+                                            It protects users by identifying and blocking malicious web content [2] [3].
+
+                                            Disabling this feature enhances your privacy by preventing the collection of data related to your browsing habits.
+                                            It can also increase system performance by reducing the computational overhead required to scan and evaluate web content.
+                                            However, this may also lower your security, as it makes the browser more vulnerable to malicious sites and downloads [3].
+
+                                            Internet Explorer is no longer supported and has been replaced by Microsoft Edge on recent versions of Windows [1].
+                                            However, this script remains relevant for older versions where Internet Explorer is still operational.
+
+                                            The script modifies the `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\<ZoneNumber>\2301` registry key [1] [2] [3].
+                                            Each zone in the registry represents a different security level [1]:
+
+                                            | Security Zone | Meaning                 |
+                                            |---------------|-------------------------|
+                                            | `0`           | My Computer             |
+                                            | `1`           | Local Intranet Zone     |
+                                            | `2`           | Trusted Sites Zone      |
+                                            | `3`           | Internet Zone           |
+                                            | `4`           | Restricted Sites Zone   |
+
+                                            Disabling SmartScreen is achieved by setting the value of `2301` to `3` [2].
+
+                                            > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                            [1]: https://web.archive.org/web/20240709095151/https://learn.microsoft.com/en-us/troubleshoot/developer/browsers/security-privacy/ie-security-zones-registry-entries "IE security zones registry entries for advanced users - Browsers | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240709102216/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetExplorer::IZ_Policy_Phishing_9 "Turn on SmartScreen Filter scan | admx.help"
+                                            [3]: https://web.archive.org/web/20240709102226/https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2018-06-08/finding/V-64719 "Turn on SmartScreen Filter scan option for the Internet Zone must be enabled. | www.stigviewer.com"
                                         call:
-                                            function: SetRegistryValue
-                                            parameters:
-                                                keyPath: HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\0
-                                                valueName: '2301'
-                                                dataType: REG_DWORD
-                                                data: '1'
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                function: SetRegistryValue
+                                                parameters:
+                                                    keyPath: HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\0
+                                                    valueName: '2301'
+                                                    dataType: REG_DWORD
+                                                    data: '3' # 0: Enable | 3: Disable
+                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                function: SetRegistryValue
+                                                parameters:
+                                                    keyPath: HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\1
+                                                    valueName: '2301'
+                                                    dataType: REG_DWORD
+                                                    data: '3' # 0: Enable | 3: Disable
+                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                function: SetRegistryValue
+                                                parameters:
+                                                    keyPath: HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\2
+                                                    valueName: '2301'
+                                                    dataType: REG_DWORD
+                                                    data: '3' # 0: Enable | 3: Disable
+                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                function: SetRegistryValue
+                                                parameters:
+                                                    keyPath: HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3
+                                                    valueName: '2301'
+                                                    dataType: REG_DWORD
+                                                    data: '3' # 0: Enable | 3: Disable
+                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            -
+                                                function: SetRegistryValue
+                                                parameters:
+                                                    keyPath: HKLM\Software\Policies\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\4
+                                                    valueName: '2301'
+                                                    dataType: REG_DWORD
+                                                    data: '3' # 0: Enable | 3: Disable
+                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                    -
+                                        name: Disable outdated Internet Explorer SmartScreen Filter component
+                                        docs: |- # refactor-with-variables: • SmartScreen Caution
+                                            This script disables the outdated Internet Explorer SmartScreen filter by safely removing the `ieapfltr.dll` file.
+
+                                            The `ieapfltr.dll` file is also known as Microsoft SmartScreen Filter [1].
+                                            It is mainly used by Internet Explorer [2].
+
+                                            Despite the official end of support for Internet Explorer 11 on June 15, 2022 [3],
+                                            some systems may still have this component.
+
+                                            Benefits:
+
+                                            - **Privacy improvement**:
+                                              By disabling the SmartScreen functionality that monitors user behavior,
+                                              this script enhances your privacy.
+                                            - **Security enhancement**:
+                                              It reduces the attack surface by removing unused components, aligning with
+                                              security best practices.
+                                            - **System performance**:
+                                              It may improve system performance by removing unnecessary components.
+                                            
+                                            Trade-offs:
+                                            
+                                            - **Reduced security**:
+                                              The absence of SmartScreen may decrease protection against malware and phishing.
+                                            - **Browser Functionality**:
+                                              If Internet Explorer is still in use, disabling the SmartScreen filter
+                                              may lead to errors, particularly with security features like phishing protection.
+                                            - **System stability**:
+                                              Internet Explorer components are integrated into Windows.
+                                              Some Windows features and third-party applications may depend on these components.
+                                              Removing the `ieapfltr.dll` file may lead to stability issues in applications that depend
+                                              on it, even if Internet Explorer is not actively used.
+
+                                            File locations:
+
+                                            | File path | Windows 11 (23H2) | Windows 10 (22H2) |
+                                            |-----------|-----------------------------|-----------------------------|
+                                            | `%WINDIR%\System32\ieapfltr.dll` [4]                  | ❌ Missing    | ❌ Missing    |
+                                            | `%WINDIR%\SysWOW64\ieapfltr.dll` [1]                  | ✅ Yes        | ✅ Exists     |
+
+                                            > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                            [1]: https://web.archive.org/web/20240715082726/https://strontic.github.io/xcyclopedia/library/ieapfltr.dll-AA14BA778D11D244316DA63EEB040D92.html "ieapfltr.dll | Microsoft SmartScreen Filter | STRONTIC | strontic.github.io"
+                                            [2]: https://web.archive.org/web/20240715082546/https://support.microsoft.com/en-us/topic/ms09-034-cumulative-security-update-for-internet-explorer-5d8e79bc-4b42-fa92-313d-d39c7b112521 "MS09-034: Cumulative security update for Internet Explorer - Microsoft Support | support.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240715082553/https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge#what-is-the-lifecycle-policy-for-internet-explorer- "Lifecycle FAQ - Internet Explorer and Microsoft Edge | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240715083231/https://strontic.github.io/xcyclopedia/library/clsid_3BC4EE9F-1FC1-44DB-81FA-AD94DEC7AF30.html "CLSID 3BC4EE9F-1FC1-44DB-81FA-AD94DEC7AF30 | CLSID_AppRep | STRONTIC | strontic.github.io"
+                                        call:
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%WINDIR%\System32\ieapfltr.dll'
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%WINDIR%\SysWOW64\ieapfltr.dll'
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                             -
-                                category: Disable SmartScreen for Windows Store apps
+                                category: Disable SmartScreen system components
+                                docs: |-
+                                    This category includes scripts that disable SmartScreen system components.
+
+                                    SmartScreen is a security feature in Windows that helps protect your device from 
+                                    potentially harmful applications, files, and websites [1].
+                                    Its components run in the background as part of the operating system.
+
+                                    Disabling these components may:
+
+                                    - Improve privacy by reducing data collection used for SmartScreen functionality [2].
+                                    - Increase system performance by eliminating background processes.
+                                    - Enhance security by removing potential attack surfaces.
+
+                                    However, there are risks to consider:
+
+                                    - Reduced protection against malicious software and phishing attempts.
+                                    - Potential impact on Windows system integrity.
+
+                                    These scripts modify core system components.
+                                    Consider your personal risk tolerance and needs before applying these changes.
+
+                                    > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                    [1]: https://web.archive.org/web/20240709105002/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/ "Microsoft Defender SmartScreen overview - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#241-microsoft-defender-smartscreen "Manage connections from Windows operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
                                 children:
                                     -
-                                        name: Disable SmartScreen's "App Install Control" feature
-                                        docs:
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.SmartScreen::ConfigureAppInstallControl
-                                            - https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#241-microsoft-defender-smartscreen
-                                            - https://web.archive.org/web/20240314103348/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen
+                                        name: Disable SmartScreen process
+                                        docs: |- # refactor-with-variables: • SmartScreen Caution
+                                            This script stops and prevents the `smartscreen.exe` from running.
+
+                                            This process is officially known as *Windows Defender SmartScreen* [1] [2].
+                                            It manages the SmartScreen functionality [3] [4].
+                                            Its executable is located at `%WINDIR%\System32\smartscreen.exe` [1] [2] [4] [5].
+
+                                            Disabling SmartScreen improves your privacy because it stops outbound network connections
+                                            that transmit your data [5].
+                                            This process runs in the background even when SmartScreen is disabled [3].
+                                            It also improves system performance by reducing CPU usage [6].
+
+                                            However, disabling SmartScreen process can compromise your security by disabling its protective features.
+                                            Additionally, if SmartScreen remains partially enabled after the process is disabled,
+                                            it may impair the functionality of Microsoft Store apps [3] [5].
+
+                                            This script will:
+
+                                            - **Terminate the process**:
+                                            Stops the `smartscreen.exe` process to prevent it from running.
+                                            - **Remove the executable**:
+                                            Safely deletes the `smartscreen.exe` file from the system to prevent it from restarting.
+
+                                            > **Caution**:
+                                            > - Disabling SmartScreen may reduce your protection against phishing and malware.
+                                            > - Disabling this process may prevent Microsoft Store apps from loading.
+
+                                            [1]: https://web.archive.org/web/20240708200821/https://www.file.net/process/smartscreen.exe.html "smartscreen.exe Windows process - What is it? | www.file.net"
+                                            [2]: https://web.archive.org/web/20240708201144/https://strontic.github.io/xcyclopedia/library/smartscreen.exe-B75FA41284409A6134BF824BEAE59B4E.html "smartscreen.exe | Windows Defender SmartScreen | STRONTIC | strontic.github.io"
+                                            [3]: https://web.archive.org/web/20240709102724/https://www.howtogeek.com/320711/what-is-smartscreen-and-why-is-it-running-on-my-pc/ "What Is \"SmartScreen\" and Why Is It Running on My PC? | www.howtogeek.com"
+                                            [4]: https://web.archive.org/web/20240715084553/https://strontic.github.io/xcyclopedia/library/clsid_a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d.html "CLSID a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d | SmartScreen | STRONTIC | strontic.github.io"
+                                            [5]: https://web.archive.org/web/20240708201153/https://answers.microsoft.com/en-us/windows/forum/all/block-apps-from-accessing-internet-by-default/44a235ce-c9a5-4612-998b-a4c100da93df "Block apps from accessing internet by default... - Microsoft Community | answers.microsoft.com"
+                                            [6]: https://web.archive.org/web/20240708200833/https://answers.microsoft.com/en-us/windows/forum/all/windows-defender-smartscreen-using-lots-of-cpu/b795d47a-3f92-44b9-bbbc-c4439e932fc3 "Windows Defender Smartscreen Using Lots of CPU - Microsoft Community | answers.microsoft.com"
                                         call:
                                             -
-                                                function: SetRegistryValue
+                                                function: TerminateAndBlockExecution
                                                 parameters:
-                                                    keyPath: HKLM\Software\Policies\Microsoft\Windows Defender\SmartScreen
-                                                    valueName: ConfigurgeAppInstallControl
-                                                    dataType: REG_SZ
-                                                    data: Anywhere
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    executableNameWithExtension: smartscreen.exe
                                             -
-                                                function: SetRegistryValue
+                                                function: SoftDeleteFiles
                                                 parameters:
-                                                    keyPath: HKLM\Software\Policies\Microsoft\Windows Defender\SmartScreen
-                                                    valueName: ConfigureAppInstallControlEnabled
-                                                    dataType: REG_DWORD
-                                                    data: '0'
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    fileGlob: '%WINDIR%\System32\smartscreen.exe'
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                     -
-                                        name: Disable SmartScreen's web content (URLs) checking for apps
-                                        docs: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#181-general
+                                        name: Disable SmartScreen libraries
+                                        docs: |-
+                                            This script disables essential SmartScreen libraries, limiting their functionality and preventing
+                                            their use by other programs.
+
+                                            A *library* is a set of code and resources that help programs operate.
+                                            A *DLL (Dynamic Link Library)* contains code and data that multiple programs can use simultaneously.
+
+                                            Disabling these libraries stops SmartScreen operations across applications.
+                                            This enhances your privacy by eliminating SmartScreen data collection.
+                                            It improves security by reducing the system's attack surface.
+                                            It may also improve system performance by freeing up system resources.
+
+                                            However, turning off these libraries may lower your system's defenses against malware and phishing,
+                                            as it stops the identification and blocking of potentially unsafe content.
+
+                                            This script targets and disables the following specific SmartScreen libraries critical to their operations:
+
+                                            - `smartscreen.dll`:
+                                                This DLL enables core SmartScreen functionality [1].
+                                                It manages essential SmartScreen tasks, such as performing security checks and evaluating the
+                                                safety and reputation of files, applications, and web content [2] [3].
+                                            - `smartscreenps.dll`:
+                                                This DLL supports SmartScreen functionality [4].
+                                                It facilitates SmartScreen's critical functions, including component management, registration, and
+                                                lifecycle within a COM framework [5] [6].
+
+                                            File locations:
+
+                                            | File path | Windows 11 (23H2) | Windows 10 (22H2) |
+                                            |-----------|-----------------------------|-----------------------------|
+                                            | `%WINDIR%\System32\smartscreen.dll` [2]           | ✅ Exists     | ❌ Missing    |
+                                            | `%WINDIR%\SysWOW64\smartscreen.dll` [3]           | ✅ Exists     | ❌ Missing    |
+                                            | `%WINDIR%\System32\smartscreenps.dll` [4] [5]     | ✅ Exists     | ✅ Exists     |
+                                            | `%WINDIR%\SysWOW64\smartscreenps.dll` [6] [7]     | ✅ Exists     | ✅ Exists     |
+
+                                            [1]: https://github.com/privacysexy-forks/10_0_22621_870/blob/8b13bab6a49d9d04990dfd78de7b39eb815dcddc/C/Windows/System32/smartscreen.exe.strings#L1090 "10_0_22621_870/C/Windows/System32/smartscreen.exe.strings at 8b13bab6a49d9d04990dfd78de7b39eb815dcddc · privacysexy-forks/10_0_22621_870 · GitHub | github.com"
+                                            [2]: https://github.com/privacysexy-forks/10_0_22621_1028/blob/3e002a687dbcd05bebe48401714021cf670c5bd8/C/Windows/System32/smartscreen.dll.coff#L5 "10_0_22621_1028/C/Windows/System32/smartscreen.dll.coff at 3e002a687dbcd05bebe48401714021cf670c5bd8 · privacysexy-forks/10_0_22621_1028 · GitHub | github.com"
+                                            [3]: https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/SysWOW64/smartscreen.dll.coff#L5 "10_0_22622_601/C/Windows/SysWOW64/smartscreen.dll.coff at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 · GitHub | github.com"
+                                            [4]: https://web.archive.org/web/20240715084553/https://strontic.github.io/xcyclopedia/library/clsid_a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d.html "CLSID a463fcb9-6b1c-4e0d-a80b-a2ca7999e25d | SmartScreen | STRONTIC | strontic.github.io"
+                                            [5]: https://github.com/privacysexy-forks/10_0_22621_1028/blob/3e002a687dbcd05bebe48401714021cf670c5bd8/C/Windows/System32/smartscreenps.dll.coff#L5 "10_0_22621_1028/C/Windows/System32/smartscreenps.dll.coff at 3e002a687dbcd05bebe48401714021cf670c5bd8 · privacysexy-forks/10_0_22621_1028 · GitHub | github.com"
+                                            [6]: https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/SysWOW64/smartscreenps.dll.coff#L5 "10_0_22622_601/C/Windows/SysWOW64/smartscreenps.dll.coff at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 · GitHub | github.com"
+                                            [7]: https://web.archive.org/web/20240715092131/https://strontic.github.io/xcyclopedia/library/smartscreenps.dll-9C77057727E91884AA2AE5D6A85F90C5.html "smartscreenps.dll | SmartScreenPS | STRONTIC | strontic.github.io"
                                         call:
                                             -
-                                                function: SetRegistryValue
+                                                function: SoftDeleteFiles
                                                 parameters:
-                                                    keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost
-                                                    valueName: EnableWebContentEvaluation
-                                                    dataType: REG_DWORD
-                                                    data: '0'
-                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    fileGlob: '%WINDIR%\System32\smartscreen.dll'
+                                                    grantPermissions: 'true' # Does not exist on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                             -
-                                                function: RunInlineCode
+                                                function: SoftDeleteFiles
                                                 parameters:
-                                                    code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d "0" /f
-                                                    revertCode: |- # Has "1" value in "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" as default
-                                                        reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d "1" /f
+                                                    fileGlob: '%WINDIR%\System32\smartscreenps.dll'
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%WINDIR%\SysWOW64\smartscreen.dll'
+                                                    grantPermissions: 'true' # Does not exist on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%WINDIR%\SysWOW64\smartscreenps.dll'
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                            -
+                                name: Disable outdated SmartScreen settings interface
+                                docs: |- # refactor-with-variables: • SmartScreen Caution
+                                    This script disables the SmartScreen settings interface in older Windows versions.
+
+                                    It specifically targets and soft-deletes the `SmartScreenSettings.exe` file [1] [2] [3] [4].
+                                    Found only in older Windows versions [3] [4], including Windows 8 [3].
+                                    Based on tests, this file does not exist in newer versions such as Windows 11 Pro (23H2)
+                                    or Windows 10 Pro (22H2) and beyond.
+
+                                    The `SmartScreenSettings.exe` is a user interface component [1] [2] that displays settings
+                                    for the SmartScreen filter [3] [4].
+
+                                    Removing this component may enhance privacy by eliminating the possibility to modify
+                                    SmartScreen settings, which could otherwise be used to re-enable this monitoring feature [3] [4].
+                                    It also optimizes system performance by removing this obsolete component.
+
+                                    However, disabling this feature could reduce security by limiting your system's protection against
+                                    phishing and malware.
+
+                                    It is located at the following paths:
+
+                                    - `%WINDIR%\System32\SmartScreenSettings.exe` [1] [4]
+                                    - `%WINDIR%\SysWOW64\SmartScreenSettings.exe` [2]
+
+                                    > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
+
+                                    [1]: https://web.archive.org/web/20240714203112/https://strontic.github.io/xcyclopedia/library/SmartScreenSettings.exe-43D69652F91822C4A0873884B829DD0A.html "SmartScreenSettings.exe | SmartScreenSettings | STRONTIC | strontic.github.io"
+                                    [2]: https://web.archive.org/save/https://strontic.github.io/xcyclopedia/library/SmartScreenSettings.exe-6B2EA6F8937B573372304CAE5F829A4D.html "SmartScreenSettings.exe | SmartScreenSettings | STRONTIC | strontic.github.io"
+                                    [3]: https://web.archive.org/web/20111013123233/https://techtrickz.com/how-to/enable-or-disable-windows-8-smartscreen-feature-how-to/ "Disable Windows 8 SmartScreen Feature | techtrickz.com"
+                                    [4]: https://web.archive.org/web/20240714203245/https://www.thewindowsclub.com/windows-smartscreen-cant-reached-right-now "Windows SmartScreen can't be reached right now | www.thewindowsclub.com"
+                                call:
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%WINDIR%\System32\SmartScreenSettings.exe'
+                                            grantPermissions: 'true' # Does not exist on Windows 10 since 22H2 | Does not exist on Windows 11 since 23H2
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%WINDIR%\SysWOW64\SmartScreenSettings.exe'
+                                            grantPermissions: 'true' # Does not exist on Windows 10 since 22H2 | Does not exist on Windows 11 since 23H2
             -
                 category: Disable automatic updates
                 docs: |-
@@ -24149,7 +24883,7 @@ functions:
         parameters:
             - name: serviceName
             - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
-        # More about per-user services: https://docs.microsoft.com/en-us/windows/application-management/per-user-services-in-windows
+        # More about per-user services: https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows
         call:
             - # System-wide variant: every per-user service has also system-wide counterpart with same default startup mode
                 function: DisableServiceInRegistry
