@@ -13026,22 +13026,97 @@ actions:
                                             data: "0"
                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
-                                name: Disable tamper protection # Added in Windows 10, version 1903
-                                docs:
-                                    - https://www.thewindowsclub.com/how-to-enable-tamper-protection-in-windows-10
-                                    - https://web.archive.org/web/20240314124546/https://learn.microsoft.com/en-us/windows/client-management/mdm/defender-csp#configurationtamperprotection
+                                name: Disable Tamper Protection
+                                docs: |-
+                                    This script disables Tamper Protection in Microsoft Defender Antivirus.
+
+                                    Tamper Protection is a security feature that blocks unauthorized changes to key Microsoft Defender Antivirus settings [1] [2].
+                                    These settings include real-time protection [1] [2], behavior monitoring [2], and cloud-delivered protection [1].
+                                    By default, Tamper Protection is enabled [1].
+                                    It is available in all editions of Windows since Windows 10, version 1903 [3].
+
+                                    Disabling Tamper Protection may increase privacy and control over your system by allowing you to:
+
+                                    - Change protected Microsoft Defender Antivirus settings to enhance privacy [1] [3]
+                                    - Disable Microsoft Defender Antivirus entirely [1] [3] to increase privacy
+                                    - Improve system performance by adjusting or disabling certain security features
+
+                                    However, turning off Tamper Protection may reduce your system's security by:
+
+                                    - Making your device more vulnerable to malware that attempts to disable security features
+                                    - Allowing potentially harmful changes to important security settings
+
+                                    With Tamper Protection enabled, users can modify protected settings through the Windows Security app [1].
+                                    Disabling Tamper Protection allows changes through scripts and third-party apps such as privacy.sexy [1].
+
+                                    ### Technical Details
+
+                                    This script modifies the following registry keys:
+
+                                    - `HKLM\SOFTWARE\Microsoft\Windows Defender\Features!TamperProtection` [4] [5] [6].
+                                    - `HKLM\SOFTWARE\Microsoft\Windows Defender\Features!TamperProtectionSource` [7]
+                                    
+                                    These keys interact with the `MpClient.dll` library within Microsoft Defender Antivirus [8].
+                                    The script sets values to replicate changes made through the Windows Security interface [5].
+
+                                    Tests reveal the following values for various Windows versions:
+
+                                    | Key | Opearting System | Default | After toggling ON | After toggling OFF |
+                                    | --- | ------- | ------- | -------------------- | --------------------- |
+                                    | `TamperProtection` | Windows 10 Pro (>= 22H2) | 1 | 5 [4] [6] | 4 [4] [6] [7] |
+                                    | `TamperProtection` | Windows 11 Pro (>= 23H2) | 1 | 5 [4] [5] | 4 [4] [5] |
+                                    | `TamperProtectionSource` | Windows 10 Pro (>= 22H2) | No value | No value | No value (Or 2 [7]) |
+                                    | `TamperProtectionSource` | Windows 11 Pro (>= 23H2) | 5 | 2 | 2 |
+
+                                    `TamperProtectionSource` value `2` means that the tamper protection is based on signatures.
+                                    Other recorded values in various installations include `ATP` [9], `Service Init` [10], `Intune` [11],
+                                    and `E5 transition` [12].
+                                    However, these values lack official public documentation [13].
+
+                                    To check the current Tamper Protection source, use this command:
+
+                                    ```batchfile
+                                    wmic /namespace:\\root\microsoft\windows\defender path MSFT_MpComputerStatus get /format:list | findstr "TamperProtectionSource"
+                                    ````
+
+                                    Or this PowerShell command:
+
+                                    ```ps1
+                                    Get-MpComputerStatus | Select-Object -ExpandProperty TamperProtectionSource
+                                    ```
+
+                                    [1]: https://web.archive.org/web/20231006115719/https://support.microsoft.com/en-us/windows/prevent-changes-to-security-settings-with-tamper-protection-31d51aaa-645d-408e-6ce7-8d7f8e593f87 "Prevent changes to security settings with Tamper Protection - Microsoft Support"
+                                    [2]: https://web.archive.org/web/20240314124546/https://learn.microsoft.com/en-us/windows/client-management/mdm/defender-csp#configurationtamperprotection "Defender CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240314125156/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-disableantispyware "DisableAntiSpyware | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20240725101722/https://www.alteredsecurity.com/post/disabling-tamper-protection-and-other-defender-mde-components?ref=news.risky.biz "Breaking through Defender's Gates - Disabling Tamper Protection and other Defender components | www.alteredsecurity.com"
+                                    [5]: https://web.archive.org/web/20240523053136/https://www.elevenforum.com/t/turn-on-or-off-tamper-protection-for-microsoft-defender-antivirus-in-windows-11.3973/ "Turn On or Off Tamper Protection for Microsoft Defender Antivirus in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                    [6]: https://web.archive.org/web/20240725111337/https://www.ghacks.net/2019/10/14/microsoft-enables-tamper-protection-on-windows-10-for-all-home-users/ "Microsoft enables Tamper Protection on Windows 10 for all Home users - gHacks Tech News | ghacks.net"
+                                    [7]: https://web.archive.org/web/20240725111606/https://wirediver.com/disable-windows-defender-in-powershell/ "Disable Windows Defender in powershell - a script to finally get rid of itWireDiver | wirediver.com"
+                                    [8]: https://github.com/privacysexy-forks/10_0_22623_1020/blob/0225ce2c6d74641e63613c0a57c5c6ebea2df4d8/C/Windows/WinSxS/wow64_windows-defender-service_31bf3856ad364e35_10.0.22621.1_none_319098d47eeb862c/MpClient.dll.strings#L4520-L4521 "10_0_22623_1020/C/Windows/WinSxS/wow64_windows-defender-service_31bf3856ad364e35_10.0.22621.1_none_319098d47eeb862c/MpClient.dll.strings at 0225ce2c6d74641e63613c0a57c5c6ebea2df4d8 · privacysexy-forks/10_0_22623_1020 | github.com"
+                                    [9]: https://web.archive.org/web/20240725111557/https://jeffreyappel.nl/microsoft-defender-for-endpoint-series-validate-defender-protection-and-additional-troubleshooting-part6/ "Validate Defender for Endpoint protection and additional troubleshooting | jeffreyappel.nl"
+                                    [10]: https://web.archive.org/web/20240725111814/https://blog.51sec.org/2022/03/microsoft-defender-for-endpoint.html "Microsoft Defender for Endpoint Configurations and Training Resources - NETSEC | blog.51sec.org"
+                                    [11]: https://github.com/privacysexy-forks/ClientInspectorV2/blob/main/README.md "ClientInspectorV2/README.md at main · privacysexy-forks/ClientInspectorV2 | github.com"
+                                    [12]: https://web.archive.org/web/20240725111617/https://learn.microsoft.com/en-us/powershell/module/defender/get-mpcomputerstatus?view=windowsserver2022-ps "Get-MpComputerStatus (Defender) | Microsoft Learn | learn.microsoft.com"
+                                    [13]: https://web.archive.org/web/20240725111550/https://247tech.co.uk/intune-disables-tamper-protection-by-default/ "Intune disables Tamper Protection by default – 247 TECH | 247tech.co.uk"
                                 call:
                                     -
-                                        function: RunInlineCodeAsTrustedInstaller # Otherwise we get "ERROR: Access is denied." (>= 20H2)
-                                        # ❌ Fails with "ERROR: Access is denied." in Windows 11 21H2 | ✅ Works in Windows 10 >= 20H2
+                                        function: SetRegistryValueAsTrustedInstaller
+                                        # Without TrustedInstaller: ✅ Windows 10 Pro (20H2) | ❌ Windows 10 Pro (>= 22H2) | ❌ Windows 11 Pro (>= 21H2)
                                         parameters:
-                                            code: reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtection" /t REG_DWORD /d "4" /f
-                                            revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtection" /f 2>nul
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\Features
+                                            valueName: "TamperProtection"
+                                            dataType: REG_DWORD
+                                            data: "4"
+                                            dataOnRevert: "1" # Default value: `1` on Windows 10 Pro (≥ 22H2) | `1` on Windows 11 Pro (≥ 23H2)
                                     -
-                                        function: RunInlineCodeAsTrustedInstaller # Otherwise we get "ERROR: Access is denied." (>= 20H2)
+                                        function: SetRegistryValueAsTrustedInstaller
+                                        # Without TrustedInstaller: ✅ Windows 10 Pro (>= 20H2) | ✅ Windows 11 Pro (>= 23H2)
                                         parameters:
-                                            code: reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtectionSource" /t REG_DWORD /d "2" /f
-                                            revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtectionSource" /f 2>nul
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\Features
+                                            valueName: "TamperProtectionSource"
+                                            dataType: REG_DWORD
+                                            data: "2"
+                                            dataOnRevert: "5" # Default value: Missing on Windows 10 Pro (≥ 22H2) | `0` on Windows 11 Pro (≥ 23H2)
                             -
                                 name: Disable file hash computation feature # Added in Windows 10, version 2004
                                 docs:
@@ -14516,11 +14591,33 @@ actions:
                                                 data: '1'
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        name: Minimize threat history access to administrators
-                                        docs:
-                                            # Managing with MpPreference module:
-                                            - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
-                                            - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableprivacymode
+                                        name: Disable non-administrator access to threat history
+                                        docs: |-
+                                            This script disables privacy mode for Defender scans, limiting threat history access to administrators.
+
+                                            By default, privacy mode is enabled [1].
+                                            When active, it restricts the display of spyware and potentially dangerous programs to administrators only,
+                                            instead of all users on the computer [2].
+                                            It blocks non-administrators from viewing threat history [1].
+
+                                            This is a legacy setting that only affects older versions of Microsoft Defender Antivirus [1].
+                                            It has no impact on current platforms [1].
+
+                                            Limiting threat history to administrators has both benefits and drawbacks.
+                                            It improves security and privacy by limiting access to sensitive threat information.
+                                            However, it may reduce transparency and hinder security efforts for users without admin access who need this data.
+
+                                            The script configures:
+
+                                            1. `DisablePrivacyMode` Defender preference using Command Line Interface (CLI) [1] [3].
+                                                It sets the value to `$True`, effectively disabling privacy mode [1].
+
+                                            2. `HKLM\SOFTWARE\Microsoft\Windows Defender\UX Configuration!DisablePrivacyMode` registry value [2].
+                                                This undocumented registry key has been verified to work on older Windows versions by the community [2].
+
+                                            [1]: https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps#-disableprivacymode "Set-MpPreference (Defender) | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240725094236/https://www.win7help.ru/manual/reestr-windows/soft/ "Софт | Секреты Windows 7 | www.win7help.ru"
+                                            [3]: https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableprivacymode "MSFT_MpPreference - powershell.one | powershell.one"
                                         call:
                                             -
                                                 function: SetMpPreference
@@ -14529,10 +14626,14 @@ actions:
                                                     value: $True                    # Set:      Set-MpPreference -Force -DisablePrivacyMode $True
                                                     default: $False                 # Default:  False | Remove-MpPreference -Force -DisablePrivacyMode | Set-MpPreference -Force -DisablePrivacyMode $False
                                             -
-                                                function: RunInlineCodeAsTrustedInstaller # Otherwise we get "ERROR: Access is denied." (>= 20H2)
+                                                function: SetRegistryValueAsTrustedInstaller
+                                                # Without TrustedInstaller: ❌ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
                                                 parameters:
-                                                    code: reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\UX Configuration" /v "DisablePrivacyMode" /t REG_DWORD /d "1" /f
-                                                    revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows Defender\UX Configuration" /v "DisablePrivacyMode" /f 2>nul
+                                                    keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\UX Configuration
+                                                    valueName: "DisablePrivacyMode"
+                                                    dataType: REG_DWORD
+                                                    data: "1"
+                                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
                                         category: Disable sections in "Windows Security"
                                         docs: |-
@@ -24922,12 +25023,20 @@ functions:
     -
         name: RunInlineCodeAsTrustedInstaller
         parameters:
-            - name: code
-            - name: revertCode
+            - name: code                    # Batchfile code to execute with TrustedInstaller privileges.
+            - name: revertCode              # Optional batchfile code to revert changes. This code also runs with TrustedInstaller privileges.
               optional: true
+            - name: minimumWindowsVersion   # Optionally specify the minimum Windows version required to execute the script.
+              optional: true                # Allowed values: Windows11, Windows10-1607
+        docs: |-
+            This function executes PowerShell code with TrustedInstaller privileges, which may be required for performing system-level tasks
+            that require the highest permission levels.
+            This function is designed to handle tasks that cannot be completed under normal user or administrator privileges,
+            such as modifying protected registry keys or system files.
         call:
-            function: RunPowerShell
+            function: RunPowerShellWithMinimumWindowsVersion
             parameters:
+                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}.{{ end }}'
                 # PowerShell commands (`Unregister-ScheduledTask` and `Get-ScheduledTask`) sometimes fail to find existing tasks.
                 #   Seen e.g. on Windows 11 when reverting scripts after executing them and reboot.
                 #   They are seen to throw different exceptions:
@@ -26992,9 +27101,6 @@ functions:
                     {{ end }}
     -
         name: SetRegistryValue
-        # 💡 Purpose:
-        #   Create or modify a registry entry at a specified path.
-        #   Use this function for a consistent approach instead of directly using `reg add` or `reg delete` commands.
         parameters:
             - name: keyPath                 # Full path of the subkey or entry to be added.
             - name: valueName               # Name of the add registry entry.
@@ -27004,25 +27110,14 @@ functions:
               optional: true
             - name: minimumWindowsVersion   # Ensures the script executes only on specified Windows versions or newer.
               optional: true                # Allowed values: Windows11, Windows10-1607
+        docs: |-
+            This function creates or modifies a registry entry at a specified path.
+
+            > 💡 Use this function for a consistent approach instead of directly using `reg add` or `reg delete` commands.
         call:
-            function: RunPowerShellWithSetup
+            function: RunPowerShellWithMinimumWindowsVersion
             parameters:
-                # Marked: refactor-with-if-syntax
-                #   If checks can be handled during compile time.
-                setupCode: |-
-                    {{ with $minimumWindowsVersion }}
-                        $targetWindowsVersion = '{{ . }}'
-                        $parsedVersion=$null
-                        if ($targetWindowsVersion -eq 'Windows11') {
-                            $parsedVersion=[System.Version]::Parse('10.0.22000')
-                        } elseif ($targetWindowsVersion -eq 'Windows10-1607') {
-                            $parsedVersion=[System.Version]::Parse('10.0.14393')
-                        }
-                        if ([System.Environment]::OSVersion.Version -lt $parsedVersion) {
-                            Write-Output "Skipping, versions before $parsedVersion are not supported."
-                            exit 0
-                        }
-                    {{ end }}
+                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}.{{ end }}'
                 code: |-
                     reg add '{{ $keyPath }}' `
                         /v '{{ $valueName }}' `
@@ -27786,3 +27881,67 @@ functions:
                     {{ end }}
                 code: '{{ $code }}'
                 revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
+    -
+        name: RunPowerShellWithMinimumWindowsVersion
+        docs: |-
+            This function executes PowerShell code on Windows systems that meet a specified minimum version requirement.
+            It ensures the script runs only on the specified Windows versions or newer.
+        parameters:
+            - name: code                    # The main PowerShell code to execute.
+            - name: revertCode              # Optional PowerShell code to revert any changes. Executed only if provided.
+              optional: true
+            - name: minimumWindowsVersion   # Specifies the minimum Windows version for executing the PowerShell script.
+              optional: true                # Allowed values: Windows11, Windows10-1607
+        call:
+            function: RunPowerShellWithSetup
+            parameters:
+                # Marked: refactor-with-if-syntax
+                #   If checks can be handled during compile time.
+                setupCode: |-
+                    {{ with $minimumWindowsVersion }}
+                        $targetWindowsVersion = '{{ . }}'
+                        $parsedVersion=$null
+                        if ($targetWindowsVersion -eq 'Windows11') {
+                            $parsedVersion=[System.Version]::Parse('10.0.22000')
+                        } elseif ($targetWindowsVersion -eq 'Windows10-1607') {
+                            $parsedVersion=[System.Version]::Parse('10.0.14393')
+                        }
+                        if ([System.Environment]::OSVersion.Version -lt $parsedVersion) {
+                            Write-Output "Skipping, versions before $parsedVersion are not supported."
+                            exit 0
+                        }
+                    {{ end }}
+                code: '{{ $code }}'
+                revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
+    -
+        name: SetRegistryValueAsTrustedInstaller
+        parameters: # The parameters should be always in sync/compatible with `SetRegistryValue`.
+            - name: keyPath                 # Full path of the subkey or entry to be added.
+            - name: valueName               # Name of the add registry entry.
+            - name: dataType                # Type for the registry entry.
+            - name: data                    # Data for the new registry entry.
+            - name: deleteOnRevert          # Set to 'true' to revert to the initial state by deleting the registry key.
+              optional: true
+            - name: dataOnRevert            # Specifies the value to restore when reverting the registry change, instead of deleting the entry.
+              optional: true
+            - name: minimumWindowsVersion   # Ensures the script executes only on specified Windows versions or newer.
+              optional: true                # Allowed values: Windows11, Windows10-1607
+        docs: >-
+            Sets registry value using TrustedInstaller privileges.
+            
+            > - 💡 Use this function for a consistent approach instead of directly using `reg add` or `reg delete` commands.>
+            > - ❗️ Use this function only when `SetRegistryValue` fails with permission errors.
+        call:
+        # Marked: refactor-with-variables
+        #   Should be re-using same code as SetRegistryValue but only as TrustedInstaller.
+            function: RunInlineCodeAsTrustedInstaller
+            parameters:
+                code: reg add "{{ $keyPath }}" /v "{{ $valueName }}" /t "{{ $dataType }}" /d "{{ $data }}" /f
+                revertCode: |-
+                    {{ with $deleteOnRevert }}
+                        reg delete "{{ $keyPath }}" /v "{{ $valueName }}" /f 2>nul
+                    {{ end }}
+                    {{ with $dataOnRevert }}
+                        reg add "{{ $keyPath }}" /v "{{ $valueName }}" /t "{{ $dataType }}" /d "{{ . }}" /f
+                    {{ end }}
+                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}.{{ end }}'
