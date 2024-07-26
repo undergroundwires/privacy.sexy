@@ -2685,6 +2685,652 @@ actions:
                             parameters:
                                 appCapability: humanInterfaceDevice
             -
+                category: Disable Customer Experience Improvement Program
+                docs: |-
+                    This script disables the Windows Customer Experience Improvement Program (CEIP).
+
+                    CEIP collects user interaction data with Windows [1].
+                    This includes hardware configurations (e.g., processor count, screen resolution), system performance, reliability metrics,
+                    and user behaviors like folder creation on the desktop [1].
+                    It also tracks usage of features such as the Event Viewer and Remote Assistance [1].
+
+                    Collected data is used by Microsoft to identify software trends and user patterns [1].
+                    This data is stored on Microsoft-controlled servers [1].
+                    CEIP-related events are logged in the "Event Viewer" under `Windows Logs\Application` [1].
+                    Storing this data on your computer can expose sensitive personal information to unauthorized third-parties.
+
+                    By default, CEIP is disabled in Windows [1].
+                    If enabled, it periodically collects and sends data to Microsoft [1].
+
+                    Disabling CEIP enhances privacy by protecting data that reveals details about your system and personal behaviors.
+                    This also speeds up your computer by reducing background activities such as network and hardware usage.
+                    It is recommended by security frameworks like the CIS (Center for Internet Security) to protect your security [2].
+
+                    [1]: https://web.archive.org/web/20231011232340/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj618322%28v=ws.11%29#purpose-of-the-windows-customer-experience-improvement-program "Manage Privacy: Windows Customer Experience Improvement Program and Resulting Internet Communication | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20231215185442/https://www.cisecurity.org/-/jssmedia/Project/cisecurity/cisecurity/data/media/files/uploads/2017/04/CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v220.pdf "CIS Microsoft Windows Server 2012 R2 Benchmark | cisecurity.org"
+                children:
+                    -
+                        name: Disable Customer Experience Improvement Program data collection
+                        recommend: standard
+                        docs: |-
+                            This script disables the Windows Customer Experience Improvement Program (CEIP) [1].
+
+                            CEIP collects details on users' hardware setups and software usage to analyze trends [2].
+
+                            Disabling CEIP through this script means all users on the computer are opted out [1] [2].
+                            This enhances privacy by ensuring that data is neither stored locally nor shared with Microsoft.
+                            Additionally, turning off CEIP improves system performance by reducing background data collection.
+                            Security frameworks such as the CIS Center for Internet Security recommend this action to enhance your security [3].
+
+                            This change is applied by modifying registry keys: 
+
+                            - `HKLM\Software\Policies\Microsoft\SQMClient\Windows!CEIPEnable` [1] [2] [3]
+                            - `HKLM\Software\Microsoft\SQMClient\Windows!CEIPEnable` [1]
+
+                            Without this script, CEIP may remain active [2].
+
+                            [1]: https://web.archive.org/web/20230922164714/https://learn.microsoft.com/en-us/windows/win32/devnotes/ceipenable "CEIPEnable - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230922164711/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-icm#ceipenable "ADMX_ICM Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20231215185442/https://www.cisecurity.org/-/jssmedia/Project/cisecurity/cisecurity/data/media/files/uploads/2017/04/CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v220.pdf "CIS Microsoft Windows Server 2012 R2 Benchmark | cisecurity.org"
+                        call:
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\Software\Policies\Microsoft\SQMClient\Windows
+                                    valueName: CEIPEnable
+                                    dataType: REG_DWORD
+                                    data: '0'
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 21H1) and Windows 11 Pro (≥ 22H2)
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\Software\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
+                                    # `0` by default since Windows 10 Pro (≥ 21H1) and Windows 11 Pro (≥ 22H2)
+                                    revertCode: reg add "HKLM\Software\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
+                    -
+                        name: Disable Customer Experience Improvement Program data uploads
+                        recommend: standard
+                        docs: |-
+                            This script disables the upload of data to Microsoft's Customer Experience Improvement Program (CEIP).
+
+                            By stopping this data upload, you gain greater control over your personal information and ensure that your usage habits remain private.
+                            Additionally, this action can boost system performance by reducing unnecessary data transmission.
+
+                            This script modifies the Windows Registry key `HKLM\Software\Microsoft\SQMClient!UploadDisableFlag` [1].
+                            This change effectively prevents user data from being transmitted to Microsoft [1].
+
+                            [1]: https://web.archive.org/web/20240101180142/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/customize/uwfexclusions "Common write filter exclusions | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: SetRegistryValue
+                            parameters:
+                                keyPath: HKLM\Software\Microsoft\SQMClient
+                                valueName: UploadDisableFlag
+                                dataType: REG_DWORD
+                                data: '0'
+                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 21H1) and Windows 11 Pro (≥ 22H2)
+                    -
+                        category: Disable background customer experience data collection
+                        docs: |-
+                            This category includes scripts that disable scheduled tasks from the Windows Customer Experience Improvement Program (CEIP).
+
+                            The CEIP, designed by Microsoft, collects background data on user interactions with its products [1].
+                            This data collection is executed through multiple background tasks that transmit usage data to Microsoft [1].
+
+                            Scripts in this category stop these tasks, thereby reducing data transmission to Microsoft, enhancing privacy,
+                            and improving system performance.
+
+                            Use the following PowerShell command to list all scheduled tasks associated with the CEIP:
+
+                            ```powershell
+                            @('\Microsoft\Windows\Autochk\*', '\Microsoft\Windows\Customer Experience Improvement Program\*', '\Microsoft\Windows\DiskDiagnostic\*', '\Microsoft\Windows\Customer Experience Improvement Program\Server\*') `
+                                | ForEach-Object { Get-ScheduledTask -TaskName '*' -TaskPath $_ -ErrorAction SilentlyContinue } `
+                                | ForEach-Object { Write-Host "$($_.TaskPath)$($_.TaskName)" }
+                            ```
+
+                            [1]: https://web.archive.org/web/20240718151636/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj651022(v=ws.11) "What's New in Telemetry | Microsoft Learn | learn.microsoft.com"
+                        children:
+                            -
+                                name: Disable automatic Software Quality Metrics (SQM) data transmission
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "Proxy" scheduled task.
+
+                                    This task sends Software Quality Metrics (SQM) data to Microsoft [1].
+                                    SQM stands for "Software Quality Metrics" [2] [3], also known as "Software Quality Management" [4] [5].
+                                    It is part of Microsoft's telemetry framework, gathering and sending usage and performance data to Microsoft [2] [3] [5].
+
+                                    This task specifically collects and sends `autochk` SQM data [1].
+                                    `autochk` is a Windows tool that checks file system integrity before Windows starts [6].
+
+                                    This task enables features of the Customer Experience Improvement Program for participating users [7].
+                                    It sends data when a user opts into the Microsoft Customer Experience Improvement Program [1].
+
+                                    ### Why disable it?
+
+                                    - **Privacy**:
+                                      Disabling this task reduces data sent to Microsoft [1], enhancing your privacy.
+                                    - **Performance and Reliability:**
+                                      Microsoft suggests this task isn't required [7].
+                                      Turning it off can boost performance [1] [8] and system reliability [1] [7].
+                                    - **Security**:
+                                      Enabling this background data collection task increases vulnerabilities.
+                                      Authorities, such as the Polish government [9], advise disabling this task for enhanced security.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Autochk\Proxy`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20230929130219/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004#scheduled-tasks "Optimizing Windows 10, Build 2004, for a Virtual Desktop role | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231011231116/https://learn.microsoft.com/en-us/skype-sdk/ucwa/policies_ref "Policies reference | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231011230658/https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-sqmcs/10c34967-5fd7-4791-b336-30a2ffc14b8c "[MS-SQMCS]: Overview | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20231011231057/https://support.microsoft.com/en-us/topic/update-is-available-that-prevents-sqm-data-collection-in-windows-rt-8-1-windows-8-1-and-windows-server-2012-r2-87b3f330-7894-e25b-3693-51b58da399fc "Update is available that prevents SQM data-collection in Windows RT 8.1, Windows 8.1, and Windows Server 2012 R2 - Microsoft Support | support.microsoft.com"
+                                    [5]: https://web.archive.org/web/20231011230649/https://learn.microsoft.com/en-us/archive/msdn-magazine/2015/january/azure-sdk-2-5-hadoop-made-easier-for-microsoft-developers "Azure SDK 2.5 - Hadoop Made Easier for Microsoft Developers | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20231011230640/https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/autochk "autochk | Microsoft Learn | learn.microsoft.com"
+                                    [7]: https://web.archive.org/web/20231002104948/https://learn.microsoft.com/en-us/services-hub/health/other/work-with-results/assessmentplanreport_windowsclientassessmentplus.xlsx "Windows Client Assessment Recommendations Report generated on: 06/13/2019 | learn.microsoft.com"
+                                    [8]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs | docs.microsoft.com"
+                                    [9]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP | plid.obywatel.gov.pl"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Autochk\' -TaskName 'Proxy'
+                                        taskPathPattern: \Microsoft\Windows\Autochk\
+                                        taskNamePattern: Proxy
+                            -
+                                name: Disable kernel-level customer experience data collection
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "KernelCeipTask" scheduled task.
+
+                                    This task is part of the Windows Customer Experience Improvement Program (CEIP) [1] [2] [3].
+                                    Its primary role is to collect and send user usage data to Microsoft when a user consents to participate in CEIP [1].
+
+                                    Disabling this task:
+
+                                    - Improves system reliability and performance [1]
+                                    - Reduces data collection by Microsoft, enhancing privacy [2]
+
+                                    Governments such as Poland [4] and Argentina [5] recommend disabling this task.
+
+                                    Microsoft suggests:
+
+                                    - Turning off this task can improve system reliability and reduce performance issues [1].
+                                    - This task is not necessary for core operating system functionality [1].
+                                    - Its deactivation can optimize system performance [1] [2] [6] and reduce data collection [2].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 23H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231002104948/https://learn.microsoft.com/en-us/services-hub/health/other/work-with-results/assessmentplanreport_windowsclientassessmentplus.xlsx "Windows Client Assessment Recommendations Report generated on: 06/13/2019 | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231017194013/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations#task-scheduler "Recommended configuration for VDI desktops | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231017193840/https://docs.vmware.com/en/VMware-Horizon-7/7.13/horizon-virtual-desktops/GUID-BE82165B-13BC-4FD9-A9CF-FBEF6343D98A.html "Disable the Windows Customer Experience Improvement Program | docs.vmware.com"
+                                    [4]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP | plid.obywatel.gov.pl"
+                                    [5]: https://archive.ph/2023.10.17-193954/http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml "A complete task sequence for deploying a client operating system | Government of Argentin | argentinacompra.gov.ara"
+                                    [6]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs | docs.microsoft.com"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'KernelCeipTask'
+                                        taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
+                                        taskNamePattern: KernelCeipTask
+                            -
+                                name: Disable Bluetooth usage data collection
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "BthSQM" scheduled task.
+                                    
+                                    This task is part of the Bluetooth Customer Experience Improvement Program (CEIP) [1].
+                                    The BthSQM task collects and sends data about your Bluetooth usage to Microsoft [1].
+                                    This data transmission compromises your privacy.
+
+                                    Microsoft has suggested disabling this task as an optimization measure for Windows [2].
+
+                                    Disabling this task stops the transmission of your Bluetooth usage data to Microsoft, enhancing your privacy.
+                                    It may also improve system performance by reducing background tasks.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Customer Experience Improvement Program\BthSQM`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 23H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231215183514/http://windows.fyicenter.com/4373_BthSQM_Scheduled_Task_on_Windows_8.html '"BthSQM" Scheduled Task on Windows 8 | windows.fyicenter.com'
+                                    [2]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs | docs.microsoft.com"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'BthSQM'
+                                        taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
+                                        taskNamePattern: BthSQM
+                            -
+                                name: Disable disk diagnostic data collection
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "Microsoft-Windows-DiskDiagnosticDataCollector" scheduled task.
+
+                                    This task collects and sends disk and system data to Microsoft [1].
+                                    It primarily affects users in the Customer Experience Program [1].
+
+                                    When this task runs, it:
+
+                                    - Uses the **Windows Diagnostic Infrastructure (WDI) Resolution host** feature [2].
+                                      This feature fixes specific computer problems identified by the **Diagnostic Policy Service (DPS)** [2].
+                                    - It launches the **Windows Disk Diagnostic User Resolver Wizard** (`dfdwiz.exe`) when a hard drive problem is detected [2].
+
+                                    This task has been present in Windows since Windows Vista [2].
+
+                                    Disabling this task:
+
+                                    - Enhances user privacy by preventing data transmission to Microsoft [1].
+                                    - Improves system performance [1] [3].
+
+                                    Microsoft [1] [3] and the Polish government [4] recommend disabling this task for
+                                    enhanced privacy and improved system performance.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 21H2  | 🟢 Ready |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20230929130219/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004#scheduled-tasks "Optimizing Windows 10, Build 2004, for a Virtual Desktop role | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231017191924/https://support.microsoft.com/en-us/topic/description-of-the-scheduled-tasks-in-windows-vista-21f93b44-7260-a612-5ec3-fb2a7be5563c "Description of the scheduled tasks in Windows Vista - Microsoft Support | support.microsoft.com"
+                                    [3]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs | docs.microsoft.com"
+                                    [4]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP | plid.obywatel.gov.pl"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\DiskDiagnostic\' -TaskName 'Microsoft-Windows-DiskDiagnosticDataCollector'
+                                        taskPathPattern: \Microsoft\Windows\DiskDiagnostic\
+                                        taskNamePattern: Microsoft-Windows-DiskDiagnosticDataCollector
+                            -
+                                name: Disable disk diagnostic user notifications
+                                recommend: strict # It may prevent user from seeing disk errors
+                                docs: |-
+                                    This script disables the "Microsoft-Windows-DiskDiagnosticResolver" scheduled task.
+
+                                    This task warns users about faults reported by hard disks that support
+                                    S.M.A.R.T. (Self-Monitoring, Analysis, and Reporting Technology) [1].
+
+                                    This task is disabled by default.
+                                    However, it is automatically enabled by the **Diagnostic Policy Service**
+                                    when a S.M.A.R.T. fault is detected [1].
+
+                                    It runs `%SYSTEMROOT%\Windows\System32\DFDWiz.exe` [1] [2].
+                                    This executable is known as "Windows Disk Diagnostic User Resolver" [1] [2].
+
+                                    Disabling this task enhances privacy by preventing the collection and display of
+                                    information about your hard disk's health and performance.
+                                    This data, though primarily technical, may reveal insights into your disk usage patterns.
+
+                                    Disabling this task may improve system performance by reducing background activities.
+                                    Citrix recommends disabling this service for system optimization [3].
+
+                                    > **Caution**: Disabling these notifications may prevent users from being aware of potential
+                                    > disk issues.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticResolver`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 21H2  | 🔴 Disabled |
+                                    | Windows 10 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H3  | 🔴 Disabled |
+
+                                    [1]: https://web.archive.org/web/20231215183637/http://windows.fyicenter.com/4258_Microsoft-Windows-DiskDiagnosticResolver_Scheduled_Task_on_Windows_7.html '"Microsoft-Windows-DiskDiagnosticResolver" Scheduled Task on Windows 7 | windows.fyicenter.com'
+                                    [2]: https://web.archive.org/web/20231215183645/https://www.shouldiblockit.com/dfdwiz.exe-7565.aspx "dfdwiz.exe - Should I Block It? (Windows Disk Diagnostic User Resolver) | www.shouldiblockit.com"
+                                    [3]: https://web.archive.org/web/20231215184007/https://jans.cloud/wp-content/uploads/2017/12/Analyze_History.html "Citrix Optimizer Report | jans.cloud"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\DiskDiagnostic\' -TaskName 'Microsoft-Windows-DiskDiagnosticResolver'
+                                        taskPathPattern: \Microsoft\Windows\DiskDiagnostic\
+                                        taskNamePattern: Microsoft-Windows-DiskDiagnosticResolver
+                                        disableOnRevert: 'true' # Disabled by default since Windows 10 Pro (≥ 21H1) and Windows 11 Pro (≥ 22H2)
+                            -
+                                name: Disable USB data collection
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "UsbCeip" scheduled task.
+
+                                    This task is part of the Windows Customer Experience Improvement Program [1] [2] [3].
+                                    The task collects data about USB devices connected to your computer [4].
+                                    This data is then sent to Microsoft's engineering team [4].
+                                    While the aim is to improve USB functionality in Windows [4], it raises privacy concerns.
+
+                                    If a user opts out of the Windows Customer Experience Improvement Program (CEIP), this task remains inactive [1] [4].
+                                    This script disables the task to ensure it remains inactive.
+
+                                    Disabling this task reduces data collection, enhancing your privacy.
+                                    Microsoft recommends disabling this task to reduce data collection [5].
+                                    The Argentine government suggests disabling this task for enhanced privacy [7].
+                                    The Polish government recommends deleting this task for additional privacy [8].
+
+                                    Additionally, disabling this task can improve your system performance.
+                                    Both Microsoft [1] [5] [6] and VMWare [2] recommend disabling this task for better performance.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231002104948/https://learn.microsoft.com/en-us/services-hub/health/other/work-with-results/assessmentplanreport_windowsclientassessmentplus.xlsx "Windows Client Assessment Recommendations Report generated on: 06/13/2019 | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231017193840/https://docs.vmware.com/en/VMware-Horizon-7/7.13/horizon-virtual-desktops/GUID-BE82165B-13BC-4FD9-A9CF-FBEF6343D98A.html "Disable the Windows Customer Experience Improvement Program | docs.vmware.com"
+                                    [3]: https://web.archive.org/web/20231017194013/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations#task-scheduler "Recommended configuration for VDI desktops | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20231017193828/http://windows.fyicenter.com/4254_UsbCeip_Scheduled_Task_on_Windows_7.html '"UsbCeip" Scheduled Task on Windows 7 | windows.fyicenter.com'
+                                    [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#scheduled-tasks "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs | docs.microsoft.com"
+                                    [7]: https://archive.ph/2023.10.17-193954/http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml "A complete task sequence for deploying a client operating system | Government of Argentin | argentinacompra.gov.ara"
+                                    [8]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP | plid.obywatel.gov.pl"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'UsbCeip'
+                                        taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
+                                        taskNamePattern: UsbCeip
+                            -
+                                name: Disable customer experience data consolidation
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "Consolidator" scheduled task.
+
+                                    The "Consolidator" task is a part of the Windows Customer Experience Improvement Program (CEIP) [1] [2] [3] [4].
+                                    When enabled, this task collects and sends usage data to Microsoft [1] [2] [4] [5] [6] [7] [8] [9].
+                                    Introduced in Windows Vista [1], this task is present in later Windows versions [5].
+
+                                    Disabling this task offers several benefits:
+
+                                    - Enhances privacy.
+                                      Microsoft states that disabling this task stops Windows data collection [5] [6].
+                                      The governments of Poland [10] and Argentina [11] recommend disabling it for privacy
+                                    - Improves system performance.
+                                      Microsoft acknowledges that the task can degrade performance and impact other users and services [2] [5] [6].
+                                      Microsoft also recommends disabling the task to optimize system performance [2] [5] [6].
+                                    - Increases your security.
+                                      In the past, malicious software has exploited this task [12].
+                                      Disabling it reduces the attack surface by eliminating a potential exploitation vector.
+
+                                    It is safe to disable this task according to Microsoft:
+
+                                    - This task is not essential for core operating system functions [2] [5] [6].
+                                    - It is not needed in all environments [2].
+                                    - It should be disabled when deemed unnecessary [2] [3] [5] [6].
+
+                                    ## Technical Details
+
+                                    The task uses a program named `wsqmcons.exe` [1].
+                                    The name `wsqmcons` stands for "Windows SQM Consolidator" [13] or "Windows Software Quality Management Consolidator" [14].
+                                    This program runs daily if the user is part of CEIP [1].
+                                    When it runs, it collects and transmits usage data to Microsoft [1] [9].
+                                    The process resides in the `%SYSTEMROOT%\System32` folder  [1].
+
+                                    CEIP data collection includes two tasks [7] [8]:
+
+                                    1. `Consolidator`: Gathers and compresses CEIP data [7] [8].
+                                    2. `Uploader`: Sends the data to Microsoft  [7] [8].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Customer Experience Improvement Program\Consolidator`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231017191924/https://support.microsoft.com/en-us/topic/description-of-the-scheduled-tasks-in-windows-vista-21f93b44-7260-a612-5ec3-fb2a7be5563c "Description of the scheduled tasks in Windows Vista - Microsoft Support | support.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231002104948/https://learn.microsoft.com/en-us/services-hub/health/other/work-with-results/assessmentplanreport_windowsclientassessmentplus.xlsx "Windows Client Assessment Recommendations Report generated on: 06/13/2019 | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231017194013/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations#task-scheduler "Recommended configuration for VDI desktops | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20231021011849/http://windows.fyicenter.com/4252_Consolidator_Scheduled_Task_on_Windows_7.html '"Consolidator" Scheduled Task on Windows 7 | windows.fyicenter.com'
+                                    [5]: https://web.archive.org/web/20230929130219/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004#scheduled-tasks "Optimizing Windows 10, Build 2004, for a Virtual Desktop role | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs | docs.microsoft.com"
+                                    [7]: https://web.archive.org/web/20231021125929/https://cloudblogs.microsoft.com/windowsserver/2012/05/17/improved-server-manageability-through-customer-feedback-how-the-customer-experience-improvement-program-makes-windows-server-2012-a-better-product-for-it-professionals/ "Improved Server Manageability through Customer Feedback: How the Customer Experience Improvement Program makes Windows Server 2012 a better product for IT Professionals - Microsoft Windows Server Blog | cloudblogs.microsoft.com"
+                                    [8]: https://web.archive.org/web/20231021011254/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj651022%28v=ws.11%29 "What's New in Telemetry | Microsoft Learn | learn.microsoft.com"
+                                    [9]: https://web.archive.org/web/20231021011342/https://windowsreport.com/wsqmcons-exe/ "Wsqmcons.exe: What Is It & Should You Disable It? | windowsreport.com"
+                                    [10]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP | plid.obywatel.gov.pl"
+                                    [11]: https://archive.ph/2023.10.17-193954/http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml "A complete task sequence for deploying a client operating system | Government of Argentin | argentinacompra.gov.ara"
+                                    [12]: https://web.archive.org/web/20231021011706/https://attackevals.mitre-engenuity.org/results/enterprise?vendor=crowdstrike&evaluation=turla&scenario=1 "ATT&CK® Evaluations | attackevals.mitre-engenuity.org"
+                                    [13]: https://web.archive.org/web/20231021011602/https://strontic.github.io/xcyclopedia/library/wsqmcons.exe-3198C8F020BC60931404167EEC51E2BF.html "wsqmcons.exe | Windows SQM Consolidator | STRONTIC | strontic.github.io"
+                                    [14]: https://web.archive.org/web/20231021011855/https://www.file.net/process/wsqmcons.exe.html "wsqmcons.exe Windows process - What is it? < file.net"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'Consolidator'
+                                        taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
+                                        taskNamePattern: Consolidator
+                            -
+                                name: Disable customer experience data uploads
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "Uploader" scheduled task.
+
+                                    This task is part of the Windows Customer Experience Improvement Program (CEIP) [1] [2].
+                                    The Uploader task transfers CEIP data to Microsoft [1] [2] [3] [4].
+                                    The data is sent every 19 [3] to 24 hours [1] [2].
+
+                                    Disabling this task prevents automatic sharing of your usage data with Microsoft, enhancing your privacy.
+                                    The Government of Vietnam recommends disabling this task to reduce data collection [5].
+                                    Disabling the task may also improve system performance by reducing background processes.
+
+                                    The task is located at `\Microsoft\Windows\Customer Experience Improvement Program\Uploader` [3] [4] [5].
+                                    Disabling the task is safe and has no negative effects on other parts of the operating system [3].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Customer Experience Improvement Program\Uploader`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 23H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231021125929/https://cloudblogs.microsoft.com/windowsserver/2012/05/17/improved-server-manageability-through-customer-feedback-how-the-customer-experience-improvement-program-makes-windows-server-2012-a-better-product-for-it-professionals/ "Improved Server Manageability through Customer Feedback: How the Customer Experience Improvement Program makes Windows Server 2012 a better product for IT Professionals - Microsoft Windows Server Blog | cloudblogs.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231021011254/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj651022%28v=ws.11%29 "What's New in Telemetry | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240726132037/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc774625(v%3Dws.10) "Event ID 1008 — CEIP Upload | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240726131536/http://windows.fyicenter.com/4376_Uploader_Scheduled_Task_on_Windows_8.html "\"Uploader\" Scheduled Task on Windows 8 | windows.fyicenter.com"
+                                    [5]: https://web.archive.org/web/20240726131546/https://antoanthongtin.gov.vn/giai-phap-khac/cau-hinh-nang-cao-hieu-nang-va-an-toan-cho-windows-10-104713 "Cấu hình nâng cao hiệu năng và an toàn cho Windows 10 - Tạp chí An toàn thông tin | antoanthongtin.gov.vn"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'Uploader'
+                                        taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
+                                        taskNamePattern: Uploader
+                            -
+                                category: Disable server-specific customer experience data collection
+                                docs: |-
+                                    This category includes scripts that disable specific scheduled tasks related to
+                                    the Windows Server Customer Experience Improvement Program (CEIP).
+
+                                    CEIP is a voluntary program that collects information about how people use Windows Server [1].
+
+                                    It gathers data on:
+
+                                    - Configuration settings [1]
+                                    - Hardware configurations [1]
+                                    - Usage patterns
+                                    - Performance metrics
+
+                                    Disabling these tasks prevents the system from automatically sending usage and performance data
+                                    to Microsoft, enhancing user privacy.
+                                    It may also improve system performance by reducing background activities.
+
+                                    These tasks are typically present in server versions of the Windows operating system.
+                                    These tasks may not be present in consumer editions of Windows.
+
+                                    This category includes scripts designed to disable specific scheduled tasks related to the
+                                    Windows Server Customer Experience Improvement Program (CEIP).
+
+                                    [1]: https://web.archive.org/web/20240726125134/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj618322(v=ws.11) "Manage Privacy: Windows Customer Experience Improvement Program and Resulting Internet Communication | Microsoft Learn | learn.microsoft.com"
+                                children:
+                                    -
+                                        name: Disable server customer experience data assistant
+                                        recommend: standard
+                                        docs: |-
+                                            This script disables the "ServerCeipAssistant" scheduled task.
+
+                                            This task is part of the "Windows Server Customer Experience Improvement Program" [1] [2] [3].
+                                            The main function of this task is to collect and send usage and performance data to Microsoft.
+                                            It runs without requiring user consent to participate in the CEIP [4].
+
+                                            This task poses a significant privacy concern as it can share sensitive information without explicit user approval.
+                                            Disabling this task prevents data transmission, aligning with best practices for privacy protection.
+                                            It may also improve system performance.
+                                            The Citrix optimization guide recommends disabling this task to enhance operating system performance [5].
+
+                                            The task is located at `\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerCeipAssistant` [1] [2] [3] [4] [6] [7].
+                                            It runs `%WINDIR%\System32\ceipdata.exe` [3] [6] [7].
+
+                                            This task was originally introduced in Windows Server 2008 [2] [8].
+                                            Tests show this task is absent in modern Windows versions.
+
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerCeipAssistant`:
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows Server 2022 21H2 | 🟡 N/A (missing) |
+                                            | Windows 10 Pro 21H2      | 🟡 N/A (missing) |
+                                            | Windows 11 Pro 22H2      | 🟡 N/A (missing) |
+
+                                            [1]: https://web.archive.org/web/20231021140611/https://wutils.com/wmi/root/microsoft/windows/taskscheduler/msft_scheduledtask/instances.html "MSFT_ScheduledTask, ROOT\Microsoft\Windows\TaskScheduler - Instances | wutils.com"
+                                            [2]: https://web.archive.org/web/20231021140830/https://novikov.ua/windows-%D0%BD%D0%B5%D0%BA%D0%BE%D1%82%D0%BE%D1%80%D1%8B%D0%B5-tasks-%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B8-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E-%D0%BA%D0%BE%D1%82/ "Windows: некоторые tasks (задачи) по-умолчанию, которые желательно выключить - RUSLAN NOVIKOV - Full Stack Developer /Chief Technology Officer (CTO) | novikov.ua"
+                                            [3]: https://web.archive.org/web/20231021140923/https://www.shouldiblockit.com/ceipdata.exe-1228.aspx "ceipdata.exe - Should I Block It? (Windows Server Customer Experience Improvement Program) | www.shouldiblockit.com"
+                                            [4]: https://web.archive.org/web/20231021140845/https://www.mcbsys.com/blog/2016/08/serverceipassistant-task-incorrectly-formatted-xml/ "ServerCeipAssistant Task Incorrectly Formatted XML | MCB Systems | mcbsys.com"
+                                            [5]: https://web.archive.org/web/20231021141013/https://static.spiceworks.com/attachments/post/0016/8802/XA_-_Windows_2008_R2_Optimization_Guide.pdf "Windows 2008 R2 Optimization Guide - For Desktop Virtualization with XenApp 6 / 6.5 | Citrix | spiceworks.com"
+                                            [6]: https://web.archive.org/web/20231021140624/https://raw.githubusercontent.com/montri789/Warroom-bot/master/Script/tasks.csv "Warroom-bot/Script/tasks.csv at master · montri789/Warroom-bot | github.com"
+                                            [7]: https://web.archive.org/web/20231021141045/https://services4.lowercolumbia.edu/demo/projectlid/lccInvestigateRecords/lccIR-demoRecords5.xtm "lccIR Demo Records 5: Task Schedulers | Lower Columbia College | lowercolumbia.edu"
+                                            [8]: https://archive.org/details/windowsserver2000000sosi/page/172/mode/2up?q=ServerCeipAssistant "Windows server 2008 : implementation and administration | Sosinsky, Barrie A | archive.org"
+                                            [9]: https://web.archive.org/web/20231021140905/https://strontic.github.io/xcyclopedia/library/ceipdata.exe-938465C81CB9D2026CE8F4B97D30AF26.html "ceipdata.exe | Windows Server Customer Experience Improvement Program | STRONTIC | strontic.github.io"
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\Server\' -TaskName 'ServerCeipAssistant'
+                                                taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\Server\
+                                                taskNamePattern: ServerCeipAssistant
+                                    -
+                                        name: Disable server role telemetry collection
+                                        recommend: standard
+                                        docs: |-
+                                            This script disables the "ServerRoleCollector" scheduled task.
+
+                                            This task collects telemetry data about server roles [1].
+                                            **Server roles** are specific functions a server performs for users and other computers within
+                                            a network, such as providing web services or handling emails [2].
+                                            This task is part of the "Windows Server Customer Experience Improvement Program" [3] [4].
+
+                                            Disabling this task enhances privacy by preventing CEIP data collection.
+                                            Additionally, it may improve system performance.
+                                            The Citrix optimization guide recommends disabling this task to boost system performance [5].
+
+                                            The task is located at `\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerRoleCollector` [3] [4] [6] [7].
+                                            It executes `%WINDIR%\System32\ceiprole.exe` [3] [6] [7].
+                                            This process is named "Windows Server Role Collector" [6] [8].
+
+                                            This task was originally introduced in Windows Server 2008 [4] [9].
+                                            The functionality of the Role Collector (`ceiprole.exe`) and its associated API
+                                            were removed in Windows Server 2012 [1] [10] [11].
+                                            Since then, Server Manager has taken over these responsibilities [1].
+
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerRoleCollector`:
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows Server 2022 21H2 | 🟡 N/A (missing) |
+                                            | Windows 10 Pro 21H2      | 🟡 N/A (missing) |
+                                            | Windows 11 Pro           | 🟡 N/A (missing) |
+
+                                            [1]: https://web.archive.org/web/20231021142502/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831568%28v=ws.11%29 "Features Removed or Deprecated in Windows Server 2012 | Microsoft Learn"
+                                            [2]: https://web.archive.org/web/20231021142524/https://www.oreilly.com/library/view/windows-server-2008/9780735624382/ch07.html "7. Configuring Roles, Role Services, and Features - Windows Server® 2008 Inside Out [Book] | oreilly.com"
+                                            [3]: https://web.archive.org/web/20231021140624/https://raw.githubusercontent.com/montri789/Warroom-bot/master/Script/tasks.csv "Warroom-bot/Script/tasks.csv at master · montri789/Warroom-bot | github.com"
+                                            [4]: https://web.archive.org/web/20231021140830/https://novikov.ua/windows-%D0%BD%D0%B5%D0%BA%D0%BE%D1%82%D0%BE%D1%80%D1%8B%D0%B5-tasks-%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B8-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E-%D0%BA%D0%BE%D1%82/ "Windows: некоторые tasks (задачи) по-умолчанию, которые желательно выключить - RUSLAN NOVIKOV - Full Stack Developer /Chief Technology Officer (CTO) | novikov.ua"
+                                            [5]: https://web.archive.org/web/20231021141013/https://static.spiceworks.com/attachments/post/0016/8802/XA_-_Windows_2008_R2_Optimization_Guide.pdf "Windows 2008 R2 Optimization Guide - For Desktop Virtualization with XenApp 6 / 6.5 | Citrix | spiceworks.com"
+                                            [6]: https://web.archive.org/web/20231021142340/https://www.shouldiblockit.com/ceiprole.exe-b8fa0f5b617e82d41241c7a2c3a89c26.aspx "ceiprole.exe - Should I Block It? (MD5 b8fa0f5b617e82d41241c7a2c3a89c26) | shouldiblockit.com"
+                                            [7]: https://web.archive.org/web/20231021141045/https://services4.lowercolumbia.edu/demo/projectlid/lccInvestigateRecords/lccIR-demoRecords5.xtm "lccIR Demo Records 5: Task Schedulers | Lower Columbia College | lowercolumbia.edu"
+                                            [8]: https://web.archive.org/web/20231021142324/https://systemexplorer.net/file-database/file/ceiprole-exe "What is ceiprole.exe ? | System Explorer | systemexplorer.net"
+                                            [9]: https://archive.org/details/windowsserver2000000unse_t2j3/page/596/mode/2up?q=ServerRoleCollector "Windows Server 2008 : unleashed | Indianapolis, Ind. : Sams | archive.org"
+                                            [10]: https://web.archive.org/web/20231021142351/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/dn303411%28v=ws.11%29 "Features Removed or Deprecated in Windows Server 2012 R2 | Microsoft Learn | learn.microsoft.com"
+                                            [11]: https://web.archive.org/web/20231021142446/https://catalogimages.wiley.com/images/db/pdf/9781118859919.excerpt.pdf "Exam 70-410: Installing and Configuring Windows Server 2012 R2 | wiley.com"
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\Server\' -TaskName 'ServerRoleCollector'
+                                                taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\Server\
+                                                taskNamePattern: ServerRoleCollector
+                                    -
+                                        name: Disable server role usage data collection
+                                        recommend: standard
+                                        docs: |-
+                                            This script disables the "ServerRoleUsageCollector" scheduled task.
+
+                                            The task tracks the types and frequency of server role usage.
+                                            A **server role** is a combination of software components that allow the server to perform specific
+                                            functions for users and other computers on a network [1].
+
+                                            This task is located at `\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerRoleUsageCollector` [2] [3] [4].
+                                            The task runs `%WINDIR%\System32\ceipdata.exe -roleusage` [2] [3].
+                                            Microsoft describes `ceipdata.exe` as part of the "Windows Server Customer Experience Improvement Program" [3] [4] [5].
+
+                                            Disabling this task protects your privacy by stopping a CEIP data collection process.
+                                            It also improves system performance.
+                                            The Citrix optimization guide recommends disabling this task to enhance system performance [6].
+
+                                            Originally introduced in Windows Server 2008 [4], this task is absent in desktop Windows versions.
+
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\Customer Experience Improvement Program\Server\ServerRoleUsageCollector`:
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows Server 2022 21H2 | 🟡 N/A (missing) |
+                                            | Windows 10 Pro 21H2      | 🟡 N/A (missing) |
+                                            | Windows 11 Pro 22H2      | 🟡 N/A (missing) |
+
+                                            [1]: https://web.archive.org/web/20231021142524/https://www.oreilly.com/library/view/windows-server-2008/9780735624382/ch07.html "7. Configuring Roles, Role Services, and Features - Windows Server® 2008 Inside Out [Book] | oreilly.com"
+                                            [2]: https://web.archive.org/web/20231021141045/https://services4.lowercolumbia.edu/demo/projectlid/lccInvestigateRecords/lccIR-demoRecords5.xtm "lccIR Demo Records 5: Task Schedulers | Lower Columbia College | lowercolumbia.edu"
+                                            [3]: https://web.archive.org/web/20231021140624/https://raw.githubusercontent.com/montri789/Warroom-bot/master/Script/tasks.csv "Warroom-bot/Script/tasks.csv at master · montri789/Warroom-bot | github.com"
+                                            [4]: https://web.archive.org/web/20231021140830/https://novikov.ua/windows-%D0%BD%D0%B5%D0%BA%D0%BE%D1%82%D0%BE%D1%80%D1%8B%D0%B5-tasks-%D0%B7%D0%B0%D0%B4%D0%B0%D1%87%D0%B8-%D0%BF%D0%BE-%D1%83%D0%BC%D0%BE%D0%BB%D1%87%D0%B0%D0%BD%D0%B8%D1%8E-%D0%BA%D0%BE%D1%82/ "Windows: некоторые tasks (задачи) по-умолчанию, которые желательно выключить - RUSLAN NOVIKOV - Full Stack Developer /Chief Technology Officer (CTO) | novikov.ua"
+                                            [5]: https://web.archive.org/web/20231021140905/https://strontic.github.io/xcyclopedia/library/ceipdata.exe-938465C81CB9D2026CE8F4B97D30AF26.html "ceipdata.exe | Windows Server Customer Experience Improvement Program | STRONTIC | strontic.github.io"
+                                            [6]: https://web.archive.org/web/20231021141013/https://static.spiceworks.com/attachments/post/0016/8802/XA_-_Windows_2008_R2_Optimization_Guide.pdf "Windows 2008 R2 Optimization Guide - For Desktop Virtualization with XenApp 6 / 6.5 | Citrix | spiceworks.com"
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\Server\' -TaskName 'ServerRoleUsageCollector'
+                                                taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\Server\
+                                                taskNamePattern: ServerRoleUsageCollector
+            -
                 category: Disable Application Experience data collection
                 docs: |-
                     Application Experience comprises services and tasks that help applications, including older ones, run smoothly.
@@ -3398,18 +4044,6 @@ actions:
                 category: Disable Windows telemetry and data collection
                 children:
                     -
-                        name: Disable Customer Experience Improvement Program (CEIP)
-                        docs: https://web.archive.org/web/20240314130037/https://learn.microsoft.com/en-us/windows/win32/devnotes/ceipenable
-                        recommend: standard
-                        call:
-                            function: SetRegistryValue
-                            parameters:
-                                keyPath: HKLM\Software\Policies\Microsoft\SQMClient\Windows
-                                valueName: CEIPEnable
-                                dataType: REG_DWORD
-                                data: '0'
-                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 21H1) and Windows 11 Pro (≥ 22H2)
-                    -
                         category: Disable diagnostics telemetry services
                         children:
                             -
@@ -3479,57 +4113,16 @@ actions:
                                         serviceName: diagsvc # Check: (Get-Service -Name diagsvc).StartType
                                         defaultStartupMode: Manual # Allowed values: Automatic | Manual
                     -
-                        name: Disable "Customer Experience Improvement Program" scheduled tasks
-                        recommend: standard
-                        docs: |-
-                            ### Overview of default task statuses
-
-                            `\Microsoft\Windows\Customer Experience Improvement Program\Consolidator`:
-
-                            | OS Version       | Default status |
-                            | ---------------- | -------------- |
-                            | Windows 10 22H2  | 🟢 Ready |
-                            | Windows 11 22H2  | 🟢 Ready |
-
-                            `\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask`:
-
-                            | OS Version       | Default status |
-                            | ---------------- | -------------- |
-                            | Windows 10 22H2  | 🟡 N/A (missing) |
-                            | Windows 11 22H2  | 🟡 N/A (missing) |
-
-                            `\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip`:
-
-                            | OS Version       | Default status |
-                            | ---------------- | -------------- |
-                            | Windows 10 22H2  | 🟢 Ready |
-                            | Windows 11 22H2  | 🟢 Ready |
-                        call:
-                            -
-                                function: DisableScheduledTask
-                                parameters:
-                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'Consolidator'
-                                    taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
-                                    taskNamePattern: Consolidator
-                            -
-                                function: DisableScheduledTask
-                                parameters:
-                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'KernelCeipTask'
-                                    taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
-                                    taskNamePattern: KernelCeipTask
-                            -
-                                function: DisableScheduledTask
-                                parameters:
-                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'UsbCeip'
-                                    taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
-                                    taskNamePattern: UsbCeip
-                    -
                         category: Disable census data collection
                         docs: |-
-                            Census is a component within Windows that inventories the device [1].
-                            The primary role of Census is to collect and understand data about the device's configuration [1], including its operating system type, region, language, and architecture [2].
-                            This data helps determine the appropriateness of updates for the device [3].
-                            By disabling this feature, users can enhance their privacy by preventing the collection and transmission of device data to Microsoft [1] [2] [3].
+                            This category focuses on disabling Windows Census.
+
+                            Windows Census is a component that collects device configuration data [1].
+                            This configuration data includes your operating system, region, language, and hardware architecture [2].
+                            Microsoft uses this data to determine which updates are appropriate for your system [3].
+
+                            Disabling Census enhances privacy by preventing the collection and transmission of device data to Microsoft [1] [2] [3].
+                            However, this may affect Windows' ability to provide tailored updates.
 
                             [1]: https://web.archive.org/web/20231017234102/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#census-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
                             [2]: https://web.archive.org/web/20231017234118/https://answers.microsoft.com/en-us/windows/forum/all/what-is-device-census/6f0b9f58-86b6-4e36-8fc8-4701218b49b6 "What is Device Census? - Microsoft Community"
@@ -6270,15 +6863,38 @@ actions:
                             reg add "HKCU\SOFTWARE\Microsoft\Office\Common\ClientTelemetry" /v "VerboseLogging" /t REG_DWORD /d 1 /f
                             reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Common\ClientTelemetry" /v "VerboseLogging" /t REG_DWORD /d 1 /f
                     -
-                        name: Disable Microsoft Office Customer Experience Improvement Program
-                        docs: https://www.stigviewer.com/stig/microsoft_office_system_2013/2014-12-23/finding/V-17612
+                        name: Disable user participation in Office Customer Experience Improvement Program (CEIP)
                         recommend: standard
+                        docs: |-
+                            This script disables user participation in the Microsoft Office Customer Experience Improvement Program (CEIP) [1].
+
+                            The CEIP allows Microsoft Office users to send usage information to Microsoft [1]. When users join this program, Office applications
+                            transmit data to Microsoft about the user's interaction with the software [1]. Part of this data includes identifying details, such as
+                            the user's IP address used during the data transfer [1].
+
+                            By default, when running Microsoft Office for the first time, users are given the choice to join the CEIP [1]. If they accept,
+                            their Office applications will periodically send usage statistics to Microsoft [1].
+
+                            Implementing this script ensures:
+
+                            - Users will not have the choice to participate in the CEIP [1].
+                            - Office applications won't send any CEIP usage data to Microsoft [1].
+
+                            To accomplish this, the script modifies the `HKCU\Software\Policies\Microsoft\Office\{15.0|16.0}\common!QMEnable` policy setting [1] [2] [3].
+                            If this policy is not configured, it acts as if the policy is set to `Enabled` [1], meaning users are offered the choice to join the CEIP during
+                            their initial use of Office [1] [2].
+
+                            Prioritizing privacy, the US Department of Defense (DoD) suggests this configuration to enhance the security and privacy of the operating system [2].
+
+                            [1]: https://web.archive.org/web/20230922125001/https://download.microsoft.com/download/c/3/f/c3f8bd05-1743-4d7d-849c-c352b0f61835/office2010grouppolicyandoctsettings_reference.xls "ADMX, ADML, and ADM Settings - Download Center | microsoft.com"
+                            [2]: https://web.archive.org/web/20230922125003/https://www.stigviewer.com/stig/microsoft_office_system_2013/2014-12-23/finding/V-17612 "The Customer Experience Improvement Program for Office must be disabled. | stigviewer.com"
+                            [3]: https://web.archive.org/web/20221205201409/https://admx.help/?Category=Office2016&Policy=office16.Office.Microsoft.Policies.Windows::L_EnableCustomerExperienceImprovementProgram "Enable Customer Experience Improvement Program | admx.help"
                         code: |-
                             reg add "HKCU\SOFTWARE\Microsoft\Office\15.0\Common" /v "QMEnable" /t REG_DWORD /d 0 /f
                             reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Common" /v "QMEnable" /t REG_DWORD /d 0 /f
                         revertCode: |-
-                            reg add "HKCU\SOFTWARE\Microsoft\Office\15.0\Common" /v "QMEnable" /t REG_DWORD /d 1 /f
-                            reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Common" /v "QMEnable" /t REG_DWORD /d 1 /f
+                            reg delete "HKCU\SOFTWARE\Microsoft\Office\15.0\Common" /v "QMEnable" /t REG_DWORD /f
+                            reg delete "HKCU\SOFTWARE\Microsoft\Office\16.0\Common" /v "QMEnable" /t REG_DWORD /f
                     -
                         name: Disable Microsoft Office feedback
                         recommend: standard
@@ -8619,9 +9235,33 @@ actions:
                                         data: "1"
                                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
-                                name: Disable Internet Explorer CEIP (Customer Experience Improvement Program)
+                                name: Disable Internet Explorer Customer Experience Improvement Program (CEIP) participation
                                 recommend: standard
-                                docs: https://www.stigviewer.com/stig/internet_explorer_8/2014-07-03/finding/V-15492
+                                docs: |-
+                                    This script disables the Customer Experience Improvement Program (CEIP) in Internet Explorer [1].
+
+                                    The CEIP allows users to send information about their use of the software to Microsoft [2]. However, the CEIP does not
+                                    collect users' personal details like names or addresses, only the IP address used to send the data [2].
+
+                                    By applying this script:
+
+                                    - Users will no longer be able to participate in the CEIP [1].
+                                    - The option "Customer Feedback Options" will be removed from the "Help" menu [1].
+
+                                    This script achieves its purpose by modifying a policy setting under the
+                                    `HKLM\Software\Policies\Microsoft\Internet Explorer\SQM!DisableCustomerImprovementProgram` key [1] [2] [3]. Notably,
+                                    this specific setting doesn't exist by default [2]. If left unconfigured (i.e., the setting doesn't exist), users have
+                                    the option to join the CEIP [1] [2].
+
+                                    Disabling CEIP participation enhances privacy by preventing the sending of usage information and personally identifiable
+                                    information except such as the the IP address.
+
+                                    For added credibility, the US Department of Defense (DoD) also recommends this configuration to improve the
+                                    security [2] [3].
+
+                                    [1]: https://web.archive.org/web/20230922123717/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-internetexplorer#disablecustomerexperienceimprovementprogramparticipation "InternetExplorer Policy CSP - Windows Client Management | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230922123807/https://www.stigviewer.com/stig/internet_explorer_8/2014-07-03/finding/V-15492 "Prevent participation in the Customer Experience Improvement Program is not disabled. | stigviewer.com"
+                                    [3]: https://web.archive.org/web/20230922123654/https://csrc.nist.gov/CSRC/media/Projects/National-Checklist-Program/documents/DoD-IE8-Security-Settings_Jan10.xlsx "USAF v3 Master Settings Spreadsheet | nist.gov"
                                 call:
                                     function: SetRegistryValue
                                     parameters:
@@ -8629,7 +9269,7 @@ actions:
                                         valueName: DisableCustomerImprovementProgram
                                         dataType: REG_DWORD
                                         data: "0"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 21H1) and Windows 11 Pro (≥ 22H2)
                             -
                                 name: Disable legacy WCM policy calls
                                 recommend: standard
