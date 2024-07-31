@@ -314,7 +314,7 @@ actions:
                             These scripts allow you to delete the local data that might reveal your personally identifiable data about you
                             or the way you use the product.
 
-                            [1]: https://learn.microsoft.com/en-us/visualstudio/get-started/visual-studio-ide?view=vs-2022 "What is the Visual Studio IDE? | Microsoft Learn | learn.microsoft.com"
+                            [1]: https://web.archive.org/web/20240731003406/https://learn.microsoft.com/en-us/visualstudio/get-started/visual-studio-ide?view=vs-2022 "What is the Visual Studio IDE? | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240314092010/https://learn.microsoft.com/en-us/visualstudio/ide/visual-studio-experience-improvement-program?view=vs-2022 "Visual Studio Customer Experience Improvement Program | Microsoft Learn | learn.microsoft.com"
                             [3]: https://www.infoworld.com/article/2609774/microsoft-reinvents-visual-studio-as-an-azure-cloud-service.html "Microsoft reinvents Visual Studio as an Azure cloud service | InfoWorld"
                         children:
@@ -461,43 +461,255 @@ actions:
                                                     directoryGlob: '%TEMP%\VSTelem.Out'
                             -
                                 category: Clear Visual Studio licenses
-                                docs: |-
-                                    Visual Studio stores a local copy of your product key. This information is kept even though
-                                    Visual Studio is uninstalled [1] which may reveal unnecessary data and not be desired.
-                                    This key is not only stored for purchased Visual Studio products but also for the free trials.
+                                docs: |- # refactor-with-variables: Same • Visual Studio License Caution
+                                    This category removes locally stored Visual Studio license information to enhance privacy.
 
-                                    [1]: https://stackoverflow.com/questions/12465361/how-to-change-visual-studio-2012-2013-or-2015-license-key "How to change Visual Studio 2012,2013 or 2015 License Key? | Stack Overflow | stackoverflow.com"
+                                    Visual Studio is an integrated development environment (IDE) for writing, editing, debugging, and building code [1].
+                                    It offers tools like compilers, code completion, and supports various programming languages and platforms [1].
+
+                                    Visual Studio stores a local copy of your license information [2] [3] [4] [5].
+                                    It remains even after uninstalling the software [2].
+                                    This applies to both purchased products and free trials [3].
+
+                                    The stored data may include sensitive information such as:
+
+                                    - License expiration date [3] [4]
+                                    - License key used to activate your local Visual Studio installation [5]
+
+                                    Removing this information improves your privacy by eliminating potentially revealing data about your software usage
+                                    and licensing status.
+                                    It may also slightly improve system performance by freeing up storage space used for license data.
+
+                                    > **Caution**:
+                                    > Removing the license information may require you to reactivate Visual Studio on the next use.
+                                    > You will need your license key and Microsoft account details for reactivation.
+
+                                    [1]: https://web.archive.org/web/20240731003406/https://learn.microsoft.com/en-us/visualstudio/get-started/visual-studio-ide?view=vs-2022 "What is the Visual Studio IDE? | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231124133613/https://stackoverflow.com/questions/12465361/how-to-change-visual-studio-2012-2013-or-2015-license-key "How to change Visual Studio 2012,2013 or 2015 License Key? | Stack Overflow"
+                                    [3]: https://web.archive.org/web/20231124133613/https://stackoverflow.com/questions/12465361/how-to-change-visual-studio-2012-2013-or-2015-license-key/14810695#14810695 "How to change Visual Studio 2012,2013 or 2015 License Key? | Stack Overflow | stackoverflow.com"
+                                    [4]: https://github.com/privacysexy-forks/VSCELicense/blob/master/VSCELicense.psm1 "VSCELicense/VSCELicense.psm1 at master · privacysexy-forks/VSCELicense | github.com"
+                                    [5]: https://web.archive.org/web/20240731111715/https://github.com/privacysexy-forks/VSKeyExtractor "privacysexy-forks/VSKeyExtractor: A small tool to extract the license key that was used to activate your local installation of Visual Studio | github.com"
                                 children:
                                     -
-                                        name: Clear Visual Studio 2010 licenses
-                                        docs: "[How to change Visual Studio 2012,2013 or 2015 License Key? | Stack Overflow | stackoverflow.com](https://web.archive.org/web/20240314063218/https://stackoverflow.com/questions/12465361/how-to-change-visual-studio-2012-2013-or-2015-license-key/14810695#14810695)"
-                                        code: reg delete "HKCR\Licenses\77550D6B-6352-4E77-9DA3-537419DF564B" /va /f
-                                    -
-                                        name: Clear Visual Studio 2015 licenses
-                                        docs: "[How to change Visual Studio 2012,2013 or 2015 License Key? | Stack Overflow | stackoverflow.com](https://web.archive.org/web/20240314092348/https://stackoverflow.com/questions/12465361/how-to-change-visual-studio-2012-2013-or-2015-license-key/32482322#32482322)"
-                                        code: reg delete "HKCR\Licenses\4D8CFBCB-2F6A-4AD2-BABF-10E28F6F2C8F" /va /f
-                                    -
-                                        name: Clear Visual Studio 2017 licenses
-                                        docs: "[Is Visual Studio Community a 30 day trial? | Stack Overflow | stackoverflow.com](https://web.archive.org/web/20240314092402/https://stackoverflow.com/questions/43390466/is-visual-studio-community-a-30-day-trial/51570570#51570570)"
-                                        code: reg delete "HKCR\Licenses\5C505A59-E312-4B89-9508-E162F8150517" /va /f
-                                    -
-                                        name: Clear Visual Studio 2019 licenses
-                                        docs: "[How to change Visual Studio 2017 License Key? | Stack Overflow | stackoverflow.com](https://web.archive.org/web/20240314092257/https://stackoverflow.com/questions/46731291/how-to-change-visual-studio-2017-license-key/46974337#46974337)"
-                                        code: reg delete "HKCR\Licenses\41717607-F34E-432C-A138-A3CFD7E25CDA" /va /f
-                                    -
-                                        name: Clear Visual Studio 2022 licenses
+                                        name: Clear Visual Studio 2010 license
                                         docs: |-
-                                            Different keys have been reported by community for VS 2022 license [1]. This may depend on different preview versions.
-                                            The latest reported key is `1299B4B9-DFCC-476D-98F0-F65A2B46C96D` [2] [3]. I have tested and verified this along with some
-                                            other keys of preview versions. This scripts deletes all mentioned keys.
+                                            This script removes the license information for Visual Studio 2010.
 
-                                            [1]: https://github.com/beatcracker/VSCELicense/issues/14 "VS 2022 Key Discussion | beatcracker/VSCELicense | GitHub"
-                                            [2]: https://web.archive.org/web/20240314093547/https://learn.microsoft.com/en-us/answers/questions/673243/how-do-i-remove-a-license-from-visual-studio-2022 "MSFT Answer | How do i remove a license from visual studio 2022? - Microsoft Q&A | learn.microsoft.com"
-                                            [3]: https://web.archive.org/web/20240314093624/https://stackoverflow.com/questions/46731291/how-to-change-visual-studio-2017-license-key/71624750#71624750 "How to change Visual Studio 2017 License Key? | Stack Overflow | stackoverflow.com"
-                                        code: |-
-                                            reg delete "HKCR\Licenses\B16F0CF0-8AD1-4A5B-87BC-CB0DBE9C48FC" /va /f
-                                            reg delete "HKCR\Licenses\10D17DBA-761D-4CD8-A627-984E75A58700" /va /f
-                                            reg delete "HKCR\Licenses\1299B4B9-DFCC-476D-98F0-F65A2B46C96D" /va /f
+                                            Visual Studio 2010 is an integrated development environment (IDE) by Microsoft [1].
+                                            It simplifies creating, debugging, and deploying applications [1].
+                                            It was released in 2010 [2].
+                                            Its official support ended in 2015, and extended support ended in October 2020 [2].
+                                            This means it's no longer receiving security updates or bug fixes, making it potentially vulnerable.
+
+                                            The script removes the license associated with Visual Studio 2010's product GUID:
+                                            `77550D6B-6352-4E77-9DA3-537419DF564B` [3] [4].
+
+                                            This script enhances your privacy by removing identifiable license information from your system.
+                                            It may also improve system performance by clearing outdated registry entries.
+
+                                            > **Caution**:
+                                            > Removing the license information may require you to reactivate Visual Studio on the next use.
+                                            > You will need your license key and Microsoft account details for reactivation.
+
+                                            [1]: https://web.archive.org/web/20240731092747/https://www.microsoft.com/en-ie/download/details.aspx?id=10142 "Download Visual Studio 2010 Professional Whitepaper from Official Microsoft Download Center | www.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240731092804/https://learn.microsoft.com/en-us/lifecycle/products/visual-studio-2010 "Visual Studio 2010 - Microsoft Lifecycle | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20231124133613/https://stackoverflow.com/questions/12465361/how-to-change-visual-studio-2012-2013-or-2015-license-key/14810695#14810695 "How to change Visual Studio 2012,2013 or 2015 License Key? | Stack Overflow | stackoverflow.com"
+                                            [4]: https://github.com/privacysexy-forks/VSKeyExtractor/blob/main/Program.cs "VSKeyExtractor/Program.cs at main · privacysexy-forks/VSKeyExtractor | github.com"
+
+                                        call:
+                                            function: DeleteVisualStudioLicense
+                                            parameters:
+                                                productGuid: 77550D6B-6352-4E77-9DA3-537419DF564B
+                                    -
+                                        name: Clear Visual Studio 2013 license
+                                        docs: |- # refactor-with-variables: Same • Visual Studio License Caution
+                                            This script removes the license information for Visual Studio 2013.
+
+                                            Visual Studio 2013 is an integrated development environment (IDE) by Microsoft [1].
+                                            It was released in October 2013 [2].
+                                            It introduced roaming support, notifications, improved update experience, and various productivity enhancements [2].
+                                            It improved the interface, added coding shortcuts, supported Windows apps development, combined web development tools,
+                                            enabled cloud testing, and enhanced team collaboration [2].
+
+                                            Microsoft ended official support for Visual Studio 2013 in April 2019, with extended support ended in April 2024 [3].
+                                            This means it no longer receives security updates or bug fixes, potentially making it vulnerable to security risks.
+
+                                            Visual Studio 2013 uses the product GUID `E79B3F9C-6543-4897-BBA5-5BFB0A02BB5C` for license association [3] [4] [5].
+
+                                            This script enhances your privacy by removing identifiable license information from your system.
+                                            It may also improve system performance by clearing unnecessary data.
+
+                                            > **Caution**:
+                                            > Removing the license information may require you to reactivate Visual Studio on the next use.
+                                            > You will need your license key and Microsoft account details for reactivation.
+
+                                            [1]: https://web.archive.org/web/20150111085353/http://channel9.msdn.com/Events/Visual-Studio/Launch-2013/VS101 "What's New in Visual Studio 2013 Integrated Developer Environment (IDE) | Visual Studio 2013 Launch | Channel 9 | channel9.msdn.com"
+                                            [2]: https://web.archive.org/web/20240731095411/https://learn.microsoft.com/en-us/visualstudio/releasenotes/vs2013-rtm-vs "Visual Studio 2013 Release Notes | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://github.com/privacysexy-forks/VSCELicense/blob/master/VSCELicense.psm1 "VSCELicense/VSCELicense.psm1 at master · privacysexy-forks/VSCELicense | github.com"
+                                            [4]: https://web.archive.org/web/20240731002659/https://stackoverflow.com/questions/12465361/how-to-change-visual-studio-2012-2013-or-2015-license-key/22258088#22258088 "How to change Visual Studio 2012,2013 or 2015 License Key? | Stack Overflow | stackoverflow.com"
+                                            [5]: https://github.com/privacysexy-forks/VSKeyExtractor/blob/main/Program.cs "VSKeyExtractor/Program.cs at main · privacysexy-forks/VSKeyExtractor | github.com"
+                                        call:
+                                            function: DeleteVisualStudioLicense
+                                            parameters:
+                                                productGuid: E79B3F9C-6543-4897-BBA5-5BFB0A02BB5C
+                                    -
+                                        name: Clear Visual Studio 2015 license
+                                        docs: |- # refactor-with-variables: Same • Visual Studio License Caution
+                                            This script removes the license information for Visual Studio 2015.
+
+                                            Visual Studio 2015 is an integrated development environment (IDE) by Microsoft [1].
+                                            It was released on July 20, 2015 [1] [2] [3].
+
+                                            Visual Studio 2015 improved support for various programming languages and platforms, especially for mobile and
+                                            cross-platform development [2].
+                                            It offered enhanced setup customization for lighter and quicker installations, and integrated a streamlined
+                                            account management experience [1].
+                                            It included tools for developing Android, iOS, and Windows apps, expanded debugging capabilities, and better
+                                            support for web development technologies [2].
+
+                                            Microsoft ended official support for Visual Studio 2015 in October 2020, with extended support ending in October 2025 [3].
+                                            This means it no longer receives security updates or bug fixes, potentially exposing it to security risks.
+
+                                            Visual Studio 2015 uses the product GUID `4D8CFBCB-2F6A-4AD2-BABF-10E28F6F2C8F`, to which the license
+                                            is associated [4] [5] [6].
+
+                                            This script enhances privacy by removing identifiable license information from your system.
+                                            It may also improve system performance by clearing unnecessary data and reducing registry clutter.
+
+                                            > **Caution**:
+                                            > Removing the license information may require you to reactivate Visual Studio on the next use.
+                                            > You will need your license key and Microsoft account details for reactivation.
+
+                                            [1]: https://web.archive.org/web/20240731101036/https://devblogs.microsoft.com/visualstudio/visual-studio-2015-rtm-whats-new-in-the-ide/ "Visual Studio 2015 RTM: What’s New in the IDE - Visual Studio Blog | devblogs.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240731100217/https://learn.microsoft.com/en-us/visualstudio/releasenotes/vs2015-rtm-vs "Visual Studio 2015 Release Notes | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240731100226/https://learn.microsoft.com/en-us/lifecycle/products/visual-studio-2015 "Visual Studio 2015 - Microsoft Lifecycle | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20231124133749/https://stackoverflow.com/questions/12465361/how-to-change-visual-studio-2012-2013-or-2015-license-key/32482322#32482322 "How to change Visual Studio 2012,2013 or 2015 License Key? | Stack Overflow | stackoverflow.com"
+                                            [5]: https://github.com/privacysexy-forks/VSKeyExtractor/blob/main/Program.cs "VSKeyExtractor/Program.cs at main · privacysexy-forks/VSKeyExtractor | github.com"
+                                            [6]: https://github.com/privacysexy-forks/VSCELicense/blob/master/VSCELicense.psm1 "VSCELicense/VSCELicense.psm1 at master · privacysexy-forks/VSCELicense | github.com"
+                                        call:
+                                            function: DeleteVisualStudioLicense
+                                            parameters:
+                                                productGuid: 4D8CFBCB-2F6A-4AD2-BABF-10E28F6F2C8F
+                                    -
+                                        name: Clear Visual Studio 2017 license
+                                        docs: |- # refactor-with-variables: Same • Visual Studio License Caution
+                                            This script removes the license information for Visual Studio 2017.
+
+                                            Visual Studio 2017 is an integrated development environment (IDE) created by Microsoft [1].
+                                            It was released on March 7, 2017 [2] [3].
+                                            Visual Studio 2017 focuses on improving performance with a faster, more efficient lightweight
+                                            installation process [1].
+                                            It enhances cloud and mobile development, providing integrated tools for .NET Core, Azure applications,
+                                            Docker containers, and streamlined mobile app creation for Android, iOS, and Windows [1].
+
+                                            Microsoft ended official support for Visual Studio 2017 in April 2022, with extended support ending in April 2027 [4].
+                                            This means it no longer receives security updates or bug fixes, potentially exposing users to security risks.
+
+                                            Visual Studio 2017 has a product GUID of `5C505A59-E312-4B89-9508-E162F8150517` to which the license is associated [4] [5] [6].
+
+                                            This script enhances your privacy by removing identifiable license information.
+                                            It may also improve system performance by clearing unnecessary license data.
+
+                                            > **Caution**:
+                                            > Removing the license information may require you to reactivate Visual Studio on the next use.
+                                            > You will need your license key and Microsoft account details for reactivation.
+
+                                            [1]: https://web.archive.org/web/20240731102312/https://devblogs.microsoft.com/visualstudio/announcing-visual-studio-2017-general-availability-and-more/ "Announcing Visual Studio 2017 General Availability... and more - Visual Studio Blog | devblogs.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240731102317/https://learn.microsoft.com/en-us/visualstudio/releasenotes/vs2017-relnotes-history "Visual Studio 2017 Release History | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240731102322/https://learn.microsoft.com/en-us/lifecycle/products/visual-studio-2017 "Visual Studio 2017 - Microsoft Lifecycle | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://github.com/privacysexy-forks/VSCELicense/blob/master/VSCELicense.psm1 "VSCELicense/VSCELicense.psm1 at master · privacysexy-forks/VSCELicense | github.com"
+                                            [5]: https://web.archive.org/web/20231124134032/https://stackoverflow.com/questions/43390466/is-visual-studio-community-a-30-day-trial/51570570#51570570 "Is Visual Studio Community a 30 day trial? | Stack Overflow | stackoverflow.com"
+                                            [6]: https://github.com/privacysexy-forks/VSKeyExtractor/blob/main/Program.cs "VSKeyExtractor/Program.cs at main · privacysexy-forks/VSKeyExtractor | github.com"
+                                        call:
+                                            function: DeleteVisualStudioLicense
+                                            parameters:
+                                                productGuid: 5C505A59-E312-4B89-9508-E162F8150517
+                                    -
+                                        name: Clear Visual Studio 2019 license
+                                        docs: |- # refactor-with-variables: Same • Visual Studio License Caution
+                                            This script removes the license information for Visual Studio 2019.
+
+                                            Visual Studio 2019 is an integrated development environment (IDE) developed by Microsoft [1].
+                                            It was released on April 2, 2019 [2].
+
+                                            Visual Studio 2019 improves productivity with enhanced performance, code cleanup tools,
+                                            and more efficient search functionality [1].
+                                            It facilitates collaboration through Git-focused workflows and integrated code reviews [1].
+                                            The IDE also offers advanced debugging capabilities, including memory optimization and automatic execution snapshots [1].
+
+                                            Microsoft ended mainstream support for Visual Studio 2019 in April 2024,
+                                            with extended support continuing until April 2029 [2].
+
+                                            Visual Studio 2019 uses a product GUID of `41717607-F34E-432C-A138-A3CFD7E25CDA` for license association [3] [4] [5].
+
+                                            This script enhances your privacy by removing identifiable license information.
+                                            It may also improve system performance by clearing unnecessary registry entries.
+
+                                            > **Caution**:
+                                            > Removing the license information may require you to reactivate Visual Studio on the next use.
+                                            > You will need your license key and Microsoft account details for reactivation.
+
+                                            [1]: https://web.archive.org/web/20240731103501/https://learn.microsoft.com/en-us/visualstudio/ide/whats-new-visual-studio-2019?view=vs-2019 "What's new in Visual Studio 2019 | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240731103505/https://learn.microsoft.com/en-us/lifecycle/products/visual-studio-2019 "Visual Studio 2019 - Microsoft Lifecycle | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20231124134207/https://stackoverflow.com/questions/46731291/how-to-change-visual-studio-2017-license-key/46974337#46974337 "How to change Visual Studio 2017 License Key? | Stack Overflow | stackoverflow.com"
+                                            [4]: https://github.com/privacysexy-forks/VSKeyExtractor/blob/main/Program.cs "VSKeyExtractor/Program.cs at main · privacysexy-forks/VSKeyExtractor | github.com"
+                                            [5]: https://github.com/privacysexy-forks/VSCELicense/blob/master/VSCELicense.psm1 "VSCELicense/VSCELicense.psm1 at master · privacysexy-forks/VSCELicense | github.com"
+                                        call:
+                                            function: DeleteVisualStudioLicense
+                                            parameters:
+                                                productGuid: 41717607-F34E-432C-A138-A3CFD7E25CDA
+                                    -
+                                        name: Clear Visual Studio 2022 license
+                                        docs: |- # refactor-with-variables: Same • Visual Studio License Caution
+                                            This script removes the license information for Visual Studio 2022.
+
+                                            Visual Studio 2022 is an integrated development environment (IDE) by Microsoft
+                                            for software development [1].
+                                            It was released on November 8, 2021 [2].
+
+                                            Visual Studio 2022 introduces AI-powered enhancements such as IntelliSense and
+                                            IntelliCode for smarter, faster coding, alongside GitHub Copilot for improved
+                                            code completion and debugging [1].
+                                            It also offers improved productivity with a 64-bit IDE, better cross-platform
+                                            development tools, and advanced debugging and testing features [1].
+
+                                            Microsoft's mainstream support for Visual Studio 2022 ends in January 2027, with
+                                            extended support until January 2032 [2].
+
+                                            Visual Studio 2022 uses multiple product GUIDs, reflecting the variety of versions and installation
+                                            configurations reported by the community [3].
+                                            The script targets three product GUIDs associated with Visual Studio 2022 licenses:
+
+                                            - `1299B4B9-DFCC-476D-98F0-F65A2B46C96D` [3] [4] [5] [6]
+                                            - `10D17DBA-761D-4CD8-A627-984E75A58700` [3]
+                                            - `B16F0CF0-8AD1-4A5B-87BC-CB0DBE9C48FC` [3]
+
+                                            This script enhances your privacy by removing identifiable license information.
+                                            It may also improve system performance by clearing unnecessary license data.
+
+                                            > **Caution**:
+                                            > Removing the license information may require you to reactivate Visual Studio on the next use.
+                                            > You will need your license key and Microsoft account details for reactivation.
+
+                                            [1]: https://web.archive.org/web/20240731104906/https://visualstudio.microsoft.com/vs/ "Visual Studio 2022 IDE - Programming Tool for Software Developers | visualstudio.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240731104914/https://learn.microsoft.com/en-us/lifecycle/products/visual-studio-2022 "Visual Studio 2022 - Microsoft Lifecycle | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20231124134314/https://github.com/beatcracker/VSCELicense/issues/14 "VS 2022 Key Discussion | beatcracker/VSCELicense | GitHub | github.com"
+                                            [4]: https://web.archive.org/web/20231124134431/https://learn.microsoft.com/en-us/answers/questions/673243/how-do-i-remove-a-license-from-visual-studio-2022 "MSFT Answer | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20231124134322/https://stackoverflow.com/questions/46731291/how-to-change-visual-studio-2017-license-key/71624750#71624750 "How to change Visual Studio 2017 License Key? | Stack Overflow | stackoverflow.com"
+                                            [6]: https://github.com/privacysexy-forks/VSKeyExtractor/blob/main/Program.cs "VSKeyExtractor/Program.cs at main · privacysexy-forks/VSKeyExtractor | github.com"
+                                        call:
+                                            -
+                                                function: DeleteVisualStudioLicense
+                                                parameters:
+                                                    productGuid: B16F0CF0-8AD1-4A5B-87BC-CB0DBE9C48FC
+                                            -
+                                                function: DeleteVisualStudioLicense
+                                                parameters:
+                                                    productGuid: 10D17DBA-761D-4CD8-A627-984E75A58700
+                                            -
+                                                function: DeleteVisualStudioLicense
+                                                parameters:
+                                                    productGuid: 1299B4B9-DFCC-476D-98F0-F65A2B46C96D
                     -
                         name: Clear Dotnet CLI telemetry
                         recommend: standard
@@ -27596,7 +27808,6 @@ functions:
             parameters:
                 code: |-
                     $keyPath='{{ $keyPath }}'
-                    $replaceSid={{ with $replaceSid }} $true # {{ end }} $false
                     $registryHive = $keyPath.Split('\')[0]
                     $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
                     {{ with $replaceSid }}
@@ -27632,7 +27843,6 @@ functions:
             parameters:
                 code: |-
                     $keyPath='{{ $keyPath }}'
-                    $replaceSid={{ with $replaceSid }} $true # {{ end }} $false
                     $registryHive = $keyPath.Split('\')[0]
                     $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
                     {{ with $replaceSid }}
@@ -28966,3 +29176,26 @@ functions:
                         reg add "{{ $keyPath }}" /v "{{ $valueName }}" /t "{{ $dataType }}" /d "{{ . }}" /f
                     {{ end }}
                 minimumWindowsVersion: '{{ with $minimumWindowsVersion }}.{{ end }}'
+    -
+        name: DeleteVisualStudioLicense
+        parameters:
+            - name: productGuid
+        docs: |-
+            This function deletes license data for a given Visual Studio product GUID.
+
+            Visual Studio stores license data under different numeric subkeys with default values that contain binary data.
+            The registry path is: `HKCR\Licenses\<Product GUID>\<Numeric Value>!(Default)`. 
+
+            This script deletes the specified registry key, removing all numeric subkeys and their associated binary data.
+
+            [1]: https://github.com/privacysexy-forks/VSKeyExtractor/blob/main/Program.cs "VSKeyExtractor/Program.cs at main · privacysexy-forks/VSKeyExtractor | github.com"
+            [2]: https://github.com/privacysexy-forks/VSCELicense/blob/master/VSCELicense.psm1 "VSCELicense/VSCELicense.psm1 at master · privacysexy-forks/VSCELicense | github.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Remove Visual Studio license for product {{ $productGuid }}
+            -
+                function: DeleteRegistryKey
+                parameters:
+                    keyPath: HKCR\Licenses\{{ $productGuid }}
