@@ -32,15 +32,33 @@ actions:
         category: Privacy cleanup
         children:
             -
-                category: Clear recent activity logs
+                category: Clear recent activity
                 docs: |-
-                    This category encompasses a suite of scripts designed to erase traces of a user's recent activities.
-                    These activities include files accessed, applications used, and system settings altered.
-                    The primary objective of this category is to enhance user privacy by removing records that could potentially reveal personal usage patterns, habits, and preferences.
-                    By doing so, these scripts contribute significantly to safeguarding personal and sensitive information from unauthorized access and analysis.
+                    This category includes scripts that erase traces of recent user activities on Windows.
+                    These scripts enhance privacy by removing records of accessed files, used applications, and changed
+                    system settings.
+
+                    Clearing recent activity is crucial for protecting your privacy.
+                    Your computer keeps detailed logs of your actions, creating a digital footprint that can reveal
+                    sensitive information about your habits, interests, and personal life.
+                    This data can be exploited by cybercriminals, aggressive marketers, or even used in legal proceedings.
+
+                    Regularly clearing this information helps you control your privacy and reduces the risk of personal.
+                    It also protects you from malicious actors who may insert harmful items into your activity history [4].
+
+                    **Key Benefits:**
+
+                    - **Enhances privacy:** Removes records that reveal personal usage patterns, habits, and preferences.
+                    - **Safeguards information:** Helps protect sensitive information from unauthorized access and analysis.
+                    - **Improves security:** Limits the information and attack surface available to potential attackers.
+                    - **Boosts performance:** Improves system performance slightly by reducing unnecessary data.
+
+                    > **Caution:**
+                    > Clearing recent activity may affect your productivity by removing quick access to recently used
+                    > files, applications, and settings.
                 children:
                     -
-                        category: Clear Quick Access (jump) lists
+                        category: Clear Quick Access lists
                         docs: |-
                             This category focuses on managing Jump Lists in Windows.
                             This feature was first introduced with Windows 7 in July 2009 and has been included in subsequent versions [1] [2] [3].
@@ -55,6 +73,8 @@ actions:
                             personal or confidential files. By doing so, users prevent the easy accessibility of their activity history, an important privacy measure
                             since these records can persist long after the original files and applications are deleted [3] [5].
 
+                            > **Caution:** Clearing Quick Access lists may disrupt your workflow by removing shortcuts to frequently accessed files and folders.
+
                             [1]: https://web.archive.org/web/20231128091134/https://www.forensicfocus.com/articles/forensic-analysis-of-windows-7-jump-lists/ "Forensic Analysis of Windows 7 Jump Lists - Forensic Focus | forensicfocus.com"
                             [2]: https://web.archive.org/web/20210205154335/https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf "A forensic insight into Windows 10 Jump Lists | Bhupendra Singh, Upasna Sin | Dept. of Computer Engineering, Defence Institute of Advanced Technology (DU), Girinagar, Pune, India"
                             [3]: https://web.archive.org/web/20231128094035/https://forensafe.com/blogs/jumplist.html "Jump Lists Blog | forensafe.com"
@@ -63,8 +83,8 @@ actions:
                             [6]: https://web.archive.org/web/20231128095448/https://computerforensics.parsonage.co.uk/downloads/TheMeaningofLIFE.pdf "The Meaning of Linkfiles In Forensic Examinations | Harry Parsonage | computerforensics.parsonage.co.uk"
                         children:
                             -
-                                name: Clear recently accessed files list
-                                recommend: standard
+                                name: Clear Quick Access recent files
+                                recommend: standard # Has minimal impact.
                                 docs: |-
                                     This script clears the `AutomaticDestinations` Jump List files in Windows.
                                     It improves user privacy by removing traces of recent file and application usage.
@@ -82,8 +102,11 @@ actions:
                                     By clearing these files, the script not only removes the history of user activity but also reduces the risk of this data being analyzed to
                                     construct user activity timelines [1]. Such analysis could potentially expose personal usage patterns and behaviors, compromising privacy.
 
+                                    > **Caution:**
+                                    > Clearing recent files will remove the convenience of quickly accessing recently used files and folders.
+
                                     [1]: https://web.archive.org/web/20231128094035/https://forensafe.com/blogs/jumplist.html "Jump Lists Blog | forensafe.com"
-                                    [2]: https://web.archive.org/web/20231128091208/https://www.justice.gov/usao/page/file/931366/download "Forensic Science and Forensic Evidence I | Uneyited States Attorns' Bulletin | justice.gov"
+                                    [2]: https://web.archive.org/web/20231128091208/https://www.justice.gov/usao/page/file/931366/download "Forensic Science and Forensic Evidence I | United States Attorneys' Bulletin | justice.gov"
                                     [3]: https://web.archive.org/web/20210205154335/https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf "A forensic insight into Windows 10 Jump Lists | Bhupendra Singh, Upasna Sin | Dept. of Computer Engineering, Defence Institute of Advanced Technology (DU), Girinagar, Pune, India"
                                     [4]: https://web.archive.org/web/20231128091107/https://www.slideshare.net/ctin/windows-7-forensics-jump-listsrv3public "Windows 7 forensics jump lists-rv3-public | PPT | slideshare.net"
                                     [5]: https://web.archive.org/web/20231128095448/https://computerforensics.parsonage.co.uk/downloads/TheMeaningofLIFE.pdf "The Meaning of Linkfiles In Forensic Examinations | Harry Parsonage | computerforensics.parsonage.co.uk"
@@ -92,22 +115,30 @@ actions:
                                     parameters:
                                         directoryGlob: '%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations'
                             -
-                                name: Clear pinned items for the user
+                                name: Clear Quick Access pinned items
+                                recommend: null # User-pinned items; privacy impact likely considered
                                 docs: |-
                                     This script removes `CustomDestinations` Jump List files in Windows.
+
                                     These files are hidden [1] and located in `%APPDATA%\Microsoft\Windows\Recent\CustomDestinations` [1] [2] [3].
 
-                                    `CustomDestinations` files are created by different applications to enable users to pin items such as tasks and files or applications. This
-                                    includes tasks like opening a new browser window or creating a new spreadsheet [2], as well as files and applications frequently used [3] [4].
+                                    `CustomDestinations` files are created by different applications to enable users to pin items
+                                    such as tasks and files or applications.
+                                    This includes tasks like opening a new browser window or creating a new spreadsheet [2], as well
+                                    as files and applications frequently used [3] [4].
                                     They are commonly used by web browsers and media players to store a user's web history and other activities [1].
 
-                                    The privacy concern arises because these files not only record pinned items but also store detailed data about user interactions. This includes
-                                    file opening, modification, and access times, along with the full directory path and volume information [3] [4]. Such information, if accessed,
-                                    could potentially reveal personal habits and preferences [1] [2] [3].
+                                    The privacy concern arises because these files not only record pinned items but also store detailed data
+                                    about user interactions. This includes
+                                    file opening, modification, and access times, along with the full directory path and volume information [3] [4].
+                                    Such information, if accessed, may reveal personal habits and preferences [1] [2] [3].
 
-                                    Clearing these files prevents the potential use of this data in reconstructing a user's activity history, which is particularly sensitive
-                                    when it involves personal or confidential information. The script thus plays a crucial role in maintaining the confidentiality and privacy
-                                    of the user's digital activities.
+                                    Clearing these files prevents the potential use of this data in reconstructing a user's activity history, which is
+                                    particularly sensitive when it involves personal or confidential information.
+                                    The script thus plays a crucial role in maintaining the confidentiality and privacy of the user's digital activities.
+
+                                    > **Caution:** Removing pinned items will delete shortcuts to frequently accessed files and applications,
+                                    > requiring re-pinning them manually.
 
                                     [1]: https://web.archive.org/web/20210205154335/https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf "A forensic insight into Windows 10 Jump Lists | Bhupendra Singh, Upasna Sin | Dept. of Computer Engineering, Defence Institute of Advanced Technology (DU), Girinagar, Pune, India"
                                     [2]: https://web.archive.org/web/20231128091107/https://www.slideshare.net/ctin/windows-7-forensics-jump-listsrv3public "Windows 7 forensics jump lists-rv3-public | PPT | slideshare.net"
@@ -118,83 +149,582 @@ actions:
                                     parameters:
                                         directoryGlob: '%APPDATA%\Microsoft\Windows\Recent\CustomDestinations'
                     -
-                        category: Clear Windows Registry usage data
+                        category: Clear Windows Registry recent activity
                         docs: |-
-                            The Windows Registry is a hierarchical database that stores settings, configurations, and options for the operating system, installed
-                            applications, and user preferences. Over time, as users interact with their system and software, usage data and traces get stored in
-                            the registry.
+                            This category focuses on removing specific types of usage data from the Windows Registry
+                            to enhance privacy and improve system performance.
+                            
+                            The Windows Registry is a hierarchical database that stores settings, configurations, and
+                            options for the operating system, installed applications, and user preferences [1].
+                            It's like a central storage system for Windows and its programs.
+                            As users interact with their system and software, usage data and traces accumulate in the registry.
 
-                            This category focuses on clearing specific types of this usage data, ensuring privacy and potentially improving system responsiveness.
+                            This information is often used for forensic analysis to study user behavior or by attackers to
+                            gather data about individuals [2].
+                            Clearing non-essential registry usage data improves privacy by reducing the amount of personal
+                            information available to potential threats.
+
+                            By removing unnecessary data, this process may also contribute to optimizing
+                            system performance by reducing registry size and complexity.
+
+                            > **Caution:**
+                            > Removing recent activity from the registry may affect the ease of accessing frequently
+                            > used registry keys.
+
+                            [1]: https://web.archive.org/web/20240730092434/https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/windows-registry-advanced-users "Windows registry for advanced users - Windows Server | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240730092829/https://par.nsf.gov/servlets/purl/10152793 "A Forensic Evidence Acquisition Model for Data Leakage Attacks | par.nsf.gov"
                         children:
                             -
-                                name: Clear last `regedit` key
+                                name: Clear Windows Registry last-accessed key
                                 recommend: standard
-                                code: |-
-                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
+                                docs: |-
+                                    This script removes the record of the last visited Windows Registry key.
+
+                                    The Windows Registry stores the location of the last key visited using `regedit.exe` [1].
+                                    This information is used to open the registry at  the same location when `regedit.exe` is started again [1].
+
+                                    Forensic analysts often use this data to study user behavior and  activity [2] [3].
+                                    By clearing this information, you improve your privacy by reducing traces of your system interactions.
+                                    This script may also improve system performance by reducing unnecessary data in the registry.
+
+                                    This script deletes all values under
+                                    `HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit!LastKey` [1] [2] [3]
+                                    registry key.
+
+                                    > **Caution:**
+                                    > This action will reset the registry editor's navigation history,
+                                    > potentially affecting ease of use for advanced users.
+
+                                    [1]: https://web.archive.org/web/20240730094036/https://renenyffenegger.ch/notes/Windows/registry/tree/HKEY_CURRENT_USER/Software/Microsoft/Windows/CurrentVersion/Applets/Regedit/index "Registry: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit | renenyffenegger.ch"
+                                    [2]: https://web.archive.org/web/20240619180528/https://secure.corradoroberto.it/doc/Registry_Forensics.pdf "Microsoft Word - 462583DF-2150-08FA03.doc | secure.corradoroberto.it"
+                                    [3]: https://web.archive.org/web/20240730094313/https://forensafe.com/blogs/lastkey.html "Last Accessed Key Blog | forensafe.com"
+                                call:
+                                    function: RunInlineCode
+                                    parameters:
+                                        code: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit" /v "LastKey" /f 2>nul
                             -
-                                name: Clear favorite keys in `regedit`
-                                recommend: standard
-                                code: |-
-                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
+                                name: Clear Windows Registry favorite locations
+                                recommend: strict # This script may interfere with user preferences, but enhances privacy.
+                                docs: |-
+                                    This script removes saved favorite locations in the Windows Registry Editor.
+
+                                    The Windows Registry Editor (`regedit`) allows users to save frequently
+                                    accessed registry locations as favorites [1].
+                                    This information is typically used by forensic analysts to study your behavior [2].
+
+                                    Clearing these favorites removes traces of your commonly accessed registry
+                                    locations, enhancing your privacy.
+                                    It may also improve system performance by reducing unnecessary data in the registry.
+
+                                    This script deletes all values under
+                                    `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites` [1] [2]
+                                    registry key.
+
+                                    > **Caution:**
+                                    > Removing favorite locations in the registry editor will delete shortcuts to commonly
+                                    > accessed registry keys, which may need to be recreated manually.
+
+                                    [1]: https://web.archive.org/web/20240222114116/https://ss64.com/nt/regedit.html "Regedit - Windows CMD - SS64.com | ss64.com"
+                                    [2]: https://web.archive.org/web/20240730095211/https://secure.corradoroberto.it/doc/Registry_Forensics.pdf "Microsoft Word - 462583DF-2150-08FA03.doc | secure.corradoroberto.it"
+                                call:
+                                    function: ClearRegistryValues
+                                    parameters:
+                                        keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites
                     -
-                        name: Clear recently opened applications list
-                        recommend: standard
-                        code: |-
-                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /va /f
-                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRULegacy" /va /f
+                        name: Clear recent application history
+                        recommend: standard # Minimal impact
+                        docs: |-
+                            This script removes the list of recently opened applications from the Windows Registry.
+
+                            Windows keeps track of applications used to open or save files in the
+                            "Open" and "Save" dialog boxes [1] [2].
+
+                            This information includes:
+
+                            - The last program used to access files in these dialogs [1] [2]
+                            - Timestamps of when programs were executed (in Windows Vista and later) [2]
+                            - The order of entries, from most recently used [2]
+                            - The folder location of the last file accessed by each application [1]
+
+                            Digital forensic analysts often use this data to study user behavior [1] [2].
+                            By clearing this information, you improve your privacy by removing traces
+                            of your application usage patterns.
+
+                            This script may also slightly improve system performance by reducing
+                            unnecessary data in the registry.
+
+                            The script deletes all registry values under:
+
+                            - `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedMRU`
+                            (for Windows XP) [1] [2]
+                            - `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU`
+                            (for Windows Vista and above) [1] [2]
+                            - `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRULegacy` [2]
+
+                            > **Caution:**
+                            > Clearing the application history may disrupt your usual workflow by removing quick
+                            > access to recently used programs in file dialogs.
+
+                            [1]: https://web.archive.org/web/20240730101153/https://forensafe.com/blogs/lastvisitedmru.html "LastVisitedMRU Blog | forensafe.com"
+                            [2]: https://web.archive.org/web/20240730101502/https://tzworks.com/prototype_page.php?proto_id=19 "Computer Account Forensic Artifact Extractor | tzworks.com"
+                        call:
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedMRU
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRULegacy
                     -
-                        name: Clear "Adobe Media Browser" most recently used (MRU) list
-                        recommend: standard
-                        code: reg delete "HKCU\Software\Adobe\MediaBrowser\MRU" /va /f
+                        name: Clear Adobe recent file history
+                        recommend: standard # Does not significantly affect Adobe software functionality.
+                        docs: |-
+                            This script removes the list of recently opened files in Adobe software.
+
+                            Adobe programs store a list of recently used files in the Windows registry [1] [2].
+                            Each entry is labeled with a timestamp and includes details about the file opened at that specific time [1].
+                            This information can reveal a user's file activity patterns [1], potentially compromising privacy.
+
+                            By deleting these entries, the script:
+
+                            1. Enhances privacy by eliminating traces of your recent file activity in Adobe programs.
+                            2. May slightly improve system performance by reducing registry size.
+
+                            The script deletes the entire registry key `HKCU\Software\Adobe\MediaBrowser\MRU`,
+                            which includes subkeys such as:
+
+                            - `HKCU\Software\Adobe\MediaBrowser\MRU\illustrator\FileList\*` [1]
+                            - `HKCU\Software\Adobe\MediaBrowser\MRU\Photoshop\FileList\*` [1]
+                            - `HKCU\Software\Adobe\MediaBrowser\MRU\indesign\FileList\*` [2]
+
+                            > **Caution**:
+                            > This action will reset your "Recent Files" list in Adobe programs.
+                            > You may need to manually reopen frequently used files after running this script.
+
+                            [1]: https://web.archive.org/web/20240730105854/https://www.taksati.org/mru/ "MRU - TAKSATI | www.taksati.org"
+                            [2]: https://archive.ph/2024.07.30-110430/https://community.adobe.com/t5/indesign-discussions/recent-files-list/td-p/5826422 "Recent files list - Adobe Community - 5826422 | community.adobe.com"
+                        call:
+                            function: DeleteRegistryKey
+                            parameters:
+                                keyPath: HKCU\Software\Adobe\MediaBrowser\MRU
                     -
-                        name: Clear "MSPaint" most recently used (MRU) list
-                        recommend: standard
-                        code: |-
-                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
+                        name: Clear Microsoft Paint recent files history
+                        recommend: standard # Has minimal impact on Paint functionality.
+                        docs: |-
+                            This script removes the list of recently used files in Microsoft Paint.
+
+                            When you open or save an image file in Paint (`mspaint.exe`), it adds the image to the
+                            **File > Recent pictures** history list [1].
+                            This list provides quick access to recently used files but also creates a record of your
+                            Paint usage [1] [2].
+
+                            The Paint registry keys are created only after you use the application [2].
+
+                            These keys store information such as:
+
+                            - File names of recently opened images [2]
+                            - Dates when images were last closed [2]
+                            - Other related data [2]
+
+                            This information can be used to:
+
+                            - Track your Paint usage patterns
+                            - Provide evidence in forensic investigations to study your behavior [2]
+
+                            By clearing this list, you:
+
+                            - Enhance your privacy by removing traces of your Paint activity
+                            - Reduce the risk of others seeing your recently edited images
+                            - May slightly improve system performance by clearing unnecessary data
+
+                            This action doesn't affect your saved files, only the record of recently used files in Paint.
+
+                            The script deletes all registry values under
+                            `HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List`
+                            registry key [1] [2].
+
+                            > **Caution:**
+                            > Removing recent file history in Paint will delete the list of recently edited images,
+                            > requiring manual reopening of these files.
+
+                            [1]: https://web.archive.org/web/20240730113602/https://www.tenforums.com/tutorials/156361-how-clear-recent-pictures-paint-mspaint-app-windows-10-a.html "How to Clear Recent Pictures in Paint (mspaint) app in Windows 10 | Tutorials | www.tenforums.com"
+                            [2]: https://web.archive.org/web/20240730113748/https://forensafe.com/blogs/PaintMRU.html "Paint MRU Blog | forensafe.com"
+                        call:
+                            function: ClearRegistryValues
+                            parameters:
+                                keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List
                     -
-                        name: Clear "Wordpad" most recently used (MRU) list
-                        recommend: standard
-                        code: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Wordpad\Recent File List" /va /f
+                        name: Clear WordPad recent file history
+                        recommend: standard # Minimally affects older Windows users.
+                        docs: |-
+                            This script removes the most recently used (MRU) file list from WordPad, enhancing user privacy.
+
+                            WordPad stores the names and paths of recently opened files [1] [2].
+                            Unlike Microsoft Office Word, WordPad doesn't offer a built-in feature to clear this list [1].
+                            This data can be used in forensic investigations to analyze user behavior [1].
+
+                            The stored information includes:
+
+                            - **File Name:** The name of the file opened in WordPad [1] [2]
+                            - **File Path:** The complete path to the file [1]
+                            - **File Modified Date/Time:** When the MRU registry key was last changed [1]
+                            - **Registry or MRU Order:** The order of file access, with `1` being the most recent [1]
+                            - **Value Name:** The record's associated value in the registry key [1]
+
+                            The recent files list updates only when the WordPad application is closed [1].
+
+                            WordPad is removed from all editions of Windows starting with Windows 11, version 24H2 [3].
+                            Therefore, this script may not apply to the latest Windows versions.
+
+                            This script deletes all registry values under the
+                            `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Wordpad\Recent File List` registry key [1] [2].
+                            By doing so, it removes traces of your recent WordPad activity, improving your privacy.
+
+                            > **Caution:**
+                            > Clearing the recent files list may hinder quick access to your frequently used WordPad documents,
+                            > potentially affecting your workflow efficiency.
+
+                            [1]: https://web.archive.org/web/20240730115041/https://forensafe.com/blogs/wordpad_recent_files.html "WordPad Recent Files | forensafe.com"
+                            [2]: https://web.archive.org/web/20240730115357/https://www.majorgeeks.com/content/page/how_to_clear_recent_documents_history_in_wordpad.html "How to Clear Recent Documents History in WordPad - MajorGeeks | majorgeeks.com"
+                            [3]: https://web.archive.org/web/20240403064138/https://learn.microsoft.com/en-us/windows/whats-new/deprecated-features "Deprecated features in the Windows client | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: ClearRegistryValues
+                            parameters:
+                                keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Wordpad\Recent File List
                     -
-                        name: Clear "Map Network Drive" most recently used (MRU) list
-                        recommend: standard
-                        code: |-
-                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
+                        name: Clear network drive mapping history
+                        recommend: strict # May affect the user's ability to reconnect to network drives easily
+                        docs: |-
+                            This script removes the history of mapped network drives from your system.
+
+                            Windows allows users to map network drives, which assigns a drive letter to a shared folder on a remote system [1].
+                            This makes accessing shared resources easier, as if they were local drives.
+                            When you map a network drive, Windows stores information about it [1].
+
+                            These stored details includes:
+
+                            - The network path (UNC) of the mapped drive [1]
+                            - When the drive was last accessed [1]
+                            - Other mapped drive paths [1]
+
+                            While convenient, this stored information may pose privacy risks.
+                            Forensic analysts often use these artifacts to study user behavior and uncover network activity [1].
+
+                            By clearing this data, you can:
+
+                            - Protect your privacy by removing traces of network resources you've accessed
+                            - Potentially improve system performance by reducing Registry clutter
+
+                            This script deletes all registry values under the following key:
+                            `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU` [1]
+
+                            > **Caution**: Clearing this list may require you to manually reconnect to network drives you use regularly.
+
+                            [1]: https://web.archive.org/web/20240730120256/https://forensafe.com/blogs/mappednetworkdrive.html "Mapped Network Drives | forensafe.com"
+                        call:
+                            function: ClearRegistryValues
+                            parameters:
+                                keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU
                     -
-                        name: Clear "Windows Search Assistant" history
-                        recommend: standard
-                        code: reg delete "HKCU\Software\Microsoft\Search Assistant\ACMru" /va /f
+                        name: Clear Windows Search history
+                        recommend: standard # Minimal functional impact
+                        docs: |
+                            This script clears Windows search history to enhance privacy.
+
+                            Windows records search keywords used on your device [1] [2] [3] [4] [5] [6].
+                            This data includes search terms and dates [1] [2] [4] [5].
+                            It's used in forensic analysis to study user behavior [1] [2] [3] [4] [5] [6].
+
+                            Clearing search history improves privacy by removing this potentially sensitive information.
+                            It may also improve system performance by freeing up storage space.
+
+                            > **Caution:** Clearing search history may affect your ability to quickly find recently searched items.
+
+                            ### Technical Details
+
+                            The script enhances privacy by deleting this tracking information from the following locations:
+
+                            - `HKCU\Software\Microsoft\Search Assistant\ACMru\*` [1] [3] [6]:
+                              Used by Windows XP [1] [3].
+                              It stores search history in subkeys [6] [6].
+                              This location is not used in newer Windows versions [1] [3].
+                            - `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\WordWheelQuery` [1] [2] [3] [5]:
+                              Used by Windows 7 and later versions [1] [2] [3] [5],
+                              including Windows 10 [2] [5] and 11 [5] to store search history.
+                            - `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\SearchHistory` [3] [4]:
+                              Used by Windows 8 and later for search history [3] [4].
+                              Windows 8 utilizes `Microsoft.Windows.FileSearchApp` sub key [4].
+                            - `%LOCALAPPDATA%\Microsoft\Windows\ConnectedSearch\History` folder [3] [4].
+                              This directory is used by Windows 8.1 to store search history [3] [4].
+
+                            [1]: https://web.archive.org/web/20240730101502/https://tzworks.com/prototype_page.php?proto_id=19 "Computer Account Forensic Artifact Extractor | tzworks.com"
+                            [2]: https://web.archive.org/web/20240730125503/https://forensafe.com/blogs/searchedstrings.html "Searched Strings Blog | forensafe.com"
+                            [3]: https://web.archive.org/web/20240730132214/http://www.csc.villanova.edu/~dprice/fall2014/slides/16_Registry%20Forensics.pdf "Registry Artifacts | Villanova University – Department of Computing Sciences – D. Justin Price – Fall 2014 | csc.villanova.edu"
+                            [4]: https://web.archive.org/web/20240730133138/https://www.swiftforensics.com/2014/04/search-history-on-windows-8-and-81.html "Yogesh Khatri's forensic blog: Search history on Windows 8 and 8.1 | www.swiftforensics.com"
+                            [5]: https://web.archive.org/web/20240730133138/https://www.swiftforensics.com/2014/04/search-history-on-windows-8-and-81.html "windows-forensic-artifacts/user-activity/wordwheelquery.md at b0faf656761091e165b1c4fff74541ebeb29d306 · privacysexy-forks/windows-forensic-artifacts | github.com"
+                            [6]: https://web.archive.org/web/20240730125955/https://www.mpauli.de/interesting-windows-forensic-spots.html "interesting windows forensic spots | www.mpauli.de"
+                        call:
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Search Assistant\ACMru
+                                    deleteSubkeyValuesRecursively: 'true' # Data is stored in subkeys
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\v
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\SearchHistory
+                                    deleteSubkeyValuesRecursively: 'true' # Data is stored in subkeys, e.g. `Microsoft.Windows.FileSearchApp`
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\ConnectedSearch\History'
                     -
-                        name: Clear recently opened files list for each file type
-                        recommend: standard
-                        code: |-
-                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
-                            reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
-                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU" /va /f
+                        name: Clear recent files and folders history
+                        recommend: standard # Minimal functional impact
+                        docs: |-
+                            This script enhances privacy by removing traces of recently accessed files and folders from the Windows system.
+
+                            Windows automatically tracks and stores information about files and folders accessed by users [1] [2].
+                            This data is maintained in various registry keys and includes details such as file names, types,
+                            access dates, and full paths [1] [2] [3] [4].
+                            This information persists even after the original files or folders are deleted [1] [4].
+
+                            This data is commonly used for forensic analysis to study your behavior [1] [2] [3] [4] [5].
+                            It can reveal user activities, including access to sensitive or unauthorized documents [1] [2] [3].
+                            This information provides insights into user behavior and file interactions across different applications [2].
+
+                            To protect your privacy, this script deletes tracking information from these locations:
+
+                            - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs\<Extension>` [1] [2] [5]
+                              for Windows XP [2] and Vista [1] [2].
+                            - `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU\<Extension>` [2] [3] [5]
+                              for Windows 2000 [5], Windows XP [3] [5], Windows Vista [2].
+                            - `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePidlMRU\<Extension>` [2] [3] [5]
+                              for Windows 7 [3], Windows Vista [2] [5], Windows 8 [3] and Windows 10 [3].
+                            - `%APPDATA%\Microsoft\Windows\Recent Items` [1] [4]
+                              for Windows 10 [1] and Windows 11.
+
+                            > **Caution:**
+                            > Clearing this history may disrupt your workflow by removing quick access to frequently used
+                            > files and folders.
+
+                            [1]: https://web.archive.org/web/20240730194320/https://forensafe.com/blogs/recentdocs.html "RecentDocs MRU Blog | forensafe.com"
+                            [2]: https://web.archive.org/web/20240730200254/https://www.magnetforensics.com/blog/what-is-mru-most-recently-used/ "What is MRU (Most Recently Used)? - Magnet Forensics | www.magnetforensics.com"
+                            [3]: https://web.archive.org/web/20240730195941/https://forensafe.com/blogs/opensavemru.html "OpenSaveMRU Blog | forensafe.com"
+                            [4]: https://web.archive.org/web/20240730200152/https://forensafe.com/blogs/investigating_recent_items.html "Recent Items | forensafe.com"
+                            [5]: https://web.archive.org/web/20240730195957/https://winreg-kb.readthedocs.io/en/latest/sources/explorer-keys/Most-recently-used.html "Most recently used (MRU) — Windows Registry knowledge base (winreg-kb) 20240211 documentation | winreg-kb.readthedocs.io"
+                        call:
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs
+                                    deleteSubkeyValuesRecursively: 'true' # Data is stored in subkeys for each file extension.
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU
+                                    deleteSubkeyValuesRecursively: 'true' # Data is stored in subkeys for each file extension.
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePidlMRU
+                                    deleteSubkeyValuesRecursively: 'true' # Data is stored in subkeys for each file extension.
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%APPDATA%\Microsoft\Windows\Recent Items'
                     -
-                        name: Clear Windows Media Player recent files and URLs
-                        recommend: standard
-                        code: |-
-                            reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
-                            reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
+                        name: Clear Windows Media Player recent activity history
+                        recommend: standard # Minimal functional impact
+                        docs: |-
+                            This script clears the recent activity history in Windows Media Player.
+
+                            Windows Media Player automatically stores files and URLs you recently played for easy access
+                            through the history list [1] [2].
+                            It also stores recently added radio station entries [3].
+                            This data can be exploited by attackers to gather information about you [2] [4].
+
+                            The script improves privacy by removing traces of your media consumption habits.
+                            It may also enhance system performance by clearing unnecessary data.
+
+                            This script mimics the **Tools > Privacy > Clear History** option in Windows Media Player 9 and 10 [1].
+
+                            The script deletes all registry values under:
+
+                            - `HKCU\Software\Microsoft\MediaPlayer\Player\RecentFileList` [1] [2] [4]
+                            - `HKCU\Software\Microsoft\MediaPlayer\Player\RecentURLList` [1] [2] [4]
+                            - `HKCU\Software\Microsoft\MediaPlayer\Radio\MRUList` [3]
+
+                            This data is recreated when you open a file in Media Player [1].
+                            For continuous privacy protection, run this cleanup regularly.
+
+                            > **Caution:**
+                            > Running this script may temporarily disrupt quick access to your recently played media files,
+                            > URLs, and radio stations in Windows Media Player.
+
+                            [1]: https://web.archive.org/web/20240730210758/https://support.microsoft.com/en-us/topic/how-to-delete-the-recent-play-list-from-windows-media-player-095410a9-1f37-8e9b-222e-c520757d4eca "How to delete the recent play list from Windows Media Player - Microsoft Support | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20240730210856/https://www.offensiveosint.io/inside-of-danderspritz-post-exploitation-modules/ "Inside of Danderspritz post-exploitation modules | www.offensiveosint.io"
+                            [3]: https://web.archive.org/web/20040504183343/http://support.microsoft.com/default.aspx?scid=kb;en-us;235570 "235570 - How to Remove Entries From the Radio Toolbar | support.microsoft.com"
+                            [4]: https://web.archive.org/web/20240619180528/https://secure.corradoroberto.it/doc/Registry_Forensics.pdf "Microsoft Word - 462583DF-2150-08FA03.doc | secure.corradoroberto.it"
+                        call:
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\MediaPlayer\Player\RecentFileList
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\MediaPlayer\Player\RecentURLList
+                            -
+                                function: ClearRegistryValues
+                                parameters:
+                                    keyPath: HKCU\Software\Gabest\Media Player Classic\Recent File List
                     -
-                        name: Clear most recent DirectX application usage
-                        recommend: standard
-                        code: |-
-                            reg delete "HKCU\Software\Microsoft\Direct3D\MostRecentApplication" /va /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\Direct3D\MostRecentApplication" /va /f
+                        name: Clear DirectX recent application history
+                        recommend: standard # Minimal impact on DirectX functionality
+                        docs: |-
+                            This script removes the most recent application usage data stored by DirectX to enhance privacy.
+
+                            DirectX is a set of Windows components that helps software (often games and multimedia applications) 
+                            to work directly with video and audio hardware [1].
+                            It logs the most recent application data in the system registry [2].
+                            Attackers exploit this information to gather insights about a target's system or network [3].
+                            Forensic analysts use this information to study your behavior [4].
+
+                            This script enhances your privacy by removing traces of the last DirectX applications or games you have used.
+                            It can also improve system performance by freeing up system resources.
+
+                            This script deletes all registry values under the key `HKCU\Software\Microsoft\Direct3D\MostRecentApplication` [2] [3] [4].
+
+                            > **Caution:** This action may slightly impact DirectX's ability to optimize performance for recently used applications.
+
+                            [1]: https://web.archive.org/web/20240708104416/https://support.microsoft.com/en-us/topic/how-to-install-the-latest-version-of-directx-d1f5ffa5-dae2-246c-91b1-ee1e973ed8c2 "How to install the latest version of DirectX - Microsoft Support | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20240730213229/https://www.freefixer.com/library/file/Microsoft.DirectX.Direct3D.dll-59895/ "What is Microsoft.DirectX.Direct3D.dll? | www.freefixer.com"
+                            [3]: https://web.archive.org/web/20211206161019/https://vulners.com/nessus/MICROSOFT_WINDOWS_DIRECT3D.NASL "Direct3D Recent Program - vulnerability database | Vulners.com | vulners.com"
+                            [4]: https://web.archive.org/web/20240730213658/https://forensics.wiki/list_of_windows_mru_locations/ "List of windows mru locations | forensics.wiki"
+                        call:
+                            function: ClearRegistryValues
+                            parameters:
+                                keyPath: HKCU\Software\Microsoft\Direct3D\MostRecentApplication
                     -
-                        name: Clear "Windows Run" most recently used (MRU) list and typed paths
-                        recommend: standard
-                        code: |-
-                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /va /f
-                            reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /va /f
+                        name: Clear Windows Run command history
+                        recommend: standard # Minimal impact on functionality
+                        docs: |-
+                            This script clears the Most Recently Used (MRU) list in Windows Run.
+
+                            Windows Run is a utility that allows users to quickly open programs, files, folders, and web pages [1] [2] [3].
+                            It's also known as the Windows Run dialog box [2] [4], Windows Command Window [3], Windows Run Box [5],
+                            Windows Run utility [1] [6], and Windows Run window [1].
+
+                            You can access it by:
+
+                            - Pressing **Windows logo key + R** [1] [3]
+                            - Searching for **Run** in the **Start Menu** [1] [2]
+                            - Running specific commands:
+                              - `explorer shell:::{2559a1f3-21d7-11d4-bdaf-00c04f60b9f0}` [4]
+                              - `WINDIR%\System32\rundll32.exe shell32.dll,#61` [4]
+
+                            Keeping this data poses privacy and security risks:
+
+                            - It reveals user activity on the system, including accessed files and applications [1] [5] [6]
+                            - Forensic analysts use this data to study user behavior [1] [5] [6]
+                            - Attackers use this data to understand user activities or execute malicious code [5]
+
+                            Clearing this data improves your privacy and security by:
+
+                            - Removing traces of your recent activities
+                            - Preventing third parties from gaining insights into your system usage
+                            - Reducing the risk of malicious code execution via manipulated data entries
+
+                            It can also improve system performance by reducing the amount of data Windows needs to process when accessing the Run dialog history.
+
+                            This script deletes all registry values under `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU` [1] [5] [6].
+
+                            To ensure the changes take effect, close and reopen the Run window if it's currently open [1].
+
+                            > **Caution**:
+                            > This script will erase your Run command history, potentially slowing down access to frequently used programs and files.
+
+                            [1]: https://web.archive.org/web/20240731003110/https://forensafe.com/blogs/runmrukey.html "Run MRU Blog | forensafe.com"
+                            [2]: https://web.archive.org/web/20240801092604/https://support.microsoft.com/en-us/office/command-line-switches-for-microsoft-office-products-079164cd-4ef5-4178-b235-441737deb3a6 "Command-line switches for Microsoft Office products - Microsoft Support | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20240801093108/https://support.microsoft.com/en-us/office/about-the-microsoft-support-and-recovery-assistant-e90bb691-c2a7-4697-a94f-88836856c72f "About the Microsoft Support and Recovery Assistant - Microsoft Support | support.microsoft.com"
+                            [4]: https://web.archive.org/web/20240801092302/https://superuser.com/questions/1163990/where-is-the-windows-run-command-located/1164001#1164001 "Where is the Windows Run command located? - Super User | superuser.com"
+                            [5]: https://archive.ph/2024.07.30-220219/https://www.4n6post.com/2023/02/runmru.html "4n6post.com/2023/02/runmru.html | www.4n6post.com"
+                            [6]: https://web.archive.org/web/20240730200254/https://www.magnetforensics.com/blog/what-is-mru-most-recently-used/ "What is MRU (Most Recently Used)? - Magnet Forensics | www.magnetforensics.com"
+                        call:
+                            function: ClearRegistryValues
+                            parameters:
+                                keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU
+                    -
+                        name: Clear File Explorer address bar history
+                        recommend: strict # May affect workflow efficiency
+                        docs: |-
+                            This script clears the history of paths you've typed in the File Explorer address bar.
+
+                            Windows stores recent paths entered in File Explorer [1] [2] [3] (formerly known as Windows Explorer [1] [2]).
+                            This specifically targets paths that have been manually typed into the Address Bar [2] [3].
+                            These can be file or folder locations [2].
+                            Windows saves up to 25 of these entries [1].
+                            The paths are saved upon closing the File Explorer window [1].
+
+                            This stored data includes:
+
+                            - Full path typed [1] [2]
+                            - Date and time of entry [1] [2]
+
+                            This information may pose privacy and security risks:
+
+                            - Reveals your file access history [1] [2]
+                            - Allows tracking of when and how often files were accessed [1] [2]
+                            - Enables detection of activity patterns, such as specific application use [2]
+                            - Can be used to build a timeline of user actions [2]
+                            - Can be exploited by malware to maintain persistence on the system [4]
+                            - Can be used by attackers to map system structure or track behavior
+                            - Facilitates social engineering attacks based on file access patterns
+
+                            This data is often used in forensic investigations [1] [2].
+                            This data can be used in investigations related to intellectual property theft, employee misconduct,
+                            security breaches, or other criminal activities [2].
+
+                            This script enhances privacy by:
+
+                            - Removing traces of your file system navigation
+                            - Reducing unauthorized access risk to your browsing history
+                            - Limiting data available for forensic analysis
+                            - Preventing exposure of sensitive file or folder names
+                            - Reducing risk of attacks based on file access patterns
+                            - Minimizing digital footprint on shared or public computers
+                            - Protecting against certain types of malware
+                            - Maintaining confidentiality of work or personal projects
+
+                            It can also slightly improve system performance by freeing up space and reducing the data
+                            Windows processes when accessing File Explorer history.
+
+                            This script deletes all registry values under:
+                            `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths` [1] [2] [3].
+                            This subkey includes values named `url1`, `url2`, `url3`, etc., with `url1` always containing the most recent typed path [1].
+
+                            > **Caution**:
+                            > This script may impair your ability to quickly access recently typed file paths in File Explorer,
+                            > potentially affecting your workflow efficiency.
+
+                            [1]: https://web.archive.org/web/20240801124433/https://forensafe.com/blogs/typedpaths.html "Typed Paths Blog | forensafe.com"
+                            [2]: https://web.archive.org/web/20240801124441/https://www.3fforensics.com/forensics/typed-paths.html "New Orleans Forensics, Expert computer forensics. NOLA Forensics. Mobile forensics, Memory forensics, Disk forensics. | Forensics | www.3fforensics.com"
+                            [3]: https://web.archive.org/web/20240801102250/https://www.elevenforum.com/t/clear-file-explorer-history-in-windows-11.8468/ "Clear File Explorer History in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [4]: https://archive.ph/2024.08.01-102204/https://x.com/dez_/status/1560101453150257154 "Joe Desimone on X: \"@Hexacorn ever come across this technique before ? Is it some kind of odd persistence? Explorer\TypedPaths\url1 https://t.co/iyQgumE7sS\" / X | x.com"
+                        call:
+                            function: ClearRegistryValues
+                            parameters:
+                                keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths
             -
                 category: Clear third-party application data
                 children:
@@ -742,16 +1272,71 @@ actions:
                                         parameters:
                                             directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\WebCache'
                             -
-                                name: Clear Internet Explorer recent URLs
-                                recommend: strict
-                                docs:
-                                    - https://web.archive.org/web/20160304232740/http://crucialsecurityblog.harris.com/2011/03/14/typedurls-part-1/
-                                    - https://web.archive.org/web/20160321221849/http://crucialsecurityblog.harris.com/2011/03/23/typedurls-part-2/
-                                    - https://web.archive.org/web/20150601014235/http://randomthoughtsofforensics.blogspot.com/2012/07/trouble-with-typedurlstime.html
-                                    - https://sketchymoose.blogspot.com/2014/02/typedurls-registry-key.html
-                                code: |-
-                                    reg delete "HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLs" /va /f
-                                    reg delete "HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLsTime" /va /f
+                                name: Clear Internet Explorer typed URLs
+                                recommend: standard # Improves privacy with little downside since IE is outdated.
+                                docs: |-
+                                    This script deletes recently typed or pasted URLs from Internet Explorer's history.
+
+                                    Internet Explorer stores typed URLs [1] [2] [3] [4].
+                                    It enables AutoComplete, which automatically suggests and fills in web addresses as you type [1] [4].
+                                    It's also used for populating the URL drop-down menu with previously visited sites [1] [4].
+
+                                    This data includes:
+
+                                    - **Typed URLs:** Web addresses entered in the address bar [4]
+                                    - **Typed filepaths:** Files or folders typed on some versions of Internet Explorer [1].
+                                    - **Visit dates:** The most recent access time for each entry [3] [4]
+
+                                    While this feature enhances usability, it may compromise privacy:
+
+                                    1. It reveals browsing habits, potentially exposing sensitive information [1].
+                                    2. Forensic analysts can use this data to study user web activity [1] [2] [3] [4].
+                                    3. Malware may exploit this data to redirect users to malicious sites [2] [5].
+                                       For example `Adware.StartPage` malware uses it to generate revenue by increasing website visits [2] [5].
+
+                                    The potential misuse of this data is exemplified by the Julie Amero case [2].
+                                    Amero, a substitute teacher, was wrongly convicted based on forensic evidence of typed URLs, despite her
+                                    computer being infected with malware generating unwanted pop-ups [2].
+                                    This incident underscores the importance of regular privacy maintenance to prevent misinterpretation
+                                    of browsing data and protect against unwarranted accusations.
+
+                                    Deleting this data improves privacy by:
+
+                                    - Reducing the risk of unauthorized access to browsing history
+                                    - Limiting potential exploitation by malware
+                                    - Minimizing digital footprints that could be used for user profiling
+                                    - Preventing misinterpretation of browsing data in unforeseen circumstances
+
+                                    This script improves privacy with little downside since Internet Explorer is outdated [6].
+
+                                    This script may also slightly improve system performance by freeing up disk space and
+                                    reducing the amount of stored data that Internet Explorer needs to process.
+
+                                    The script removes data from these registry locations:
+
+                                    - `HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLs` [1] [4] [5]
+                                      Values are stored as strings named `url1`, `url2`, etc., with `url1` being the most recent entry [1] [4].
+                                    - `HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLsTime` [3]
+                                      Values are stored as strings named `url1`, `url2`, etc., corresponding to the TypedURLs entries [3].
+
+                                    > **Caution:** This action may slow down your browsing in Internet Explorer by removing suggestions
+                                    > for previously accessed websites.
+
+                                    [1]: https://web.archive.org/web/20160304232740/http://crucialsecurityblog.harris.com/2011/03/14/typedurls-part-1/ "TypedURLs (Part 1) | Crucial Security Forensics Blog | crucialsecurityblog.harris.com"
+                                    [2]: https://web.archive.org/web/20160321221849/http://crucialsecurityblog.harris.com/2011/03/23/typedurls-part-2/ "TypedURLs (Part 2) | Crucial Security Forensics Blog | crucialsecurityblog.harris.com"
+                                    [3]: https://web.archive.org/web/20150601014235/http://randomthoughtsofforensics.blogspot.com/2012/07/trouble-with-typedurlstime.html "Random Thoughts of Forensics: The Trouble with TypedUrlsTime | randomthoughtsofforensics.blogspot.com"
+                                    [4]: https://web.archive.org/web/20240801123756/https://forensafe.com/blogs/typedurls.html "Typed URLs Blog | forensafe.com"
+                                    [5]: https://web.archive.org/web/20151103125411/http://www.symantec.com/security_response/writeup.jsp?docid=2004-042715-3545-99&tabid=2 "Adware.StartPage Technical Details | Symantec | www.symantec.com"
+                                    [6]: https://web.archive.org/web/20240730124000/https://blogs.windows.com/windowsexperience/2022/06/15/internet-explorer-11-has-retired-and-is-officially-out-of-support-what-you-need-to-know/ "Internet Explorer 11 has retired and is officially out of support—what you need to know | Windows Experience Blog | blogs.windows.com"
+                                call:
+                                    -
+                                        function: ClearRegistryValues
+                                        parameters:
+                                            keyPath: HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLs
+                                    -
+                                        function: ClearRegistryValues
+                                        parameters:
+                                            keyPath: HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLsTime
                             -
                                 name: Clear "Temporary Internet Files" (browser cache)
                                 recommend: standard
@@ -15758,19 +16343,31 @@ actions:
                                         docs:
                                             - https://windowsreport.com/remove-right-click-windows-defender-scan-windows-10/
                                             - https://web.archive.org/web/20240314174846/https://twigstechtips.blogspot.com/2010/06/windows-remove-with-microsoft-security.html
-                                        code: |-
-                                            reg delete "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /va /f 2>nul
-                                            reg delete "HKCR\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}" /v "InprocServer32" /f 2>nul
-                                            reg delete "HKCR\*\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
-                                            reg delete "HKCR\Directory\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
-                                            reg delete "HKCR\Drive\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
-                                        revertCode: |-
-                                            reg add "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}" /v "InprocServer32" /t REG_SZ /d "%ProgramFiles%\Windows Defender\shellext.dll" /f
-                                            reg add "HKCR\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /v "ThreadingModel" /t REG_SZ /d "Apartment" /f
-                                            reg add "HKCR\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /ve /t REG_SZ /d "%ProgramFiles%\Windows Defender\shellext.dll" /f
-                                            reg add "HKCR\*\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
-                                            reg add "HKCR\Directory\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
-                                            reg add "HKCR\Drive\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
+                                        call:
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: |-
+                                                        reg delete "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /va /f 2>nul
+                                                    revertCode: |-
+                                                        reg add "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}" /v "InprocServer32" /t REG_SZ /d "%ProgramFiles%\Windows Defender\shellext.dll" /f
+                                                        reg add "HKCR\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /v "ThreadingModel" /t REG_SZ /d "Apartment" /f
+                                                        reg add "HKCR\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /ve /t REG_SZ /d "%ProgramFiles%\Windows Defender\shellext.dll" /f
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg delete "HKCR\*\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
+                                                    revertCode: reg add "HKCR\*\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg delete "HKCR\Drive\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
+                                                    revertCode: reg add "HKCR\Drive\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg delete "HKCR\Directory\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
+                                                    revertCode: reg add "HKCR\Directory\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
                                     -
                                         name: Remove "Windows Security" icon from taskbar
                                         docs: |-
@@ -27828,6 +28425,8 @@ functions:
                 revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
     -
         name: DeleteRegistryKey
+        # Removes the entire registry key, including all subkeys and values.
+        # ❗ Use with caution. Consider `ClearRegistryValues` for less destructive operations.
         parameters:
             - name: keyPath     # Full path of the subkey or entry to be added.
             - name: replaceSid  # Replaces "$CURRENT_USER_SID" string in registry key with user SID.
@@ -29199,3 +29798,82 @@ functions:
                 function: DeleteRegistryKey
                 parameters:
                     keyPath: HKCR\Licenses\{{ $productGuid }}
+    -
+        name: ClearRegistryValues
+        # Deletes values in the specified registry key, preserving the key and subkeys.
+        # 💡 Use `DeleteRegistryKey` to remove the entire key structure.
+        parameters:
+            - name: keyPath # Full path of the subkey or entry where the value resides.
+            - name: deleteSubkeyValuesRecursively # Whether to recursively clear values in subkeys.
+              optional: true
+        docs: |-
+            This function deletes registry values within the specified registry key.
+
+            It can operate in two modes: non-recursive (default) and recursive:
+
+            1. Non-recursive mode (default):
+              - Deletes all values directly under the specified key
+              - Preserves the key itself and any subkeys
+              - Does not affect values in subkeys
+              - The behavior is equivalent to `reg delete /va "<path>" /f` [1].
+            2. Recursive mode:
+              - Deletes all values under the specified key
+              - Deletes all values in all subkeys recursively
+              - Preserves the key structure (keys and subkeys remain, only values are deleted)
+
+            [1]: https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/reg-delete#parameters "reg delete | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: >-
+                        Clear register values from "{{ $keyPath }}"
+                        {{ with $deleteSubkeyValuesRecursively }}(recursively){{ end }}
+            -
+                function: RunPowerShell
+                parameters:
+                    code: |-
+                        $rootRegistryKeyPath = '{{ $keyPath }}'
+                        function Clear-RegistryKeyValues {
+                            try {
+                                $currentRegistryKeyPath = $args[0]
+                                Write-Output "Attempting to clear registry values from `"$currentRegistryKeyPath`"."
+                                $formattedRegistryKeyPath = $currentRegistryKeyPath -replace '^([^\\]+)', '$1:'
+                                if (-Not (Test-Path $formattedRegistryKeyPath)) {
+                                    Write-Output "Skipping: Registry key not found: `"$formattedRegistryKeyPath`"."
+                                    return
+                                }
+                                $directValueNames=(Get-Item -Path $formattedRegistryKeyPath -ErrorAction Stop | Select-Object -ExpandProperty Property)
+                                if (-Not $directValueNames) {
+                                    Write-Output 'Skipping: Registry key has no direct values.'
+                                } else {
+                                    foreach ($valueName in $directValueNames) {
+                                        Remove-ItemProperty `
+                                            -Path $formattedRegistryKeyPath `
+                                            -Name $valueName `
+                                            -ErrorAction Stop
+                                        Write-Output "Successfully deleted value: `"$valueName`" from `"$formattedRegistryKeyPath`"."
+                                    }
+                                    Write-Output "Successfully cleared all direct values in `"$formattedRegistryKeyPath`"."
+                                }
+                                {{ with $deleteSubkeyValuesRecursively }}
+                                    Write-Output "Iterating subkeys recursively: `"$formattedRegistryKeyPath`"."
+                                    $subKeys = Get-ChildItem -Path $formattedRegistryKeyPath -ErrorAction Stop
+                                    if (!$subKeys) {
+                                        Write-Output 'Skipping: no subkeys available.'
+                                        return
+                                    }
+                                    foreach ($subKey in $subKeys) {
+                                        $subkeyName = $($subKey.PSChildName)
+                                        Write-Output "Processing subkey: `"$subkeyName`""
+                                        $subkeyPath = Join-Path -Path $currentRegistryKeyPath -ChildPath $subkeyName
+                                        Clear-RegistryKeyValues $subkeyPath
+                                    }
+                                    Write-Output "Successfully cleared all subkeys in `"$formattedRegistryKeyPath`"."
+                                {{ end }}
+                            } catch {
+                                Write-Error "Failed to clear registry values in `"$formattedRegistryKeyPath`". Error: $_"
+                                Exit 1
+                            }
+                        }
+                        Clear-RegistryKeyValues $rootRegistryKeyPath
