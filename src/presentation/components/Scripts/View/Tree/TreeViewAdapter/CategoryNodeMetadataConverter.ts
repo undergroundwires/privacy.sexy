@@ -1,14 +1,17 @@
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import type { Script } from '@/domain/Executables/Script/Script';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { Executable } from '@/domain/Executables/Executable';
 import { type NodeMetadata, NodeType } from '../NodeContent/NodeMetadata';
+import type { TreeNodeId } from '../TreeView/Node/TreeNode';
 
 export function parseAllCategories(collection: ICategoryCollection): NodeMetadata[] {
   return createCategoryNodes(collection.actions);
 }
 
 export function parseSingleCategory(
-  categoryId: number,
+  categoryId: ExecutableId,
   collection: ICategoryCollection,
 ): NodeMetadata[] {
   const category = collection.getCategory(categoryId);
@@ -16,27 +19,19 @@ export function parseSingleCategory(
   return tree;
 }
 
-export function getScriptNodeId(script: Script): string {
-  return script.id;
+export function createNodeIdForExecutable(executable: Executable): TreeNodeId {
+  return executable.executableId;
 }
 
-export function getScriptId(nodeId: string): string {
+export function createExecutableIdFromNodeId(nodeId: TreeNodeId): ExecutableId {
   return nodeId;
-}
-
-export function getCategoryId(nodeId: string): number {
-  return +nodeId;
-}
-
-export function getCategoryNodeId(category: Category): string {
-  return `${category.id}`;
 }
 
 function parseCategoryRecursively(
   parentCategory: Category,
 ): NodeMetadata[] {
   return [
-    ...createCategoryNodes(parentCategory.subCategories),
+    ...createCategoryNodes(parentCategory.subcategories),
     ...createScriptNodes(parentCategory.scripts),
   ];
 }
@@ -57,7 +52,7 @@ function convertCategoryToNode(
   children: readonly NodeMetadata[],
 ): NodeMetadata {
   return {
-    id: getCategoryNodeId(category),
+    executableId: createNodeIdForExecutable(category),
     type: NodeType.Category,
     text: category.name,
     children,
@@ -68,7 +63,7 @@ function convertCategoryToNode(
 
 function convertScriptToNode(script: Script): NodeMetadata {
   return {
-    id: getScriptNodeId(script),
+    executableId: createNodeIdForExecutable(script),
     type: NodeType.Script,
     text: script.name,
     children: [],

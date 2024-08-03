@@ -3207,7 +3207,7 @@ actions:
                                     parameters:
                                         appCapability: bluetoothSync
                     -
-                        category: Disable app access to voice activation
+                        category: Disable app voice activation
                         docs: |- # refactor-with-variable: Same • App Access Caution
                             This category safeguards against unauthorized app activation via voice commands.
 
@@ -15671,7 +15671,7 @@ actions:
                                                         data: '1'
                                                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             -
-                                                category: Minimize CPU usage during scans
+                                                category: Disable intensive CPU usage during Defender scans
                                                 children:
                                                     -
                                                         name: Minimize CPU usage during scans
@@ -15866,7 +15866,7 @@ actions:
                                                 category: Disable scanning archive files
                                                 children:
                                                     -
-                                                        name: Disable scanning archive files
+                                                        name: Disable Defender archive file scanning
                                                         docs:
                                                             - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableArchiveScanning
                                                             # Managing with MpPreference module:

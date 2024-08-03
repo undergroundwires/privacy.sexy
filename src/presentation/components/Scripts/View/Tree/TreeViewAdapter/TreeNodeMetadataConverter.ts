@@ -14,7 +14,7 @@ export function getNodeMetadata(
 
 export function convertToNodeInput(metadata: NodeMetadata): TreeInputNodeData {
   return {
-    id: metadata.id,
+    id: metadata.executableId,
     children: convertChildren(metadata.children, convertToNodeInput),
     data: metadata,
   };

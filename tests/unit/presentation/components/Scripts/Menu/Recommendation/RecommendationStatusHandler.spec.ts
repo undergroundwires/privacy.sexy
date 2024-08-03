@@ -145,7 +145,7 @@ describe('RecommendationStatusHandler', () => {
           return `total: ${testCase.selection.length}\n`
             + 'scripts:\n'
             + testCase.selection
-              .map((s) => `{ id: ${s.script.id}, level: ${s.script.level === undefined ? 'unknown' : RecommendationLevel[s.script.level]} }`)
+              .map((s) => `{ id: ${s.script.executableId}, level: ${s.script.level === undefined ? 'unknown' : RecommendationLevel[s.script.level]} }`)
               .join(' | ');
         }
       });

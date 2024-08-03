@@ -12,7 +12,7 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { getReverter } from './Reverter/ReverterFactory';
 import ToggleSwitch from './ToggleSwitch.vue';
 import type { Reverter } from './Reverter/Reverter';

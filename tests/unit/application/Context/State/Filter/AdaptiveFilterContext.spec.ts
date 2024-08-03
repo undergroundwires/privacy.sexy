@@ -8,7 +8,7 @@ import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
 import { FilterStrategyStub } from '@tests/unit/shared/Stubs/FilterStrategyStub';
 import type { FilterStrategy } from '@/application/Context/State/Filter/Strategy/FilterStrategy';
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 
 describe('AdaptiveFilterContext', () => {
   describe('clearFilter', () => {

@@ -1,5 +1,5 @@
 import type { IApplication } from '@/domain/IApplication';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { ProjectDetailsStub } from './ProjectDetailsStub';

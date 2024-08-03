@@ -1,11 +1,13 @@
 import { getEnumValues, assertInRange } from '@/application/Common/Enum';
-import { RecommendationLevel } from './Executables/Script/RecommendationLevel';
-import { OperatingSystem } from './OperatingSystem';
-import type { IEntity } from '../infrastructure/Entity/IEntity';
-import type { Category } from './Executables/Category/Category';
-import type { Script } from './Executables/Script/Script';
-import type { IScriptingDefinition } from './IScriptingDefinition';
+import { RecommendationLevel } from '../Executables/Script/RecommendationLevel';
+import { OperatingSystem } from '../OperatingSystem';
+import { validateCategoryCollection } from './Validation/CompositeCategoryCollectionValidator';
+import type { ExecutableId } from '../Executables/Identifiable';
+import type { Category } from '../Executables/Category/Category';
+import type { Script } from '../Executables/Script/Script';
+import type { IScriptingDefinition } from '../IScriptingDefinition';
 import type { ICategoryCollection } from './ICategoryCollection';
+import type { CategoryCollectionValidator } from './Validation/CategoryCollectionValidator';
 
 export class CategoryCollection implements ICategoryCollection {
   public readonly os: OperatingSystem;
@@ -22,22 +24,24 @@ export class CategoryCollection implements ICategoryCollection {
 
   constructor(
     parameters: CategoryCollectionInitParameters,
+    validate: CategoryCollectionValidator = validateCategoryCollection,
   ) {
     this.os = parameters.os;
     this.actions = parameters.actions;
     this.scripting = parameters.scripting;
 
     this.queryable = makeQueryable(this.actions);
-    assertInRange(this.os, OperatingSystem);
-    ensureValid(this.queryable);
-    ensureNoDuplicates(this.queryable.allCategories);
-    ensureNoDuplicates(this.queryable.allScripts);
+    validate({
+      allScripts: this.queryable.allScripts,
+      allCategories: this.queryable.allCategories,
+      operatingSystem: this.os,
+    });
   }
 
-  public getCategory(categoryId: number): Category {
-    const category = this.queryable.allCategories.find((c) => c.id === categoryId);
+  public getCategory(executableId: ExecutableId): Category {
+    const category = this.queryable.allCategories.find((c) => c.executableId === executableId);
     if (!category) {
-      throw new Error(`Missing category with ID: "${categoryId}"`);
+      throw new Error(`Missing category with ID: "${executableId}"`);
     }
     return category;
   }
@@ -48,10 +52,10 @@ export class CategoryCollection implements ICategoryCollection {
     return scripts ?? [];
   }
 
-  public getScript(scriptId: string): Script {
-    const script = this.queryable.allScripts.find((s) => s.id === scriptId);
+  public getScript(executableId: ExecutableId): Script {
+    const script = this.queryable.allScripts.find((s) => s.executableId === executableId);
     if (!script) {
-      throw new Error(`missing script: ${scriptId}`);
+      throw new Error(`Missing script: ${executableId}`);
     }
     return script;
   }
@@ -62,21 +66,6 @@ export class CategoryCollection implements ICategoryCollection {
 
   public getAllCategories(): Category[] {
     return this.queryable.allCategories;
-  }
-}
-
-function ensureNoDuplicates<TKey>(entities: ReadonlyArray<IEntity<TKey>>) {
-  const isUniqueInArray = (id: TKey, index: number, array: readonly TKey[]) => array
-    .findIndex((otherId) => otherId === id) !== index;
-  const duplicatedIds = entities
-    .map((entity) => entity.id)
-    .filter((id, index, array) => !isUniqueInArray(id, index, array))
-    .filter(isUniqueInArray);
-  if (duplicatedIds.length > 0) {
-    const duplicatedIdsText = duplicatedIds.map((id) => `"${id}"`).join(',');
-    throw new Error(
-      `Duplicate entities are detected with following id(s): ${duplicatedIdsText}`,
-    );
   }
 }
 
@@ -92,35 +81,12 @@ interface QueryableCollection {
   readonly scriptsByLevel: Map<RecommendationLevel, readonly Script[]>;
 }
 
-function ensureValid(application: QueryableCollection) {
-  ensureValidCategories(application.allCategories);
-  ensureValidScripts(application.allScripts);
-}
-
-function ensureValidCategories(allCategories: readonly Category[]) {
-  if (!allCategories.length) {
-    throw new Error('must consist of at least one category');
-  }
-}
-
-function ensureValidScripts(allScripts: readonly Script[]) {
-  if (!allScripts.length) {
-    throw new Error('must consist of at least one script');
-  }
-  const missingRecommendationLevels = getEnumValues(RecommendationLevel)
-    .filter((level) => allScripts.every((script) => script.level !== level));
-  if (missingRecommendationLevels.length > 0) {
-    throw new Error('none of the scripts are recommended as'
-      + ` "${missingRecommendationLevels.map((level) => RecommendationLevel[level]).join(', "')}".`);
-  }
-}
-
-function flattenApplication(
+function flattenCategoryHierarchy(
   categories: ReadonlyArray<Category>,
 ): [Category[], Script[]] {
   const [subCategories, subScripts] = (categories || [])
     // Parse children
-    .map((category) => flattenApplication(category.subCategories))
+    .map((category) => flattenCategoryHierarchy(category.subcategories))
     // Flatten results
     .reduce(([previousCategories, previousScripts], [currentCategories, currentScripts]) => {
       return [
@@ -143,7 +109,7 @@ function flattenApplication(
 function makeQueryable(
   actions: ReadonlyArray<Category>,
 ): QueryableCollection {
-  const flattened = flattenApplication(actions);
+  const flattened = flattenCategoryHierarchy(actions);
   return {
     allCategories: flattened[0],
     allScripts: flattened[1],

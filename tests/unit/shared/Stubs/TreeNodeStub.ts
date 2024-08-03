@@ -1,6 +1,6 @@
 import type { HierarchyAccess } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/Hierarchy/HierarchyAccess';
 import type { TreeNodeStateAccess } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
-import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { TreeNode, TreeNodeId } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { NodeMetadataStub } from './NodeMetadataStub';
 import { HierarchyAccessStub } from './HierarchyAccessStub';
 import { TreeNodeStateAccessStub } from './TreeNodeStateAccessStub';
@@ -39,7 +39,7 @@ export class TreeNodeStub implements TreeNode {
     return this;
   }
 
-  public withId(id: string): this {
+  public withId(id: TreeNodeId): this {
     this.id = id;
     return this;
   }

@@ -1,6 +1,6 @@
 import type { IApplication } from '@/domain/IApplication';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { assertInRange } from '@/application/Common/Enum';
 import { CategoryCollectionState } from './State/CategoryCollectionState';

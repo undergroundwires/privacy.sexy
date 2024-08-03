@@ -5,7 +5,7 @@ import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { getEnumValues } from '@/application/Common/Enum';
-import { CategoryCollection } from '@/domain/CategoryCollection';
+import { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
@@ -20,10 +20,10 @@ describe('CategoryCollection', () => {
       );
       const toIgnore = new ScriptStub('script-to-ignore').withLevel(undefined);
       for (const currentLevel of recommendationLevels) {
-        const category = new CategoryStub(0)
+        const category = new CategoryStub('parent-action')
           .withScripts(...scriptsWithLevels)
           .withScript(toIgnore);
-        const sut = new CategoryCollectionBuilder()
+        const sut = new TestContext()
           .withActions([category])
           .construct();
         // act
@@ -40,12 +40,12 @@ describe('CategoryCollection', () => {
         new ScriptStub('S2').withLevel(level),
       ];
       const actions = [
-        new CategoryStub(3).withScripts(
+        new CategoryStub('parent-category').withScripts(
           ...expected,
           new ScriptStub('S3').withLevel(RecommendationLevel.Strict),
         ),
       ];
-      const sut = new CategoryCollectionBuilder()
+      const sut = new TestContext()
         .withActions(actions)
         .construct();
       // act
@@ -61,9 +61,9 @@ describe('CategoryCollection', () => {
         new ScriptStub('S2').withLevel(RecommendationLevel.Strict),
       ];
       const actions = [
-        new CategoryStub(3).withScripts(...expected),
+        new CategoryStub('parent-category').withScripts(...expected),
       ];
-      const sut = new CategoryCollectionBuilder()
+      const sut = new TestContext()
         .withActions(actions)
         .construct();
       // act
@@ -74,7 +74,7 @@ describe('CategoryCollection', () => {
     describe('throws when given invalid level', () => {
       new EnumRangeTestRunner<RecommendationLevel>((level) => {
         // arrange
-        const sut = new CategoryCollectionBuilder()
+        const sut = new TestContext()
           .construct();
         // act
         sut.getScriptsByLevel(level);
@@ -84,93 +84,23 @@ describe('CategoryCollection', () => {
         .testValidValueDoesNotThrow(RecommendationLevel.Standard);
     });
   });
-  describe('actions', () => {
-    it('cannot construct without actions', () => {
-      // arrange
-      const categories = [];
-      // act
-      function construct() {
-        new CategoryCollectionBuilder()
-          .withActions(categories)
-          .construct();
-      }
-      // assert
-      expect(construct).to.throw('must consist of at least one category');
-    });
-    it('cannot construct without scripts', () => {
-      // arrange
-      const categories = [
-        new CategoryStub(3),
-        new CategoryStub(2),
-      ];
-      // act
-      function construct() {
-        new CategoryCollectionBuilder()
-          .withActions(categories)
-          .construct();
-      }
-      // assert
-      expect(construct).to.throw('must consist of at least one script');
-    });
-    describe('cannot construct without any recommended scripts', () => {
-      describe('single missing', () => {
-        // arrange
-        const recommendationLevels = getEnumValues(RecommendationLevel);
-        for (const missingLevel of recommendationLevels) {
-          it(`when "${RecommendationLevel[missingLevel]}" is missing`, () => {
-            const expectedError = `none of the scripts are recommended as "${RecommendationLevel[missingLevel]}".`;
-            const otherLevels = recommendationLevels.filter((level) => level !== missingLevel);
-            const categories = otherLevels.map(
-              (level, index) => new CategoryStub(index)
-                .withScript(
-                  new ScriptStub(`Script${index}`).withLevel(level),
-                ),
-            );
-            // act
-            const construct = () => new CategoryCollectionBuilder()
-              .withActions(categories)
-              .construct();
-            // assert
-            expect(construct).to.throw(expectedError);
-          });
-        }
-      });
-      it('multiple are missing', () => {
-        // arrange
-        const expectedError = 'none of the scripts are recommended as '
-          + `"${RecommendationLevel[RecommendationLevel.Standard]}, "${RecommendationLevel[RecommendationLevel.Strict]}".`;
-        const categories = [
-          new CategoryStub(0)
-            .withScript(
-              new ScriptStub(`Script${0}`).withLevel(undefined),
-            ),
-        ];
-        // act
-        const construct = () => new CategoryCollectionBuilder()
-          .withActions(categories)
-          .construct();
-        // assert
-        expect(construct).to.throw(expectedError);
-      });
-    });
-  });
   describe('totalScripts', () => {
     it('returns total of initial scripts', () => {
       // arrange
       const categories = [
-        new CategoryStub(1).withScripts(
+        new CategoryStub('category-1').withScripts(
           new ScriptStub('S1').withLevel(RecommendationLevel.Standard),
         ),
-        new CategoryStub(2).withScripts(
+        new CategoryStub('category-2').withScripts(
           new ScriptStub('S2'),
           new ScriptStub('S3').withLevel(RecommendationLevel.Strict),
         ),
-        new CategoryStub(3).withCategories(
-          new CategoryStub(4).withScripts(new ScriptStub('S4')),
+        new CategoryStub('category-3').withCategories(
+          new CategoryStub('category-3-subcategory-1').withScripts(new ScriptStub('S4')),
         ),
       ];
       // act
-      const sut = new CategoryCollectionBuilder()
+      const sut = new TestContext()
         .withActions(categories)
         .construct();
       // assert
@@ -182,12 +112,12 @@ describe('CategoryCollection', () => {
       // arrange
       const expected = 4;
       const categories = [
-        new CategoryStub(1).withScripts(new ScriptStub('S1').withLevel(RecommendationLevel.Strict)),
-        new CategoryStub(2).withScripts(new ScriptStub('S2'), new ScriptStub('S3')),
-        new CategoryStub(3).withCategories(new CategoryStub(4).withScripts(new ScriptStub('S4'))),
+        new CategoryStub('category-1').withScripts(new ScriptStub('S1').withLevel(RecommendationLevel.Strict)),
+        new CategoryStub('category-2').withScripts(new ScriptStub('S2'), new ScriptStub('S3')),
+        new CategoryStub('category-3').withCategories(new CategoryStub('category-3-subcategory-1').withScripts(new ScriptStub('S4'))),
       ];
       // act
-      const sut = new CategoryCollectionBuilder()
+      const sut = new TestContext()
         .withActions(categories)
         .construct();
       // assert
@@ -199,20 +129,11 @@ describe('CategoryCollection', () => {
       // arrange
       const expected = OperatingSystem.macOS;
       // act
-      const sut = new CategoryCollectionBuilder()
+      const sut = new TestContext()
         .withOs(expected)
         .construct();
       // assert
       expect(sut.os).to.deep.equal(expected);
-    });
-    describe('throws when invalid', () => {
-      // act
-      const act = (os: OperatingSystem) => new CategoryCollectionBuilder()
-        .withOs(os)
-        .construct();
-      // assert
-      new EnumRangeTestRunner(act)
-        .testOutOfRangeThrows();
     });
   });
   describe('scriptingDefinition', () => {
@@ -220,7 +141,7 @@ describe('CategoryCollection', () => {
       // arrange
       const expected = getValidScriptingDefinition();
       // act
-      const sut = new CategoryCollectionBuilder()
+      const sut = new TestContext()
         .withScripting(expected)
         .construct();
       // assert
@@ -230,25 +151,25 @@ describe('CategoryCollection', () => {
   describe('getCategory', () => {
     it('throws if category is not found', () => {
       // arrange
-      const categoryId = 123;
-      const expectedError = `Missing category with ID: "${categoryId}"`;
-      const collection = new CategoryCollectionBuilder()
-        .withActions([new CategoryStub(456).withMandatoryScripts()])
+      const missingCategoryId = 'missing-category-id';
+      const expectedError = `Missing category with ID: "${missingCategoryId}"`;
+      const collection = new TestContext()
+        .withActions([new CategoryStub(`different than ${missingCategoryId}`).withMandatoryScripts()])
         .construct();
       // act
-      const act = () => collection.getCategory(categoryId);
+      const act = () => collection.getCategory(missingCategoryId);
       // assert
       expect(act).to.throw(expectedError);
     });
     it('finds correct category', () => {
       // arrange
-      const categoryId = 123;
-      const expectedCategory = new CategoryStub(categoryId).withMandatoryScripts();
-      const collection = new CategoryCollectionBuilder()
+      const existingCategoryId = 'expected-action-category-id';
+      const expectedCategory = new CategoryStub(existingCategoryId).withMandatoryScripts();
+      const collection = new TestContext()
         .withActions([expectedCategory])
         .construct();
       // act
-      const actualCategory = collection.getCategory(categoryId);
+      const actualCategory = collection.getCategory(existingCategoryId);
       // assert
       expect(actualCategory).to.equal(expectedCategory);
     });
@@ -257,9 +178,9 @@ describe('CategoryCollection', () => {
     it('throws if script is not found', () => {
       // arrange
       const scriptId = 'missingScript';
-      const expectedError = `missing script: ${scriptId}`;
-      const collection = new CategoryCollectionBuilder()
-        .withActions([new CategoryStub(456).withMandatoryScripts()])
+      const expectedError = `Missing script: ${scriptId}`;
+      const collection = new TestContext()
+        .withActions([new CategoryStub('parent-action').withMandatoryScripts()])
         .construct();
       // act
       const act = () => collection.getScript(scriptId);
@@ -270,10 +191,10 @@ describe('CategoryCollection', () => {
       // arrange
       const scriptId = 'existingScript';
       const expectedScript = new ScriptStub(scriptId);
-      const parentCategory = new CategoryStub(123)
+      const parentCategory = new CategoryStub('parent-action')
         .withMandatoryScripts()
         .withScript(expectedScript);
-      const collection = new CategoryCollectionBuilder()
+      const collection = new TestContext()
         .withActions([parentCategory])
         .construct();
       // act
@@ -293,11 +214,11 @@ function getValidScriptingDefinition(): IScriptingDefinition {
   };
 }
 
-class CategoryCollectionBuilder {
+class TestContext {
   private os = OperatingSystem.Windows;
 
   private actions: readonly Category[] = [
-    new CategoryStub(1).withMandatoryScripts(),
+    new CategoryStub(`[${TestContext.name}]-action-1`).withMandatoryScripts(),
   ];
 
   private scriptingDefinition: IScriptingDefinition = getValidScriptingDefinition();

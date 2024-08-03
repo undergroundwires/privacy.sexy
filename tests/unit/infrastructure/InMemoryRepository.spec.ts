@@ -1,125 +1,180 @@
 import { describe, it, expect } from 'vitest';
-import { NumericEntityStub } from '@tests/unit/shared/Stubs/NumericEntityStub';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
+import { RepositoryEntityStub } from '@tests/unit/shared/Stubs/RepositoryEntityStub';
+import type { RepositoryEntity, RepositoryEntityId } from '@/application/Repository/RepositoryEntity';
 
 describe('InMemoryRepository', () => {
   describe('exists', () => {
-    const sut = new InMemoryRepository<number, NumericEntityStub>(
-      [new NumericEntityStub(1), new NumericEntityStub(2), new NumericEntityStub(3)],
-    );
-
-    describe('item exists', () => {
-      const actual = sut.exists(1);
-      it('returns true', () => expect(actual).to.be.true);
+    it('returns true when item exists', () => {
+      // arrange
+      const expectedExistence = true;
+      const existingItemId: RepositoryEntityId = 'existing-entity-id';
+      const items: readonly RepositoryEntity[] = [
+        new RepositoryEntityStub('unrelated-entity-1'),
+        new RepositoryEntityStub(existingItemId),
+        new RepositoryEntityStub('unrelated-entity-2'),
+      ];
+      const sut = new InMemoryRepository(items);
+      // act
+      const actualExistence = sut.exists(existingItemId);
+      // assert
+      expect(actualExistence).to.equal(expectedExistence);
     });
-    describe('item does not exist', () => {
-      const actual = sut.exists(99);
-      it('returns false', () => expect(actual).to.be.false);
+    it('returns false when item does not exist', () => {
+      // arrange
+      const expectedExistence = false;
+      const absentItemId: RepositoryEntityId = 'id-that-does-not-belong';
+      const items: readonly RepositoryEntity[] = [
+        new RepositoryEntityStub('unrelated-entity-1'),
+        new RepositoryEntityStub('unrelated-entity-2'),
+      ];
+      const sut = new InMemoryRepository(items);
+      // act
+      const actualExistence = sut.exists(absentItemId);
+      // assert
+      expect(actualExistence).to.equal(expectedExistence);
     });
   });
-  it('getItems gets initial items', () => {
-    // arrange
-    const expected = [
-      new NumericEntityStub(1), new NumericEntityStub(2),
-      new NumericEntityStub(3), new NumericEntityStub(4),
-    ];
-
-    // act
-    const sut = new InMemoryRepository<number, NumericEntityStub>(expected);
-    const actual = sut.getItems();
-
-    // assert
-    expect(actual).to.deep.equal(expected);
+  describe('getItems', () => {
+    it('returns initial items', () => {
+      // arrange
+      const expectedItems: readonly RepositoryEntity[] = [
+        new RepositoryEntityStub('expected-item-1'),
+        new RepositoryEntityStub('expected-item-2'),
+        new RepositoryEntityStub('expected-item-3'),
+      ];
+      // act
+      const sut = new InMemoryRepository(expectedItems);
+      const actualItems = sut.getItems();
+      // assert
+      expect(actualItems).to.have.lengthOf(expectedItems.length);
+      expect(actualItems).to.deep.members(expectedItems);
+    });
   });
   describe('addItem', () => {
-    it('adds', () => {
+    it('increases length', () => {
       // arrange
-      const sut = new InMemoryRepository<number, NumericEntityStub>();
-      const expected = {
-        length: 1,
-        item: new NumericEntityStub(1),
-      };
+      const sut = new InMemoryRepository<RepositoryEntity>();
+      const expectedLength = 1;
 
       // act
-      sut.addItem(expected.item);
-      const actual = {
-        length: sut.length,
-        item: sut.getItems()[0],
-      };
+      sut.addItem(new RepositoryEntityStub('unrelated-id'));
 
       // assert
-      expect(actual.length).to.equal(expected.length);
-      expect(actual.item).to.deep.equal(expected.item);
+      const actualLength = sut.length;
+      expect(actualLength).to.equal(expectedLength);
+    });
+    it('adds as item', () => {
+      // arrange
+      const sut = new InMemoryRepository<RepositoryEntity>();
+      const expectedItem = new RepositoryEntityStub('expected-entity-id');
+
+      // act
+      sut.addItem(expectedItem);
+
+      // assert
+      const actualItems = sut.getItems();
+      expect(actualItems).to.have.lengthOf(1);
+      expect(actualItems).to.deep.include(expectedItem);
     });
   });
-  it('removeItem removes', () => {
-    // arrange
-    const initialItems = [
-      new NumericEntityStub(1), new NumericEntityStub(2),
-      new NumericEntityStub(3), new NumericEntityStub(4),
-    ];
-    const idToDelete = 3;
-    const expected = {
-      length: 3,
-      items: [new NumericEntityStub(1), new NumericEntityStub(2), new NumericEntityStub(4)],
-    };
-    const sut = new InMemoryRepository<number, NumericEntityStub>(initialItems);
-
-    // act
-    sut.removeItem(idToDelete);
-    const actual = {
-      length: sut.length,
-      items: sut.getItems(),
-    };
-
-    // assert
-    expect(actual.length).to.equal(expected.length);
-    expect(actual.items).to.deep.equal(expected.items);
+  describe('removeItem', () => {
+    it('decreases length', () => {
+      // arrange
+      const itemIdToDelete: RepositoryEntityId = 'entity-id-to-be-deleted';
+      const initialItems: readonly RepositoryEntity[] = [
+        new RepositoryEntityStub('entity-to-be-retained-1'),
+        new RepositoryEntityStub(itemIdToDelete),
+        new RepositoryEntityStub('entity-to-be-retained-2'),
+      ];
+      const expectedLength = 2;
+      const sut = new InMemoryRepository<RepositoryEntity>(initialItems);
+      // act
+      sut.removeItem(itemIdToDelete);
+      // assert
+      const actualLength = sut.length;
+      expect(actualLength).to.equal(expectedLength);
+    });
+    it('removes from items', () => {
+      // arrange
+      const expectedItems: readonly RepositoryEntity[] = [
+        new RepositoryEntityStub('entity-to-be-retained-1'),
+        new RepositoryEntityStub('entity-to-be-retained-2'),
+      ];
+      const itemIdToDelete: RepositoryEntityId = 'entity-id-to-be-deleted';
+      const initialItems: readonly RepositoryEntity[] = [
+        ...expectedItems,
+        new RepositoryEntityStub(itemIdToDelete),
+      ];
+      const sut = new InMemoryRepository<RepositoryEntity>(initialItems);
+      // act
+      sut.removeItem(itemIdToDelete);
+      // assert
+      const actualItems = sut.getItems();
+      expect(actualItems).to.have.lengthOf(expectedItems.length);
+      expect(actualItems).to.have.deep.members(expectedItems);
+    });
   });
   describe('addOrUpdateItem', () => {
     it('adds when item does not exist', () => {
       // arrange
-      const initialItems = [new NumericEntityStub(1), new NumericEntityStub(2)];
-      const newItem = new NumericEntityStub(3);
-      const expected = [...initialItems, newItem];
-      const sut = new InMemoryRepository<number, NumericEntityStub>(initialItems);
+      const initialItems: readonly RepositoryEntity[] = [
+        new RepositoryEntityStub('existing-item-1'),
+        new RepositoryEntityStub('existing-item-2'),
+      ];
+      const newItem = new RepositoryEntityStub('new-item');
+      const expectedItems: readonly RepositoryEntity[] = [
+        ...initialItems,
+        newItem,
+      ];
+      const sut = new InMemoryRepository(initialItems);
       // act
       sut.addOrUpdateItem(newItem);
       // assert
-      const actual = sut.getItems();
-      expect(actual).to.deep.equal(expected);
+      const actualItems = sut.getItems();
+      expect(actualItems).to.have.lengthOf(expectedItems.length);
+      expect(actualItems).to.have.members(expectedItems);
     });
     it('updates when item exists', () => {
       // arrange
-      const initialItems = [new NumericEntityStub(1).withCustomProperty('bca')];
-      const updatedItem = new NumericEntityStub(1).withCustomProperty('abc');
-      const expected = [updatedItem];
-      const sut = new InMemoryRepository<number, NumericEntityStub>(initialItems);
+      const itemId: RepositoryEntityId = 'same-item-id';
+      const initialItems: readonly RepositoryEntity[] = [
+        new RepositoryEntityStub(itemId)
+          .withCustomPropertyValue('initial-property-value'),
+      ];
+      const updatedItem = new RepositoryEntityStub(itemId)
+        .withCustomPropertyValue('changed-property-value');
+      const sut = new InMemoryRepository(initialItems);
       // act
       sut.addOrUpdateItem(updatedItem);
       // assert
-      const actual = sut.getItems();
-      expect(actual).to.deep.equal(expected);
+      const actualItems = sut.getItems();
+      expect(actualItems).to.have.lengthOf(1);
+      expect(actualItems[0]).to.equal(updatedItem);
     });
   });
   describe('getById', () => {
     it('returns entity if it exists', () => {
       // arrange
-      const expected = new NumericEntityStub(1).withCustomProperty('bca');
-      const sut = new InMemoryRepository<number, NumericEntityStub>([
-        expected, new NumericEntityStub(2).withCustomProperty('bca'),
-        new NumericEntityStub(3).withCustomProperty('bca'), new NumericEntityStub(4).withCustomProperty('bca'),
-      ]);
+      const existingId: RepositoryEntityId = 'existing-item-id';
+      const expectedItem = new RepositoryEntityStub(existingId)
+        .withCustomPropertyValue('bca');
+      const initialItems: readonly RepositoryEntity[] = [
+        new RepositoryEntityStub('unrelated-entity'),
+        expectedItem,
+        new RepositoryEntityStub('different-id-same-property').withCustomPropertyValue('bca'),
+      ];
+      const sut = new InMemoryRepository(initialItems);
       // act
-      const actual = sut.getById(expected.id);
+      const actualItem = sut.getById(expectedItem.id);
       // assert
-      expect(actual).to.deep.equal(expected);
+      expect(actualItem).to.deep.equal(expectedItem);
     });
     it('throws if item does not exist', () => {
       // arrange
-      const id = 31;
+      const id: RepositoryEntityId = 'id-that-does-not-exist';
       const expectedError = `missing item: ${id}`;
-      const sut = new InMemoryRepository<number, NumericEntityStub>([]);
+      const sut = new InMemoryRepository<RepositoryEntityStub>();
       // act
       const act = () => sut.getById(id);
       // assert

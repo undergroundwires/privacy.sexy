@@ -1,15 +1,15 @@
-import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { SelectedScriptStub } from './SelectedScriptStub';
 
-export class ScriptStub extends BaseEntity<string> implements Script {
-  public name = `name${this.id}`;
+export class ScriptStub implements Script {
+  public name = `name${this.executableId}`;
 
   public code: ScriptCode = {
-    execute: `REM execute-code (${this.id})`,
-    revert: `REM revert-code (${this.id})`,
+    execute: `REM execute-code (${this.executableId})`,
+    revert: `REM revert-code (${this.executableId})`,
   };
 
   public docs: readonly string[] = new Array<string>();
@@ -18,9 +18,7 @@ export class ScriptStub extends BaseEntity<string> implements Script {
 
   private isReversible: boolean | undefined = undefined;
 
-  constructor(public readonly id: string) {
-    super(id);
-  }
+  constructor(public readonly executableId: ExecutableId) { }
 
   public canRevert(): boolean {
     if (this.isReversible === undefined) {

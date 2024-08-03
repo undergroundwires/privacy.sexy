@@ -3,15 +3,13 @@ import type {
 } from '@/application/collections/';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import type { Category } from '@/domain/Executables/Category/Category';
-import { CollectionCategory } from '@/domain/Executables/Category/CollectionCategory';
 import type { Script } from '@/domain/Executables/Script/Script';
+import { createCategory, type CategoryFactory } from '@/domain/Executables/Category/CategoryFactory';
 import { parseDocs, type DocsParser } from './DocumentationParser';
 import { parseScript, type ScriptParser } from './Script/ScriptParser';
 import { createExecutableDataValidator, type ExecutableValidator, type ExecutableValidatorFactory } from './Validation/ExecutableValidator';
 import { ExecutableType } from './Validation/ExecutableType';
 import type { CategoryCollectionSpecificUtilities } from './CategoryCollectionSpecificUtilities';
-
-let categoryIdCounter = 0;
 
 export const parseCategory: CategoryParser = (
   category: CategoryData,
@@ -59,7 +57,7 @@ function parseCategoryRecursively(
   }
   try {
     return context.categoryUtilities.createCategory({
-      id: categoryIdCounter++,
+      executableId: context.categoryData.category, // Pseudo-ID for uniqueness until real ID support
       name: context.categoryData.category,
       docs: context.categoryUtilities.parseDocs(context.categoryData),
       subcategories: children.subcategories,
@@ -166,10 +164,6 @@ function hasProperty(
   return Object.prototype.hasOwnProperty.call(object, propertyName);
 }
 
-export type CategoryFactory = (
-  ...parameters: ConstructorParameters<typeof CollectionCategory>
-) => Category;
-
 interface CategoryParserUtilities {
   readonly createCategory: CategoryFactory;
   readonly wrapError: ErrorWithContextWrapper;
@@ -179,7 +173,7 @@ interface CategoryParserUtilities {
 }
 
 const DefaultCategoryParserUtilities: CategoryParserUtilities = {
-  createCategory: (...parameters) => new CollectionCategory(...parameters),
+  createCategory,
   wrapError: wrapErrorWithAdditionalContext,
   createValidator: createExecutableDataValidator,
   parseScript,

@@ -1,4 +1,4 @@
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import type { FilterResult } from '../Result/FilterResult';
 
 export interface FilterStrategy {

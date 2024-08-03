@@ -2,6 +2,7 @@ import type { Script } from '@/domain/Executables/Script/Script';
 import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import type { ICodeChangedEvent } from './ICodeChangedEvent';
 
 export class CodeChangedEvent implements ICodeChangedEvent {
@@ -37,12 +38,12 @@ export class CodeChangedEvent implements ICodeChangedEvent {
   }
 
   public getScriptPositionInCode(script: Script): ICodePosition {
-    return this.getPositionById(script.id);
+    return this.getPositionById(script.executableId);
   }
 
-  private getPositionById(scriptId: string): ICodePosition {
+  private getPositionById(scriptId: ExecutableId): ICodePosition {
     const position = [...this.scripts.entries()]
-      .filter(([s]) => s.id === scriptId)
+      .filter(([s]) => s.executableId === scriptId)
       .map(([, pos]) => pos)
       .at(0);
     if (!position) {

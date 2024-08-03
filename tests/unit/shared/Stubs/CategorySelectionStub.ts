@@ -1,11 +1,12 @@
 import type { CategorySelection } from '@/application/Context/State/Selection/Category/CategorySelection';
 import type { CategorySelectionChangeCommand } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class CategorySelectionStub
   extends StubWithObservableMethodCalls<CategorySelection>
   implements CategorySelection {
-  public isCategorySelected(categoryId: number, revert: boolean): boolean {
+  public isCategorySelected(categoryId: ExecutableId, revert: boolean): boolean {
     const call = this.callHistory.find(
       (c) => c.methodName === 'processChanges'
       && c.args[0].changes.some((change) => (

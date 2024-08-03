@@ -66,7 +66,10 @@ describe('CategoryCollectionParser', () => {
           getInitParameters,
         } = createCategoryCollectionFactorySpy();
         const actionsData = [getCategoryStub('test1'), getCategoryStub('test2')];
-        const expectedActions = [new CategoryStub(1), new CategoryStub(2)];
+        const expectedActions = [
+          new CategoryStub('expected-action-1'),
+          new CategoryStub('expected-action-2'),
+        ];
         const categoryParserStub = new CategoryParserStub()
           .withConfiguredParseResult(actionsData[0], expectedActions[0])
           .withConfiguredParseResult(actionsData[1], expectedActions[1]);
