@@ -12157,7 +12157,7 @@ actions:
                                     function: EnableTLSProtocol
                                     parameters:
                                         protocolName: TLS 1.3
-                                        minimumWindowsVersion: Windows11
+                                        minimumWindowsVersion: Windows11-FirstRelease
                             -
                                 name: Enable secure connections for legacy .NET apps
                                 recommend: strict # Default since .NET 4.6 and above, but can still break legacy apps
@@ -24167,11 +24167,9 @@ actions:
 
                             [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
                         call:
-                            function: RunPowerShellWithWindowsVersionSpecificSetup
+                            function: RunPowerShellWithWindowsVersionConstraints
                             parameters:
-                                windows11SpecificSetupCode: |-
-                                    Write-Host 'Skipping, no action needed on Windows 11.'
-                                    Exit 0
+                                maximumWindowsVersion: Windows10-MostRecent
                                 code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f 2>$null
                                 revertCode: |-
                                     if([Environment]::Is64BitOperatingSystem) {
@@ -25722,7 +25720,7 @@ actions:
                                 function: ShowMessage
                                 parameters:
                                     message: Disabling Network settings on Windows 10 is known to break Network settings.
-                                    ignoreWindows11: 'true'
+                                    maximumWindowsVersion: Windows10-MostRecent
                                     warn: 'true'
                             -
                                 function: DisableService
@@ -26856,17 +26854,17 @@ functions:
             - name: code                    # Batchfile code to execute with TrustedInstaller privileges.
             - name: revertCode              # Optional batchfile code to revert changes. This code also runs with TrustedInstaller privileges.
               optional: true
-            - name: minimumWindowsVersion   # Optionally specify the minimum Windows version required to execute the script.
-              optional: true                # Allowed values: Windows11, Windows10-1607
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         docs: |-
             This function executes PowerShell code with TrustedInstaller privileges, which may be required for performing system-level tasks
             that require the highest permission levels.
             This function is designed to handle tasks that cannot be completed under normal user or administrator privileges,
             such as modifying protected registry keys or system files.
         call:
-            function: RunPowerShellWithMinimumWindowsVersion
+            function: RunPowerShellWithWindowsVersionConstraints
             parameters:
-                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}.{{ end }}'
+                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                 # PowerShell commands (`Unregister-ScheduledTask` and `Get-ScheduledTask`) sometimes fail to find existing tasks.
                 #   Seen e.g. on Windows 11 when reverting scripts after executing them and reboot.
                 #   They are seen to throw different exceptions:
@@ -27545,27 +27543,19 @@ functions:
         name: ShowMessage
         parameters:
             - name: message
-            - name: ignoreWindows11 # Ignores warning message on Windows 11, allowed values: true | false, default: false
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
-            - name: ignoreWindows10 # Ignores warning message on Windows 10, allowed values: true | false, default: false
+            - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
             - name: showOnRevert
               optional: true
             - name: warn
               optional: true
         call:
-            function: RunPowerShellWithWindowsVersionSpecificSetup
+            function: RunPowerShellWithWindowsVersionConstraints
             parameters:
-                windows10SpecificSetupCode: |-
-                    $ignoreWindows10 = {{ with $ignoreWindows10 }} $true # {{ end }} $false
-                    if ($ignoreWindows10) {
-                        Exit 0 # Skip
-                    }
-                windows11SpecificSetupCode: |-
-                    $ignoreWindows11 = {{ with $ignoreWindows11 }} $true # {{ end }} $false
-                    if ($ignoreWindows11) {
-                        Exit 0 # Skip
-                    }
+                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                 code: |-
                     $message = '{{ $message }}'
                     $warn = {{ with $warn }} $true # {{ end }} $false
@@ -28938,16 +28928,16 @@ functions:
             - name: data                    # Data for the new registry entry.
             - name: deleteOnRevert          # Set to 'true' to revert to the initial state by deleting the registry key.
               optional: true
-            - name: minimumWindowsVersion   # Ensures the script executes only on specified Windows versions or newer.
-              optional: true                # Allowed values: Windows11, Windows10-1607
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         docs: |-
             This function creates or modifies a registry entry at a specified path.
 
             > 💡 Use this function for a consistent approach instead of directly using `reg add` or `reg delete` commands.
         call:
-            function: RunPowerShellWithMinimumWindowsVersion
+            function: RunPowerShellWithWindowsVersionConstraints
             parameters:
-                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}.{{ end }}'
+                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                 code: |-
                     reg add '{{ $keyPath }}' `
                         /v '{{ $valueName }}' `
@@ -28964,8 +28954,8 @@ functions:
         name: EnableTLSProtocol
         parameters:
             - name: protocolName
-            - name: minimumWindowsVersion   # Defines the minimum Windows version required to support this protocol. The script will not execute on unsupported versions.
-              optional: true                # Allowed values: Windows11, Windows10-1607
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         docs: |-
             This function enables of specific TLS protocols by modifying registry entries at
             `HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols` [1] [2].
@@ -29678,67 +29668,53 @@ functions:
                 data: "{{ $dwordData }}"
                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since EdgeUpdate ≥ 1.3.187.41
     -
-        name: RunPowerShellWithWindowsVersionSpecificSetup
-        # 💡 Purpose:
-        #   Executes PowerShell code conditionally based on the Windows version.
-        #   This function allows for running different PowerShell commands specifically tailored
-        #   for different Windows versions, alongside universal PowerShell code.
-        parameters:
-            - name: code                        # PowerShell code executed on all Windows versions
-            - name: revertCode                  # Optional PowerShell code to revert changes on all Windows versions
-              optional: true
-            - name: windows10SpecificSetupCode  # Optional PowerShell code executed only on Windows 10 before the main code
-              optional: true
-            - name: windows11SpecificSetupCode  # Optional PowerShell code executed only on Windows 11 before the main code
-              optional: true
-        call:
-            function: RunPowerShellWithSetup
-            parameters:
-                setupCode: |-
-                    {{ with $windows11SpecificSetupCode }}
-                        $osVersion = [System.Environment]::OSVersion.Version
-                        function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
-                        if (Test-IsWindows11) {
-                            {{ . }}
-                        }
-                    {{ end }}
-                    {{ with $windows10SpecificSetupCode }}
-                        $osVersion = [System.Environment]::OSVersion.Version
-                        function Test-IsWindows10 { ($osVersion.Major -eq 10) -and ($osVersion.Build -lt 22000) }
-                        if (Test-IsWindows10) {
-                            {{ . }}
-                        }
-                    {{ end }}
-                code: '{{ $code }}'
-                revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
-    -
-        name: RunPowerShellWithMinimumWindowsVersion
+        name: RunPowerShellWithWindowsVersionConstraints
         docs: |-
-            This function executes PowerShell code on Windows systems that meet a specified minimum version requirement.
-            It ensures the script runs only on the specified Windows versions or newer.
+            This function executes PowerShell code on Windows systems that meet specified Windows version requirements.
+            It ensures the script runs only on Windows versions within the specified range.
         parameters:
             - name: code                    # The main PowerShell code to execute.
             - name: revertCode              # Optional PowerShell code to revert any changes. Executed only if provided.
               optional: true
             - name: minimumWindowsVersion   # Specifies the minimum Windows version for executing the PowerShell script.
-              optional: true                # Allowed values: Windows11, Windows10-1607
+              optional: true                # Allowed values: Windows11-FirstRelease (First Windows 11), Windows10-1607
+            - name: maximumWindowsVersion   # Specifies the maximum Windows version for executing the PowerShell script.
+              optional: true                # Allowed values: Windows10-MostRecent (most recent Windows)
         call:
             function: RunPowerShellWithSetup
             parameters:
                 # Marked: refactor-with-if-syntax
                 #   If checks can be handled during compile time.
-                setupCode: |-
+                setupCode: |- # See: Find build numbers: https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions
                     {{ with $minimumWindowsVersion }}
-                        $targetWindowsVersion = '{{ . }}'
-                        $parsedVersion=$null
-                        if ($targetWindowsVersion -eq 'Windows11') {
-                            $parsedVersion=[System.Version]::Parse('10.0.22000')
-                        } elseif ($targetWindowsVersion -eq 'Windows10-1607') {
-                            $parsedVersion=[System.Version]::Parse('10.0.14393')
+                        $minimumVersionName = '{{ . }}'
+                        $buildNumber=$null
+                        $buildNumber = switch ($minimumVersionName) {
+                            'Windows11-FirstRelease'    { '10.0.22000' }
+                            'Windows10-1607'            { '10.0.14393' }
+                            default { 
+                                Write-Error "Internal privacy.sexy error: Failed to find build number for minimum allowed Windows version: `"$minimumVersionName`"."
+                                Exit 1
+                            }
                         }
-                        if ([System.Environment]::OSVersion.Version -lt $parsedVersion) {
-                            Write-Output "Skipping, versions before $parsedVersion are not supported."
-                            exit 0
+                        $parsedMinimumVersion=[System.Version]::Parse($buildNumber)
+                        if ([System.Environment]::OSVersion.Version -lt $parsedMinimumVersion) {
+                            Write-Output "Skipping: Current Windows version ($([System.Environment]::OSVersion.Version)) is below the minimum required version ($parsedMinimumVersion - $minimumVersionName)."
+                            Exit 0
+                        }
+                    {{ end }}{{ with $maximumWindowsVersion }}
+                        $maximumVersionName = '{{ . }}'
+                        $buildNumber = switch ($maximumVersionName) {
+                            'Windows10-MostRecent'      { '10.0.19045' }
+                            default {
+                                Write-Error "Internal privacy.sexy error: Failed to find build number for maximum allowed Windows version: `"$maximumVersionName`"."
+                                Exit 1
+                            }
+                        }
+                        $parsedMaximumVersion=[System.Version]::Parse($buildNumber)
+                        if ([System.Environment]::OSVersion.Version -gt $parsedMaximumVersion) {
+                            Write-Output "Skipping: Current Windows version ($([System.Environment]::OSVersion.Version)) is above the maximum allowed version ($parsedMaximumVersion - $maximumVersionName)."
+                            Exit 0
                         }
                     {{ end }}
                 code: '{{ $code }}'
@@ -29754,8 +29730,8 @@ functions:
               optional: true
             - name: dataOnRevert            # Specifies the value to restore when reverting the registry change, instead of deleting the entry.
               optional: true
-            - name: minimumWindowsVersion   # Ensures the script executes only on specified Windows versions or newer.
-              optional: true                # Allowed values: Windows11, Windows10-1607
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         docs: >-
             Sets registry value using TrustedInstaller privileges.
             
@@ -29774,7 +29750,7 @@ functions:
                     {{ with $dataOnRevert }}
                         reg add "{{ $keyPath }}" /v "{{ $valueName }}" /t "{{ $dataType }}" /d "{{ . }}" /f
                     {{ end }}
-                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}.{{ end }}'
+                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
     -
         name: DeleteVisualStudioLicense
         parameters:
