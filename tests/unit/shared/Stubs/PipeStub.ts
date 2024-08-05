@@ -1,6 +1,6 @@
-import type { IPipe } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/IPipe';
+import type { Pipe } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/Pipe';
 
-export class PipeStub implements IPipe {
+export class PipeStub implements Pipe {
   public name = 'pipeStub';
 
   public apply(raw: string): string {
