@@ -199,9 +199,10 @@ actions:
                                     [2]: https://web.archive.org/web/20240619180528/https://secure.corradoroberto.it/doc/Registry_Forensics.pdf "Microsoft Word - 462583DF-2150-08FA03.doc | secure.corradoroberto.it"
                                     [3]: https://web.archive.org/web/20240730094313/https://forensafe.com/blogs/lastkey.html "Last Accessed Key Blog | forensafe.com"
                                 call:
-                                    function: RunInlineCode
+                                    function: DeleteRegistryValue
                                     parameters:
-                                        code: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit" /v "LastKey" /f 2>nul
+                                        keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit
+                                        valueName: LastKey
                             -
                                 name: Clear Windows Registry favorite locations
                                 recommend: strict # This script may interfere with user preferences, but enhances privacy.
@@ -5639,11 +5640,15 @@ actions:
                             data: "0"
                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 21H2) and Windows 11 Pro (≥ 23H2)
                     -
-                        function: RunPowerShell
+                        function: DeleteRegistryValue
                         parameters:
-                            code: reg delete "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds" /f 2>nul
-                            revertCode: >- # Missing by default since Windows 10 Pro (≥ 21H2) and Windows 11 Pro (≥ 22H2)
-                                reg delete "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds" /f 2>nul
+                            keyPath: 'HKCU\SOFTWARE\Microsoft\Siuf\Rules'
+                            valueName: PeriodInNanoSeconds
+                            # Default values:
+                            #   Check   : Get-ItemProperty -Path 'HKCU:\SOFTWARE\Microsoft\Siuf\Rules' -Name 'PeriodInNanoSeconds'
+                            #   Windows 10 (≥ 22H2) : Missing
+                            #   Windows 11 (≥ 23H2) : Missing
+                            deleteOnRevert: 'true'
                     -
                         function: SetRegistryValue
                         parameters:
@@ -7282,23 +7287,51 @@ actions:
                                 defaultStartupMode: Manual # Manual since Visual Studio 2022, allowed values: Automatic | Manual
                     -
                         name: Disable Diagnostics Hub log collection
+                        recommend: standard # Improves privacy, security and performance with low risk of system disruption
                         docs: |-
-                            Diagnostics Hub is online data collection point for diagnostic tools used by Visual Studio.
-                            It can be disabled by deleting `LogLevel` and `LogDirectory` registry keys [1] and enabled by adding them [2] [3] [4] [5].
+                            This script disables log collection by the Diagnostics Hub in Visual Studio.
 
-                            The registry keys are not set after installation since Visual Studio 2022.
+                            The Diagnostics Hub is a feature that allows running multiple performance analysis
+                            tools simultaneously [1].
+                            This feature collects extensive data including CPU usage, user interface responsiveness,
+                            and energy consumption. [1].
+                            It presents data from multiple tools on a shared timeline, showing relationships between
+                            different performance metrics [1].
 
-                            [1]: https://developercommunity.visualstudio.com/t/cant-disable-diagnostics-hub-in-visual-stuido/1449322#T-N1449680 "Can't disable Diagnostics hub in visual stuido | Visual Studio Feedback"
-                            [2]: https://developercommunity.visualstudio.com/t/diagnostic-tool-no-registered-class/1099781#T-N1106849 "diagnostic tool No registered class | Visual Studio Feedback"
-                            [3]: https://web.archive.org/web/20240314093647/https://stackoverflow.com/questions/39308334/visual-studio-2015-diagnostic-tools-no-longer-working/39380284#39380284 "c# - Visual Studio 2015 diagnostic tools no longer working | Stack Overflow"
-                            [4]: https://developercommunity.visualstudio.com/t/collectionstartfailedhubexception-on-profiler-laun/414212#T-N447791 "CollectionStartFailedHubException on profiler launch | Visual Studio Feedback"
-                            [5]: https://developercommunity.visualstudio.com/t/diagnostics-tools-failed-unexpectedly-unable-to-st/437117#T-N447777 "Diagnostics tools failed unexpectedly--unable to start standard collector | Visual Studio Feedback"
-                        code: |-
-                            reg delete "HKLM\Software\Microsoft\VisualStudio\DiagnosticsHub" /v "LogLevel" /f 2>nul
-                        revertCode: |-
-                            "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -property catalog_productDisplayVersion >Nul | findstr "15." >nul && (
-                                reg add "HKLM\Software\Microsoft\VisualStudio\DiagnosticsHub" /v "LogLevel" /t REG_SZ /d "All" /f
-                            )
+                            The Diagnostics Hub collects additional logs [2] [3].
+                            Microsoft recommends stopping this collection after necessary logs are collected [2] [3] [4] [5] [6].
+                            It logs to a specified directory when enabled [2] [4] [5] [6].
+
+                            Disabling this log collection improves privacy by reducing the amount of data collected
+                            about your system and activities.
+                            It also enhances security by limiting data accessible to attackers and reducing the attack
+                            surface, given past vulnerabilities in this logging [7].
+                            Additionally, it can improve system performance, as Microsoft warns that this logging is
+                            resource-intensive [2].
+
+                            This script deletes the `LogLevel` registry key at
+                            `HKLM\Software\Microsoft\VisualStudio\DiagnosticsHub` [2] [3] [4] [5] [6] [8].
+                            Removing the `LogLevel` key effectively disables the Diagnostics Hub logging functionality [3] [4] [5] [6] [8].
+                            In Visual Studio 2022 and later versions, these registry keys are not set by default after installation.
+
+                            > **Caution:**
+                            > Disabling this feature may impact the use of certain performance analysis tools in Visual Studio.
+                            > Enable logging only when necessary if you need these tools for development.
+
+                            [1]: https://web.archive.org/web/20240803142436/https://devblogs.microsoft.com/devops/combining-tools-in-the-performance-and-diagnostics-hub-in-visual-studio-2013/ "Combining Tools in the Performance and Diagnostics Hub in Visual Studio 2013 - Azure DevOps Blog  | devblogs.microsoft.com"
+                            [2]: https://web.archive.org/web/20240314093647/https://stackoverflow.com/questions/39308334/visual-studio-2015-diagnostic-tools-no-longer-working/39380284#39380284 "c# - Visual Studio 2015 diagnostic tools no longer working | Stack Overflow"
+                            [3]: https://web.archive.org/web/20240803133649/https://learn.microsoft.com/en-us/visualstudio/profiling/troubleshoot-profiler-errors?view=vs-2022#error-could-not-create-a-manifest-file-for-this-diagsession-or-error-could-not-create-manifest-file-for-diagsession-visual-studio-will-not-able-to-reopen-this-session "Troubleshoot profiling errors - Visual Studio (Windows) | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240803141453/https://developercommunity.visualstudio.com/t/diagnostic-tool-no-registered-class/1099781#T-N1106849 "diagnostic tool No registered class | Visual Studio Feedback"
+                            [5]: https://web.archive.org/web/20240803141131/https://developercommunity.visualstudio.com/t/collectionstartfailedhubexception-on-profiler-laun/414212#T-N447791 "CollectionStartFailedHubException on profiler launch | Visual Studio Feedback"
+                            [6]: https://web.archive.org/web/20240803141105/https://developercommunity.visualstudio.com/t/diagnostics-tools-failed-unexpectedly-unable-to-st/437117#T-N447777 "Diagnostics tools failed unexpectedly--unable to start standard collector | Visual Studio Feedback"
+                            [7]: https://web.archive.org/web/20240803141911/https://nvd.nist.gov/vuln/detail/CVE-2018-0952 "NVD - CVE-2018-0952 | nvd.nist.gov"
+                            [8]: https://web.archive.org/web/20240803141609/https://developercommunity.visualstudio.com/t/cant-disable-diagnostics-hub-in-visual-stuido/1449322#T-N1449680 "Can't disable Diagnostics hub in visual stuido | Visual Studio Feedback"
+                        call:
+                            function: DeleteRegistryValue
+                            parameters:
+                                keyPath: 'HKLM\Software\Microsoft\VisualStudio\DiagnosticsHub'
+                                valueName: LogLevel
+                                deleteOnRevert: 'true' # This key does not exist by default on Visual Studio 2022 and higher
                     -
                         name: Disable participation in IntelliCode data collection
                         recommend: standard
@@ -16340,34 +16373,70 @@ actions:
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
                                         name: Remove "Scan with Microsoft Defender" from context menu
-                                        docs:
-                                            - https://windowsreport.com/remove-right-click-windows-defender-scan-windows-10/
-                                            - https://web.archive.org/web/20240314174846/https://twigstechtips.blogspot.com/2010/06/windows-remove-with-microsoft-security.html
+                                        docs: |-
+                                            This script removes the "Scan with Microsoft Defender" option from the right-click context menu.
+
+                                            This feature, while useful for some, may be unnecessary or unwanted for users, especially if they prefer not to use Defender
+                                            due to concerns about data collection during scans and at regular intervals.
+                                            By removing this option, the script enhances user privacy by limiting the engagement with Defender's data collection processes.
+
+                                            The script functions by altering specific registry keys that correspond to the Defender context menu option. It specifically targets the
+                                            CLSID `{09A47860-11B0-4DA5-AFA5-26D86198A780}`, which is associated with this option [1] [2]. The deletion of this key effectively removes
+                                            the "Scan with Microsoft Defender" option from the context menu. This feature is provided by `shellext.dll` file located in Defender's
+                                            program files [1].
+
+                                            This script only affects the appearance of the context menu and does not disable Microsoft Defender or its other functions.
+
+                                            [1]: https://web.archive.org/web/20231124215149/https://strontic.github.io/xcyclopedia/library/clsid_09A47860-11B0-4DA5-AFA5-26D86198A780.html "CLSID 09A47860-11B0-4DA5-AFA5-26D86198A780 | (C:\Program Files\Windows Defender\shellext.dll) | STRONTIC | strontic.github.io"
+                                            [2]: https://web.archive.org/web/20231124215202/https://www.shouldiblockit.com/shellext.dll-d9ed4e24723880f608c62e2e00430bdd.aspx "shellext.dll - Should I Block It? (MD5 d9ed4e24723880f608c62e2e00430bdd) | www.shouldiblockit.com"
                                         call:
+                                            # It modifies the registry keys in the `HKLM\Software\Classes` branch. The `HKCR` (HKEY_CLASSES_ROOT) keys are not modified, as they
+                                            # are a merged view of the `HKLM\Software\Classes` and `HKCU\Software\Classes` keys. Since the `HKCU` keys for the context menu are
+                                            # not present by default, and modifications to `HKLM` are automatically reflected in `HKCR`, there's no need to modify `HKCU` or `HKCR` keys directly.
                                             -
-                                                function: RunInlineCode
+                                                function: DeleteRegistryValue
                                                 parameters:
-                                                    code: |-
-                                                        reg delete "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /va /f 2>nul
-                                                    revertCode: |-
-                                                        reg add "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}" /v "InprocServer32" /t REG_SZ /d "%ProgramFiles%\Windows Defender\shellext.dll" /f
-                                                        reg add "HKCR\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /v "ThreadingModel" /t REG_SZ /d "Apartment" /f
-                                                        reg add "HKCR\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /ve /t REG_SZ /d "%ProgramFiles%\Windows Defender\shellext.dll" /f
+                                                    keyPath: 'HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32'
+                                                    valueName: (Default)
+                                                    # Default values:
+                                                    #   Check   : Get-ItemProperty -Path 'HKLM:\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32' -Name '(Default)'
+                                                    #   Windows 10 (≥ 22H2) : C:\Program Files\Windows Defender\shellext.dll (REG_SZ)
+                                                    #   Windows 11 (≥ 23H2) : C:\Program Files\Windows Defender\shellext.dll (REG_SZ)
+                                                    dataTypeOnRevert: REG_SZ
+                                                    dataOnRevert: '%ProgramFiles%\Windows Defender\shellext.dll'
                                             -
-                                                function: RunInlineCode
+                                                function: DeleteRegistryValue
                                                 parameters:
-                                                    code: reg delete "HKCR\*\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
-                                                    revertCode: reg add "HKCR\*\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
+                                                    keyPath: 'HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32'
+                                                    valueName: ThreadingModel
+                                                    # Default values:
+                                                    #   Check   : Get-ItemProperty -Path 'HKLM:\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32' -Name 'ThreadingModel'
+                                                    #   Windows 10 (≥ 22H2) : Apartment (REG_SZ)
+                                                    #   Windows 11 (≥ 23H2) : Apartment (REG_SZ)
+                                                    dataTypeOnRevert: REG_SZ
+                                                    dataOnRevert: 'Apartment'
                                             -
-                                                function: RunInlineCode
+                                                function: DeleteRegistryValue
                                                 parameters:
-                                                    code: reg delete "HKCR\Drive\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
-                                                    revertCode: reg add "HKCR\Drive\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
+                                                    keyPath: 'HKLM\SOFTWARE\Classes\Directory\shellex\ContextMenuHandlers\EPP'
+                                                    valueName: (Default)
+                                                    # Default values:
+                                                    #   Check   : Get-ItemProperty -Path 'HKLM:\SOFTWARE\Classes\Directory\shellex\ContextMenuHandlers\EPP' -Name '(Default)'
+                                                    #   Windows 10 (≥ 22H2) : {09A47860-11B0-4DA5-AFA5-26D86198A780} (REG_SZ)
+                                                    #   Windows 11 (≥ 23H2) : {09A47860-11B0-4DA5-AFA5-26D86198A780} (REG_SZ)
+                                                    dataTypeOnRevert: REG_SZ
+                                                    dataOnRevert: '{09A47860-11B0-4DA5-AFA5-26D86198A780}'
                                             -
-                                                function: RunInlineCode
+                                                function: DeleteRegistryValue
                                                 parameters:
-                                                    code: reg delete "HKCR\Directory\shellex\ContextMenuHandlers" /v "EPP" /f 2>nul
-                                                    revertCode: reg add "HKCR\Directory\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}" /f
+                                                    keyPath: 'HKLM\SOFTWARE\Classes\Drive\shellex\ContextMenuHandlers\EPP'
+                                                    valueName: (Default)
+                                                    # Default values:
+                                                    #   Check   : Get-ItemProperty -Path 'HKLM:\SOFTWARE\Classes\Drive\shellex\ContextMenuHandlers\EPP' -Name '(Default)'
+                                                    #   Windows 10 (≥ 22H2) : {09A47860-11B0-4DA5-AFA5-26D86198A780} (REG_SZ)
+                                                    #   Windows 11 (≥ 23H2) : {09A47860-11B0-4DA5-AFA5-26D86198A780} (REG_SZ)
+                                                    dataTypeOnRevert: REG_SZ
+                                                    dataOnRevert: '{09A47860-11B0-4DA5-AFA5-26D86198A780}'
                                     -
                                         name: Remove "Windows Security" icon from taskbar
                                         docs: |-
@@ -16378,13 +16447,22 @@ actions:
 
                                             The script modifies the registry to stop this file from running on startup, effectively removing the icon. It specifically removes
                                             `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run!SecurityHealth`. This key exists in modern versions of Windows (tested since Windows 11 22H2
-                                            and Windows 10 22H2) with default value of `%windir%\system32\SecurityHealthSystray.exe`.
+                                            and Windows 10 22H2) with default value of `%WINDIR%\system32\SecurityHealthSystray.exe`.
 
                                             [1]: https://web.archive.org/web/20231013153902/https://learn.microsoft.com/en-us/windows/security/operating-system-security/system-security/windows-defender-security-center/windows-defender-security-center "Windows Security - Windows Security | Microsoft Learn"
                                             [2]: https://web.archive.org/web/20231013155101/https://www.file.net/process/securityhealthsystray.exe.html "SecurityHealthSystray.exe Windows process - What is it?"
                                             [3]: https://web.archive.org/web/20231013155434/https://strontic.github.io/xcyclopedia/library/SecurityHealthSystray.exe-783C99AFD4C2AE6950FA5694389D2CFA.html "SecurityHealthSystray.exe | Windows Security notification icon | STRONTIC | strontic.github.io"
-                                        code: reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "SecurityHealth" /f 2>nul # Renamed from WindowsDefender/MSASCuiL.exe in Windows 10 version 1809
-                                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "SecurityHealth" /t REG_EXPAND_SZ /d "%windir%\system32\SecurityHealthSystray.exe" /f
+                                        call:
+                                            function: DeleteRegistryValue
+                                            parameters:
+                                                keyPath: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run'
+                                                valueName: SecurityHealth
+                                                # Default values:
+                                                #   Check   : Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run' -Name 'SecurityHealth'
+                                                #   Windows 10 (≥ 22H2) : C:\Windows\system32\SecurityHealthSystray.exe (REG_SZ)
+                                                #   Windows 11 (≥ 23H2) : C:\Windows\system32\SecurityHealthSystray.exe (REG_SZ)
+                                                dataTypeOnRevert: REG_EXPAND_SZ
+                                                dataOnRevert: '%WINDIR%\system32\SecurityHealthSystray.exe'
                                     -
                                         name: Disable Microsoft Defender Antimalware (AM) user interface
                                         docs: |-
@@ -18227,12 +18305,15 @@ actions:
                             [1]: https://web.archive.org/web/20230711172555/https://learn.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configuring-automatic-updates-by-editing-the-registry "Manage additional Windows Update settings - Windows Deployment | Microsoft Learn"
                             [2]: https://web.archive.org/web/20230708165017/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update#scheduledinstallday "Update Policy CSP - Windows Client Management | Microsoft Learn"
                         call:
-                            function: RunInlineCode
+                            function: DeleteRegistryValue
                             parameters:
-                                code: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /f 2>nul
-                                revertCode: >-
-                                    :: This key does not exist by default since Windows 10 21H2 and Windows 11 21H2
-                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /f 2>nul
+                                keyPath: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU'
+                                valueName: ScheduledInstallDay
+                                # Default values:
+                                #   Check   : Get-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU' -Name 'ScheduledInstallDay'
+                                #   Windows 10 (≥ 20H2) : Missing
+                                #   Windows 11 (≥ 23H2) : Missing
+                                deleteOnRevert: 'true'
                     -
                         name: Disable scheduled automatic updates
                         docs: |-
@@ -18252,12 +18333,15 @@ actions:
                             [2]: https://web.archive.org/web/20230711172555/https://learn.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configuring-automatic-updates-by-editing-the-registry "Manage additional Windows Update settings - Windows Deployment | Microsoft Learn"
                             [3]: https://web.archive.org/web/20230708165017/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update#scheduledinstalltime "Update Policy CSP - Windows Client Management | Microsoft Learn"
                         call:
-                            function: RunInlineCode
+                            function: DeleteRegistryValue
                             parameters:
-                                code: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /f 2>nul
-                                revertCode: >-
-                                    :: This key does not exist by default since Windows 10 21H2 and Windows 11 21H2
-                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /f 2>nul
+                                keyPath: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU'
+                                valueName: ScheduledInstallTime
+                                # Default values:
+                                #   Check   : Get-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU' -Name 'ScheduledInstallTime'
+                                #   Windows 10 (≥ 20H2) : Missing
+                                #   Windows 11 (≥ 23H2) : Missing
+                                deleteOnRevert: 'true'
                     -
                         category: Disable Windows update services
                         docs: |-
@@ -20031,20 +20115,21 @@ actions:
                             valueName: ShowRecent
                             dataType: REG_DWORD
                             data: '0'
-                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                    -
-                        function: RunInlineCode
+                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 19H1) and Windows 11 Pro (≥ 23H2)
+                    - # For x86 systems
+                        function: DeleteRegistryValue
                         parameters:
-                            code: |-
-                                reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
-                                if not %PROCESSOR_ARCHITECTURE%==x86 ( REM is 64 bit?
-                                    reg delete "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
-                                )
-                            revertCode: |-
-                                reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
-                                if not %PROCESSOR_ARCHITECTURE%==x86 ( REM is 64 bit?
-                                    reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
-                                )
+                            keyPath: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}'
+                            valueName: (Default)
+                            dataTypeOnRevert: REG_SZ
+                            dataOnRevert: 'Recent Files Folder' # Default value: `Recent Files Folder` on Windows 10 Pro (≥ 19H1) | `Recent Files Folder` on Windows 11 Pro (≥ 23H2)
+                    - # For x64 systems (using `Wow6432Node`)
+                        function: DeleteRegistryValue
+                        parameters:
+                            keyPath: 'HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}'
+                            valueName: (Default)
+                            dataTypeOnRevert: REG_SZ
+                            dataOnRevert: 'Recent Files Folder' # Default value: `Recent Files Folder` on Windows 10 Pro (≥ 19H1) | `Recent Files Folder` on Windows 11 Pro (≥ 23H2)
             -
                 name: Disable sync provider notifications
                 call:
@@ -23856,13 +23941,22 @@ actions:
                         name: Remove OneDrive from startup
                         recommend: strict
                         docs: |-
-                            OneDrive starts on every boot in both Windows 10 and 11.
+                            OneDrive starts on every boot in both Windows 10 and 11 by default.
                             It's started through `OneDrive` `REG_SZ` entry in `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` [1].
+                            It is found on both Windows 10 (since 21H2, missing in 20H2) and Windows 11 (since 23H2).
                             The startup command is `"<local-app-data>\Microsoft\OneDrive\OneDrive.exe" /background` [1].
 
                             [1]: https://techcommunity.microsoft.com/t5/azure-virtual-desktop/start-onedrive-when-using-a-remoteapp-in-wvd/m-p/899331 "Re: Start OneDrive when using a RemoteApp in WVD - Page 2 - Microsoft Tech Community | techcommunity.microsoft.com"
-                        code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDrive" /f 2>nul
-                        revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDrive" /t REG_SZ /d "\"%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe\" /background" /f
+                        call:
+                            function: DeleteRegistryValue
+                            parameters:
+                                keyPath: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run'
+                                valueName: 'OneDrive'
+                                #   Check   : Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'OneDrive'
+                                #   Windows 10 (≥ 21H2) : "C:\Users\undergroundwires\AppData\Local\Microsoft\OneDrive\OneDrive.exe" /background (REG_SZ)
+                                #   Windows 11 (≥ 23H2) : "C:\Users\undergroundwires\AppData\Local\Microsoft\OneDrive\OneDrive.exe" /background (REG_SZ)
+                                dataTypeOnRevert: REG_SZ
+                                dataOnRevert: '"%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe" /background'
                     -
                         name: Remove OneDrive through official installer
                         docs: |-
@@ -24157,26 +24251,52 @@ actions:
                                     deleteOnRevert: 'true' # Missing key since Windows 10 21H2, Windows 11 21H2
                     -
                         name: Disable automatic OneDrive installation
-                        recommend: strict
+                        recommend: standard # Microsoft-recommended, low impact, only for Win10 1909
                         docs: |-
-                            Windows 10 comes with `OneDriveSetup` entry in startup for automatic reinstallations even though
-                            OneDrive is uninstalled. This entry is missing in Windows 11 by default.
+                            This script prevents OneDrive from automatically reinstalling itself.
 
-                            `OneDriveSetup` is registered to reinstall OneDrive and can be removed using registry [1],
-                            as recommended by Microsoft for optimizing Windows VDIs [1].
+                            OneDrive, Microsoft's cloud storage service, can automatically reinstall itself after being 
+                            uninstalled on older Windows 10 versions [1].
+                            This is done through a startup entry that runs `OneDriveSetup.exe`, which silently installs
+                            OneDrive [2] when a user logs in [3].
+
+                            The script enhances privacy by stopping OneDrive from reinstalling without user consent.
+                            This prevents unwanted data collection and synchronization.
+                            It also boosts system performance by preventing an unnecessary application from running
+                            and using system resources.
+                            Microsoft recommends this method for optimizing Windows [1].
+
+                            This script deletes the `HKCU\Software\Microsoft\Windows\CurrentVersion\Run!OneDriveSetup`
+                            registry key [1].
+                            It specifically targets Windows 10 version 1909.
+                            Modern versions of Windows 10 (20H2 and later) and Windows 11 do not have this automatic
+                            reinstallation feature.
 
                             [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20231002162805/https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016 "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20240803130719/https://learn.microsoft.com/en-us/windows/win32/setupapi/run-and-runonce-registry-keys "Run and RunOnce Registry Keys - Win32 apps | Microsoft Learn | learn.microsoft.com"
                         call:
-                            function: RunPowerShellWithWindowsVersionConstraints
+                            function: DeleteRegistryValue
                             parameters:
-                                maximumWindowsVersion: Windows10-MostRecent
-                                code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f 2>$null
-                                revertCode: |-
-                                    if([Environment]::Is64BitOperatingSystem) {
-                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe /silent" /f
+                                keyPath: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run'
+                                valueName: OneDriveSetup
+                                # Default values:
+                                #   Check   : Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name 'OneDriveSetup'
+                                #   Windows 10 Pro (≤ 1902) : 🔴 Missing
+                                #   Windows 10 Pro (1909)   : 🟢 Present
+                                #   Windows 10 Pro (2004)   : 🟡 Not tested
+                                #   Windows 10 Pro (≥ 20H2) : 🔴 Missing
+                                #   Windows 11 Pro (≥ 23H2) : 🔴 Missing
+                                evaluateDataAsPowerShell: 'true'
+                                dataOnRevert: > # Multilines are not supported
+                                    if ([Environment]::Is64BitOperatingSystem) {
+                                        "$env:SYSTEMROOT\SysWOW64\OneDriveSetup.exe /silent"
                                     } else {
-                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\System32\OneDriveSetup.exe /silent" /f
+                                        "$env:SYSTEMROOT\System32\OneDriveSetup.exe /silent"
                                     }
+                                dataTypeOnRevert: REG_SZ
+                                minimumWindowsVersion: Windows10-1909
+                                maximumWindowsVersion: Windows10-1909
                     -
                         name: Remove OneDrive folder from File Explorer
                         recommend: strict
@@ -24288,17 +24408,27 @@ actions:
                         name: Clear OneDrive environment variable
                         recommend: strict
                         docs: |-
-                            Since Windows 10 1809, Microsoft introduced `%OneDrive%` environment variable to
+                            Since Windows 10 1809, Microsoft introduced `%ONEDRIVE%` environment variable to
                             reach OneDrive through an alias [1]. This variable is redundant when OneDrive is
                             undesired.
 
                             This script deletes `OneDrive` environment variable [2].
 
-                            `OneDrive` key at `HKCU\Environment` is found on both Windows 10 and Windows 11.
+                            `OneDrive` key at `HKCU\Environment` is found on both Windows 10
+                            (since 21H2, missing in 20H2) and Windows 11 (since 23H2).
 
                             [1]: https://web.archive.org/web/20240314091504/https://superuser.com/questions/1336521/determine-onedrive-synchronisation-folders/1397495#1397495 "Determine OneDrive synchronisation folders - Super User | superuser.com"
                             [2]: https://stackoverflow.com/questions/46744840/export-registry-value-to-file-and-then-set-a-variable-in-batch "Export registry value to file and then set a variable in Batch - Stack Overflow | stackoverflow.com"
-                        code: reg delete "HKCU\Environment" /v "OneDrive" /f 2>nul
+                        call:
+                            function: DeleteRegistryValue
+                            parameters:
+                                keyPath: 'HKCU\Environment'
+                                valueName: 'OneDrive'
+                                #   Check   : Get-ItemProperty -Path 'HKCU:\Environment' -Name 'OneDrive'
+                                #   Windows 10 (≥ 21H2) : "C:\Users\undergroundwires\OneDrive" (REG_EXPAND_SZ)
+                                #   Windows 11 (≥ 23H2) : "C:\Users\undergroundwires\OneDrive" (REG_EXPAND_SZ)
+                                dataTypeOnRevert: REG_EXPAND_SZ
+                                dataOnRevert: '%USERPROFILE%\OneDrive'
             -
                 category: Remove Edge
                 docs: |-
@@ -28390,7 +28520,8 @@ functions:
               optional: true
         call:
             # Marked: refactor-with-variables
-            #   Replacing SID is same as `DeleteRegistryKey`
+            #   - Replacing SID is same as `DeleteRegistryKey`
+            #   - Registry path construction with hive is same as `DeleteRegistryValue` and `DeleteRegistryKey`
             function: RunPowerShell
             parameters:
                 code: |-
@@ -28416,40 +28547,42 @@ functions:
     -
         name: DeleteRegistryKey
         # Removes the entire registry key, including all subkeys and values.
-        # ❗ Use with caution. Consider `ClearRegistryValues` for less destructive operations.
+        # ❗ Use with caution. Consider `ClearRegistryValues` or `DeleteRegistryValues` for less destructive operations.
         parameters:
-            - name: keyPath     # Full path of the subkey or entry to be added.
+            - name: keyPath     # Full path of the subkey or entry to be deleted. No glob/wildcard interpretation.
             - name: replaceSid  # Replaces "$CURRENT_USER_SID" string in registry key with user SID.
               optional: true
             - name: codeComment
               optional: true
-            - name: revertCodeComment
-              optional: true
         call:
             # Marked: refactor-with-variables
-            #   Replacing SID is same as `CreateRegistryKey`
+            #   - Replacing SID is same as `CreateRegistryKey`
+            #   - Registry path construction with hive is same as `DeleteRegistryValue` and `CreateRegistryKey`
             function: RunPowerShell
             parameters:
+                codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
                 code: |-
                     $keyPath='{{ $keyPath }}'
                     $registryHive = $keyPath.Split('\')[0]
-                    $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
+                    $registryKey = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
                     {{ with $replaceSid }}
                         $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
-                        $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
+                        $registryKey = $registryKey.Replace('$CURRENT_USER_SID', $userSid)
                     {{ end }}
-                    if (-not (Test-Path $registryPath)) {
-                        Write-Host "Skipping, no action needed, registry path `"$registryPath`" does not exist."
+                    if (-not (Test-Path -LiteralPath $registryKey)) {
+                        Write-Host "Skipping, no action needed, registry key `"$registryKey`" does not exist."
                         exit 0
                     }
                     try {
-                        Remove-Item -Path $registryPath -Force -ErrorAction Stop | Out-Null
-                        Write-Host "Successfully removed the registry key at path `"$registryPath`"."
+                        Remove-Item `
+                            -LiteralPath $registryKey `
+                            -Force `
+                            -ErrorAction Stop `
+                            | Out-Null
+                        Write-Host "Successfully removed the registry key at path `"$registryKey`"."
                     } catch {
-                        Write-Error "Failed to remove the registry key at path `"$registryPath`": $($_.Exception.Message)"
+                        Write-Error "Failed to remove the registry key at path `"$registryKey`": $($_.Exception.Message)"
                     }
-                codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
-                revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
     -
         name: ShowExplorerRestartSuggestion
         call:
@@ -29676,10 +29809,12 @@ functions:
             - name: code                    # The main PowerShell code to execute.
             - name: revertCode              # Optional PowerShell code to revert any changes. Executed only if provided.
               optional: true
+            - name: setupCode               # PowerShell code to execute before version checks.
+              optional: true
             - name: minimumWindowsVersion   # Specifies the minimum Windows version for executing the PowerShell script.
-              optional: true                # Allowed values: Windows11-FirstRelease (First Windows 11), Windows10-1607
+              optional: true                # Allowed values: Windows11-FirstRelease (First Windows 11), Windows10-1909, Windows10-1607
             - name: maximumWindowsVersion   # Specifies the maximum Windows version for executing the PowerShell script.
-              optional: true                # Allowed values: Windows10-MostRecent (most recent Windows)
+              optional: true                # Allowed values: Windows10-MostRecent (most recent Windows), Windows10-1909
         call:
             function: RunPowerShellWithSetup
             parameters:
@@ -29691,6 +29826,7 @@ functions:
                         $buildNumber=$null
                         $buildNumber = switch ($minimumVersionName) {
                             'Windows11-FirstRelease'    { '10.0.22000' }
+                            'Windows10-1909'            { '10.0.18363' }
                             'Windows10-1607'            { '10.0.14393' }
                             default { 
                                 Write-Error "Internal privacy.sexy error: Failed to find build number for minimum allowed Windows version: `"$minimumVersionName`"."
@@ -29698,22 +29834,25 @@ functions:
                             }
                         }
                         $parsedMinimumVersion=[System.Version]::Parse($buildNumber)
-                        if ([System.Environment]::OSVersion.Version -lt $parsedMinimumVersion) {
-                            Write-Output "Skipping: Current Windows version ($([System.Environment]::OSVersion.Version)) is below the minimum required version ($parsedMinimumVersion - $minimumVersionName)."
+                        $currentVersion = [System.Version]::new([System.Environment]::OSVersion.Version.Major, [System.Environment]::OSVersion.Version.Minor, [System.Environment]::OSVersion.Version.Build) # Ignore patch
+                        if ($currentVersion -lt $parsedMinimumVersion) {
+                            Write-Output "Skipping: Current Windows version ($currentVersion) is below the minimum required version ($parsedMinimumVersion - $minimumVersionName)."
                             Exit 0
                         }
                     {{ end }}{{ with $maximumWindowsVersion }}
                         $maximumVersionName = '{{ . }}'
                         $buildNumber = switch ($maximumVersionName) {
                             'Windows10-MostRecent'      { '10.0.19045' }
+                            'Windows10-1909'            { '10.0.18363' }
                             default {
                                 Write-Error "Internal privacy.sexy error: Failed to find build number for maximum allowed Windows version: `"$maximumVersionName`"."
                                 Exit 1
                             }
                         }
                         $parsedMaximumVersion=[System.Version]::Parse($buildNumber)
-                        if ([System.Environment]::OSVersion.Version -gt $parsedMaximumVersion) {
-                            Write-Output "Skipping: Current Windows version ($([System.Environment]::OSVersion.Version)) is above the maximum allowed version ($parsedMaximumVersion - $maximumVersionName)."
+                        $currentVersion = [System.Version]::new([System.Environment]::OSVersion.Version.Major, [System.Environment]::OSVersion.Version.Minor, [System.Environment]::OSVersion.Version.Build) # Ignore patch
+                        if ($currentVersion -gt $parsedMaximumVersion) {
+                            Write-Output "Skipping: Current Windows version ($currentVersion) is above the maximum allowed version ($parsedMaximumVersion - $maximumVersionName)."
                             Exit 0
                         }
                     {{ end }}
@@ -29777,9 +29916,10 @@ functions:
     -
         name: ClearRegistryValues
         # Deletes values in the specified registry key, preserving the key and subkeys.
+        # 💡 Use `DeleteRegistryValue` for more granular and less destructive operations.
         # 💡 Use `DeleteRegistryKey` to remove the entire key structure.
         parameters:
-            - name: keyPath # Full path of the subkey or entry where the value resides.
+            - name: keyPath # Full path of the subkey or entry where the value resides. No glob/wildcard interpretation.
             - name: deleteSubkeyValuesRecursively # Whether to recursively clear values in subkeys.
               optional: true
         docs: |-
@@ -29813,19 +29953,19 @@ functions:
                         function Clear-RegistryKeyValues {
                             try {
                                 $currentRegistryKeyPath = $args[0]
-                                Write-Output "Attempting to clear registry values from `"$currentRegistryKeyPath`"."
+                                Write-Output "Clearing registry values from `"$currentRegistryKeyPath`"."
                                 $formattedRegistryKeyPath = $currentRegistryKeyPath -replace '^([^\\]+)', '$1:'
-                                if (-Not (Test-Path $formattedRegistryKeyPath)) {
+                                if (-Not (Test-Path -LiteralPath $formattedRegistryKeyPath)) {
                                     Write-Output "Skipping: Registry key not found: `"$formattedRegistryKeyPath`"."
                                     return
                                 }
-                                $directValueNames=(Get-Item -Path $formattedRegistryKeyPath -ErrorAction Stop | Select-Object -ExpandProperty Property)
+                                $directValueNames=(Get-Item -LiteralPath $formattedRegistryKeyPath -ErrorAction Stop | Select-Object -ExpandProperty Property)
                                 if (-Not $directValueNames) {
                                     Write-Output 'Skipping: Registry key has no direct values.'
                                 } else {
                                     foreach ($valueName in $directValueNames) {
                                         Remove-ItemProperty `
-                                            -Path $formattedRegistryKeyPath `
+                                            -LiteralPath $formattedRegistryKeyPath `
                                             -Name $valueName `
                                             -ErrorAction Stop
                                         Write-Output "Successfully deleted value: `"$valueName`" from `"$formattedRegistryKeyPath`"."
@@ -29834,7 +29974,7 @@ functions:
                                 }
                                 {{ with $deleteSubkeyValuesRecursively }}
                                     Write-Output "Iterating subkeys recursively: `"$formattedRegistryKeyPath`"."
-                                    $subKeys = Get-ChildItem -Path $formattedRegistryKeyPath -ErrorAction Stop
+                                    $subKeys = Get-ChildItem -LiteralPath $formattedRegistryKeyPath -ErrorAction Stop
                                     if (!$subKeys) {
                                         Write-Output 'Skipping: no subkeys available.'
                                         return
@@ -29853,3 +29993,167 @@ functions:
                             }
                         }
                         Clear-RegistryKeyValues $rootRegistryKeyPath
+    -
+        name: DeleteRegistryValue # See also `DeleteRegistryKey`, `ClearRegistryValues`
+        parameters:
+            - name: keyPath                     # Full path of the subkey or entry where the value resides. No glob/wildcard interpretation.
+            - name: valueName                   # Name of the registry value to be deleted. No glob/wildcard interpretation.
+            - name: dataOnRevert                # Data to store upon revert.
+              optional: true
+            - name: dataTypeOnRevert            # Type of the data to store upon revert.
+              optional: true
+            - name: deleteOnRevert              # If 'true', it reverts to the initial state by deleting the registry key.
+              optional: true
+            - name: evaluateDataAsPowerShell    # If true, evaluates 'dataOnRevert' as a PowerShell expression before setting the registry value.
+              optional: true
+            - name: setupCode                   # PowerShell code to execute before version checks.
+            - name: maximumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+            - name: minimumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+        docs: |-
+            This function creates or modifies a registry entry at a specified path.
+
+            > 💡 Use this function for a consistent approach instead of directly using `reg add` or `reg delete` commands.
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: >-
+                        Delete the registry value "{{ $valueName }}" from the key "{{ $keyPath }}"
+                    revertCodeComment: >- # Do not render `$dataOnRevert` as `$evaluateDataAsPowerShell` will result in ugly data values.
+                        {{ with $dataOnRevert }}
+                            Restore the registry value "{{ $valueName }}" in key "{{ $keyPath }}" to its original value.
+                        {{ end }}{{ with $deleteOnRevert }}
+                            Remove the registry value "{{ $valueName }}" from key "{{ $keyPath }}" to restore its original state
+                        {{ end }}
+            -
+                function: RunPowerShellWithWindowsVersionConstraints
+                parameters:
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    setupCode: '{{ with $setupCode }}{{ . }}{{ end }}'
+                    # Marked: refactor-with-variables
+                    #   - Replacing SID is same as `CreateRegistryKey`
+                    #   - Registry path construction with hive is same as `DeleteRegistryKey` and `CreateRegistryKey`
+                    #   - `deleteOnRevert` on revert code is same as "code"
+                    code: |-
+                        $keyPath = '{{ $keyPath }}'
+                        $valueName = '{{ $valueName }}'
+                        $registryHive = $keyPath.Split('\')[0]
+                        $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
+                        Write-Host "Removing the registry value `"$valueName`" from `"$registryPath`"."
+                        if (-Not (Test-Path -LiteralPath $registryPath)) {
+                            Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                            Exit 0
+                        }
+                        $existingValueNames = (Get-ItemProperty -LiteralPath $registryPath).PSObject.Properties.Name
+                        if (-Not ($existingValueNames -Contains $valueName)) {
+                            Write-Host "Skipping, no action needed, registry value `"$valueName`" does not exist in registry path `"$registryPath`"."
+                            Exit 0
+                        }
+                        try {
+                            if ($valueName -ieq '(default)') {
+                                Write-Host "Removing the default value from `"$registryPath`"."
+                                $(Get-Item -LiteralPath "$registryPath").OpenSubKey("", $true).DeleteValue('')
+                            } else {
+                                Remove-ItemProperty `
+                                    -LiteralPath $registryPath `
+                                    -Name $valueName `
+                                    -Force `
+                                    -ErrorAction Stop
+                            }
+                            Write-Host "Successfully removed the registry value `"$valueName`" at path `"$registryPath`"."
+                        } catch {
+                            Write-Error "Failed to remove the registry value `"$valueName`" at path `"$registryPath`": $($_.Exception.Message)"
+                        }
+                    revertCode: |-
+                        {{ with $dataOnRevert }}
+                            $dataValue = '{{ . }}'
+                            {{ with $evaluateDataAsPowerShell }}
+                                $dataValue = $(Invoke-Expression "$dataValue")
+                            {{ end }}
+                            {{ with $dataTypeOnRevert }}
+                                $dataType = '{{ . }}'
+                            {{ end }}
+                            $keyPath = '{{ $keyPath }}'
+                            $valueName = '{{ $valueName }}'
+                            $registryHive = $keyPath.Split('\')[0]
+                            $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
+                            Write-Host "Restoring value `"$valueName`" at `"$registryPath`" to `"$dataValue`"."
+                            if (-Not $dataType) {
+                                Write-Error "Internal privacy.sexy error: Data type is not provided for data `"$dataValue`"."
+                                Exit 1
+                            }
+                            if (-Not (Test-Path -LiteralPath $registryPath)) {
+                                try {
+                                    Write-Host "Creating registry path: `"$registryPath`"."
+                                    New-Item `
+                                        -Path $registryPath `
+                                        -Force -ErrorAction Stop `
+                                        | Out-Null
+                                    Write-Host "Registry key `"$registryPath`" was created."
+                                } catch {
+                                    Write-Error "Failed to create registry key `"$registryPath`": $($_.Exception.Message)"
+                                    Exit 0
+                                }
+                            }
+                            $currentValue = Get-ItemProperty `
+                                -LiteralPath $registryPath `
+                                -Name $valueName `
+                                -ErrorAction SilentlyContinue `
+                                | Select-Object -ExpandProperty "$valueName"
+                            if ($currentValue -eq $dataValue) {
+                                Write-Host "Skipping, no changes required, the registry value `"$valueName`" at path `"$registryPath`" is already as expected: `"$dataValue`"."
+                                Exit 0
+                            }
+                            try {
+                                Write-Host "Restoring data: `"$dataValue`" ($dataType)."
+                                $registryType = switch ($dataType) {
+                                    'REG_SZ'        { 'String' }
+                                    'REG_QWORD'     { 'QWord' }
+                                    'REG_EXPAND_SZ' { 'ExpandString' }
+                                    default         { throw "Unsupported data type: $dataType" }
+                                }
+                                Set-ItemProperty `
+                                    -LiteralPath $registryPath `
+                                    -Name $valueName `
+                                    -Value $dataValue `
+                                    -Type $registryType `
+                                    -Force `
+                                    -ErrorAction Stop
+                                Write-Host "Successfully restored the registry value `"$valueName`" at path `"$registryPath`" with type `"$dataType`" and value `"$dataValue`"."
+                            } catch {
+                                Write-Error "Failed to restore the registry value `"$valueName`" at path `"$registryPath`": $($_.Exception.Message)"
+                            }
+                        {{ end }}{{ with $deleteOnRevert }}
+                            $keyPath = '{{ $keyPath }}'
+                            $valueName = '{{ $valueName }}'
+                            $registryHive = $keyPath.Split('\')[0]
+                            $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
+                            Write-Host "Removing the registry value `"$valueName`" from `"$registryPath`"."
+                            if (-Not (Test-Path -LiteralPath $registryPath)) {
+                                Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                                Exit 0
+                            }
+                            $existingValueNames = (Get-ItemProperty -LiteralPath $registryPath).PSObject.Properties.Name
+                            if (-Not ($existingValueNames -Contains $valueName)) {
+                                Write-Host "Skipping, no action needed, registry value `"$valueName`" does not exist in registry path `"$registryPath`"."
+                                Exit 0
+                            }
+                            try {
+                                if ($valueName -ieq '(default)') {
+                                    Write-Host "Removing the default value from `"$registryPath`"."
+                                    $(Get-Item -LiteralPath "$registryPath").OpenSubKey("", $true).DeleteValue('')
+                                } else {
+                                    Remove-ItemProperty `
+                                        -LiteralPath $registryPath `
+                                        -Name $valueName `
+                                        -Force `
+                                        -ErrorAction Stop
+                                }
+                                Write-Host "Successfully removed the registry value `"$valueName`" at path `"$registryPath`"."
+                            } catch {
+                                Write-Error "Failed to remove the registry value `"$valueName`" at path `"$registryPath`": $($_.Exception.Message)"
+                            }
+                        {{ end }}
