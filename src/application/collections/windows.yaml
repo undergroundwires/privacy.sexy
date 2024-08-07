@@ -20176,64 +20176,526 @@ actions:
                         data: '1'
                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
             -
-                category: Remove items from "This PC" and "Browse" in dialog boxes
+                category: Remove folders from This PC in File Explorer
+                docs: |- # refactor-with-variables: Same • Quick Access Productivity
+                    This category includes scripts to hide specific folders from **This PC** in **File Explorer**
+                    and other file selection dialogs on Windows systems.
+
+                    It enhances privacy by hiding personal folders from common Windows interfaces.
+                    This prevents accidental exposure of sensitive information when sharing your screen
+                    or allowing others to use your computer.
+
+                    Removing folders may change how you access them if you often use **This PC** or file dialogs.
+                    You can still reach these folders through direct paths or shortcuts.
+
+                    These scripts are not applicable to Windows 11, as it does not display user folders
+                    such as *Documents*, *Pictures*, and *Music* in **This PC** by default [1].
+
+                    > **Caution**: This action enhances privacy but may require extra steps for access.
+
+                    ### Folder Identifier Reference
+
+                    These items are known to Windows by their IDs [2]:
+
+                    | Name | Internal Name | Folder GUID |
+                    |-------------|-------------|---------|
+                    | Network | `NetworkFolder` | `D20BEEC4-5CA8-4905-AE3B-BF251EA09B53` |
+                    | This PC | `ComputerFolder` | `0AC0837C-BBF8-452A-850D-79D08E667CA7` |
+                    | Internet | `InternetFolder` | `4D9F7874-4E0C-4904-967B-40B0D20C3E4B` |
+                    | Control Panel | `ControlPanelFolder` | `82A74AEB-AEB4-465C-A014-D097EE346D63` |
+                    | Printers | `PrintersFolder` | `76FC4E2D-D6AD-4519-A663-37BD56068185` |
+                    | Sync Center | `SyncManagerFolder` | `43668BF8-C14E-49B2-97C9-747784D784B7` |
+                    | Sync Setup | `SyncSetupFolder` | `0F214138-B1D3-4A90-BBA9-27CBC0C5389A` |
+                    | Conflicts | `ConflictFolder` | `4BFEFB45-347D-4006-A5BE-AC0CB0567192` |
+                    | Sync Results | `SyncResultsFolder` | `289A9A43-BE44-4057-A41B-587A76D7E7F9` |
+                    | Recycle Bin | `RecycleBinFolder` | `B7534046-3ECB-4C18-BE4E-64CD4CB7D6AC` |
+                    | Connections | `ConnectionsFolder` | `6F0CD92B-2E97-45D1-88FF-B0D186B8DEDD` |
+                    | Fonts | `Fonts` | `FD228CB7-AE11-4AE3-864C-16F3910AB8FE` |
+                    | Desktop | `Desktop` | `B4BFCC3A-DB2C-424C-B029-7FE99A87C641` |
+                    | Startup | `Startup` | `B97D20BB-F46A-4C97-BA10-5E3608430854` |
+                    | Programs | `Programs` | `A77F5D77-2E2B-44C3-A6A2-ABA601054A51` |
+                    | Start Menu | `StartMenu` | `625B53C3-AB48-4EC1-BA1F-A1EF4146FC19` |
+                    | Recent | `Recent` | `AE50C081-EBD2-438A-8655-8A092E34987A` |
+                    | SendTo | `SendTo` | `8983036C-27C0-404B-8F08-102D10DCFD74` |
+                    | Documents | `Documents` | `FDD39AD0-238F-46AF-ADB4-6C85480369C7` |
+                    | Favorites | `Favorites` | `1777F761-68AD-4D8A-87BD-30B759FA33DD` |
+                    | Network Shortcuts | `NetHood` | `C5ABBF53-E17F-4121-8900-86626FC2C973` |
+                    | Printer Shortcuts | `PrintHood` | `9274BD8D-CFD1-41C3-B35E-B13F55A758F4` |
+                    | Templates | `Templates` | `A63293E8-664E-48DB-A079-DF759E0509F7` |
+                    | Common Startup | `CommonStartup` | `82A5EA35-D9CD-47C5-9629-E15D2F714E6E` |
+                    | Common Programs | `CommonPrograms` | `0139D44E-6AFE-49F2-8690-3DAFCAE6FFB8` |
+                    | Common Start Menu | `CommonStartMenu` | `A4115719-D62E-491D-AA7C-E74B8BE3B067` |
+                    | Public Desktop | `PublicDesktop` | `C4AA340D-F20F-4863-AFEF-F87EF2E6BA25` |
+                    | ProgramData | `ProgramData` | `62AB5D82-FDC1-4DC3-A9DD-070D1D495D97` |
+                    | Common Templates | `CommonTemplates` | `B94237E7-57AC-4347-9151-B08C6C32D1F7` |
+                    | Public Documents | `PublicDocuments` | `ED4824AF-DCE4-45A8-81E2-FC7965083634` |
+                    | Roaming | `RoamingAppData` | `3EB685DB-65F9-4CF6-A03A-E3EF65729F3D` |
+                    | Local | `LocalAppData` | `F1B32785-6FBA-4FCF-9D55-7B8E7F157091` |
+                    | LocalLow | `LocalAppDataLow` | `A520A1A4-1780-4FF6-BD18-167343C5AF16` |
+                    | Internet Cache | `InternetCache` | `352481E8-33BE-4251-BA85-6007CAEDCF9D` |
+                    | Cookies | `Cookies` | `2B0F765D-C0E9-4171-908E-08A611B84FF6` |
+                    | History | `History` | `D9DC8A3B-B784-432E-A781-5A1130A75963` |
+                    | System | `System` | `1AC14E77-02E7-4E5D-B744-2EB1AE5198B7` |
+                    | System32 | `SystemX86` | `D65231B0-B2F1-4857-A4CE-A8E7C6EA7D27` |
+                    | Windows | `Windows` | `F38BF404-1D43-42F2-9305-67DE0B28FC23` |
+                    | Profile | `Profile` | `5E6C858F-0E22-4760-9AFE-EA3317B67173` |
+                    | Pictures | `Pictures` | `33E28130-4E1E-4676-835A-98395C3BC3BB` |
+                    | Program Files (x86) | `ProgramFilesX86` | `7C5A40EF-A0FB-4BFC-874A-C0F2E0B9FA8E` |
+                    | Common Files (x86) | `ProgramFilesCommonX86` | `DE974D24-D9C6-4D3E-BF91-F4455120B917` |
+                    | Program Files (x64) | `ProgramFilesX64` | `6D809377-6AF0-444B-8957-A3773F02200E` |
+                    | Common Files (x64) | `ProgramFilesCommonX64` | `6365D5A7-0F0D-45E5-87F6-0DA56B6A4F7D` |
+                    | Program Files | `ProgramFiles` | `905E63B6-C1BF-494E-B29C-65B732D3D21A` |
+                    | Program Files (Common) | `ProgramFilesCommon` | `F7F1ED05-9F6D-47A2-AAAE-29D317C6F066` |
+                    | User Program Files | `UserProgramFiles` | `5CD7AEE2-2219-4A67-B85D-6C9CE15660CB` |
+                    | User Common Files | `UserProgramFilesCommon` | `BCBD3057-CA5C-4622-B42D-BC56DB0AE516` |
+                    | Administrative Tools | `AdminTools` | `724EF170-A42D-4FEF-9F26-B60E846FBA4F` |
+                    | Common Administrative Tools | `CommonAdminTools` | `D0384E7D-BAC3-4797-8F14-CBA229B392B5` |
+                    | Music | `Music` | `4BD8D571-6D19-48D3-BE97-422220080E43` |
+                    | Videos | `Videos` | `18989B1D-99B5-455B-841C-AB7C74E4DDFC` |
+                    | Ringtones | `Ringtones` | `C870044B-F49E-4126-A9C3-B52A1FF411E8` |
+                    | Public Pictures | `PublicPictures` | `B6EBFB86-6907-413C-9AF7-4FC2ABF07CC5` |
+                    | Public Music | `PublicMusic` | `3214FAB5-9757-4298-BB61-92A9DEAA44FF` |
+                    | Public Videos | `PublicVideos` | `2400183A-6185-49FB-A2D8-4A392A602BA3` |
+                    | Public Ringtones | `PublicRingtones` | `E555AB60-153B-4D17-9F04-A5FE99FC15EC` |
+                    | Resource Directory | `ResourceDir` | `8AD10C31-2ADB-4296-A8F7-E4701232C972` |
+                    | Localized Resources | `LocalizedResourcesDir` | `2A00375E-224C-49DE-B8D1-440DF7EF3DDC` |
+                    | OEM Links | `CommonOEMLinks` | `C1BAE2D0-10DF-4334-BEDD-7AA20B227A9D` |
+                    | CD Burning | `CDBurning` | `9E52AB10-F80D-49DF-ACB8-4330F5687855` |
+                    | User Profiles | `UserProfiles` | `0762D272-C50A-4BB0-A382-697DCD729B80` |
+                    | Playlists | `Playlists` | `DE92C1C7-837F-4F69-A3BB-86E631204A23` |
+                    | Sample Playlists | `SamplePlaylists` | `15CA69B3-30EE-49C1-ACE1-6B5EC372AFB5` |
+                    | Sample Music | `SampleMusic` | `B250C668-F57D-4EE1-A63C-290EE7D1AA1F` |
+                    | Sample Pictures | `SamplePictures` | `C4900540-2379-4C75-844B-64E6FAF8716B` |
+                    | Sample Videos | `SampleVideos` | `859EAD94-2E85-48AD-A71A-0969CB56A6CD` |
+                    | Photo Albums | `PhotoAlbums` | `69D2CF90-FC33-4FB7-9A0C-EBB0F0FCB43C` |
+                    | Public | `Public` | `DFDF76A2-C82A-4D63-906A-5644AC457385` |
+                    | Programs and Features | `ChangeRemovePrograms` | `DF7266AC-9274-4867-8D55-3BD661DE872D` |
+                    | App Updates | `AppUpdates` | `A305CE99-F527-492B-8B1A-7E76FA98D6E4` |
+                    | Get Programs | `AddNewPrograms` | `DE61D971-5EBC-4F02-A3A9-6C82895E5C04` |
+                    | Downloads | `Downloads` | `374DE290-123F-4565-9164-39C4925E467B` |
+                    | Public Downloads | `PublicDownloads` | `3D644C9B-1FB8-4F30-9B45-F670235F79C0` |
+                    | Saved Searches | `SavedSearches` | `7D1D3A04-DEBB-4115-95CF-2F29DA2920DA` |
+                    | Quick Launch | `QuickLaunch` | `52A4F021-7B75-48A9-9F6B-4B87A210BC8F` |
+                    | Contacts | `Contacts` | `56784854-C6CB-462B-8169-88E350ACB882` |
+                    | Gadgets | `SidebarParts` | `A75D362E-50FC-4FB7-AC2C-A8BEAA314493` |
+                    | Default Gadgets | `SidebarDefaultParts` | `7B396E54-9EC5-4300-BE0A-2482EBAE1A26` |
+                    | Public Game Tasks | `PublicGameTasks` | `DEBF2536-E1A8-4C59-B6A2-414586476AEA` |
+                    | Game Tasks | `GameTasks` | `054FAE61-4DD8-4787-80B6-090220C4B700` |
+                    | Saved Games | `SavedGames` | `4C5C32FF-BB9D-43B0-B5B4-2D72E54EAAA4` |
+                    | Games | `Games` | `CAC52C1A-B53D-4EDC-92D7-6B2E8AC19434` |
+                    | Search MAPI | `SEARCH_MAPI` | `98EC0E18-2098-4D44-8644-66979315A281` |
+                    | Search CSC | `SEARCH_CSC` | `EE32E446-31CA-4ABA-814F-A5EBD2FD6D5E` |
+                    | Links | `Links` | `BFB9D5E0-C6A9-404C-B2B2-AE6DB6AF4968` |
+                    | User Files | `UsersFiles` | `F3CE0F7C-4901-4ACC-8648-D5D44B04EF8F` |
+                    | User Libraries | `UsersLibraries` | `A302545D-DEFF-464B-ABE8-61C8648D939B` |
+                    | Search Home | `SearchHome` | `190337D1-B8CA-4121-A639-6D472D16972A` |
+                    | Original Images | `OriginalImages` | `2C36C0AA-5812-4B87-BFD0-4CD0DFB19B39` |
+                    | Documents Library | `DocumentsLibrary` | `7B0DB17D-9CD2-4A93-9733-46CC89022E7C` |
+                    | Music Library | `MusicLibrary` | `2112AB0A-C86A-4FFE-A368-0DE96E47012E` |
+                    | Pictures Library | `PicturesLibrary` | `A990AE9F-A03B-4E80-94BC-9912D7504104` |
+                    | Videos Library | `VideosLibrary` | `491E922F-5643-4AF4-A7EB-4E7A138D8174` |
+                    | Recorded TV Library | `RecordedTVLibrary` | `1A6FDBA2-F42D-4358-A798-B74D745926C5` |
+                    | HomeGroup | `HomeGroup` | `52528A6B-B9E3-4ADD-B60D-588C2DBA842D` |
+                    | HomeGroup Current User | `HomeGroupCurrentUser` | `9B74B6A3-0DFD-4F11-9E78-5F7800F2E772` |
+                    | Device Metadata Store | `DeviceMetadataStore` | `5CE4A5E9-E4EB-479D-B89F-130C02886155` |
+                    | Libraries | `Libraries` | `1B3EA5DC-B587-4786-B4EF-BD1DC332AEAE` |
+                    | Public Libraries | `PublicLibraries` | `48DAF80B-E6CF-4F4E-B800-0E69D84EE384` |
+                    | User Pinned | `UserPinned` | `9E3995AB-1F9C-4F13-B827-48B24B6C7174` |
+                    | Implicit App Shortcuts | `ImplicitAppShortcuts` | `BCB5256F-79F6-4CEE-B725-DC34E402FD46` |
+                    | Account Pictures | `AccountPictures` | `008CA0B1-55B4-4C56-B8A8-4DE4B299D3BE` |
+                    | Public User Tiles | `PublicUserTiles` | `0482AF6C-08F1-4C34-8C90-E17EC98B1E17` |
+                    | Apps | `AppsFolder` | `1E87508D-89C2-42F0-8A7E-645A0F50CA58` |
+                    | All Programs | `StartMenuAllPrograms` | `F26305EF-6948-40B9-B255-81453D09C785` |
+                    | Common Start Menu Places | `CommonStartMenuPlaces` | `A440879F-87A0-4F7D-B700-0207B966194A` |
+                    | Application Shortcuts | `ApplicationShortcuts` | `A3918781-E5F2-4890-B3D9-A7E54332328C` |
+                    | Roaming Tiles | `RoamingTiles` | `00BCFC5A-ED94-4E48-96A1-3F6217F21990` |
+                    | Roamed Tile Images | `RoamedTileImages` | `AAA8D5A5-F1D6-4259-BAA8-78E7EF60835E` |
+                    | Screenshots | `Screenshots` | `B7BEDE81-DF94-4682-A7D8-57A52620B86F` |
+                    | Camera Roll | `CameraRoll` | `AB5FB87B-7CE2-4F83-915D-550846C9537B` |
+                    | OneDrive | `OneDrive` | `A52BBA46-E9E1-435F-B3D9-28DAA648C0F6` |
+                    | OneDrive Documents | `SkyDriveDocuments` | `24D89E24-2F19-4534-9DDE-6A6671FBB8FE` |
+                    | OneDrive Pictures | `SkyDrivePictures` | `339719B5-8C47-4894-94C2-D8F77ADD44A6` |
+                    | OneDrive Music | `SkyDriveMusic` | `C3F2459E-80D6-45DC-BFEF-1F769F2BE730` |
+                    | OneDrive Camera Roll | `SkyDriveCameraRoll` | `767E6811-49CB-4273-87C2-20F355E1085B` |
+                    | Search History | `SearchHistory` | `0D4C3DB6-03A3-462F-A0E6-08924C41B5D4` |
+                    | Search Templates | `SearchTemplates` | `7E636BFE-DFA9-4D5E-B456-D7B39851D8A9` |
+                    | Camera Roll Library | `CameraRollLibrary` | `2B20DF75-1EDA-4039-8097-38798227D5B7` |
+                    | Saved Pictures | `SavedPictures` | `3B193882-D3AD-4EAB-965A-69829D1FB59F` |
+                    | Saved Pictures Library | `SavedPicturesLibrary` | `E25B5812-BE88-4BD9-94B0-29233477B6C3` |
+                    | Retail Demo | `RetailDemo` | `12D4C69E-24AD-4923-BE19-31321C43A767` |
+                    | Device | `Device` | `1C2AC1DC-4358-4B6C-9733-AF21156576F0` |
+                    | Development Files | `DevelopmentFiles` | `DBE8E08E-3053-4BBC-B183-2A7B2B191E59` |
+                    | 3D Objects | `Objects3D` | `31C0DD25-9439-4F12-BF41-7FF4EDA38722` |
+                    | Captures | `AppCaptures` | `EDC0FE71-98D8-4F4A-B920-C8DC133CB165` |
+                    | Local Documents | `LocalDocuments` | `F42EE2D3-909F-4907-8871-4C22FC0BF756` |
+                    | Local Pictures | `LocalPictures` | `0DDD015D-B06C-45D5-8C4C-F59713854639` |
+                    | Local Videos | `LocalVideos` | `35286A68-3C57-41A1-BBB1-0EAE73D76C95` |
+                    | Local Music | `LocalMusic` | `A0C69A99-21C8-4671-8703-7934162FCF1D` |
+                    | Local Downloads | `LocalDownloads` | `7D83EE9B-2244-4E70-B1F5-5393042AF1E4` |
+                    | Recorded Calls | `RecordedCalls` | `2F8B40C2-83ED-48EE-B383-A1F157EC6F9A` |
+                    | All App Mods | `AllAppMods` | `7AD67899-66AF-43BA-9156-6AAD42E6C596` |
+                    | Current App Mods | `CurrentAppMods` | `3DB40B20-2A30-4DBE-917E-771DD21DD099` |
+                    | AppData Desktop | `AppDataDesktop` | `B2C5E279-7ADD-439F-B28C-C41FE1BBF672` |
+                    | AppData Documents | `AppDataDocuments` | `7BE16610-1F7F-44AC-BFF0-83E15F2FFCA1` |
+                    | AppData Favorites | `AppDataFavorites` | `7CFBEFBC-DE1F-45AA-B843-A542AC536CC9` |
+                    | AppData ProgramData | `AppDataProgramData` | `559D40A3-A036-40FA-AF61-84CB430A4D34` |
+                    | Local Storage | `LocalStorage` | `B3EB08D3-A1F3-496B-865A-42B536CDA0EC` |
+
+                    ### Folder Class Identifier (CLSID) Reference
+
+                    Certain special folders within Windows are identified by unique strings called CLSIDs [3].
+
+                    They include:
+
+                    | Name | Internal Name | GUID |
+                    |---------|---------------|------|
+                    | Desktop | `CLSID_ThisPCDesktopRegFolder` | `B4BFCC3A-DB2C-424C-B029-7FE99A87C641` |
+                    | Music | `CLSID_ThisPCMyMusicRegFolder` | `1CF1260C-4DD0-4ebb-811F-33C572699FDE` |
+                    | Downloads | `CLSID_ThisPCDownloadsRegFolder` | `374DE290-123F-4565-9164-39C4925E467B` |
+                    | Pictures | `CLSID_ThisPCMyPicturesRegFolder` | `3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA` |
+                    | Videos | `CLSID_ThisPCMyVideosRegFolder` | `A0953C92-50DC-43bf-BE83-3742FED03C9C` |
+                    | Documents | `CLSID_ThisPCDocumentsRegFolder` | `A8CDFF1C-4878-43be-B5FD-F8091C1C60D0` |
+                    | Local Downloads | `CLSID_ThisPCLocalDownloadsRegFolder` | `088e3905-0323-4b02-9826-5d99428e115f` |
+                    | Local Pictures | `CLSID_ThisPCLocalPicturesRegFolder` | `24ad3ad4-a569-4530-98e1-ab02f9417aa8` |
+                    | Local Music | `CLSID_ThisPCLocalMusicRegFolder` | `3dfdf296-dbec-4fb4-81d1-6a3438bcf4de` |
+                    | Local Videos | `CLSID_ThisPCLocalVideosRegFolder` | `f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a` |
+                    | Local Documents | `CLSID_ThisPCLocalDocumentsRegFolder` | `d3162b92-9365-467a-956b-92703aca08af` |
+
+                    These CLSIDs can be inspected by running the following command.
+                    The command displays their internal name as the default value on Windows 11 but not on Windows 10:
+
+                    ```powershell
+                    $registryPath = "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace"
+                    $subkeys = Get-ChildItem -Path $registryPath
+                    foreach ($key in $subkeys) {
+                        # Get the key name (GUID)
+                        $keyName = $key.PSChildName
+                        # Get the (Default) value
+                        $defaultValue = (Get-ItemProperty -Path $key.PSPath -Name "(default)" -ErrorAction Ignore)."(default)"
+                        # Output the results
+                        Write-Output "Key: $keyName"
+                        Write-Output "Default Value: $defaultValue"
+                        Write-Output "------------------------"
+                    }
+                    ```
+
+                    You can open a folder with CLSID using the following command:
+
+                    ```batchfile
+                    start shell:::{CLSID}
+                    ```
+
+                    [1]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+                    [2]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+                    [3]: https://archive.ph/2023.07.18-200525/https://www.autohotkey.com/docs/v1/misc/CLSID-List.htm "CLSID List (Windows Class Identifiers) | AutoHotkey v1 | autohotkey.com"
                 children:
                     -
-                        name: Remove "3D Objects" from dialog boxes
-                        code: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        revertCode: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                        name: Remove "Desktop" folder from This PC in File Explorer
+                        docs: |- # refactor-with-variables: Same • Quick Access Productivity
+                            This script hides the **Desktop** folder from **This PC** in **File Explorer**.
+                            
+                            It improves privacy by hiding desktop contents, which often include personal files,
+                            shortcuts, and temporary items.
+                            This reduces the risk of accidentally revealing sensitive information when using
+                            file dialogs.
+
+                            However, this may impact your workflow if you frequently access desktop items this way.
+                            The desktop remains visible and accessible by minimizing windows or using **File Explorer**.
+
+                            This script hides the folder using these identifiers:
+
+                            - Folder ID `B4BFCC3A-DB2C-424C-B029-7FE99A87C641` [1].
+                            - CLSID `B4BFCC3A-DB2C-424C-B029-7FE99A87C641` [2].
+
+                            On Windows 11, this script aligns with the system's default settings, as user folders
+                            in **This PC** are hidden by default [3].
+
+                            > **Caution**: This action enhances privacy but may require extra steps for access.
+
+                            [1]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+                            [2]: https://web.archive.org/web/20240118234902/https://www.elevenforum.com/t/add-or-remove-folders-under-this-pc-in-file-explorer-in-windows-11.7122/ "Add or Remove Folders under This PC in File Explorer in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [3]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+                        call:
+                            -
+                                function: HideExplorerThisPCFolderViaGuid
+                                parameters:
+                                    folderId: 'B4BFCC3A-DB2C-424C-B029-7FE99A87C641'
+                                    # Check default: reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\PropertyBag /v "ThisPCPolicy"
+                                    hideOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}
+                                    folderClsid: 'B4BFCC3A-DB2C-424C-B029-7FE99A87C641' # CLSID_ThisPCDesktopRegFolder
                     -
-                        name: Remove "Desktop" from dialog boxes
-                        code: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        revertCode: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                        name: Remove "Documents" folder from This PC in File Explorer
+                        docs: |- # refactor-with-variables: Same • Quick Access Productivity
+                            This script hides the **Documents** folder from **This PC** in **File Explorer**.
+
+                            It enhances privacy by hiding the **Documents** folder, which often contains personal and
+                            sensitive files.
+                            This action reduces the risk of accidental exposure of private information during common
+                            file operations or when others briefly access your computer.
+
+                            This change may disrupt your workflow if you often access files in the **Documents** folder
+                            via these interfaces.
+                            You can still access the **Documents** folder directly in **File Explorer** or via
+                            application-specific **Open** and **Save** dialogs that do not use **This PC**.
+
+                            This script hides the folder using these identifiers:
+
+                            - Folder ID `f42ee2d3-909f-4907-8871-4c22fc0bf756` [1].
+                            - CLSID `A8CDFF1C-4878-43be-B5FD-F8091C1C60D0` [2] [3].
+                            - CLSID `d3162b92-9365-467a-956b-92703aca08af` [2].
+
+                            On Windows 11, this script aligns with the system's default settings, as user folders
+                            in **This PC** are hidden by default [4].
+
+                            > **Caution**: This action enhances privacy but may require extra steps for access.
+
+                            [1]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+                            [2]: https://web.archive.org/web/20240118234902/https://www.elevenforum.com/t/add-or-remove-folders-under-this-pc-in-file-explorer-in-windows-11.7122/ "Add or Remove Folders under This PC in File Explorer in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [3]: https://web.archive.org/web/20240729215209/https://marslo.github.io/ibook/cheatsheet/windows/clsid.html "clsid · ibook | marslo.github.io"
+                            [4]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+                        call:
+                            -
+                                function: HideExplorerThisPCFolderViaGuid
+                                parameters:
+                                    folderId: 'f42ee2d3-909f-4907-8871-4c22fc0bf756'
+                                    # Check default: reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag /v "ThisPCPolicy"
+                                    showOnRevert: 'true' # Shown by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{A8CDFF1C-4878-43be-B5FD-F8091C1C60D0}
+                                    folderClsid: 'A8CDFF1C-4878-43be-B5FD-F8091C1C60D0' # CLSID_ThisPCDocumentsRegFolder
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{d3162b92-9365-467a-956b-92703aca08af}
+                                    folderClsid: 'd3162b92-9365-467a-956b-92703aca08af' # CLSID_ThisPCLocalDocumentsRegFolder
                     -
-                        name: Remove "Documents" from dialog boxes
-                        code: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        revertCode: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                        name: Remove "Downloads" folder from This PC in File Explorer
+                        docs: |- # refactor-with-variables: Same • Quick Access Productivity
+                            This script hides the **Downloads** folder from **This PC** in **File Explorer**.
+
+                            It enhances privacy by concealing your downloaded files from casual view, potentially
+                            including sensitive documents, personal data, or temporary items.
+                            This reduces the risk of unintentional exposure of potentially private information when
+                            using common file dialogs.
+
+                            However, this may affect your workflow if you frequently access downloaded
+                            files through these interfaces. The **Downloads** folder remains accessible
+                            through direct navigation in **File Explorer** or web browsers.
+
+                            This script hides the folder using these identifiers:
+
+                            - Folder ID `7d83ee9b-2244-4e70-b1f5-5393042af1e4` [1].
+                            - CLSID `088e3905-0323-4b02-9826-5d99428e115f` [2].
+                            - CLSID `374DE290-123F-4565-9164-39C4925E467B` [3].
+
+                            On Windows 11, this script aligns with the system's default settings, as user folders
+                            in **This PC** are hidden by default [4].
+
+                            > **Caution**: This action enhances privacy but may require extra steps for access.
+
+                            [1]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+                            [2]: https://web.archive.org/web/20240118234902/https://www.elevenforum.com/t/add-or-remove-folders-under-this-pc-in-file-explorer-in-windows-11.7122/ "Add or Remove Folders under This PC in File Explorer in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [3]: https://web.archive.org/web/20240729215209/https://marslo.github.io/ibook/cheatsheet/windows/clsid.html "clsid · ibook | marslo.github.io"
+                            [4]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+                        call:
+                            -
+                                function: HideExplorerThisPCFolderViaGuid
+                                parameters:
+                                    folderId: '7d83ee9b-2244-4e70-b1f5-5393042af1e4'
+                                    # Check default: reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag /v "ThisPCPolicy"
+                                    showOnRevert: 'true' # Shown by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{088e3905-0323-4b02-9826-5d99428e115f}
+                                    folderClsid: '088e3905-0323-4b02-9826-5d99428e115f' # CLSID_ThisPCLocalDownloadsRegFolder
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{374DE290-123F-4565-9164-39C4925E467B}
+                                    folderClsid: '374DE290-123F-4565-9164-39C4925E467B' # CLSID_ThisPCDownloadsRegFolder
                     -
-                        name: Remove "Downloads" from dialog boxes
-                        code: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        revertCode: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                        name: Remove "Videos"folder from This PC in File Explorer
+                        docs: |- # refactor-with-variables: Same • Quick Access Productivity
+                            This script hides the **Videos** folder from **This PC** in **File Explorer**.
+                            
+                            It enhances privacy by hiding your video collection, which may contain personal or sensitive content.
+                            This reduces the risk of inadvertently exposing private videos when using common file dialogs.
+
+                            However, this change may affect your workflow if you frequently access video files through these interfaces.
+                            You can still access the **Videos** folder directly in **File Explorer** or via media applications.
+
+                            This script hides the folder using these identifiers:
+
+                            - Folder ID `35286a68-3c57-41a1-bbb1-0eae73d76c95` [1].
+                            - CLSID `f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a` [2].
+                            - CLSID `A0953C92-50DC-43bf-BE83-3742FED03C9C` [3].
+
+                            On Windows 11, this script aligns with the system's default settings, as user folders
+                            in **This PC** are hidden by default [4].
+
+                            > **Caution**: This action enhances privacy but may require extra steps for access.
+
+                            [1]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+                            [2]: https://web.archive.org/web/20240118234902/https://www.elevenforum.com/t/add-or-remove-folders-under-this-pc-in-file-explorer-in-windows-11.7122/ "Add or Remove Folders under This PC in File Explorer in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [3]: https://web.archive.org/web/20240729215209/https://marslo.github.io/ibook/cheatsheet/windows/clsid.html "clsid · ibook | marslo.github.io"
+                            [4]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+                        call:
+                            -
+                                function: HideExplorerThisPCFolderViaGuid
+                                parameters:
+                                    folderId: '35286a68-3c57-41a1-bbb1-0eae73d76c95'
+                                    # Check default: reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag /v "ThisPCPolicy"
+                                    showOnRevert: 'true' # Shown by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a}
+                                    folderClsid: 'f86fa3ab-70d2-4fc7-9c99-fcbf05467f3a' # CLSID_ThisPCLocalVideosRegFolder
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{A0953C92-50DC-43bf-BE83-3742FED03C9C}
+                                    folderClsid: 'A0953C92-50DC-43bf-BE83-3742FED03C9C' # CLSID_ThisPCMyVideosRegFolder
                     -
-                        name: Remove "Movies" from dialog boxes
-                        code: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        revertCode: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                        name: Remove "Music" folder from This PC in File Explorer
+                        docs: |- # refactor-with-variables: Same • Quick Access Productivity
+                            This script hides the **Music** folder from **This PC** in **File Explorer**.
+
+                            It improves privacy by hiding your music collection, which may reflect
+                            personal tastes or contain sensitive audio files. This reduces the risk
+                            of unintentional exposure of private audio content when using common
+                            file dialogs.
+
+                            However, this may affect your workflow if you frequently access music
+                            files through these interfaces. The **Music** folder remains accessible
+                            through direct navigation in **File Explorer** or media players.
+
+                            This script hides the folder using these identifiers:
+
+                            - Folder ID `a0c69a99-21c8-4671-8703-7934162fcf1d` [1].
+                            - CLSID `3dfdf296-dbec-4fb4-81d1-6a3438bcf4de` [2].
+                            - CLSID `1CF1260C-4DD0-4ebb-811F-33C572699FDE` [2] [3].
+
+                            On Windows 11, this script aligns with the system's default settings, as user folders
+                            in **This PC** are hidden by default [4].
+
+                            > **Caution**: This action enhances privacy but may require extra steps for access.
+
+                            [1]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+                            [2]: https://web.archive.org/web/20240118234902/https://www.elevenforum.com/t/add-or-remove-folders-under-this-pc-in-file-explorer-in-windows-11.7122/ "Add or Remove Folders under This PC in File Explorer in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [3]: https://web.archive.org/web/20240729215209/https://marslo.github.io/ibook/cheatsheet/windows/clsid.html "clsid · ibook | marslo.github.io"
+                            [4]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+                        call:
+                            -
+                                function: HideExplorerThisPCFolderViaGuid
+                                parameters:
+                                    folderId: 'a0c69a99-21c8-4671-8703-7934162fcf1d'
+                                    # Check default: reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag /v "ThisPCPolicy"
+                                    showOnRevert: 'true' # Shown by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{3dfdf296-dbec-4fb4-81d1-6a3438bcf4de}
+                                    folderClsid: '3dfdf296-dbec-4fb4-81d1-6a3438bcf4de' # CLSID_ThisPCLocalMusicRegFolder
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{1CF1260C-4DD0-4ebb-811F-33C572699FDE}
+                                    folderClsid: '1CF1260C-4DD0-4ebb-811F-33C572699FDE' # CLSID_ThisPCMyMusicRegFolder
                     -
-                        name: Remove "Music" from dialog boxes
-                        code: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        revertCode: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                        name: Remove "Pictures" folder from This PC in File Explorer
+                        docs: |- # refactor-with-variables: Same • Quick Access Productivity
+                            This script hides the **Pictures** folder from **This PC** in **File Explorer**.
+
+                            It enhances privacy by concealing your image collection, which may include personal
+                            or sensitive photos.
+                            This reduces the risk of accidentally revealing private images in common file dialogs.
+
+                            However, it may impact your workflow if you frequently access picture files through
+                            these interfaces.
+                            The **Pictures** folder remains accessible via direct navigation in **File Explorer**
+                            or image viewing applications.
+
+                            This script hides the folder using these identifiers:
+
+                            - Folder ID `0ddd015d-b06c-45d5-8c4c-f59713854639` [1].
+                            - CLSID `24ad3ad4-a569-4530-98e1-ab02f9417aa8` [2].
+                            - CLSID `3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA` [3].
+
+                            On Windows 11, this script aligns with the system's default settings, as user folders
+                            in **This PC** are hidden by default [4].
+
+                            > **Caution**: This action enhances privacy but may require extra steps for access.
+
+                            [1]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+                            [2]: https://web.archive.org/web/20240118234902/https://www.elevenforum.com/t/add-or-remove-folders-under-this-pc-in-file-explorer-in-windows-11.7122/ "Add or Remove Folders under This PC in File Explorer in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [3]: https://web.archive.org/web/20240729215209/https://marslo.github.io/ibook/cheatsheet/windows/clsid.html "clsid · ibook | marslo.github.io"
+                            [4]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+                        call:
+                            -
+                                function: HideExplorerThisPCFolderViaGuid
+                                parameters:
+                                    folderId: '0ddd015d-b06c-45d5-8c4c-f59713854639'
+                                    # Check default: reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag /v "ThisPCPolicy"
+                                    showOnRevert: 'true' # Shown by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{24ad3ad4-a569-4530-98e1-ab02f9417aa8}
+                                    folderClsid: '24ad3ad4-a569-4530-98e1-ab02f9417aa8' # CLSID_ThisPCLocalPicturesRegFolder
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA}
+                                    folderClsid: '3ADD1653-EB32-4cb0-BBD7-DFA0ABB5ACCA' # CLSID_ThisPCMyPicturesRegFolder
                     -
-                        name: Remove "Pictures" from dialog boxes
-                        code: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        revertCode: |-
-                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
-                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                        name: Remove outdated "3D Objects" folder from This PC in File Explorer
+                        docs: |- # refactor-with-variables: Same • Quick Access Productivity
+                            This script hides the **3D Objects** folder from **This PC** in **File Explorer**.
+
+                            This script improves privacy as this folder may contain personal projects or designs.
+                            This action reduces the risk of unintentional sharing of potentially sensitive 3D
+                            models or related files.
+
+                            Microsoft removed this folder in Windows 10 Build 21322 and later versions [1].
+
+                            If you often use the **3D Objects** folder, this change may affect your workflow.
+                            The folder remains accessible through direct navigation in **File Explorer**.
+
+                            This script hides the folder using these identifiers:
+
+                            - Folder ID `31C0DD25-9439-4F12-BF41-7FF4EDA38722` [2].
+                            - CLSID `0DB7E03F-FC29-4DC6-9020-FF41B59E513A` [3] [4].
+
+                            On Windows 11, this script aligns with the system's default settings, as user folders
+                            in **This PC** are hidden by default [5].
+
+                            > **Caution**: This action enhances privacy but may require extra steps for access.
+                            
+                            [1]: https://web.archive.org/web/20240729214345/https://blogs.windows.com/windows-insider/2021/02/24/announcing-windows-10-insider-preview-build-21322/ "Announcing Windows 10 Insider Preview Build 21322 | Windows Insider Blog | blogs.windows.com"
+                            [2]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+                            [3]: https://web.archive.org/web/20240225155108/https://www.winhelponline.com/blog/remove-3d-objects-folder-pc-windows-10/ "Remove 3D Objects Folder from This PC in Windows 10 » Winhelponline | www.winhelponline.com"
+                            [4]: https://web.archive.org/web/20240118234902/https://www.elevenforum.com/t/add-or-remove-folders-under-this-pc-in-file-explorer-in-windows-11.7122/ "Add or Remove Folders under This PC in File Explorer in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [5]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+                        call:
+                            -
+                                function: HideExplorerThisPCFolderViaGuid
+                                parameters:
+                                    folderId: '31C0DD25-9439-4F12-BF41-7FF4EDA38722'
+                                    # Check default: reg query HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag /v "ThisPCPolicy"
+                                    hideOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: HideExplorerThisPCFolderViaClsid
+                                parameters:
+                                    # Check: start shell:::{0DB7E03F-FC29-4DC6-9020-FF41B59E513A}
+                                    folderClsid: '0DB7E03F-FC29-4DC6-9020-FF41B59E513A'
             -
                 name: Disable app usage tracking
                 recommend: standard
@@ -28552,37 +29014,76 @@ functions:
             - name: keyPath     # Full path of the subkey or entry to be deleted. No glob/wildcard interpretation.
             - name: replaceSid  # Replaces "$CURRENT_USER_SID" string in registry key with user SID.
               optional: true
+            - name: recreateOnRevert # If true, recreates the deleted registry key when reverting the action.
+              optional: true
             - name: codeComment
               optional: true
+            - name: maximumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         call:
-            # Marked: refactor-with-variables
-            #   - Replacing SID is same as `CreateRegistryKey`
-            #   - Registry path construction with hive is same as `DeleteRegistryValue` and `CreateRegistryKey`
-            function: RunPowerShell
-            parameters:
-                codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
-                code: |-
-                    $keyPath='{{ $keyPath }}'
-                    $registryHive = $keyPath.Split('\')[0]
-                    $registryKey = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
-                    {{ with $replaceSid }}
-                        $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
-                        $registryKey = $registryKey.Replace('$CURRENT_USER_SID', $userSid)
-                    {{ end }}
-                    if (-not (Test-Path -LiteralPath $registryKey)) {
-                        Write-Host "Skipping, no action needed, registry key `"$registryKey`" does not exist."
-                        exit 0
-                    }
-                    try {
-                        Remove-Item `
-                            -LiteralPath $registryKey `
-                            -Force `
-                            -ErrorAction Stop `
-                            | Out-Null
-                        Write-Host "Successfully removed the registry key at path `"$registryKey`"."
-                    } catch {
-                        Write-Error "Failed to remove the registry key at path `"$registryKey`": $($_.Exception.Message)"
-                    }
+            -
+                function: Comment
+                parameters:
+                    codeComment: >-
+                        Remove the registry key "{{ $keyPath }}"
+                        {{ with $codeComment }}({{ . }}){{ end }}
+                    revertCodeComment: >-
+                        Recreate the registry key "{{ $keyPath }}"
+            -
+                # Marked: refactor-with-variables
+                #   - Replacing SID is same as `CreateRegistryKey`
+                #   - Registry path construction with hive is same as `DeleteRegistryValue` and `CreateRegistryKey`
+                function: RunPowerShellWithWindowsVersionConstraints
+                parameters:
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+                    code: |-
+                        $keyPath='{{ $keyPath }}'
+                        $registryHive = $keyPath.Split('\')[0]
+                        $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
+                        {{ with $replaceSid }}
+                            $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
+                            $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
+                        {{ end }}
+                        Write-Host "Removing registry key at `"$registryPath`"."
+                        if (-not (Test-Path -LiteralPath $registryPath)) {
+                            Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                            exit 0
+                        }
+                        try {
+                            Remove-Item `
+                                -LiteralPath $registryPath `
+                                -Force `
+                                -ErrorAction Stop `
+                                | Out-Null
+                            Write-Host "Successfully removed the registry key at path `"$registryPath`"."
+                        } catch {
+                            Write-Error "Failed to remove the registry key at path `"$registryPath`": $($_.Exception.Message)"
+                        }
+                    revertCode: |-
+                        {{ with $recreateOnRevert }}
+                            $keyPath='{{ $keyPath }}'
+                            $registryHive = $keyPath.Split('\')[0]
+                            $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
+                            {{ with $replaceSid }}
+                                $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
+                                $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
+                            {{ end }}
+                            Write-Host "Restoring registry key at `"$registryPath`"."
+                            if (Test-Path -LiteralPath $registryPath) {
+                                Write-Host "Skipping, no action needed, registry key `"$registryPath`" already exists."
+                                Exit 0
+                            }
+                            try {
+                                New-Item `
+                                    -Path $registryPath `
+                                    -Force -ErrorAction Stop `
+                                    | Out-Null
+                                Write-Host "Successfully created the registry key at path `"$registryPath`"."
+                            } catch {
+                                Write-Error "Failed to create registry key `"$registryPath`": $($_.Exception.Message)"
+                                Exit 1
+                            }
+                        {{ end }}
     -
         name: ShowExplorerRestartSuggestion
         call:
@@ -30092,10 +30593,10 @@ functions:
                                         -Path $registryPath `
                                         -Force -ErrorAction Stop `
                                         | Out-Null
-                                    Write-Host "Registry key `"$registryPath`" was created."
+                                    Write-Host "Successfully created the registry key at path `"$registryPath`"."
                                 } catch {
                                     Write-Error "Failed to create registry key `"$registryPath`": $($_.Exception.Message)"
-                                    Exit 0
+                                    Exit 1
                                 }
                             }
                             $currentValue = Get-ItemProperty `
@@ -30157,3 +30658,138 @@ functions:
                                 Write-Error "Failed to remove the registry value `"$valueName`" at path `"$registryPath`": $($_.Exception.Message)"
                             }
                         {{ end }}
+    -
+        name: HideExplorerThisPCFolderViaClsid # ❗ This method is not reliable on Windows 11, prioritize `HideExplorerThisPCFolderViaGuid`
+        parameters:
+            - name: folderClsid # A GUID representing a CLSID for a specific folder, used in Windows registry operations
+        docs: |-
+            This function hides specific folders from the "This PC" view in Windows Explorer using their CLSIDs.
+
+            The script uses CLSIDs (Class Identifiers) that represent special folders in the OS [1].
+            These CLSIDs can be opened and tested using [2]:
+
+            ```batchfile
+            explorer.exe shell:::{CLSID}
+            ```
+
+            Script behavior differs based on the Windows version.
+
+            ### Windows 11
+
+            On Windows 11, it sets:
+
+            - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{<Folder CLSID>}!HiddenByDefault` [3]
+            - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{<Folder CLSID>}!HideIfEnabled` [3]
+
+            Community reports suggest that the `HiddenByDefault` and `HideIfEnabled` method is effective only on certain Windows 11 versions [3].
+
+            ### Windows 10 and below
+
+            On Windows 10 and below, it deletes (only working configuration, tested since Windows 10 Pro ≥ 22H2):
+
+            - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{<Folder CLSID>}` [4]
+            - `HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{<Folder CLSID>}` [4]
+
+            This method is reported to have also worked on Windows 8.1 [4].
+
+            Tests show that setting this value requires restarting `explorer.exe` on Windows 10.
+
+            [1]: https://archive.ph/2023.07.18-200525/https://www.autohotkey.com/docs/v1/misc/CLSID-List.htm "CLSID List (Windows Class Identifiers) | AutoHotkey v1 | autohotkey.com"
+            [2]: https://web.archive.org/web/20240729215209/https://marslo.github.io/ibook/cheatsheet/windows/clsid.html "clsid · ibook | marslo.github.io"
+            [3]: https://web.archive.org/web/20240118234902/https://www.elevenforum.com/t/add-or-remove-folders-under-this-pc-in-file-explorer-in-windows-11.7122/ "Add or Remove Folders under This PC in File Explorer in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+            [4]: https://web.archive.org/web/20161020161850/https://pricklytech.wordpress.com/2013/10/17/windows-8-1-x64-removing-the-folders-from-file-explorer/ "Windows 8.1 x64 – Removing the Folders from File Explorer | Michael Lane's Technology Blog | pricklytech.wordpress.com"
+        call:
+            -
+                function: DeleteRegistryKey
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{{{ $folderClsid }}}
+                    recreateOnRevert: 'true'
+                    maximumWindowsVersion: Windows10-MostRecent # No action needed on Windows 11
+            -
+                function: DeleteRegistryKey
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{{{ $folderClsid }}}
+                    recreateOnRevert: 'true'
+                    maximumWindowsVersion: Windows10-MostRecent # No action needed on Windows 11
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{{{ $folderClsid }}}
+                    valueName: 'HiddenByDefault'
+                    dataType: REG_DWORD
+                    data: '1' # It hides on Windows 11 Pro (≥ 23H2) 11, this is the default behavior but this value is missing by default
+                    deleteOnRevert: 'true' # Missing on Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                    minimumWindowsVersion: Windows11-FirstRelease # `HiddenByDefault` has no effect Windows 10
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace\{{{ $folderClsid }}}
+                    valueName: 'HideIfEnabled'
+                    dataType: REG_DWORD
+                    data: '0x22ab9b9' # Default value on Windows 11 Pro (≥ 23H2) 11, it hides
+                    # dataOnRevert: '0x22ab9b9' # Default value: Missing on Windows 10 Pro (≥ 22H2) | `0x22ab9b9` on Windows 11 Pro (≥ 23H2) # Not yet supported
+                    minimumWindowsVersion: Windows11-FirstRelease # `HideIfEnabled` has no effect Windows 10
+            -
+                function: ShowExplorerRestartSuggestion
+    -
+        name: HideExplorerThisPCFolderViaGuid # See also `HideExplorerThisPCFolderViaClsid`
+        parameters:
+            - name: folderId        # A GUID representing a specific folder in the registry
+            - name: showOnRevert    # If true, sets the folder to 'Show' when reverting changes
+              optional: true
+            - name: hideOnRevert    # If true, deletes the registry value when reverting changes
+              optional: true
+        docs: |-
+            This function removes shortcuts from "This PC" in Explorer [1] [2].
+            It does not affect shortcuts in "Quick Access"[1].
+
+            This function sets the default behavior on Windows 11, as user folders from "This PC"
+            have already been removed [3].
+
+            Microsoft documents folder IDs in their source code [4].
+
+            The script modifies these registry keys:
+
+            - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{<Folder GUID>}\PropertyBag!ThisPCPolicy`:
+              Hides folder at machine level [1] [2].
+            - `HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{<Folder GUID>}\PropertyBag!ThisPCPolicy`:
+              Same as above, but for 64-bit OS [2].
+            - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HideMyComputerIcons!{<Folder GUID>}`:
+              Hides folders at user level [1].
+
+            One must restart Explorer (`explorer.exe`) for changes to take affect [3].
+            This has been verified by tests on Windows 10 Pro (≥ 22H2).
+
+            [1]: https://web.archive.org/web/20240729130512/https://superuser.com/questions/1470599/hide-3d-objects-from-this-pc/1470630#1470630 "windows 10 - Hide "3D Objects" from "This PC" - Super User | superuser.com"
+            [2]: https://web.archive.org/web/20200921094814/https://liquidwarelabs.zendesk.com/hc/en-us/articles/210638663-Windows-10-local-shell-folders-are-not-hidden-after-redirection-causing-Location-is-not-available-error-OR-ProfileDisk-will-show-these-shorts-using-local-ProfileDisk-path "Windows 10 local shell folders are not hidden after redirection causing \"Location is not available\" error, OR ProfileDisk will show these shorts using local ProfileDisk path – Liquidware Customer Support | liquidwarelabs.zendesk.com"
+            [3]: https://web.archive.org/web/20240729151344/https://blogs.windows.com/windows-insider/2022/06/09/announcing-windows-11-insider-preview-build-25136/ "Announcing Windows 11 Insider Preview Build 25136 | Windows Insider Blog | blogs.windows.com"
+            [4]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
+        call:
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{{{ $folderId }}}\PropertyBag
+                    valueName: ThisPCPolicy
+                    dataType: REG_SZ
+                    data: 'Hide'
+                    deleteOnRevert: '{{ with $hideOnRevert }}true{{ end }}' # By default, this value does not exist if the item is hidden since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                    # dataOnRevert: '{{ with $showOnRevert }}Show{{ end }}' # Not yet supported
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{{{ $folderId }}}\PropertyBag
+                    valueName: ThisPCPolicy
+                    dataType: REG_SZ
+                    data: Hide
+                    deleteOnRevert: '{{ with $hideOnRevert }}true{{ end }}' # By default, this value does not exist if the item is hidden since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                    # dataOnRevert: '{{ with $showOnRevert }}Show{{ end }}' # Not yet supported
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HideMyComputerIcons
+                    valueName: '{{{ $folderId }}}'
+                    dataType: REG_DWORD
+                    data: '1'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+            -
+                function: ShowExplorerRestartSuggestion
