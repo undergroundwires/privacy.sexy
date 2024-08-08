@@ -22216,7 +22216,7 @@ actions:
                                     [1]: https://web.archive.org/web/20231004150131/https://apps.microsoft.com/store/detail/xbox-identity-provider/9WZDNCRD1HKW "Xbox Identity Provider - Microsoft Store Apps | apps.microsoft.com"
                                     [2]: https://github.com/undergroundwires/privacy.sexy/issues/79 "[BUG]: Xbox sign in not working · Issue #79 · undergroundwires/privacy.sexy | github.com"
                                     [3]: https://github.com/undergroundwires/privacy.sexy/issues/181 "[BUG]: Standard Privacy Script mess with some online games · Issue #181 · undergroundwires/privacy.sexy | github.com"
-                                    [4]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy | github.com"
+                                    [4]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy | github.com"
                                     [5]: https://web.archive.org/web/20231206171549/https://www.reddit.com/r/theouterworlds/comments/dn73hf/xbox_game_pass_for_pc_problem_you_are_not_signed/?rdt=43601 "Xbox Game Pass for PC Problem: You are not signed in to Xbox Live. Cloud Saves are unavailable. : r/theouterworlds | reddit.com"
                                     [6]: https://web.archive.org/web/20231206171559/https://bestgamingtips.com/fix-xbox-identity-provider-not-working/ "Xbox Live Identity Provider Not Working | Fix | bestgamingtips.com"
                                     [7]: https://web.archive.org/web/20231206171520/https://answers.microsoft.com/en-us/windows/forum/all/xbox-app-error-0x406/09dc12db-97ee-4907-89b8-3a2b7ebe1507?page=13 "Page 13 | Xbox App Error 0x406 - Microsoft Community | answers.microsoft.com"
@@ -23511,52 +23511,396 @@ actions:
                                                 packageName: Microsoft.MicrosoftEdgeDevToolsClient # Get-AppxPackage Microsoft.MicrosoftEdgeDevToolsClient
                                                 publisherId: 8wekyb3d8bbwe
                                     -
-                                        name: Remove Edge (legacy) file and URL associations
-                                        recommend: strict
-                                        docs: |- # refactor-with-variables: Same • Edge (Legacy) only
-                                            This script unlinks file and URL associations from the legacy Microsoft Edge, ensuring that it is not mistakenly recognized as
-                                            the default browser on your system.
+                                        category: Remove Edge (Legacy) associations
+                                        docs: |-
+                                            This category removes file and URL associations from Microsoft Edge Legacy,
+                                            to enhance privacy and potentially improve system stability and performance.
 
-                                            When you remove Microsoft Edge and don't disconnect its associations as the default browser, certain Windows functionalities may
-                                            malfunction, as reported by users [1]. The standard uninstallation method for Microsoft Edge does not unlink these associations,
-                                            leading to possible issues.
+                                            Edge Legacy, though outdated, may still have associations on modern Windows versions.
+                                            Removing these associations:
 
-                                            For newer versions of Windows (specifically, Windows 10 21H2 and Windows 11 21H2 and beyond), the Chromium-based Edge is associated
-                                            with majority of default options (with ProgIDs `MSEdgePDF` and `MSEdgeHTM` [2]), however there are still associations for legacy Edge.
+                                            - Reduces potential data collection through Edge Legacy
+                                            - Prevents accidental use of an outdated browser
+                                            - May improve system stability if Edge Legacy is removed
+                                            - Can potentially enhance performance by eliminating unnecessary file associations
 
-                                            The legacy Microsoft Edge is associated with several ProgIDs, such as `AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9` and `AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723`,
-                                            all prefixed with `AppX` [3].
+                                            This category applies only to Edge Legacy and does not affect newer versions of Microsoft Edge.
 
-                                            To check the specific file and URL associations handled by Edge, you can look under the following registry keys, although not
-                                            all these keys are registered by the operating system:
+                                            If Edge Legacy associations remain after uninstallation, certain Windows functionalities may malfunction [1].
+                                            Running this category improves system integrity, as standard uninstallation methods often leave these associations.
+
+                                            On modern Windows versions (confirmed by tests since Windows 10 21H2 and Windows 11 21H2), Chromium-based Edge is
+                                            associated with most default options (using ProgIDs such as `MSEdgePDF` and `MSEdgeHTM` [2]).
+                                            However, some Legacy Edge associations may persist depending on the Windows version.
+
+                                            ### Technical Details
+                                            
+                                            Edge Legacy is associated with several ProgIDs, each prefixed with `AppX` [3].
+                                            Known ProgIDs include:
+
+                                            - `AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9` [3] [4]
+                                            - `AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723` [3] [4]
+                                            - `AppXq0fevzme2pys62n3e0fbqa7peapykr8v` [3] [4]
+                                            - `AppX90nv6nhay5n6a98fnetv7tpk64pp35es` [3] [4]
+                                            - `AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y` [4]
+                                            - `AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv` (Edge Holographic [4])
+
+                                            File and URL associations can be found under these registry keys:
 
                                             - `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\Microsoft.MicrosoftEdge_{Version}\MicrosoftEdge\Capabilities\URLAssociations`
                                             - `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\Microsoft.MicrosoftEdge_{Version}\MicrosoftEdge\Capabilities\FileAssociations`
+                                            
+                                            Within these registry keys:
 
-                                            Within these keys:
+                                            - URL associations may include `http`, `https`, `microsoft-edge`, `microsoft-edge-holographic`.
+                                            - File associations may include `.htm`, `.html`, `.pdf`, `.svg`.
 
-                                            - URL associations include `http`, `https`, `microsoft-edge`, and others.
-                                            - File associations include `.htm`, `.html`, `.pdf`, and `.svg`.
+                                            Not all these associations are present on every Windows system.
+                                            The set of registered associations varies depending on Windows version and system configuration.
 
-                                            By running this script, you help in enhancing your system's privacy and ensuring that no unintended associations remain that could potentially cause
-                                            vulnerabilities or other issues.
+                                            > **Caution:**
+                                            > Removing these associations can affect how certain files and URLs if you rely on Edge (Legacy).
+                                            > Remember to set up an alternative browser to handle these file types and protocols.
 
-                                            This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
+                                            #### Open With Associations
 
-                                            [1]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
+                                            This category does not modify Open File Associations, as no such associations for Legacy Edge exist on
+                                            latest Windows versions (confirmed by tests since Windows 10 19H1 and Windows 11 21H2).
+
+                                            You can verify this by running the following PowerShell script:
+
+                                            ```powershell
+                                            $legacyEdgeProgIds = @(
+                                                'AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9',
+                                                'AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723',
+                                                'AppXq0fevzme2pys62n3e0fbqa7peapykr8v',
+                                                'AppX90nv6nhay5n6a98fnetv7tpk64pp35es',
+                                                'AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv'
+                                            )
+                                            @("Registry::HKLM\Software\Classes", "Registry::HKEY_CURRENT_USER\Software\Classes") |
+                                            ForEach-Object {
+                                                Get-ChildItem -Path "$_\*\OpenWithProgIds" -ErrorAction SilentlyContinue |
+                                                ForEach-Object {
+                                                    $extension = $_.PSParentPath.Split('\')[-1]
+                                                    $registryPath = $_.PSPath
+                                                    $formattedRegistryPath = $_.PSPath -replace '^Microsoft\.PowerShell\.Core\\Registry::', ''
+                                                    Get-ItemProperty -LiteralPath $registryPath -ErrorAction SilentlyContinue |
+                                                    ForEach-Object {
+                                                        $_.PSObject.Properties |
+                                                        Where-Object { $legacyEdgeProgIds -contains $_.Name } |
+                                                        ForEach-Object {
+                                                            $progId = $_.Name;
+                                                            [PSCustomObject]@{
+                                                                Extension = $extension
+                                                                ProgID = $progId
+                                                                RegistryPath = $formattedRegistryPath
+                                                                Hive = if ($formattedRegistryPath -match 'HKEY_LOCAL_MACHINE') { 'HKLM' } else { 'HKCU' }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            } | Sort-Object Extension, ProgID -Unique | Format-Table -AutoSize
+                                            ```
+
+                                            [1]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
                                             [2]: https://web.archive.org/web/20231001221635/https://learn.microsoft.com/en-us/deployedge/edge-default-browser "Set Microsoft Edge as the default browser on Windows and macOS | Microsoft Learn"
-                                            [3]: https://web.archive.org/web/20231001223221/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationdefaults#defaultassociationsconfiguration
-                                        call:
-                                            function: RemoveBrowserAssociations
-                                            parameters:
-                                                progIdPattern: AppX*
-                                                # List:
-                                                #   $keywords = @('AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9', 'AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723', 'AppXq0fevzme2pys62n3e0fbqa7peapykr8v', 'AppX90nv6nhay5n6a98fnetv7tpk64pp35es')
-                                                #   Get-Item -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts' | ForEach-Object { $_.Property } | Where-Object { $key = $_; $keywords | Where-Object { $key -match $_ } }
-                                                toastAssociations: >-
-                                                    AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9_.htm AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9_.html
-                                                    AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723_.pdf
-                                                    AppXq0fevzme2pys62n3e0fbqa7peapykr8v_http AppX90nv6nhay5n6a98fnetv7tpk64pp35es_https
+                                            [3]: https://web.archive.org/web/20231001223221/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationdefaults#defaultassociationsconfiguration "ApplicationDefaults Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/shell32.dll.strings "10_0_19045_2251/C/Windows/System32/shell32.dll.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 | github.com"
+                                        children:
+                                            -
+                                                name: Remove Edge (Legacy) application selection associations
+                                                recommend: strict
+                                                docs: |-
+                                                    This script removes file and URL associations with Microsoft Edge Legacy (an old version of Edge),
+                                                    enhancing your privacy and potentially improving system performance.
+                                                    
+                                                    This script removes Edge Legacy from the default application selection dialog for certain file types and
+                                                    protocols, preventing it from being easily chosen as the default handler.
+                                                    Even on newer Windows computers, the old Edge might still be set to open common file types like:
+
+                                                    - Web file formats (.htm, .html)
+                                                    - PDF documents (.pdf)
+                                                    - Web protocols (http, https)
+
+                                                    Removing these connections:
+
+                                                    - Reduces potential data collection through Edge Legacy
+                                                    - Prevents accidental use of an outdated browser
+                                                    - Improves system stability if Edge Legacy is removed [1]
+                                                    - Can potentially enhance performance by eliminating unnecessary file associations
+
+                                                    This script targets only Edge Legacy, leaving newer versions of Microsoft Edge unaffected.
+
+                                                    > **Caution**:
+                                                    > After running this script, Edge Legacy will no longer appear as a default program option for associated file types and URLs.
+                                                    > Remember to set an alternative application to handle these.
+
+                                                    ### Technical Details
+
+                                                    The known associations by default are:
+
+                                                    | Association | ProgID | Win 10 1903 | Win 10 1909 | Win 10 20H2 | Win 10 21H2 | Win 10 22H2 | Win 11 21H2 | Win 11 22H2 | Win 11 23H2 | Registry Path |
+                                                    |-------------|--------|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:--------------|
+                                                    | .htm  | AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |`HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                                    | .html | AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                                    | .pdf  | AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                                    | http  | AppXq0fevzme2pys62n3e0fbqa7peapykr8v | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                                    | https | AppX90nv6nhay5n6a98fnetv7tpk64pp35es | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                                    | microsoft-edge | AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                                    | microsoft-edge-holographic | AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                                    | microsoft-edge (HKLM) | AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+
+                                                    Certain associations, like `microsoft-edge` and `microsoft-edge-holographic` URL protocols, may be shared
+                                                    between legacy and modern Edge versions.
+                                                    The script removes shared associations only if they are explicitly linked to legacy Edge, preserving functionality
+                                                    for newer Edge versions.
+
+                                                    You can find all registered legacy Edge application selection associations using:
+
+                                                    ```powershell
+                                                    $legacyEdgeProgIds = @(
+                                                        'AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9',
+                                                        'AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723',
+                                                        'AppXq0fevzme2pys62n3e0fbqa7peapykr8v',
+                                                        'AppX90nv6nhay5n6a98fnetv7tpk64pp35es',
+                                                        'AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y',
+                                                        'AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv'
+                                                    )
+                                                    $registryPaths = @(
+                                                        'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts',
+                                                        'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts'
+                                                    )
+                                                    $results = @()
+                                                    foreach ($path in $registryPaths) {
+                                                        $registryItems = Get-Item -Path $path -ErrorAction SilentlyContinue
+                                                        if ($registryItems) {
+                                                            $results += $registryItems |
+                                                                ForEach-Object {
+                                                                    $_.Property | Where-Object {
+                                                                        $key = $_
+                                                                        $legacyEdgeProgIds | Where-Object { $key -match $_ }
+                                                                    } |
+                                                                    ForEach-Object {
+                                                                        $split = $_ -split '_'
+                                                                        [PSCustomObject]@{
+                                                                            ProgID = $split[0]
+                                                                            Association = $split[1]
+                                                                            RegistryPath = $path
+                                                                        }
+                                                                    }
+                                                                }
+                                                        }
+                                                    }
+                                                    $results | Format-Table -AutoSize
+                                                    ```
+
+                                                    [1]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
+                                                call:
+                                                    -
+                                                        function: RemoveApplicationSelectionAssociation
+                                                        parameters:
+                                                            # Check default : reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9"
+                                                            # Availability  : ✅ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                                            registryHive: HKCU
+                                                            progId: AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9
+                                                            associatedFilenameWithExtensionOrUrlProtocol: .htm
+                                                    -
+                                                        function: RemoveApplicationSelectionAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9"
+                                                            # Availability  : ✅ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                                            registryHive: HKCU
+                                                            progId: AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9
+                                                            associatedFilenameWithExtensionOrUrlProtocol: .html
+                                                    -
+                                                        function: RemoveApplicationSelectionAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723"
+                                                            # Availability  : ✅ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                                            registryHive: HKCU
+                                                            progId: AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723
+                                                            associatedFilenameWithExtensionOrUrlProtocol: .pdf
+                                                    -
+                                                        function: RemoveApplicationSelectionAssociation
+                                                        parameters:
+                                                            # Check default : reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "AppXq0fevzme2pys62n3e0fbqa7peapykr8v"
+                                                            # Availability  : ✅ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                                            registryHive: HKCU
+                                                            progId: AppXq0fevzme2pys62n3e0fbqa7peapykr8v
+                                                            associatedFilenameWithExtensionOrUrlProtocol: http
+                                                    -
+                                                        function: RemoveApplicationSelectionAssociation
+                                                        parameters:
+                                                            # Check default : reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "AppX90nv6nhay5n6a98fnetv7tpk64pp35es"
+                                                            # Availability  : ✅ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                                            registryHive: HKCU
+                                                            progId: AppX90nv6nhay5n6a98fnetv7tpk64pp35es
+                                                            associatedFilenameWithExtensionOrUrlProtocol: https
+                                                    -
+                                                        function: RemoveApplicationSelectionAssociation
+                                                        parameters:
+                                                            # Check default : reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y"
+                                                            # Availability  : ✅ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                                            registryHive: HKCU
+                                                            progId: AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y
+                                                            associatedFilenameWithExtensionOrUrlProtocol: microsoft-edge
+                                                    -
+                                                        function: RemoveApplicationSelectionAssociation
+                                                        parameters:
+                                                            # Check default : reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv"
+                                                            # Availability  : ✅ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                                            registryHive: HKCU
+                                                            progId: AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv
+                                                            associatedFilenameWithExtensionOrUrlProtocol: microsoft-edge-holographic
+                                                    -
+                                                        function: RemoveApplicationSelectionAssociation
+                                                        parameters:
+                                                            # Check default : reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y"
+                                                            # Availability  : ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (21H2) | ❌ Windows 11 Pro (≥ 22H2)
+                                                            registryHive: HKLM
+                                                            progId: AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y
+                                                            associatedFilenameWithExtensionOrUrlProtocol: microsoft-edge
+                                                            minimumWindowsVersion: Windows10-1909
+                                                            maximumWindowsVersion: Windows11-21H2
+                                            -
+                                                name: Remove Edge (Legacy) user associations
+                                                recommend: strict
+                                                docs: |-
+                                                    This script removes user associations for the legacy Microsoft Edge browser.
+                                                    Even though these are user defaults, Windows includes Microsoft Edge (Legacy)
+                                                    as the default browser for some associations on older versions of Windows.
+
+                                                    It enhances privacy by preventing the legacy Edge browser from automatically opening
+                                                    specific file types and URLs.
+                                                    This helps reduce data collection and tracking by the legacy Edge browser.
+                                                    If you have removed the legacy Edge browser, this script improves system stability by
+                                                    removing orphaned file and URL associations.
+                                                    It may improve system performance by preventing attempts to load non-existent legacy Edge
+                                                    components when opening associated files or URLs.
+
+                                                    The script applies only to Edge (Legacy) and does not affect newer versions of Edge.
+                                                    It is relevant for older Windows versions, especially Windows 10 Pro 19H1 (1903).
+
+                                                    > **Caution:**
+                                                    > Removing these associations will prompt you to choose a default application the next time you
+                                                    > open files or URLs previously associated with legacy Edge.
+                                                    > Remember to set up an alternative browser.
+
+                                                    ### Technical Details
+
+                                                    On modern Windows versions (Windows 10 Pro ≥ 19H2 and Windows 11 Pro ≥ 21H2), there are no
+                                                    user-chosen associations for Legacy Edge.
+                                                    These associations were last observed on Windows 10 Pro 19H1 (1903).
+                                                    They are not present in later Windows versions, with testing confirmed up to Windows 10 Pro 22H2 and Windows 11 Pro 23H2.
+
+                                                    The script removes the following associations on Windows 19H1 (1903):
+
+                                                    | ProgID | Type | Association | RegistryPath |
+                                                    | ------ | ---- | ----------- | ------------ |
+                                                    | AppXq0fevzme2pys62n3e0fbqa7peapykr8v | URL | http | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice` |
+                                                    | AppX90nv6nhay5n6a98fnetv7tpk64pp35es | URL | https | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice` |
+                                                    | AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y | URL | microsoft-edge | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\microsoft-edge\UserChoice` |
+                                                    | AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv | URL | microsoft-edge-holographic | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\microsoft-edge-holographic\UserChoice` |
+                                                    | AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9 | File | .htm | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\UserChoice` |
+                                                    | AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9 | File | .html | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.html\UserChoice` |
+                                                    | AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723 | File | .pdf | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice` |
+
+                                                    To verify these associations, use the following PowerShell script:
+
+                                                    ```powershell
+                                                    $legacyEdgeProgIds = @(
+                                                        'AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9',
+                                                        'AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723',
+                                                        'AppXq0fevzme2pys62n3e0fbqa7peapykr8v',
+                                                        'AppX90nv6nhay5n6a98fnetv7tpk64pp35es',
+                                                        'AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y',
+                                                        'AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv'
+                                                    )
+                                                    $baseRegistryPaths = @(
+                                                        'HKCU:\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations',
+                                                        'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts'
+                                                    )
+                                                    $results = @()
+                                                    foreach ($baseKey in $baseRegistryPaths) {
+                                                        $subKeys = Get-ChildItem -Path $baseKey -ErrorAction SilentlyContinue
+                                                        foreach ($subKey in $subKeys) {
+                                                            $userChoicePath = Join-Path $subKey.PSPath 'UserChoice'
+                                                            if (-Not (Test-Path $userChoicePath)) {
+                                                                continue
+                                                            }
+                                                            $progId = (Get-ItemProperty -Path $userChoicePath -Name ProgId -ErrorAction SilentlyContinue).ProgId
+                                                            if ($progId -and ($legacyEdgeProgIds -contains $progId)) {
+                                                                $formattedRegistryPath = $userChoicePath -replace '^Microsoft\.PowerShell\.Core\\Registry::', ''
+                                                                $results += [PSCustomObject]@{
+                                                                    ProgID = $progId
+                                                                    Association = $subKey.PSChildName
+                                                                    RegistryPath = $formattedRegistryPath
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    $results | Format-Table -AutoSize
+                                                    ```
+                                                call:
+                                                    -
+                                                        function: RemoveUserURLAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
+                                                            # Availability: ✅ Windows 10 Pro (≤ 1909) | ❌ Windows 10 Pro (≥ 20H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                            progId: AppXq0fevzme2pys62n3e0fbqa7peapykr8v
+                                                            urlProtocol: http
+                                                            maximumWindowsVersion: Windows10-1903
+                                                    -
+                                                        function: RemoveUserURLAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice"
+                                                            # Availability: ✅ Windows 10 Pro (≤ 1909) | ❌ Windows 10 Pro (≥ 20H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                            progId: AppX90nv6nhay5n6a98fnetv7tpk64pp35es
+                                                            urlProtocol: https
+                                                            maximumWindowsVersion: Windows10-1903
+                                                    -
+                                                        function: RemoveUserURLAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\microsoft-edge\UserChoice"
+                                                            # Availability: ✅ Windows 10 Pro (≤ 1909) | ❌ Windows 10 Pro (≥ 20H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                            progId: AppX7rm9drdg8sk7vqndwj3sdjw11x96jc0y
+                                                            urlProtocol: microsoft-edge
+                                                            maximumWindowsVersion: Windows10-1903
+                                                    -
+                                                        function: RemoveUserURLAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\microsoft-edge-holographic\UserChoice"
+                                                            # Availability: ✅ Windows 10 Pro (≤ 1909) | ❌ Windows 10 Pro (≥ 20H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                            progId: AppX3xxs313wwkfjhythsb8q46xdsq8d2cvv
+                                                            urlProtocol: microsoft-edge-holographic
+                                                            maximumWindowsVersion: Windows10-1903
+                                                    -
+                                                        function: RemoveUserFileAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\UserChoice"
+                                                            # Availability: ✅ Windows 10 Pro (≤ 1909) | ❌ Windows 10 Pro (≥ 20H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                            progId: AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9
+                                                            fileExtensionWithDotPrefix: .htm
+                                                            maximumWindowsVersion: Windows10-1903
+                                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                                    -
+                                                        function: RemoveUserFileAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.html\UserChoice"
+                                                            # Availability: ✅ Windows 10 Pro (≤ 1909) | ❌ Windows 10 Pro (≥ 20H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                            progId: AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9
+                                                            fileExtensionWithDotPrefix: .html
+                                                            maximumWindowsVersion: Windows10-1903
+                                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                                    -
+                                                        function: RemoveUserFileAssociation
+                                                        parameters:
+                                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice"
+                                                            # Availability: ✅ Windows 10 Pro (≤ 1909) | ❌ Windows 10 Pro (≥ 20H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                            progId: AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723
+                                                            fileExtensionWithDotPrefix: .pdf
+                                                            maximumWindowsVersion: Windows10-1903
+                                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
                             -
                                 name: Remove "Win32 Web View Host" / "Desktop App Web Viewer" app
                                 recommend: strict
@@ -23726,7 +24070,7 @@ actions:
                                     [8]: https://web.archive.org/web/20231007150256/https://learn.microsoft.com/en-us/windows/privacy/required-windows-11-diagnostic-events-and-fields#cloud-experience-host-events "Required diagnostic events and fields for Windows 11, version 21H2 - Windows Privacy | Microsoft Learn"
                                     [9]: https://web.archive.org/web/20231007150258/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/customize-oobe "Customize OOBE | Microsoft Learn"
                                     [10]: https://github.com/undergroundwires/privacy.sexy/issues/99 "Microsoft login procedure is not functional · Issue #99 · undergroundwires/privacy.sexy | github.com"
-                                    [11]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy | github.com"
+                                    [11]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy | github.com"
                                     [12]: https://github.com/undergroundwires/privacy.sexy/issues/67 "[BUG]: Unable to change PIN and Password · Issue #67 · undergroundwires/privacy.sexy | github.com"
                                 call:
                                     function: UninstallNonRemovableStoreAppWithCleanup
@@ -24734,6 +25078,8 @@ actions:
                             Modern versions of Windows 10 (20H2 and later) and Windows 11 do not have this automatic
                             reinstallation feature.
 
+                            This script deletes the `HKCU\Software\Microsoft\Windows\CurrentVersion\Run!OneDriveSetup` key [1].
+
                             [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
                             [2]: https://web.archive.org/web/20231002162805/https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016 "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
                             [3]: https://web.archive.org/web/20240803130719/https://learn.microsoft.com/en-us/windows/win32/setupapi/run-and-runonce-registry-keys "Run and RunOnce Registry Keys - Win32 apps | Microsoft Learn | learn.microsoft.com"
@@ -24987,69 +25333,703 @@ actions:
                                             Write-Error "Failed to reinstall Microsoft Edge. Installer failed with exit code $($process.ExitCode)."
                                         }
                     -
-                        name: Remove Edge file and URL associations
-                        recommend: strict
+                        category: Remove Edge associations
                         docs: |-
-                            This script disconnects file and URL associations related to the Microsoft Edge browser on your computer. When you uninstall Edge, these
-                            associations remain intact, leading to potential unexpected behaviors [1] and vulnerabilities when opening specific file types or URLs.
+                            This category removes Microsoft Edge browser associations from your Windows system,
+                            enhancing privacy and system control.
 
-                            The script is recommended for enhancing the stability and privacy of your system by avoiding unintentional interactions with these leftover
-                            settings. It particularly addresses associations found under specific registry keys:
+                            These associations often remain after uninstalling Edge, potentially leading to unexpected behaviors and privacy concerns [1].
+
+                            Removing these associations will:
+
+                            - Preventi Edge from automatically handling various file types and web protocols
+                            - Reduce potential data collection and tracking via Microsoft Edge
+                            - Eliminate leftover settings that may cause system instability after uninstalling Edge [1]
+                            - Potentially improve system performance by removing unnecessary file and protocol handlers
+
+                            This category is recommended if you've decided not to use Edge or have uninstalled it.
+                            This gives you full control over which applications handle your files and web protocols.
+
+                            > **Caution:**
+                            > This will change how your system handles various file types and web protocols.
+                            > Remember to set up an alternative browser.
+
+                            ### Technical Details
+
+                            This category addresses associations found under specific registry keys:
 
                             - `HKLM\SOFTWARE\Clients\StartMenuInternet\Microsoft Edge\Capabilities\FileAssociations`
                             - `HKLM\SOFTWARE\Clients\StartMenuInternet\Microsoft Edge\Capabilities\URLAssociations`
 
-                            Note that not all these associations are registered for Edge by the OS by default. Specifically, the removed associations have an `MSEdge` prefix,
-                            covering program IDs such as `MSEdgePDF` and `MSEdgeHTM` [2].
+                            The scripts remove associations for file types (like .htm, .html, .pdf, .svg), and protocols
+                            such as (http, https, and ftp).
 
-                            Clearing these associations, which are not removed by the official Edge uninstaller, mitigates the risk of exposure to system vulnerabilities due to
-                            these lingering settings. Your system remains cleaner, more stable, and more private, ensuring a more secure user experience.
+                            This category does not clear associations under `HKLM\SOFTWARE\Clients\StartMenuInternet` registry key.
+                            Because default installer already clears these keys.
 
-                            [1]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
+                            [1]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
                             [2]: https://web.archive.org/web/20231001221635/https://learn.microsoft.com/en-us/deployedge/edge-default-browser "Set Microsoft Edge as the default browser on Windows and macOS | Microsoft Learn"
-                        call:
-                            # Exclude:
-                            #   - Cleanup of keys under `HKLM\SOFTWARE\Clients\StartMenuInternet` as default uninstaller already cleans it.
+                        children:
                             -
-                                function: RemoveBrowserAssociations # Deleting Edge through uninstaller does not remove these (tested on Windows 11 22H2 and Windows 10 21H1 using Edge v115).
-                                parameters:
-                                    progIdPattern: MSEdge* # MSEdgeHTM, MSEdgeMHT, MSEdgePDF
-                                    # List:
-                                    #   Get-Item -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts' | ForEach-Object { $_.Property } | Where-Object { $_ -Match 'MSEdge' }
-                                    toastAssociations: >-
-                                        MSEdgeHTM_.webp MSEdgeHTM_http MSEdgeHTM_https MSEdgeHTM_.htm MSEdgeHTM_ftp MSEdgeHTM_.xml MSEdgeHTM_.html
-                                        MSEdgePDF_.pdf MSEdgeHTM_.svg MSEdgeHTM_mailto MSEdgeHTM_read MSEdgeHTM_.mht MSEdgeMHT_.mht
-                                        MSEdgeHTM_.mhtml MSEdgeMHT_.mhtml MSEdgeHTM_.xhtml MSEdgeHTM_.xht
+                                name: Remove Edge application selection associations
+                                docs: |-
+                                    This script prevents Microsoft Edge from being listed as a default program for various file types
+                                    and web links in Windows, giving you control over which programs open your files and enhancing
+                                    your privacy.
+
+                                    It improves privacy by preventing Edge from appearing as an option when selecting programs
+                                    to open certain files or web links.
+                                    This increases user control and reduces data collection and tracking via Microsoft Edge.
+                                    
+                                    If you've uninstalled Edge, this script stabilizes your system by removing leftover associations [1].
+                                    It may also boost performance by removing unnecessary Edge-related file and protocol handlers.
+
+                                    > **Caution:**
+                                    > After running this script, Edge will no longer appear as a default program for associated file types and URLs.
+                                    > Remember to set up an alternative browser.
+
+                                    ### Technical Details
+                                    
+                                    The script removes all Edge associations for web-related file types (e.g., .htm, .html, .pdf, .svg) and
+                                    protocols (e.g., http, https, mailto) from the Windows registry.
+
+                                    Tests confirm that these associations vary across Windows versions:
+
+                                    | Association | ProgID | Win 10 1903 | Win 10 1909 | Win 10 20H2 | Win 10 21H2 | Win 10 22H2 | Win 11 21H2 | Win 11 22H2 | Win 11 23H2 | Registry Path |
+                                    |-------------|--------|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-------------:|
+                                    | .webp | MSEdgeHTM | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .xml | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | http | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | https | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .htm | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .html | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .pdf | MSEdgePDF | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .svg | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | mailto | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | read | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .mht | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .mht | MSEdgeMHT | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .mhtml | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .mhtml | MSEdgeMHT | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | microsoft-edge | MSEdgeHTM | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | microsoft-edge (HKLM) | MSEdgeHTM | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .xht | MSEdgeHTM | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | .xhtml | MSEdgeHTM | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+                                    | ftp | MSEdgeHTM | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts` |
+
+                                    To view current Edge associations, run this PowerShell command:
+
+                                    ```powershell
+                                    $registryPaths = @(
+                                        'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts',
+                                        'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts'
+                                    )
+                                    $results = @()
+                                    foreach ($path in $registryPaths) {
+                                        if (-Not (Test-Path $path)) {
+                                            continue
+                                        }
+                                        $items = Get-Item -Path $path | 
+                                                ForEach-Object { $_.Property } | 
+                                                Where-Object { $_ -Match 'MSEdge' }
+                                        foreach ($item in $items) {
+                                            $split = $item -split '_'
+                                            if ($split.Count -ge 2) {
+                                                $results += [PSCustomObject]@{
+                                                    ProgID = $split[0]
+                                                    Association = $split[1]
+                                                    RegistryPath = $path
+                                                }
+                                            }
+                                        }
+                                    }
+                                    $results | Format-Table -Property ProgID, Association, RegistryPath -AutoSize
+                                    ```
+                                    
+                                    [1]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
+                                call:
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.webp"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .webp
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.xml"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .xml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_http"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: http
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_https"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: https
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.htm"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .htm
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.html"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .html
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgePDF_.pdf"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .pdf
+                                            progId: MSEdgePDF
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.svg"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .svg
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_mailto"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: mailto
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_read"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ❌ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: read
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                            maximumWindowsVersion: Windows10-MostRecent
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.mht"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ❌ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .mht
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                            maximumWindowsVersion: Windows10-MostRecent
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeMHT_.mht"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .mht
+                                            progId: MSEdgeMHT
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.mhtml"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ❌ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .mhtml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                            maximumWindowsVersion: Windows10-MostRecent
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeMHT_.mhtml"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .mhtml
+                                            progId: MSEdgeMHT
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_microsoft-edge"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (1909) | ❌ Windows 10 Pro (≥ 20H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: microsoft-edge
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                            maximumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_microsoft-edge"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (21H2) | ❌ Windows 11 Pro (≥ 22H2)
+                                            registryHive: HKLM
+                                            associatedFilenameWithExtensionOrUrlProtocol: microsoft-edge
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                            maximumWindowsVersion: Windows11-21H2
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.xht"
+                                            # Availability: ❌ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .xht
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows11-21H2
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_.xhtml"
+                                            # Availability: ❌ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: .xhtml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows11-21H2
+                                    -
+                                        function: RemoveApplicationSelectionAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" | findstr "MSEdgeHTM_ftp"
+                                            # Availability: ❌ Windows 10 Pro (≥ 1903) | ✅ Windows 11 Pro (≥ 21H2)
+                                            registryHive: HKCU
+                                            associatedFilenameWithExtensionOrUrlProtocol: ftp
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows11-21H2
                             -
-                                function: RunInlineCode
-                                # Remove association from "Open With" context menu.
-                                # Deleting Edge through uninstaller does not remove these (tested on Windows 11 22H2 and Windows 10 21H1 using Edge v115).
-                                # This associations can be found at HKLM\SOFTWARE\Clients\StartMenuInternet\Microsoft Edge\Capabilities\FileAssociations.
-                                parameters:
-                                    code: |- # reg delete HKCR\{extension}\OpenWithProgIds\MSEdge{..}
-                                        for %%A in (
-                                            htm:MSEdgeHTM, html:MSEdgeHTM, shtml:MSEdgeHTM,
-                                            pdf:MSEdgePDF, svg:MSEdgeHTM, xht:MSEdgeHTM,
-                                            xhtml:MSEdgeHTM, webp:MSEdgeHTM, xml:MSEdgeHTM,
-                                            mht:MSEdgeMHT, mhtml:MSEdgeMHT
-                                        ) do (
-                                            for /f "tokens=1,2 delims=:" %%B in ("%%A") do (
-                                                echo Removing OpenWith association for "%%C" from "%%B"...
-                                                reg delete "HKCR\.%%B\OpenWithProgIds" /v "%%C" /f 2>nul
-                                            )
-                                        )
-                                    revertCode: |- # Common defaults since Windows 10 21H2 and Windows 11 21H2
-                                        for %%A in (
-                                            htm:MSEdgeHTM, html:MSEdgeHTM, shtml:MSEdgeHTM,
-                                            pdf:MSEdgePDF, svg:MSEdgeHTM, xht:MSEdgeHTM,
-                                            xhtml:MSEdgeHTM, webp:MSEdgeHTM, mht:MSEdgeMHT,
-                                            mhtml:MSEdgeMHT
-                                        ) do (
-                                            for /f "tokens=1,2 delims=:" %%B in ("%%A") do (
-                                                echo Restoring OpenWith for ".%%B" to "%%C"...
-                                                reg add "HKCR\.%%B\OpenWithProgids" /v "%%C" /t REG_SZ /f
-                                            )
-                                        )
+                                name: Remove Edge Open With associations
+                                docs: |-
+                                    This script removes Microsoft Edge associations from the **Open With** context menu
+                                    for various file types.
+
+                                    It enhances privacy by reducing Microsoft Edge's integration with the operating system.
+                                    This limits data collection opportunities during file interactions.
+                                    It also enhances system stability by removing leftover Edge associations after uninstalling
+                                    the browser [1].
+                                    It may improve system performance by simplifying the **Open With** menu.
+
+                                    Removing these associations gives you control over which applications handle your files, thereby
+                                    reducing unwanted data sharing with Microsoft.
+
+                                    > **Caution:**
+                                    > Removing these associations may change how certain file types and web links are handled on your system.
+                                    > Remember to set up an alternative browser.
+
+                                    ### Technical Details
+
+                                    The script targets file extensions such as `.htm`, `.html`, `.pdf`, and `.svg`, removing their
+                                    associations with Microsoft Edge in the Windows Registry.
+                                    These associations persist even after uninstalling Edge (last confirmed with Edge v115 on
+                                    Windows 11 22H2 and Windows 10 21H1).
+
+                                    The script applies to Windows 10 (version 1909 and later) and Windows 11.
+                                    The table below shows the default data confirmed by tests:
+
+                                    | Association | Windows 10 1903 | Windows 10 1909 | Windows 10 20H2 | Windows 10 21H2 | Windows 10 22H2 | Windows 11 21H2 | Windows 11 22H2 | Windows 11 23H2 | Registry Path |
+                                    |-------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------------|---------------|
+                                    | .htm        | ❌               | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | `HKLM\Software\Classes\.htm\OpenWithProgIds` |
+                                    | .html       | ❌               | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | `HKLM\Software\Classes\.html\OpenWithProgIds` |
+                                    | .mht        | ❌               | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | `HKLM\Software\Classes\.mht\OpenWithProgIds` |
+                                    | .mhtml      | ❌               | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | ✅ MSEdgeMHT     | `HKLM\Software\Classes\.mhtml\OpenWithProgIds` |
+                                    | .pdf        | ❌               | ✅ MSEdgePDF     | ✅ MSEdgePDF     | ✅ MSEdgePDF     | ✅ MSEdgePDF     | ✅ MSEdgePDF     | ✅ MSEdgePDF     | ✅ MSEdgePDF     | `HKLM\Software\Classes\.pdf\OpenWithProgids` |
+                                    | .shtml      | ❌               | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | `HKLM\Software\Classes\.shtml\OpenWithProgids` |
+                                    | .svg        | ❌               | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | `HKLM\Software\Classes\.svg\OpenWithProgIds` |
+                                    | .webp       | ❌               | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | `HKLM\Software\Classes\.webp\OpenWithProgids` |
+                                    | .xht        | ❌               | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | `HKLM\Software\Classes\.xht\OpenWithProgIds` |
+                                    | .xhtml      | ❌               | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | `HKLM\Software\Classes\.xhtml\OpenWithProgIds` |
+                                    | .xml        | ❌               | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | ✅ MSEdgeHTM     | `HKLM\Software\Classes\.xml\OpenWithProgIds` |
+
+                                    To view all Edge-related associations on your system, run the following PowerShell command:
+
+                                    ```powershell
+                                    @("Registry::HKEY_LOCAL_MACHINE\Software\Classes", "Registry::HKEY_CURRENT_USER\Software\Classes") |
+                                        ForEach-Object {
+                                            Get-ChildItem -Path "$_\*\OpenWithProgIds" -ErrorAction SilentlyContinue |
+                                            ForEach-Object {
+                                                $extension = $_.PSParentPath.Split('\')[-1]
+                                                $registryPath = $_.PSPath
+                                                $formattedRegistryPath = $_.PSPath -replace '^Microsoft\.PowerShell\.Core\\Registry::', ''
+                                                Get-ItemProperty -LiteralPath $registryPath -ErrorAction SilentlyContinue |
+                                                ForEach-Object {
+                                                    $_.PSObject.Properties |
+                                                    Where-Object { $_.Name -like "MSEdge*" } |
+                                                    ForEach-Object {
+                                                        $progId = $_.Name;
+                                                        [PSCustomObject]@{
+                                                            Extension = $extension
+                                                            ProgID = $progId
+                                                            RegistryPath = $formattedRegistryPath
+                                                            Hive = if ($formattedRegistryPath -match 'HKEY_LOCAL_MACHINE') { 'HKLM' } else { 'HKCU' }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } | Sort-Object Extension, ProgID -Unique | Format-Table -AutoSize
+                                    ```
+
+                                    [1]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
+                                call:
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.htm\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .htm
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.html\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .html
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.mht\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .mht
+                                            progId: MSEdgeMHT
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.mhtml\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .mhtml
+                                            progId: MSEdgeMHT
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.pdf\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .pdf
+                                            progId: MSEdgePDF
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.shtml\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .shtml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.svg\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .svg
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.webp\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .webp
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.xht\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .xht
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.xhtml\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .xhtml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                                    -
+                                        function: RemoveFileOpenWithAssociation
+                                        parameters:
+                                            # Check default: reg query "HKLM\Software\Classes\.xml\OpenWithProgIds" | findstr "MSEdge"
+                                            # Default value: ❌ Windows 10 Pro (1903) | ✅ Windows 10 Pro (≥ 1909) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fullFileNameExtensionWithDot: .xml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-1909
+                            -
+                                name: Remove Edge user associations
+                                docs: |-
+                                    This script removes user-chosen Microsoft Edge associations for specific file types and web links.
+                                    Even if a user does not explicitly choose Edge as the default browser, it is chosen by default.
+
+                                    Edge associations often remain after uninstalling the browser [1].
+                                    This can affect privacy and system performance.
+
+                                    Removing these associations will:
+
+                                    - Enhance privacy by reducing Microsoft Edge's presence in your system
+                                    - Improve system stability, especially if Edge is uninstalled [1]
+                                    - Boost performance by eliminating unnecessary file associations
+                                    - Improve user control by allowing you to choose the browser you wish to use.
+
+                                    Removing these associations allows you to choose which applications open.
+                                    This enhances user control, privacy, system stability, and performance.
+
+                                    > **Caution:**
+                                    > Removing these associations will prompt you to choose a default application
+                                    > the next time you open files or URL protocols previously associated with Edge.
+                                    > Remember to set up an alternative browser.
+
+                                    ### Technical Details
+
+                                    The script affects various file types (such as .htm, .html) and web protocols (e.g., http, https, ftp).
+                                    It deletes Edge associations from the Windows Registry that control the user-chosen associations.
+
+                                    This action applies to Windows 10 versions from 1909 onward and all versions of Windows 11.
+                                    Earlier Windows 10 versions (like 1903) do not have these specific Edge associations by default.
+
+                                    The table below shows the availability of Edge associations across different Windows versions,
+                                    confirmed by tests:
+
+                                    | Association | ProgId | Type | Win 10 1903 | Win 10 1909 | Win 10 20H2 | Win 10 21H2 | Win 10 22H2 | Win 11 21H2 | Win 11 22H2 | Win 11 23H2 | Registry Path |
+                                    |-------------|--------|------|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|---------------|
+                                    | http | MSEdgeHTM | URL | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice` |
+                                    | https | MSEdgeHTM | URL | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice` |
+                                    | microsoft-edge | MSEdgeHTM | URL | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\microsoft-edge\UserChoice` |
+                                    | microsoft-edge-holographic | MSEdgeHTM | URL | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\microsoft-edge-holographic\UserChoice` |
+                                    | ms-xbl-3d8b930f | MSEdgeHTM | URL | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\ms-xbl-3d8b930f\UserChoice` |
+                                    | read | MSEdgeHTM | URL | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\read\UserChoice` |
+                                    | .htm | MSEdgeHTM | File | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\UserChoice` |
+                                    | .html | MSEdgeHTM | File | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.html\UserChoice` |
+                                    | .pdf | MSEdgePDF | File | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice` |
+                                    | .svg | MSEdgeHTM | File | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.svg\UserChoice` |
+                                    | .mht | MSEdgeHTM | File | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mht\UserChoice` |
+                                    | .mht | MSEdgeMHT | File | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mht\UserChoice` |
+                                    | .mhtml | MSEdgeHTM | File | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mhtml\UserChoice` |
+                                    | .mhtml | MSEdgeMHT | File | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mhtml\UserChoice` |
+                                    | .xml | MSEdgeHTM | File | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.xml\UserChoice` |
+                                    | ftp | MSEdgeHTM | URL | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\ftp\UserChoice` |
+                                    | .xht | MSEdgeHTM | File | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.xht\UserChoice` |
+                                    | .xhtml | MSEdgeHTM | File | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.xhtml\UserChoice` |
+
+                                    To verify these associations on your system, run this PowerShell command:
+
+                                    ```powershell
+                                    $baseRegistryPaths = @(
+                                        'HKCU:\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations',
+                                        'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts'
+                                    )
+                                    $results = @()
+                                    foreach ($baseKey in $baseRegistryPaths) {
+                                        $subKeys = Get-ChildItem -Path $baseKey -ErrorAction SilentlyContinue
+                                        foreach ($subKey in $subKeys) {
+                                            $userChoicePath = Join-Path $subKey.PSPath 'UserChoice'
+                                            if (-Not (Test-Path $userChoicePath)) {
+                                                continue
+                                            }
+                                            $progId = (Get-ItemProperty -Path $userChoicePath -Name ProgId -ErrorAction SilentlyContinue).ProgId
+                                            if ($progId -and ($progId -like "MSEdge*")) {
+                                                $formattedRegistryPath = $userChoicePath -replace '^Microsoft\.PowerShell\.Core\\Registry::', ''
+                                                $results += [PSCustomObject]@{
+                                                    ProgID = $progId
+                                                    Association = $subKey.PSChildName
+                                                    RegistryPath = $formattedRegistryPath
+                                                }
+                                            }
+                                        }
+                                    }
+                                    $results | Format-Table -AutoSize
+                                    ````
+
+                                    [1]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
+                                call:
+                                    -
+                                        function: RemoveUserURLAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            urlProtocol: http
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                    -
+                                        function: RemoveUserURLAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            urlProtocol: https
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                    -
+                                        function: RemoveUserURLAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\microsoft-edge\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            urlProtocol: microsoft-edge
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                    -
+                                        function: RemoveUserURLAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\microsoft-edge-holographic\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            urlProtocol: microsoft-edge-holographic
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                    -
+                                        function: RemoveUserURLAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\ms-xbl-3d8b930f\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            urlProtocol: ms-xbl-3d8b930f
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                    -
+                                        function: RemoveUserURLAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\read\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            urlProtocol: read
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.htm\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .htm
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.html\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .html
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .pdf
+                                            progId: MSEdgePDF
+                                            minimumWindowsVersion: Windows10-20H2
+                                            # reassociateOnRevert: false # 📂 Unprotected on Windows 10 Pro (≤ 21H2) | 🔒️ Protected on Windows 10 Pro (≥ 22H2) | 🔒️ Protected on Windows 11 Pro (≥ 22H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.svg\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 1909) | ✅ Windows 10 Pro (≥ 20H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .svg
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-20H2
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mht\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 20H2) | ✅ Windows 10 Pro (≥ 21H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .mht
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-21H2
+                                            maximumWindowsVersion: Windows10-MostRecent
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mht\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 22H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .mht
+                                            progId: MSEdgeMHT
+                                            minimumWindowsVersion: Windows11-21H2
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mhtml\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 20H2) | ✅ Windows 10 Pro (≥ 21H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .mhtml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-21H2
+                                            maximumWindowsVersion: Windows10-MostRecent
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mhtml\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 22H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .mhtml
+                                            progId: MSEdgeMHT
+                                            minimumWindowsVersion: Windows11-21H2
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.xml\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 21H2) | ✅ Windows 10 Pro (22H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .xml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows10-22H2
+                                            maximumWindowsVersion: Windows10-22H2
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserURLAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.mhtml\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 22H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            urlProtocol: ftp
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows11-21H2
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.xht\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 22H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .xht
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows11-21H2
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
+                                    -
+                                        function: RemoveUserFileAssociation
+                                        parameters:
+                                            # Check default: reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.xhtml\UserChoice"
+                                            # Availability: ❌ Windows 10 Pro (≤ 22H2) | ✅ Windows 11 Pro (≥ 21H2)
+                                            fileExtensionWithDotPrefix: .xhtml
+                                            progId: MSEdgeHTM
+                                            minimumWindowsVersion: Windows11-21H2
+                                            reassociateOnRevert: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 1903) | 📂 Unprotected on Windows 11 Pro (≥ 21H2)
                     -
                         name: Remove Edge shortcuts
                         docs: |-
@@ -28171,209 +29151,6 @@ functions:
                         }
                     {{ end }}
     -
-        name: RemoveBrowserAssociations
-        parameters:
-            - name: progIdPattern
-            - name: toastAssociations
-        call:
-            -
-                function: RunPowerShell
-                # See all default OS associations:
-                #   1. Open an elevated prompt
-                #   2. Run `dism /online /export-defaultappassociations:C:\appassoc.xml`
-                #   3. Inspect `C:\appassoc.xml`
-                # Registry locations:
-                #   - File associations:  `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\{extension}\UserChoice`
-                #   - URL associations:   `HKCU\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\{url}\UserChoice`
-                parameters:
-                    # -
-                    #   This script uses WMI StdRegProv methods to modify the registry.
-                    #   Because deleting key with `Remove-Item -Path $path -Recurse -Force -ErrorAction Stop` fails with:
-                    #       Cannot delete a subkey tree because the subkey does not exist.
-                    #       CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
-                    #       FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException
-                    code: |-
-                        $programIdPattern = '{{ $progIdPattern }}'
-                        $defaultAssociations = @(
-                            @{ Type = 'File';   Ext = '.htm'; }
-                            @{ Type = 'File';   Ext = '.html'; }
-                            @{ Type = 'File';   Ext = '.pdf'; }
-                            @{ Type = 'File';   Ext = '.mht'; }
-                            @{ Type = 'File';   Ext = '.mhtml'; }
-                            @{ Type = 'File';   Ext = '.svg'; }
-                            @{ Type = 'File';   Ext = '.url'; }
-                            @{ Type = 'File';   Ext = '.website'; }
-                            @{ Type = 'File';   Ext = '.xht'; }
-                            @{ Type = 'File';   Ext = '.xhtml'; }
-                            @{ Type = 'URL';    Ext = 'ftp'; }
-                            @{ Type = 'URL';    Ext = 'http'; }
-                            @{ Type = 'URL';    Ext = 'https'; }
-                            @{ Type = 'URL';    Ext = 'microsoft-edge'; }
-                            @{ Type = 'URL';    Ext = 'microsoft-edge-holographic'; }
-                            @{ Type = 'URL';    Ext = 'ms-xbl-3d8b930f'; }
-                            @{ Type = 'URL';    Ext = 'read'; }
-                        )
-                        foreach ($assoc in $defaultAssociations) {
-                            $path = $null
-                            if ($assoc.Type -eq 'File') {
-                                $path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\$($assoc.Ext)\UserChoice"
-                            } elseif ($assoc.Type -eq 'URL') {
-                                $path = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\$($assoc.Ext)\UserChoice"
-                            } else {
-                                throw "Error, unknown type: $($assoc.Type)"
-                            }
-                            $currentProgramId = Get-ItemProperty -Path $path -Name 'Progid' -ErrorAction Ignore | Select-Object -ExpandProperty Progid
-                            if (!$currentProgramId) {
-                                Write-Host "Skipping, no association found for `"$($assoc.Ext)`" in `"$path`" matching `"$programIdPattern`"."
-                                continue
-                            }
-                            if ($currentProgramId -notlike $programIdPattern) {
-                                Write-Host "Skipping, association found `"$currentProgramId`" in `"$path`" does not match pattern `"$programIdPattern`"."
-                                continue
-                            }
-                            $hkcuHiveId = 2147483649
-                            $pathWithoutHive = ($path -split ':\\')[1]
-                            $wmi = Get-WmiObject -List -Namespace root\default | Where-Object {$_.Name -eq 'StdRegProv'}
-                            $result = $wmi.DeleteKey($hkcuHiveId, $pathWithoutHive)
-                            if ($result.ReturnValue -ne 0) {
-                                Write-Error "Failed to delete `"$path`": Return code $($result.ReturnValue)"
-                                continue
-                            }
-                            Write-Host "Successfully removed `"$($assoc.Ext)`" association in `"$path`"."
-                        }
-                    # Differences in OS defaults:
-                    #   - `.url`    : `InternetShortcut` in Windows 11, and `IE.AssocFile.URL` in Windows 10
-                    #   - `.website`: N/A (missing) in Windows 11, `IE.AssocFile.WEBSITE` in Windows 10
-                    # Setting keys work fine on Windows 11 but fails with access error on Windows 10, so this script modifies ACLs.
-                    revertCode: |-
-                        $defaultAssociations = @(
-                            @{ Type = 'File';   Ext = '.htm';                           ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'File';   Ext = '.html';                          ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'File';   Ext = '.pdf';                           ProgId = 'MSEdgePDF'; }
-                            @{ Type = 'File';   Ext = '.mht';                           ProgId = 'MSEdgeMHT'; }
-                            @{ Type = 'File';   Ext = '.mhtml';                         ProgId = 'MSEdgeMHT'; }
-                            @{ Type = 'File';   Ext = '.svg';                           ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'File';   Ext = '.url';                           ProgId = 'InternetShortcut'; }
-                            @{ Type = 'File';   Ext = '.website';                       ProgId = 'IE.AssocFile.WEBSITE'; }
-                            @{ Type = 'File';   Ext = '.xht';                           ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'File';   Ext = '.xhtml';                         ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'URL';    Ext = 'ftp';                            ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'URL';    Ext = 'http';                           ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'URL';    Ext = 'https';                          ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'URL';    Ext = 'microsoft-edge';                 ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'URL';    Ext = 'microsoft-edge-holographic';     ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'URL';    Ext = 'ms-xbl-3d8b930f';                ProgId = 'MSEdgeHTM'; }
-                            @{ Type = 'URL';    Ext = 'read';                           ProgId = 'MSEdgeHTM'; }
-                        )
-                        foreach ($assoc in $defaultAssociations) {
-                            $path = $null
-                            if ($assoc.Type -eq 'File') {
-                                $path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\$($assoc.Ext)\UserChoice"
-                            } elseif ($assoc.Type -eq 'URL') {
-                                $path = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\$($assoc.Ext)\UserChoice"
-                            } else {
-                                throw "Unknown type: $($assoc.Type)"
-                            }
-                            $currentValue = Get-ItemProperty -Path $path -Name 'Progid' -ErrorAction SilentlyContinue
-                            if ($currentValue -and ($currentValue.Progid -eq $assoc.ProgId)) {
-                                Write-Host "Skipping, `"$($assoc.Ext)`" association already has the desired value. No changes needed."
-                                continue
-                            }
-                            if ($currentValue -and $currentValue.Progid) {
-                                Write-Host "Updating existing `"$($currentValue.Progid)`" to `"$($assoc.ProgId)`"."
-                            } else {
-                                Write-Host "Adding new association `"$($assoc.ProgId)`"."
-                            }
-                            if (-Not (Test-Path $path)) {
-                                New-Item -Path $path -Force | Out-Null
-                                Write-Host "Successfully created missing `"$path`"."
-                            }
-                            # Remove deny access rules
-                            $pathWithoutHive = ($path -split ':\\')[1]
-                            $registrySubKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($pathWithoutHive, [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]::ChangePermissions)
-                            $accessControlList = $registrySubKey.GetAccessControl()
-                            $denyAccessRules = @($accessControlList.Access.Where({ $_.AccessControlType -eq "Deny" }))
-                            foreach ($denyAccessRule in $denyAccessRules) {
-                                $accessControlList.RemoveAccessRule($denyAccessRule)
-                            }
-                            if ($denyAccessRules.Count -gt 0) {
-                                $registrySubKey.SetAccessControl($accessControlList)
-                                $registrySubKey.Close()
-                                Write-Host "Successfully removed deny access rules from `"$pathWithoutHive`"."
-                            }
-                            # Update registry key
-                            Set-ItemProperty -Path $path -Name 'Progid' -Value $assoc.ProgId -Force -ErrorAction Continue
-                            Write-Host "Successfully updated association for `"$($assoc.Ext)`""
-                            # Restore permissions
-                            if ($denyAccessRules.Count -gt 0) {
-                                foreach ($denyAccessRule in $denyAccessRules) {
-                                    $accessControlList.AddAccessRule($denyAccessRule)
-                                }
-                                $registrySubKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($pathWithoutHive, [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]::ChangePermissions)
-                                $registrySubKey.SetAccessControl($accessControlList)
-                                $registrySubKey.Close()
-                                Write-Host "Successfully added back deny access rules to `"$pathWithoutHive`"."
-                            }
-                        }
-            -
-                # Remove association Open With context menu
-                # Edge uninstallers do not remove these associations
-                function: RunPowerShell  # When reverting, using batch (`reg add /t REG_NONE`) does not add the exactly same default value
-                # This associations can be found at:
-                #  - New, chromium  : HKLM\SOFTWARE\Clients\StartMenuInternet\Microsoft Edge\Capabilities\FileAssociations
-                #  - Legacy, store  : HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\Microsoft.MicrosoftEdge_{Version}\MicrosoftEdge\Capabilities\FileAssociations
-                #  - See Microsoft docs for default associations: https://github.com/MicrosoftDocs/windows-itpro-docs/blob/272f15b1d7ea4768e79eb74cfe24d584823970ef/windows/client-management/mdm/policy-csp-applicationdefaults.md?plain=1#L80-L87
-                parameters:
-                    code: |-
-                        $extensions = @('.htm', '.html', '.pdf', '.svg')
-                        foreach ($extension in $extensions) {
-                            $path = "HKCU:\Software\Classes\$extension\OpenWithProgids"
-                            Write-Host "Removing association for `"$extension`": `"$path`"..."
-                            Remove-Item -Path $path -Force -ErrorAction SilentlyContinue
-                        }
-                    revertCode: |- # Common defaults since Windows 10 21H2 and Windows 11 21H2
-                        $defaultContextMenuAssociations = @(
-                            @{  Extension='.htm';   Name='AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9'; }
-                            @{  Extension='.html';  Name='AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9'; }
-                            @{  Extension='.pdf';   Name='AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723'; }
-                            @{  Extension='.svg';   Name='AppXde74bfzw9j31bzhcvsrxsyjnhhbq66cs'; }
-                        )
-                        foreach ($assoc in $defaultContextMenuAssociations) {
-                            $path = "HKCU:\Software\Classes\$($assoc.Extension)\OpenWithProgids"
-                            $value = Get-ItemProperty -Path $path -Name $assoc.Name -ErrorAction SilentlyContinue
-                            if ($value -and [System.BitConverter]::ToString($value.$($assoc.Name)) -eq '') {
-                                Write-Host "Skipping, no changes needed for `"$($assoc.Name)`" association."
-                                continue
-                            }
-                            if (-Not (Test-Path $path)) {
-                                New-Item -Path $path -Force | Out-Null
-                            }
-                            Set-ItemProperty -Path $path -Name $assoc.Name -Value ([byte[]]@()) -Type None -Force
-                            Write-Host "Successfully reverted association for `"$($assoc.Name)`"."
-                        }
-            -
-                function: RunInlineCode # Clean application toasts associations
-                # Description:
-                #   The HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts registry key in Windows stores user preferences for file type and application associations.
-                #   When a user opens a file with a non-default application, Windows may display a "toast" notification suggesting the use of the default application for that file type. The user's
-                #   response to this suggestion is recorded in the ApplicationAssociationToasts registry key. This allows Windows to remember the user's application preferences for specific file types
-                #   and determine whether to show the notification again in the future.
-                parameters:
-                    code: |-
-                        for %%a in (
-                            {{ $toastAssociations }}
-                        ) do (
-                            echo Removing association toast for "%%a"...
-                            reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" /v "%%a" /f 2>nul
-                        )
-                    revertCode: |-
-                        for %%a in (
-                            {{ $toastAssociations }}
-                        ) do (
-                            echo Restoring association toast for "%%a"...
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" /v "%%a" /t "REG_DWORD" /d "0" /f
-                        )
-    -
         name: RemoveShortcutFiles
         parameters:
             - name: shortcutItems
@@ -30313,9 +31090,13 @@ functions:
             - name: setupCode               # PowerShell code to execute before version checks.
               optional: true
             - name: minimumWindowsVersion   # Specifies the minimum Windows version for executing the PowerShell script.
-              optional: true                # Allowed values: Windows11-FirstRelease (First Windows 11), Windows10-1909, Windows10-1607
+              optional: true                # Allowed values:
+                                            #   Windows11-FirstRelease (First Windows 11) | Windows11-21H2 | Windows10-22H2 |
+                                            #   Windows10-21H2 | Windows10-20H2 | Windows10-1909 | Windows10-1607
             - name: maximumWindowsVersion   # Specifies the maximum Windows version for executing the PowerShell script.
-              optional: true                # Allowed values: Windows10-MostRecent (most recent Windows), Windows10-1909
+              optional: true                # Allowed values:
+                                            #   Windows11-21H2 | Windows10-MostRecent (most recent Windows) |
+                                            #   Windows10-22H2 | Windows10-1909 | Windows10-1903
         call:
             function: RunPowerShellWithSetup
             parameters:
@@ -30323,39 +31104,47 @@ functions:
                 #   If checks can be handled during compile time.
                 setupCode: |- # See: Find build numbers: https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions
                     {{ with $minimumWindowsVersion }}
-                        $minimumVersionName = '{{ . }}'
-                        $buildNumber=$null
-                        $buildNumber = switch ($minimumVersionName) {
-                            'Windows11-FirstRelease'    { '10.0.22000' }
-                            'Windows10-1909'            { '10.0.18363' }
-                            'Windows10-1607'            { '10.0.14393' }
-                            default { 
-                                Write-Error "Internal privacy.sexy error: Failed to find build number for minimum allowed Windows version: `"$minimumVersionName`"."
-                                Exit 1
+                        $versionName = '{{ . }}'
+                        $buildNumber = switch ($versionName) {
+                            'Windows11-FirstRelease' { '10.0.22000' }
+                            'Windows11-21H2' { '10.0.22000' }
+                            'Windows10-22H2' { '10.0.19045' }
+                            'Windows10-21H2' { '10.0.19044' }
+                            'Windows10-20H2' { '10.0.19042' }
+                            'Windows10-1909' { '10.0.18363' }
+                            'Windows10-1607' { '10.0.14393' }
+                            default {
+                                throw "Internal privacy.sexy error: No build for minimum Windows '$versionName'"
                             }
                         }
-                        $parsedMinimumVersion=[System.Version]::Parse($buildNumber)
-                        $currentVersion = [System.Version]::new([System.Environment]::OSVersion.Version.Major, [System.Environment]::OSVersion.Version.Minor, [System.Environment]::OSVersion.Version.Build) # Ignore patch
-                        if ($currentVersion -lt $parsedMinimumVersion) {
-                            Write-Output "Skipping: Current Windows version ($currentVersion) is below the minimum required version ($parsedMinimumVersion - $minimumVersionName)."
+                        $minVersion = [System.Version]::Parse($buildNumber)
+                        $version = [Environment]::OSVersion.Version
+                        $versionNoPatch = [System.Version]::new($version.Major, $version.Minor, $version.Build)
+                        if ($versionNoPatch -lt $minVersion) {
+                            Write-Output "Skipping: Windows ($versionNoPatch) is below minimum $minVersion ($versionName)"
                             Exit 0
                         }
                     {{ end }}{{ with $maximumWindowsVersion }}
-                        $maximumVersionName = '{{ . }}'
-                        $buildNumber = switch ($maximumVersionName) {
-                            'Windows10-MostRecent'      { '10.0.19045' }
-                            'Windows10-1909'            { '10.0.18363' }
+                        $versionName = '{{ . }}'
+                        $buildNumber = switch ($versionName) {
+                            'Windows11-21H2' { '10.0.22000' }
+                            'Windows10-MostRecent' { '10.0.19045' }
+                            'Windows10-22H2' { '10.0.19045' }
+                            'Windows10-1909' { '10.0.18363' }
+                            'Windows10-1903' { '10.0.18362' }
                             default {
-                                Write-Error "Internal privacy.sexy error: Failed to find build number for maximum allowed Windows version: `"$maximumVersionName`"."
-                                Exit 1
+                                throw "Internal privacy.sexy error: No build for maximum Windows '$versionName'"
                             }
                         }
-                        $parsedMaximumVersion=[System.Version]::Parse($buildNumber)
-                        $currentVersion = [System.Version]::new([System.Environment]::OSVersion.Version.Major, [System.Environment]::OSVersion.Version.Minor, [System.Environment]::OSVersion.Version.Build) # Ignore patch
-                        if ($currentVersion -gt $parsedMaximumVersion) {
-                            Write-Output "Skipping: Current Windows version ($currentVersion) is above the maximum allowed version ($parsedMaximumVersion - $maximumVersionName)."
+                        $maxVersion=[System.Version]::Parse($buildNumber)
+                        $version = [Environment]::OSVersion.Version
+                        $versionNoPatch = [System.Version]::new($version.Major, $version.Minor, $version.Build)
+                        if ($versionNoPatch -gt $maxVersion) {
+                            Write-Output "Skipping: Windows ($versionNoPatch) is above maximum $maxVersion ($versionName)"
                             Exit 0
                         }
+                    {{ end }}{{ with $setupCode }}
+                    {{ . }}
                     {{ end }}
                 code: '{{ $code }}'
                 revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
@@ -30503,14 +31292,17 @@ functions:
               optional: true
             - name: dataTypeOnRevert            # Type of the data to store upon revert.
               optional: true
-            - name: deleteOnRevert              # If 'true', it reverts to the initial state by deleting the registry key.
+            - name: deleteOnRevert              # If true, it reverts to the initial state by deleting the registry key.
               optional: true
             - name: evaluateDataAsPowerShell    # If true, evaluates 'dataOnRevert' as a PowerShell expression before setting the registry value.
               optional: true
-            - name: setupCode                   # PowerShell code to execute before version checks.
+            - name: matchDataBeforeDelete       # If provided a pattern, only deletes if current value equals this
+              optional: true
             - name: maximumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
             - name: minimumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+            - name: grantPermissions            # If true, it removes Deny ACLs from the registry key
               optional: true
         docs: |-
             This function creates or modifies a registry entry at a specified path.
@@ -30522,140 +31314,296 @@ functions:
                 parameters:
                     codeComment: >-
                         Delete the registry value "{{ $valueName }}" from the key "{{ $keyPath }}"
+                        {{ with $grantPermissions }}(with additional permissions){{ end }}
                     revertCodeComment: >- # Do not render `$dataOnRevert` as `$evaluateDataAsPowerShell` will result in ugly data values.
                         {{ with $dataOnRevert }}
-                            Restore the registry value "{{ $valueName }}" in key "{{ $keyPath }}" to its original value.
+                            Restore the registry value "{{ $valueName }}" in key "{{ $keyPath }}" to its original value {{ with $grantPermissions }} (with additional permissions){{ end }}
                         {{ end }}{{ with $deleteOnRevert }}
-                            Remove the registry value "{{ $valueName }}" from key "{{ $keyPath }}" to restore its original state
+                            Remove the registry value "{{ $valueName }}" from key "{{ $keyPath }}" to restore its original state {{ with $grantPermissions }} (with additional permissions){{ end }}
                         {{ end }}
             -
                 function: RunPowerShellWithWindowsVersionConstraints
                 parameters:
                     maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                     minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
-                    setupCode: '{{ with $setupCode }}{{ . }}{{ end }}'
                     # Marked: refactor-with-variables
-                    #   - Replacing SID is same as `CreateRegistryKey`
                     #   - Registry path construction with hive is same as `DeleteRegistryKey` and `CreateRegistryKey`
-                    #   - `deleteOnRevert` on revert code is same as "code"
+                    #   - Deleting key in `deleteOnRevert` on revert code is same as "code"
                     code: |-
-                        $keyPath = '{{ $keyPath }}'
+                        $keyName = '{{ $keyPath }}'
                         $valueName = '{{ $valueName }}'
-                        $registryHive = $keyPath.Split('\')[0]
-                        $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
-                        Write-Host "Removing the registry value `"$valueName`" from `"$registryPath`"."
-                        if (-Not (Test-Path -LiteralPath $registryPath)) {
-                            Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                        $hive = $keyName.Split('\')[0]
+                        $path = "$($hive):$($keyName.Substring($hive.Length))"
+                        Write-Host "Removing the registry value '$valueName' from '$path'."
+                        if (-Not (Test-Path -LiteralPath $path)) {
+                            Write-Host 'Skipping, no action needed, registry key does not exist.'
                             Exit 0
                         }
-                        $existingValueNames = (Get-ItemProperty -LiteralPath $registryPath).PSObject.Properties.Name
+                        $existingValueNames = (Get-ItemProperty -LiteralPath $path).PSObject.Properties.Name
                         if (-Not ($existingValueNames -Contains $valueName)) {
-                            Write-Host "Skipping, no action needed, registry value `"$valueName`" does not exist in registry path `"$registryPath`"."
+                            Write-Host 'Skipping, no action needed, registry value does not exist.'
                             Exit 0
                         }
+                        {{ with $matchDataBeforeDelete }}
+                            $expectedData = '{{ . }}'
+                            $currentData = Get-ItemProperty -LiteralPath $path -Name $valueName | Select-Object -ExpandProperty $valueName
+                            if ($currentData -ne $expectedData) {
+                                Write-Host "Skipping, no action needed, current data '$currentData' is not same as '$expectedData'."
+                                Exit 0
+                            }
+                        {{ end }}
+                        {{ with $grantPermissions }} Grant-Permissions {{ end }}
                         try {
                             if ($valueName -ieq '(default)') {
-                                Write-Host "Removing the default value from `"$registryPath`"."
-                                $(Get-Item -LiteralPath "$registryPath").OpenSubKey("", $true).DeleteValue('')
+                                Write-Host 'Removing the default value.'
+                                $(Get-Item -LiteralPath $path).OpenSubKey('', $true).DeleteValue('')
                             } else {
                                 Remove-ItemProperty `
-                                    -LiteralPath $registryPath `
+                                    -LiteralPath $path `
                                     -Name $valueName `
                                     -Force `
                                     -ErrorAction Stop
                             }
-                            Write-Host "Successfully removed the registry value `"$valueName`" at path `"$registryPath`"."
+                            Write-Host 'Successfully removed the registry value.'
                         } catch {
-                            Write-Error "Failed to remove the registry value `"$valueName`" at path `"$registryPath`": $($_.Exception.Message)"
-                        }
+                            Write-Error "Failed to remove the registry value: $($_.Exception.Message)"
+                        } {{ with $grantPermissions }} finally { Revoke-Permissions } {{ end }}
                     revertCode: |-
                         {{ with $dataOnRevert }}
-                            $dataValue = '{{ . }}'
+                            $data = '{{ . }}'
                             {{ with $evaluateDataAsPowerShell }}
-                                $dataValue = $(Invoke-Expression "$dataValue")
+                                $data = $(Invoke-Expression $data)
                             {{ end }}
                             {{ with $dataTypeOnRevert }}
-                                $dataType = '{{ . }}'
+                                $rawType = '{{ . }}'
                             {{ end }}
-                            $keyPath = '{{ $keyPath }}'
-                            $valueName = '{{ $valueName }}'
-                            $registryHive = $keyPath.Split('\')[0]
-                            $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
-                            Write-Host "Restoring value `"$valueName`" at `"$registryPath`" to `"$dataValue`"."
-                            if (-Not $dataType) {
-                                Write-Error "Internal privacy.sexy error: Data type is not provided for data `"$dataValue`"."
-                                Exit 1
+                            $rawPath = '{{ $keyPath }}'
+                            $value = '{{ $valueName }}'
+                            $hive = $rawPath.Split('\')[0]
+                            $path = "$($hive):$($rawPath.Substring($hive.Length))"
+                            Write-Host "Restoring value '$value' at '$path' with type '$rawType' and value '$data'."
+                            if (-Not $rawType) {
+                                throw "Internal privacy.sexy error: Data type is not provided for data '$data'."
                             }
-                            if (-Not (Test-Path -LiteralPath $registryPath)) {
+                            if (-Not (Test-Path -LiteralPath $path)) {
                                 try {
-                                    Write-Host "Creating registry path: `"$registryPath`"."
                                     New-Item `
-                                        -Path $registryPath `
+                                        -Path $path `
                                         -Force -ErrorAction Stop `
                                         | Out-Null
-                                    Write-Host "Successfully created the registry key at path `"$registryPath`"."
+                                    Write-Host 'Successfully created registry key.'
                                 } catch {
-                                    Write-Error "Failed to create registry key `"$registryPath`": $($_.Exception.Message)"
-                                    Exit 1
+                                    throw "Failed to create registry key: $($_.Exception.Message)"
                                 }
                             }
-                            $currentValue = Get-ItemProperty `
-                                -LiteralPath $registryPath `
-                                -Name $valueName `
+                            $currentData = Get-ItemProperty `
+                                -LiteralPath $path `
+                                -Name $value `
                                 -ErrorAction SilentlyContinue `
-                                | Select-Object -ExpandProperty "$valueName"
-                            if ($currentValue -eq $dataValue) {
-                                Write-Host "Skipping, no changes required, the registry value `"$valueName`" at path `"$registryPath`" is already as expected: `"$dataValue`"."
+                                | Select-Object -ExpandProperty $value
+                            if ($currentData -eq $data) {
+                                Write-Host 'Skipping, no changes required, the registry data is already as expected.'
                                 Exit 0
                             }
+                            {{ with $grantPermissions }} Grant-Permissions {{ end }}
                             try {
-                                Write-Host "Restoring data: `"$dataValue`" ($dataType)."
-                                $registryType = switch ($dataType) {
-                                    'REG_SZ'        { 'String' }
-                                    'REG_QWORD'     { 'QWord' }
+                                $type = switch ($rawType) {
+                                    'REG_SZ' { 'String' }
+                                    'REG_DWORD' { 'DWord' }
+                                    'REG_QWORD' { 'QWord' }
                                     'REG_EXPAND_SZ' { 'ExpandString' }
-                                    default         { throw "Unsupported data type: $dataType" }
+                                    default {
+                                        throw "Internal privacy.sexy error: Failed to find data type for: '$rawType'."
+                                    }
                                 }
                                 Set-ItemProperty `
-                                    -LiteralPath $registryPath `
-                                    -Name $valueName `
-                                    -Value $dataValue `
-                                    -Type $registryType `
+                                    -LiteralPath $path `
+                                    -Name $value `
+                                    -Value $data `
+                                    -Type $type `
                                     -Force `
                                     -ErrorAction Stop
-                                Write-Host "Successfully restored the registry value `"$valueName`" at path `"$registryPath`" with type `"$dataType`" and value `"$dataValue`"."
+                                Write-Host 'Successfully restored the registry value.'
                             } catch {
-                                Write-Error "Failed to restore the registry value `"$valueName`" at path `"$registryPath`": $($_.Exception.Message)"
-                            }
+                                throw "Failed to restore the value: $($_.Exception.Message)"
+                            } {{ with $grantPermissions }} finally { Revoke-Permissions } {{ end }}
                         {{ end }}{{ with $deleteOnRevert }}
-                            $keyPath = '{{ $keyPath }}'
+                            $keyName = '{{ $keyPath }}'
                             $valueName = '{{ $valueName }}'
-                            $registryHive = $keyPath.Split('\')[0]
-                            $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
-                            Write-Host "Removing the registry value `"$valueName`" from `"$registryPath`"."
-                            if (-Not (Test-Path -LiteralPath $registryPath)) {
-                                Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                            $hive = $keyName.Split('\')[0]
+                            $path = "$($hive):$($keyName.Substring($hive.Length))"
+                            Write-Host "Removing the registry value '$valueName' from '$path'."
+                            if (-Not (Test-Path -LiteralPath $path)) {
+                                Write-Host 'Skipping, no action needed, registry key does not exist.'
                                 Exit 0
                             }
-                            $existingValueNames = (Get-ItemProperty -LiteralPath $registryPath).PSObject.Properties.Name
+                            $existingValueNames = (Get-ItemProperty -LiteralPath $path).PSObject.Properties.Name
                             if (-Not ($existingValueNames -Contains $valueName)) {
-                                Write-Host "Skipping, no action needed, registry value `"$valueName`" does not exist in registry path `"$registryPath`"."
+                                Write-Host 'Skipping, no action needed, registry value does not exist.'
                                 Exit 0
                             }
+                            {{ with $grantPermissions }} Grant-Permissions {{ end }}
                             try {
                                 if ($valueName -ieq '(default)') {
-                                    Write-Host "Removing the default value from `"$registryPath`"."
-                                    $(Get-Item -LiteralPath "$registryPath").OpenSubKey("", $true).DeleteValue('')
+                                    Write-Host 'Removing the default value.'
+                                    $(Get-Item -LiteralPath $path).OpenSubKey('', $true).DeleteValue('')
                                 } else {
                                     Remove-ItemProperty `
-                                        -LiteralPath $registryPath `
+                                        -LiteralPath $path `
                                         -Name $valueName `
                                         -Force `
                                         -ErrorAction Stop
                                 }
-                                Write-Host "Successfully removed the registry value `"$valueName`" at path `"$registryPath`"."
+                                Write-Host 'Successfully removed the registry value.'
                             } catch {
-                                Write-Error "Failed to remove the registry value `"$valueName`" at path `"$registryPath`": $($_.Exception.Message)"
+                                Write-Error "Failed to remove the registry value: $($_.Exception.Message)"
+                            } {{ with $grantPermissions }} finally { Revoke-Permissions } {{ end }}
+                        {{ end }}
+                    # Note: 
+                    #   Storing the original ACL (e.g., `$originalAcl = $subkey.GetAccessControl()`) and restoring it with `SetAccessControl()` 
+                    #   does not work due to broken identity references. Therefore, changes are managed individually.
+                    setupCode: |-
+                        {{ with $grantPermissions }}
+                            $RawRegistryPath = '{{ $keyPath }}'
+                            $AclChanges = [PSCustomObject]@{ `
+                                PreviousOwner = $null
+                                RemovedRules = @()
+                                AddedRules = @()
+                                InheritanceDisabled = $false
+                            }
+                            function Test-AccessModified {
+                                return $AclChanges.PreviousOwner `
+                                    -Or $AclChanges.RemovedRules.Count -gt 0 `
+                                    -Or $AclChanges.AddedRules.Count  -gt 0 `
+                                    -Or $AclChanges.InheritanceDisabled
+                            }
+                            function Open-RegistryKey {
+                                param ([Parameter(Mandatory=$true)][int]$Rights)
+                                # [OutputType([Microsoft.Win32.RegistryKey])] # Not working through cmd.exe
+                                $hive = $RawRegistryPath.Split('\')[0]
+                                $pathWithoutHive = $RawRegistryPath.Substring($hive.Length + 1)
+                                try {
+                                    $rootKey = switch ($hive) {
+                                        'HKCU' { [Microsoft.Win32.Registry]::CurrentUser }
+                                        'HKLM' { [Microsoft.Win32.Registry]::LocalMachine }
+                                        default {
+                                            Write-Error "Internal error: Unknown registry hive ($hive)."
+                                            Exit 1
+                                        }
+                                    }
+                                    $key = $rootKey.OpenSubKey( `
+                                        $pathWithoutHive, `
+                                        [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, `
+                                        $Rights `
+                                    )
+                                } catch {
+                                    throw "Error when opening '$pathWithoutHive' on '$hive' hive: $_"
+                                }
+                                if (-Not $key) {
+                                    throw "Unknown error when opening '$pathWithoutHive' on '$hive' hive."
+                                }
+                                return $key
+                            }
+                            function Grant-Permissions {
+                                Write-Host "Granting permissions to '$RawRegistryPath' registry key."
+                                $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544'
+                                $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
+                                try {
+                                    $subkey = Open-RegistryKey -Rights ([System.Security.AccessControl.RegistryRights]::TakeOwnership)
+                                    $acl = $subkey.GetAccessControl()
+                                    $owner = $acl.GetOwner([System.Security.Principal.NTAccount])
+                                    if ($owner -eq $adminAccount) {
+                                        $subkey.Close()
+                                    } else {
+                                        $AclChanges.PreviousOwner = $owner
+                                        $acl.SetOwner($adminAccount)
+                                        $subkey.SetAccessControl($acl)
+                                        $subkey.Close()
+                                        Write-Host "Successfully took ownership from '$($owner.Value)'."
+                                    }
+                                } catch {
+                                    Write-Warning "Failed to take ownership. Error: $($_.Exception.Message)"
+                                }
+                                try {
+                                    $subkey = Open-RegistryKey -Rights ([System.Security.AccessControl.RegistryRights]::ChangePermissions)
+                                    $acl = $subkey.GetAccessControl()
+                                    $adminFullControlExists = $acl.Access | Where-Object { `
+                                        $_.IdentityReference -eq $adminAccount -and `
+                                        $_.RegistryRights -eq [System.Security.AccessControl.RegistryRights]::FullControl -and `
+                                        $_.AccessControlType -eq [System.Security.AccessControl.AccessControlType]::Allow `
+                                    }
+                                    if (-Not $adminFullControlExists) {
+                                        Write-Host 'Granting full control to administrators.'
+                                        $fullControlRule = New-Object System.Security.AccessControl.RegistryAccessRule( `
+                                            $adminAccount, `
+                                            [System.Security.AccessControl.RegistryRights]::FullControl, `
+                                            [System.Security.AccessControl.AccessControlType]::Allow `
+                                        )
+                                        $acl.AddAccessRule($fullControlRule)
+                                        $AclChanges.AddedRules += $fullControlRule
+                                    }
+                                    if ($acl.AreAccessRulesProtected) {
+                                        $acl.SetAccessRuleProtection($false, $false)
+                                        $AclChanges.InheritanceDisabled = $true
+                                    }
+                                    $denyRules = @($acl.Access.Where({ $_.AccessControlType -eq 'Deny' }))
+                                    foreach ($denyRule in $denyRules) {
+                                        Write-Host "Removing a deny rule for '$($denyRule.IdentityReference)'."
+                                        if ($acl.RemoveAccessRule($denyRule)) {
+                                            $AclChanges.RemovedRules += $denyRule
+                                        } else {
+                                            Write-Warning 'Failed to remove the rule.'
+                                        }
+                                    }
+                                    if (-Not (Test-AccessModified)) {
+                                        Write-Host 'No access modifications were necessary.'
+                                        $subkey.Close()
+                                    } else {
+                                        $subkey.SetAccessControl($acl)
+                                        $subkey.Close()
+                                        Write-Host 'Successfully applied new access rules.'
+                                    }
+                                } catch {
+                                    Write-Warning "Failed to modify access. Error: $($_.Exception.Message)"
+                                }
+                            }
+                            function Revoke-Permissions {
+                                Write-Host "Restoring permissions: '$RawRegistryPath'."
+                                if (-Not (Test-AccessModified)) {
+                                    Write-Host 'Skipping revoking permissions, they were not granted.'
+                                    return
+                                } else {
+                                    try {
+                                        $subkey = Open-RegistryKey -Rights ( `
+                                            [System.Security.AccessControl.RegistryRights]::TakeOwnership -bor `
+                                            [System.Security.AccessControl.RegistryRights]::ChangePermissions `
+                                        )
+                                        $acl = $subkey.GetAccessControl()
+                                        if ($AclChanges.PreviousOwner) {
+                                            Write-Host 'Restoring owner.'
+                                            $acl.SetOwner($AclChanges.PreviousOwner)
+                                        }
+                                        foreach ($rule in $AclChanges.AddedRules) {
+                                            Write-Host "Removing rule for '$($rule.IdentityReference)'."
+                                            if (-Not $acl.RemoveAccessRule($rule)) {
+                                                Write-Warning 'Failed to remove the rule.'
+                                            }
+                                        }
+                                        foreach ($rule in $AclChanges.RemovedRules) {
+                                            $acl.AddAccessRule($rule)
+                                            Write-Host "Adding a rule for '$($rule.IdentityReference)'."
+                                        }
+                                        if ($AclChanges.InheritanceDisabled) {
+                                            $acl.SetAccessRuleProtection($true, $true)
+                                            Write-Host 'Restoring inheritance.'
+                                        }
+                                        $subkey.SetAccessControl($acl)
+                                        $subkey.Close()
+                                        Write-Host 'Successfully restored permissions.'
+                                    } catch {
+                                        Write-Warning "Failed to restore permissions. Error: $($_.Exception.Message)"
+                                    }
+                                }
                             }
                         {{ end }}
     -
@@ -30793,3 +31741,348 @@ functions:
                     deleteOnRevert: 'true' # Missing key since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
             -
                 function: ShowExplorerRestartSuggestion
+    -
+        name: RemoveFileOpenWithAssociation
+        parameters:
+            - name: fullFileNameExtensionWithDot    # File extension with leading dot (e.g. `.txt`)
+            - name: progId                          # Program identifier to remove from Open With menu
+            - name: minimumWindowsVersion           # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+        docs: |-
+            This function removes a program from the **Open With** context menu for a specific file extension.
+
+            Windows stores file associations in the Registry under `HKCU\Software\Classes` and `HKLM\Software\Classes` [1].
+            This function modifies the `HKCU\` key, which takes precedence over `HKLM\` [1].
+
+            [1]: https://web.archive.org/web/20240802114228/https://learn.microsoft.com/en-us/windows/win32/sysinfo/hkey-classes-root-key "HKEY_CLASSES_ROOT Key - Win32 apps | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: 'Delete Open With association for "{{ progId }}" for {{ $fullFileNameExtensionWithDot }}'
+                    revertCodeComment: 'Restore Open With association for "{{ progId }}" for {{ $fullFileNameExtensionWithDot }}'
+            -
+                function: DeleteRegistryValue
+                parameters:
+                    keyPath: 'HKLM\Software\Classes\{{ $fullFileNameExtensionWithDot }}\OpenWithProgids'
+                    valueName: '{{ $progId }}'
+                    dataTypeOnRevert: REG_SZ
+                    dataOnRevert: "[string]::Empty"     # Use non-empty string value for function parameter to evaluate as true
+                    evaluateDataAsPowerShell: 'true'    # Evaluate [string]::Empty as PowerShell expression
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+    -
+        name: RemoveApplicationSelectionAssociation
+        parameters:
+            - name: progId                                      # ProgID (Programmatic Identifier) of the application association to remove
+            - name: associatedFilenameWithExtensionOrUrlProtocol  # The file extension or URL protocol associated with the ProgID.
+            - name: registryHive                                # The registry hive to target. Allowed values: HKCU | HKLM
+            - name: minimumWindowsVersion                       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+            - name: maximumWindowsVersion                       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+        docs: |-
+            This function removes application associations from the Windows registry.
+
+            It modifies the `HKCU|HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts`
+            registry subkey.
+            This key in Windows stores user preferences for file type and application associations.
+            When a user opens a file with a non-default application, Windows may display a "toast" notification
+            suggesting the use of the default application for that file type. 
+            The user's response to this suggestion is recorded in the ApplicationAssociationToasts registry key.
+            This allows Windows to remember the user's application preferences for specific file types
+            and determine whether to show the notification again in the future.
+
+            This function will delete the association only if the specified ProgID matches the given file extension or URL protocol.
+            If the ProgID is associated with a different file type or URL, the association remains untouched.
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: 'Remove file association for "{{ $progId }}" for {{ $associatedFilenameWithExtensionOrUrlProtocol }}'
+                    revertCodeComment: 'Restore toast association for "{{ $progId }}" for {{ $associatedFilenameWithExtensionOrUrlProtocol }}'
+            -
+                function: DeleteRegistryValue
+                parameters:
+                    keyPath: '{{ $registryHive }}\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts'
+                    valueName: '{{ $progId }}_{{ $associatedFilenameWithExtensionOrUrlProtocol }}'
+                    dataTypeOnRevert: REG_DWORD
+                    dataOnRevert: "0"
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+    -
+        name: RemoveUserFileAssociation
+        parameters:
+            - name: progId                      # Program ID to remove from file association
+            - name: fileExtensionWithDotPrefix  # File extension (with a dot prefix) to disassociate
+            - name: reassociateOnRevert         # Indicates whether to attempt reassociation of the file type when reverting changes
+              optional: true
+            - name: maximumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+            - name: minimumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+        docs: |-
+            This function removes the `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\<File Extension>\UserChoice!<ProgID>`
+            registry key [1] [2].
+            This key sets the default app association for files [1].
+            Removing it causes Windows to reset the association when the user signs in [2].
+
+            ### Testing
+
+            Test results for different Windows version when removing `.htm` assocation:
+
+            | Windows version | Delete | Re-add | Delete without ACLs | Re-add without ACLs | Deny ACLs  | Owner | Has Owner Full Control |
+            | --------------- |:------:|:------:|:-------------------:|:-------------------:|:----------:|-------|:----------------------:|
+            | Windows 10 Pro 1903 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 10 Pro 1909 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 10 Pro 20H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 10 Pro 21H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 11 Pro 21H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 10 Pro 22H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 11 Pro 22H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 11 Pro 23H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            
+            These registry keys are protected by deny ACLs, which prevent programmatic modifications.
+            To work around this limitation, the script temporarily removes these deny ACLs to allow changes.
+
+            However, the .pdf association at `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice` is a special case.
+            This value can be deleted but not re-created on newer Windows versions.
+            This behavior is likely due to tamper protection introduced in Windows 10 22H2 and Windows 11 22H2 onwards  [2], though official documentation is lacking.
+            The following table shows the results for the `.pdf` file association:
+
+            | Windows version | Delete | Re-add | Delete without ACLs | Re-add without ACLs | Deny ACLs  | Owner | Has Owner Full Control |
+            | --------------- |:------:|:------:|:-------------------:|:-------------------:|:----------:|-------|:----------------------:|
+            | Windows 10 Pro 1903 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 10 Pro 1909 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 10 Pro 20H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 10 Pro 21H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 11 Pro 21H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
+            | Windows 10 Pro 22H2 | ❌ | ❌ | ✅ | ❌ | 1 | Administrators | ✅ Yes |
+            | Windows 11 Pro 22H2 | ❌ | ❌ | ✅ | ❌ | 1 | Administrators | ✅ Yes |
+            | Windows 11 Pro 23H2 | ❌ | ❌ | ✅ | ❌ | 1 | Administrators | ✅ Yes |
+
+            The data in these tables was gathered using this PowerShell script:
+
+            ```powershell
+                $registryPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.pdf\UserChoice"
+                $pathParts = $registryPath -split ':\\'
+                $registryHive = $pathParts[0]
+                $pathWithoutHive = $pathParts[1]
+                $valueName = "ProgId"
+                $registryRootKey = if ($registryHive -eq 'HKCU') { [Microsoft.Win32.Registry]::CurrentUser } else { [Microsoft.Win32.Registry]::LocalMachine }
+                $registrySubKey = $registryRootKey.OpenSubKey(
+                    $pathWithoutHive,
+                    [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,
+                    [System.Security.AccessControl.RegistryRights]::ReadPermissions
+                )
+                $accessControlList = $registrySubKey.GetAccessControl()
+                $owner = $accessControlList.GetOwner([System.Security.Principal.NTAccount])
+                $denyACLs = @($accessControlList.Access | Where-Object { $_.AccessControlType -eq 'Deny' })
+                $denyACLsCount = $denyACLs.Count
+                $hasFullControl = $null -ne ($accessControlList.Access | Where-Object {
+                    $_.IdentityReference -eq $owner -and
+                    $_.RegistryRights -eq [System.Security.AccessControl.RegistryRights]::FullControl -and
+                    $_.AccessControlType -eq [System.Security.AccessControl.AccessControlType]::Allow
+                } | Select-Object -First 1)
+                $originalValue = Get-ItemProperty -Path $registryPath -Name $valueName -ErrorAction SilentlyContinue | Select-Object -ExpandProperty $valueName
+                $registrySubKey.Close()
+                $canDelete = $false
+                try {
+                    Remove-ItemProperty -Path $registryPath -Name $valueName -ErrorAction Stop
+                    $canDelete = $true
+                }
+                catch [System.UnauthorizedAccessException], [System.Security.SecurityException] {
+                    Write-Warning "Access is denied while deleting `"$registryPath`"."
+                }
+                $canReAdd = $false
+                if ($canDelete -and $originalValue) {
+                    try {
+                        Set-ItemProperty -Path $registryPath -Name $valueName -Value $originalValue -ErrorAction Stop
+                        $canReAdd = $true
+                    }
+                    catch [System.UnauthorizedAccessException], [System.Security.SecurityException] {
+                        Write-Warning "Access is denied while re-adding `"$registryPath`"."
+                    }
+                }
+                $canDeleteAfterRemovingDenyACLs = $false
+                $canReAddAfterRemovingDenyACLs = $false
+                if ($denyACLsCount -gt 0) {
+                    $registrySubKey = $registryRootKey.OpenSubKey(
+                        $pathWithoutHive,
+                        [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,
+                        [System.Security.AccessControl.RegistryRights]::ChangePermissions
+                    )
+                    $accessControlList = $registrySubKey.GetAccessControl()
+                    foreach ($denyACL in $denyACLs) {
+                        $accessControlList.RemoveAccessRule($denyACL)
+                    }
+                    $registrySubKey.SetAccessControl($accessControlList)
+                    $registrySubKey.Close()
+                    try {
+                        Remove-ItemProperty -Path $registryPath -Name $valueName -ErrorAction Stop
+                        $canDeleteAfterRemovingDenyACLs = $true
+                    }
+                    catch [System.UnauthorizedAccessException], [System.Security.SecurityException] {
+                        Write-Warning "Access is denied while deleting `"$registryPath`" after removing deny ACLs."
+                    }
+                    if ($canDeleteAfterRemovingDenyACLs -and $originalValue) {
+                        try {
+                            Set-ItemProperty -Path $registryPath -Name $valueName -Value $originalValue -ErrorAction Stop
+                            $canReAddAfterRemovingDenyACLs = $true
+                        }
+                        catch [System.UnauthorizedAccessException], [System.Security.SecurityException] {
+                            Write-Warning "Access is denied while re-adding `"$registryPath`" after removing deny ACLs."
+                        }
+                    }
+                    $registrySubKey = $registryRootKey.OpenSubKey(
+                        $pathWithoutHive,
+                        [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,
+                        [System.Security.AccessControl.RegistryRights]::ChangePermissions
+                    )
+                    $accessControlList = $registrySubKey.GetAccessControl()
+                    foreach ($denyACL in $denyACLs) {
+                        $accessControlList.AddAccessRule($denyACL)
+                    }
+                    $registrySubKey.SetAccessControl($accessControlList)
+                    $registrySubKey.Close()
+                }
+                $results = @(
+                    @{Test = "Permissions: Owner"; Result = $owner}
+                    @{Test = "Permissions: Deny ACLs"; Result = $denyACLsCount}
+                    @{Test = "Permissions: Has owner Full control"; Result = $hasFullControl}
+                    @{Test = "Operations: Can delete"; Result = $canDelete}
+                    @{Test = "Operations: Can re-add"; Result = $canReAdd}
+                    @{Test = "Operations: Can delete after removing deny ACLs"; Result = $canDeleteAfterRemovingDenyACLs}
+                    @{Test = "Operations: Can re-add after removing deny ACLs"; Result = $canReAddAfterRemovingDenyACLs}
+                )
+                $results | ForEach-Object { [PSCustomObject]$_ } | Format-Table -AutoSize -Wrap
+            ```
+
+            However after removing deny ACLs these registry keys can be modified without issues:
+
+            [1]: https://web.archive.org/web/20240808100346/https://bugzilla.mozilla.org/show_bug.cgi?id=1852412 "1852412 - [win11] setAsDefaultUserChoice fails on some devices | bugzilla.mozilla.org"
+            [2]: https://web.archive.org/web/20240808095751/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-shell-setup-copyprofile "CopyProfile | Microsoft Learn | learn.microsoft.com"z
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: 'Remove user-chosen file association for "{{ $progId }}" for {{ $fileExtensionWithDotPrefix }} files'
+                    revertCodeComment: 'Restore user-chosen file association for "{{ $progId }}" for {{ $fileExtensionWithDotPrefix }} files'
+            -
+                function: DeleteRegistryValue
+                parameters:
+                    keyPath: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\{{ $fileExtensionWithDotPrefix }}\UserChoice'
+                    valueName: ProgId
+                    matchDataBeforeDelete: "{{ $progId }}"
+                    dataTypeOnRevert: "{{ with $reassociateOnRevert }}REG_SZ{{ end }}"
+                    dataOnRevert: "{{ with $reassociateOnRevert }}{{ $progId }}{{ end }}"
+                    grantPermissions: 'true' # 🔒️ Protected with deny ACLs on Windows 10 Pro (≥ 1903) | 🔒️ Windows 11 Pro (≥ 21H2)
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+    -
+        name: RemoveUserURLAssociation
+        parameters:
+            - name: progId                  # Program ID to remove from file association
+            - name: urlProtocol             # File extension (with a dot prefix) to disassociate
+            - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+        docs: |-
+            This function removes the `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FileExts\<File Extension>\UserChoice!<ProgID>`
+            registry key [1] [2].
+            This key sets the default app association for files [1].
+            Removing it causes Windows to reset the association when the user signs in [2].
+
+            On revert, it does not restore the associated software for user URLs because this registry key is protected on modern versions
+            of Windows (confirmed on Windows 10 Pro 22H2 and later, and Windows 11 Pro 22H2 and later) due to a new tamper protection mechanism [1].
+
+            ### Testing
+
+            Test results for different Windows version when removing `http` assocation:
+
+            | Windows version | Delete | Re-add | Deny ACLs | Owner | Has Owner Full Control |
+            | --------------- |:------:|:------:|:---------:|-------|:----------------------:|
+            | Windows 10 Pro 1903 | ✅ | ✅ | ✅ | None | Administrators | ✅ Yes |
+            | Windows 10 Pro 1909 | ✅ | ✅ | ✅ | None | Administrators | ✅ Yes |
+            | Windows 10 Pro 20H2 | ✅ | ✅ | ✅ | None | Administrators | ✅ Yes |
+            | Windows 10 Pro 21H2 | ✅ | ✅ | ✅ | None | Administrators | ✅ Yes |
+            | Windows 11 Pro 21H2 | ✅ | ✅ | ✅ | None | Administrators | ✅ Yes |
+            | Windows 10 Pro 22H2 | ✅ | ✅ | ❌ | None | Administrators | ✅ Yes |
+            | Windows 11 Pro 22H2 | ✅ | ✅ | ❌ | None | Administrators | ✅ Yes |
+            | Windows 11 Pro 23H2 | ✅ | ✅ | ❌ | None | Administrators | ✅ Yes |
+
+            This table shows that these registry keys have the necessary permissions granted to the administrator, but
+            since Windows 10 Pro 22H2 and Windows 11 Pro 22H2, re-adding this key still results in "Access is denied" errors.
+            This key is protected by another undocumented mechanism.
+
+            Tests show that not all `UrlAssociations` subkeys are protected, but some (such as `http`) are.
+            For example, editing `bingmaps` works fine, but browser values such as `http` and `https`
+            result in "Access is denied" errors.
+
+            The data in table is collected by running this PowerShell script:
+
+            ```powershell
+                $pathWithoutHive = "Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"
+                $fullPath = "HKCU:\$pathWithoutHive"
+                $valueName = "ProgId"
+                $registrySubKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey(
+                    $pathWithoutHive,
+                    [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree,
+                    [System.Security.AccessControl.RegistryRights]::ReadPermissions
+                )
+                $accessControlList = $registrySubKey.GetAccessControl()
+                $owner = $accessControlList.GetOwner([System.Security.Principal.NTAccount])
+                $denyACLsCount = ($accessControlList.Access | Where-Object { $_.AccessControlType -eq 'Deny' }).Count
+                $hasFullControl = $accessControlList.Access | Where-Object {
+                    $_.IdentityReference -eq $owner -and
+                    $_.RegistryRights -eq [System.Security.AccessControl.RegistryRights]::FullControl -and
+                    $_.AccessControlType -eq [System.Security.AccessControl.AccessControlType]::Allow
+                } | Select-Object -First 1
+                $originalValue = Get-ItemProperty -Path $fullPath -Name $valueName -ErrorAction SilentlyContinue | Select-Object -ExpandProperty $valueName
+                $canDelete = $false
+                try {
+                    Remove-ItemProperty -Path $fullPath -Name $valueName -ErrorAction Stop
+                    $canDelete = $true
+                } catch [System.UnauthorizedAccessException], [System.Security.SecurityException] {
+                    Write-Warning "Access is denied while deleting `"$fullPath`"."
+                    $canDelete = $false
+                }
+                $canReAdd = $false
+                if ($canDelete -and $originalValue) {
+                    try {
+                        Set-ItemProperty -Path $fullPath -Name $valueName -Value $originalValue -ErrorAction Stop
+                        $canReAdd = $true
+                    } catch [System.UnauthorizedAccessException], [System.Security.SecurityException] {
+                        Write-Warning "Access is denied while re-adding `"$fullPath`"."
+                        $canReAdd = $false
+                    }
+                }
+                [PSCustomObject]@{
+                    "Permissions: Owner" = $owner
+                    "Permissions: Deny ACLs" = $denyACLsCount
+                    "Permissions: Has owner Full control" = $($hasFullControl -ne $null)
+                    "Operations: Can delete" = $canDelete
+                    "Operations: Can re-add" = $canReAdd
+                }
+            ```
+
+            [1]: https://web.archive.org/web/20240808100346/https://bugzilla.mozilla.org/show_bug.cgi?id=1852412 "1852412 - [win11] setAsDefaultUserChoice fails on some devices | bugzilla.mozilla.org"
+            [2]: https://web.archive.org/web/20240808095751/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-shell-setup-copyprofile "CopyProfile | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: 'Remove user-chosen URL association for "{{ $progId }}" for {{ $urlProtocol }} URL protocol'
+            -
+                function: DeleteRegistryValue
+                parameters:
+                    # Notes:
+                    # - Revert logic is commented out because Windows does not allow modifying this key with new tamper protection mechanism
+                    #   since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H2).
+                    # - Granting permissions is not necessary as `Administrator` has all necessary permissions without any explicit deny rules.
+                    #   (tested since Windows 10 Pro (≥ 1903) and Windows 11 Pro (≥ 21H2))
+                    keyPath: 'HKCU\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\{{ $urlProtocol }}\UserChoice'
+                    valueName: ProgId
+                    matchDataBeforeDelete: '{{ $progId }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
