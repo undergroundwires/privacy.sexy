@@ -5459,6 +5459,557 @@ actions:
                                     serviceName: wercplsupport # Check: (Get-Service -Name wercplsupport).StartType
                                     defaultStartupMode: Manual # Allowed values: Automatic | Manual
             -
+                category: Disable connectivity checks
+                docs: |- # refactor-with-variables: Same • NCSI caution
+                    This category contains scripts that disable various connectivity checks performed by Windows.
+
+                    Connectivity checks allow Windows to assess network status and quality.
+                    These checks involve communication with Microsoft servers, which may raise privacy concerns.
+                    Disabling these checks reduces data sent to Microsoft, potentially enhancing your privacy.
+
+                    Connectivity checks are considered **noise** because they constantly generate small amounts of network traffic.
+                    **Noise** in networking refers to excessive data that doesn't help data transmission.
+                    This has both security and performance implications.
+
+                    Connectivity checks can contribute to **fingerprinting**, as they regularly communicate with specific servers.
+                    **Fingerprinting** in network terms is a way to identify or track a device based on its unique characteristics or behavior.
+                    These regular checks can potentially be used to identify or track your device on a network.
+
+                    Connectivity checks can be seen as a form of **homecalling** because they involve your device regularly communicating with Microsoft servers.
+                    **Homecalling** is when software automatically sends data back to its creator or a third party, often without the user's explicit knowledge or consent.
+                    While the primary purpose of these checks is to ensure network functionality, they also provide Microsoft with information about your
+                    device's online status and potentially your location [1].
+                    Disabling these checks stops the automatic 'calls home,' enhancing privacy but potentially affecting system functions.
+
+                    Disabling these checks may enhance privacy by:
+
+                    - Reducing data transmission to Microsoft servers
+                    - Limiting the collection of your IP address and location information [1]
+                    - Decreasing the attack surface for potential vulnerabilities
+
+                    However, disabling these checks may also lead to several side effects, including:
+
+                    - Inaccurate reporting of network status (e.g., showing "no internet" when connected) [2] [3]
+                    - Issues with captive portal detection (hotspot) common in public Wi-Fi networks [4] [5] [6]
+                    - Functionality problems in some Microsoft and third-party applications [1] [2] [7] [8]
+                    - Reduced ability to automatically adapt to different network environments
+
+                    Consider your privacy needs and the potential impact on system functionality before applying these scripts.
+                    Some users may find the privacy benefits outweigh the inconveniences, while others might prefer to keep
+                    these checks enabled for smoother network interactions.
+
+                    > **Caution**: This may lead to:
+                    >   - Lack of immediate feedback on network status.
+                    >   - Potential functionality issues in the system and applications that rely on NCSI for network information.
+                    >   - Reduced ability of Windows and other components to determine internet connectivity.
+                    >   - Windows and other software may incorrectly report that you're offline.
+                    >   - Issues with automatically opening the sign-in page when a captive portal (hotspot) is detected.
+
+                    [1]: https://web.archive.org/web/20220510033228/https://www.techrepublic.com/article/what-do-microsoft-and-ncsi-have-in-common/ "What do Microsoft and NCSI have in common? | TechRepublic | www.techrepublic.com"
+                    [2]: https://web.archive.org/web/20240525013542/https://superuser.com/questions/1400187/get-rid-of-false-no-internet-network-message "networking - Get rid of false \"no Internet\" network message - Super User | superuser.com"
+                    [3]: https://web.archive.org/web/20240620134357/https://github.com/undergroundwires/privacy.sexy/issues/216 "[BUG]: The network icon shows as unavailable even though it is available · Issue #216 · undergroundwires/privacy.sexy | github.com"
+                    [4]: https://web.archive.org/web/20240114123718/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-overview "Network Connectivity Status Indicator overview for Windows | Microsoft Learn | learn.microsoft.com"
+                    [5]: https://web.archive.org/web/20240114123854/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-frequently-asked-questions "Network Connectivity Status Indicator FAQ for Windows | Microsoft Learn | learn.microsoft.com"
+                    [6]: https://web.archive.org/web/20240809202657/https://learn.microsoft.com/en-us/windows-hardware/drivers/mobilebroadband/captive-portals "Captive Portals - Windows drivers | Microsoft Learn | learn.microsoft.com"
+                    [7]: https://web.archive.org/web/20240809202709/https://learn.microsoft.com/en-us/azure/backup/install-mars-agent "Install the Microsoft Azure Recovery Services (MARS) agent - Azure Backup | Microsoft Learn | learn.microsoft.com"
+                    [8]: https://web.archive.org/web/20240809202750/https://learn.microsoft.com/en-us/azure/backup/backup-support-matrix-mabs-dpm "MABS & System Center DPM support matrix - Azure Backup | Microsoft Learn | learn.microsoft.com"
+                children:
+                    -
+                        name: >-
+                            Disable active connectivity tests
+                            (breaks internet connection status, captive portals)
+                        docs: |- # refactor-with-variables: Same • NCSI caution
+                            This script prevents Network Connectivity Status Indicator (NCSI) from performing active connectivity checks.
+
+                            ### Active Probing Overview
+
+                            NCSI checks internet connectivity by requesting and downloading specific web pages [1] [2] [3] [4] [5] [6].
+                            This process is also known as *active probing* [3] [4] [5] [6] [7] [8] [9] [10] [11] or *active tests* [1] [2] [4] [7] [11] [12].
+
+                            Active probing checks internet connection by accessing certain URLs:
+
+                            - `http://www.msftconnecttest.com/connecttest.txt` [5] [6] [7] [10] [12] [13] [14].
+                            - `http://www.msftconnecttest.com/redirect` [7].
+                            - `http://www.msftncsi.com/ncsi.txt` (on earlier versions) [4] [7] [12] [13] [15].
+                            - `dns.msftncsi.com` [3] [4] [6] [7] [15].
+
+                            Windows conducts these tests by default [1] [2] [3].
+                            They ensure accurate reporting of internet connectivity across the system [1] [2] [3].
+
+                            Active probes are triggered in the following situations:
+
+                            - General interface or network condition changes [6].
+                              E.g., when a wireless connection is established [6].
+                            - Proxy detection or changes [6].
+                            - Hotspot detection or changes [6].
+
+                            ### Impacts of Disabling Active Probing
+
+                            Microsoft recommends keeping these tests enabled due to their crucial role in detecting network status [4] [7].
+                            Disabling active connectivity tests may lead to:
+
+                            - Windows indicating no internet access despite an active connection [4] [9] [16].
+                            - The no internet symbol appearing even though there is internet connectivity [8] [11] [13] [17].
+                            - Applications and system services that rely on NCSI's status reports may malfunction [1] [2].
+                              For instance, Microsoft Outlook might fail to connect to its server, or Windows updates could fail despite an active internet connection [7].
+                            - Disabling NCSI tests disrupts the automatic detection of captive portals [4] [5] [6] [17].
+                              This feature is common in public Wi-Fi networks, and its absence may inconvenience frequent users of these networks.
+                              Without this feature, connecting to these networks may require manual intervention as no popup will appear automatically.
+
+                            Disabling these tests improves your privacy, by preventing:
+
+                            - The operating system from automatically checking connectivity by communicating with Microsoft servers [7] [14].
+                            - Microsoft from collecting your IP addresses and location information through these tests [15].
+
+                            Disabling these tests can also enhance security:
+
+                            - These tests carry a security risk by allowing attackers to hijack DNS and gain access to your computer [14], potentially spreading malware [10].
+                            - Active probes can interfere with security and privacy software such as VPN [4] [6] and firewalls [4], potentially disrupting their functionality.
+
+                            > **Caution**: This may lead to:
+                            > - Lack of immediate feedback on network status.
+                            > - Potential functionality issues in the system and applications that rely on NCSI for network information.
+                            > - Reduced ability of Windows and other components to determine internet connectivity.
+                            > - Windows and other software may incorrectly report that you're offline.
+                            > - Issues with automatically opening the sign-in page when a captive portal (hotspot) is detected.
+
+                            ### Technical Details
+
+                            This script modifies the following registry settings:
+
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkConnectivityStatusIndicator!NoActiveProbe` [1] [2] [7] [9] [12].
+                              This setting affects components like `ncsi.dll` [18].
+                              It requires a computer restart to take effect [12].
+                            - `HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet!EnableActiveProbing` [3] [4] [7] [9] [11] [13].
+                              This setting affects components like `ncsi.dll` [18] and `WebRuntimeManager.dll` [19].
+
+                            Some sources may suggest modifying `HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkConnectivityStatusIndicator!EnableActiveProbing` registry key.
+                            However, this key is undocumented and this script does not modify this undocumented setting.
+
+                            [1]: https://web.archive.org/web/20240117111510/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::NoActiveProbe "Turn off Windows Network Connectivity Status Indicator active tests | admx.help"
+                            [2]: https://web.archive.org/web/20240511203932/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-connectivity#disallownetworkconnectivityactivetests "Connectivity Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240722112607/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-ncsi-guidance "Network Connection Status Indicator (NCSI) troubleshooting guidance - Windows Server | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20121226172641/http://blogs.technet.com/b/networking/archive/2012/12/20/the-network-connection-status-icon.aspx "The Network Connection Status Icon - Microsoft Enterprise Networking Team - Site Home - TechNet Blogs | blogs.technet.com"
+                            [5]: https://web.archive.org/web/20240114123718/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-overview "Network Connectivity Status Indicator overview for Windows | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20240114123854/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-frequently-asked-questions "Network Connectivity Status Indicator FAQ for Windows | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20240609083747/https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/internet-explorer-edge-open-connect-corporate-public-network "An Internet Explorer or Edge window opens when your computer connects to a corporate network or a public network - Windows Client | Microsoft Learn | learn.microsoft.com"
+                            [8]: https://web.archive.org/web/20240722112723/https://learn.microsoft.com/en-us/answers/questions/474998/internet-probe-icon-ncsi "Internet probe Icon - NCSI - Microsoft Q&A | learn.microsoft.com"
+                            [9]: https://web.archive.org/web/20230606033610/https://learn.microsoft.com/en-us/office/troubleshoot/activation/issue-when-activate-office-365-proplus "We are unable to connect right now when try to activate Microsoft 365 Apps for enterprise - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [10]: https://web.archive.org/web/20240405095920/https://www.bleepingcomputer.com/news/security/hackers-hijack-routers-dns-to-spread-malicious-covid-19-apps/ "Hackers Hijack Routers’ DNS to Spread Malicious COVID-19 Apps | www.bleepingcomputer.com"
+                            [11]: https://web.archive.org/web/20240722112804/https://superuser.com/questions/688049/windows-shows-limited-connection-when-it-isnt "networking - Windows shows \"Limited Connection\" when it isn't - Super User | superuser.com"
+                            [12]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#14-network-connection-status-indicator "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                            [13]: https://web.archive.org/web/20240525013542/https://superuser.com/questions/1400187/get-rid-of-false-no-internet-network-message "networking - Get rid of false \"no Internet\" network message - Super User | superuser.com"
+                            [14]: https://web.archive.org/web/20201013020905/https://github.com/Disassembler0/Win10-Initial-Setup-Script/pull/111 "Add \"DisableNetConnectionTest\" and \"SetMozillaForNetConnTest\" by antipatico · Pull Request #111 · Disassembler0/Win10-Initial-Setup-Script | github.com"
+                            [15]: https://web.archive.org/web/20220510033228/https://www.techrepublic.com/article/what-do-microsoft-and-ncsi-have-in-common/ "What do Microsoft and NCSI have in common? | TechRepublic | www.techrepublic.com"
+                            [16]: https://web.archive.org/web/20240620134420/https://github.com/undergroundwires/privacy.sexy/issues/189 "[BUG]: Dropbox Client no longer works with the script to disable Automatic Update Services applied · Issue #189 · undergroundwires/privacy.sexy | github.com"
+                            [17]: https://web.archive.org/web/20240620134357/https://github.com/undergroundwires/privacy.sexy/issues/216 "[BUG]: The network icon shows as unavailable even though it is available · Issue #216 · undergroundwires/privacy.sexy | github.com"
+                            [18]: https://web.archive.org/web/20240810075215/https://github.com/privacysexy-forks/10_0_22623_1020/blob/0225ce2c6d74641e63613c0a57c5c6ebea2df4d8/C/Windows/System32/ncsi.dll.strings "10_0_22623_1020/C/Windows/System32/ncsi.dll.strings at 0225ce2c6d74641e63613c0a57c5c6ebea2df4d8 · privacysexy-forks/10_0_22623_1020 | github.com"
+                            [19]: https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/System32/WebRuntimeManager.dll.strings#L7625 "10_0_22622_601/C/Windows/System32/WebRuntimeManager.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 | github.com"
+                        call:
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkConnectivityStatusIndicator
+                                    valueName: NoActiveProbe
+                                    dataType: REG_DWORD
+                                    data: "1"
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet
+                                    valueName: EnableActiveProbing
+                                    dataType: REG_DWORD
+                                    data: '0'
+                                    dataOnRevert: '1' # Default value: `1` on Windows 10 Pro (≥ 21H2) | `1` on Windows 11 Pro (≥ 22H2)
+                            -
+                                function: ShowComputerRestartSuggestion
+                    -
+                        name: >-
+                            Disable passive connectivity tests
+                            (breaks internet connection status)
+                        docs: |- # refactor-with-variables: Same • NCSI caution
+                            This script stops passive connectivity checks on your Windows device.
+
+                            Passive connectivity tests are also known as *Network Connectivity Status Indicator (NCSI)* [1]
+                            or *passive polling* [1] [2] [3] [4].
+                            It tracks the network activity of applications on your computer [1] [3].
+                            This feature is turned on by default [1].
+                            These tests run every 15 seconds by default [5] [6].
+                            They use information from received data, such as recently sent or received packets and
+                            their Time To Live (TTL) values, to determine network status [7].
+
+                            When NCSI fails to check internet connectivity, it opens the MSN Portal in your default browser [1].
+                            This involves making an HTTP connection to `http://www.msftconnecttest.com/redirect` and then to the MSN Portal [1].
+                            This method may expose your activities to Microsoft, bypass local network rules, and leak network configuration details,
+                            posing privacy and security risks.
+                            It may also inadvertently load external content or scripts from the MSN Portal, introducing vulnerabilities or tracking mechanisms.
+                            Malicious actors may exploit this behavior to detect active internet connections or trigger specific network activities,
+                            compromising your privacy and security.
+
+                            Disabling passive polling enhances privacy by reducing continuous network monitoring.
+                            It may also improve system performance by decreasing background network activity.
+                            Disabling passive connectivity tests prevents Windows from automatically connecting to Microsoft servers
+                            and opening external web pages [1].
+                            This reduces the risk of data leakage, tracking, and potential exploitation of this automated network activity.
+                            It can also improve security because passive probes sometimes conflict with VPN software [7] [8] and firewalls [7] [9].
+                            Disabling them may improve system functionality when using such security or privacy software [8] [9].
+
+                            However, this change has significant drawbacks.
+                            It may cause the system to incorrectly report no internet connection, even when one exists [2] [10] [11].
+                            This can affect functionality of system components and applications that rely on NCSI for network information [1].
+                            For example, it can interfere with Windows' ability to download updates [1].
+                            Microsoft does not recommend disabling the NCSI probes [1] [7].
+
+                            > **Caution**: This may lead to:
+                            >   - Lack of immediate feedback on network status.
+                            >   - Potential functionality issues in the system and applications that rely on NCSI for network information.
+                            >   - Reduced ability of Windows and other components to determine internet connectivity.
+                            >   - False reporting of no internet connection even though there is internet connectivity.
+
+                            ### Technical Details
+
+                            This script configures:
+
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkConnectivityStatusIndicator!DisablePassivePolling` [1] [2] [3].
+                              This group policy controls passive polling [1] [2] [3].
+                              It's used by system components such as `ncsi.dll` [4].
+                            - `HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet!PassivePollPeriod` [5] [6]
+                              It's used by system components such as `ncsi.dll` [4].
+
+                            [1]: https://web.archive.org/web/20240620094739/https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/internet-explorer-edge-open-connect-corporate-public-network "An Internet Explorer or Edge window opens when your computer connects to a corporate network or a public network - Windows Client | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240722112723/https://learn.microsoft.com/en-us/answers/questions/474998/internet-probe-icon-ncsi "Internet probe Icon - NCSI - Microsoft Q&A | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240729100358/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.NCSI::NCSI_PassivePolling "Specify passive polling | admx.help"
+                            [4]: https://web.archive.org/web/20240810075215/https://github.com/privacysexy-forks/10_0_22623_1020/blob/0225ce2c6d74641e63613c0a57c5c6ebea2df4d8/C/Windows/System32/ncsi.dll.strings "10_0_22623_1020/C/Windows/System32/ncsi.dll.strings at 0225ce2c6d74641e63613c0a57c5c6ebea2df4d8 · privacysexy-forks/10_0_22623_1020 | github.com"
+                            [5]: https://web.archive.org/web/20240114123854/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-frequently-asked-questions "Network Connectivity Status Indicator FAQ for Windows | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20240722112607/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-ncsi-guidance "Network Connection Status Indicator (NCSI) troubleshooting guidance - Windows Server | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20121226172641/http://blogs.technet.com/b/networking/archive/2012/12/20/the-network-connection-status-icon.aspx "The Network Connection Status Icon - Microsoft Enterprise Networking Team - Site Home - TechNet Blogs | blogs.technet.com"
+                            [8]: https://web.archive.org/web/20240729100350/https://forums.openvpn.net/viewtopic.php?t=27321 "Openvpn breaks NLA and NCSI services for Windows / Office 365 - OpenVPN Support Forum | forums.openvpn.net"
+                            [9]: https://web.archive.org/web/20240729100551/https://github.com/henrypp/simplewall/issues/709 "no internet / sometimes simplewall automatically denies internet · Issue #709 · henrypp/simplewall | github.com"
+                            [10]: https://web.archive.org/web/20240525013542/https://superuser.com/questions/1400187/get-rid-of-false-no-internet-network-message "networking - Get rid of false \"no Internet\" network message - Super User | superuser.com"
+                            [11]: https://web.archive.org/web/20240729100329/https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/issues/136 "Servers Reporting No Internet After Restart · Issue #136 · The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool | github.com"
+                        call:
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\NetworkConnectivityStatusIndicator
+                                    valueName: DisablePassivePolling
+                                    dataType: REG_DWORD
+                                    data: "1"
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet
+                                    valueName: PassivePollPeriod
+                                    dataType: REG_DWORD
+                                    data: "0"
+                                    deleteOnRevert: '15' # Default value: 15 on Windows 10 Pro (≥ 22H2) | 15 on Windows 11 Pro (≥ 23H2)
+                    -
+                        name: >-
+                            Remove "Network Connectivity Status Indicator (NCSI)" app
+                            (breaks internet connection status icon)
+                        recommend: strict
+                        docs: |- # refactor-with-variables: Same • NCSI caution
+                            This script removes the "NcsiUwpApp" system app.
+                            It is also known as the "Network Connectivity Status Indicator Universal Windows Platform App".
+
+                            It is primarily responsible for indicating network connectivity status.
+                            The NCSI feature provides the functionality that allows Windows to offer visual feedback on network
+                            connection status, usually seen at the bottom-right of the taskbar [1].
+                            It is used not only by the Windows operating system but also by third-party applications for determining
+                            network configurations [1].
+
+                            NCSI employs both active and passive probes to assess network connectivity [1]
+                            Active probes involve HTTP requests to Microsoft-managed servers [1], hosted by Akamai [1], with connectivity tests
+                            directed to `www.msftconnecttest.com` [2].
+                            Passive probes assess connectivity by examining network traffic [1].
+
+                            The app's configuration, located in `%WINDIR%\SystemApps\NcsiUwpApp_8wekyb3d8bbwe\AppxManifest.xml`, indicates
+                            that it operates without a visible user interface and is not listed in the start menu or app list.
+                            Its primary function is to manage the maintenance of the NCSI component and communicate over the internet.
+                            This absence of a user interface can be confirmed by running `explorer.exe shell:appsFolder\NcsiUwpApp_8wekyb3d8bbwe!App`.
+
+                            Removing this app improves privacy by reducing data transmission to external servers for connectivity checks.
+                            It also increases security by diminishing the operating system's vulnerability surface through the removal of
+                            unnecessary software and provides greater control over the visibility of device network status.
+
+                            This app comes pre-installed on certain versions of Windows [3].
+
+                            > **Caution**: This may lead to:
+                            >   - Lack of immediate feedback on network status.
+                            >   - Potential functionality issues in the system and applications that rely on NCSI for network information.
+
+                            ### Overview of default preinstallation
+
+                            | OS | Version | Existence |
+                            | -- | ------- | --------- |
+                            | Windows 10 | 19H2 | ❌ |
+                            | Windows 10 | 20H2 | ✅ |
+                            | Windows 10 | 21H2 | ✅ |
+                            | Windows 10 | 22H2 | ✅ |
+                            | Windows 11 | 21H2 | ✅ |
+                            | Windows 11 | 22H2 | ✅ |
+                            | Windows 11 | 23H2 | ✅ |
+
+                            [1]: https://web.archive.org/web/20240114123718/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-overview "Network Connectivity Status Indicator overview for Windows | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240114123854/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-frequently-asked-questions "Network Connectivity Status Indicator FAQ for Windows | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20230610014325/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: UninstallNonRemovableStoreApp
+                            parameters:
+                                packageName: NcsiUwpApp # Get-AppxPackage NcsiUwpApp
+                                publisherId: 8wekyb3d8bbwe
+                    -
+                        name: >-
+                            Block Microsoft connectivity check hosts
+                            (breaks internet connection status, captive portals)
+                        docs: |- # refactor-with-variables: Same • NCSI caution
+                            This script prevents Windows from connecting to Microsoft connectivity check URLs.
+
+                            This script enhances your privacy by blocking specific hosts that Microsoft uses to collect your IP address [1].
+
+                            The blocked hosts are:
+
+                            - `msftncsi.com` [2] [3] [4]
+                            - `www.msftncsi.com` [2] [5] [6] [7] [8]
+                            - `dns.msftncsi.com` [2] [3] [5] [7] [8] [9] [10]
+                            - `ipv6.msftncsi.com` [2] [8]
+                            - `msftconnecttest.com` [2] [3] [4] [9] [11]
+                            - `www.msftconnecttest.com` [2] [3] [7] [9] [10] [12]
+                            - `ipv6.msftconnecttest.com` [8] [10] [11]
+
+                            However, this script may cause several side effects:
+
+                            - It disrupts captive portal (hotspot) detection [5] [6] [13].
+                            - It impairs functionality of Microsoft software like Azure Backup MARS agent [14] and on-premises data gateway [15].
+                            - A 'no internet' symbol may appear even when you are connected to the internet [2].
+
+                            Carefully weigh the privacy benefits against potential functionality issues before applying this script.
+
+                            > **Caution**: This may lead to:
+                            > - Lack of immediate feedback on network status.
+                            > - Potential functionality issues in the system and applications that rely on NCSI for network information.
+                            > - Reduced ability of Windows and other components to determine internet connectivity.
+                            > - Windows and other software may incorrectly report that you're offline.
+                            > - Issues with automatically opening the sign-in page when a captive portal (hotspot) is detected.
+
+                            [1]: https://web.archive.org/web/20220510033228/https://www.techrepublic.com/article/what-do-microsoft-and-ncsi-have-in-common/ "What do Microsoft and NCSI have in common? | TechRepublic | www.techrepublic.com"
+                            [2]: https://web.archive.org/web/20240525013542/https://superuser.com/questions/1400187/get-rid-of-false-no-internet-network-message "networking - Get rid of false \"no Internet\" network message - Super User | superuser.com"
+                            [3]: https://web.archive.org/web/20240620094739/https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/internet-explorer-edge-open-connect-corporate-public-network "An Internet Explorer or Edge window opens when your computer connects to a corporate network or a public network - Windows Client | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240809202709/https://devblogs.microsoft.com/oldnewthing/20221115-00/?p=107399 "How does Windows decide whether your computer has limited or full Internet access? - The Old New Thing | devblogs.microsoft.com"
+                            [5]: https://web.archive.org/web/20121226172641/http://blogs.technet.com/b/networking/archive/2012/12/20/the-network-connection-status-icon.aspx "The Network Connection Status Icon - Microsoft Enterprise Networking Team - Site Home - TechNet Blogs | blogs.technet.com"
+                            [6]: https://web.archive.org/web/20240809202657/https://learn.microsoft.com/en-us/windows-hardware/drivers/mobilebroadband/captive-portals "Captive Portals - Windows drivers | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20240114123854/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-frequently-asked-questions "Network Connectivity Status Indicator FAQ for Windows | Microsoft Learn | learn.microsoft.com"
+                            [8]: https://web.archive.org/web/20240722112607/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-ncsi-guidance "Network Connection Status Indicator (NCSI) troubleshooting guidance - Windows Server | Microsoft Learn | learn.microsoft.com"
+                            [9]: https://web.archive.org/web/20240620094739/https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/internet-explorer-edge-open-connect-corporate-public-network#workaround "An Internet Explorer or Edge window opens when your computer connects to a corporate network or a public network - Windows Client | Microsoft Learn | learn.microsoft.com"
+                            [10]: https://web.archive.org/web/20240809202640/https://learn.microsoft.com/en-us/microsoftteams/troubleshoot/teams-rooms-and-devices/monitored-offline-status-unhealthy "The Monitored or Offline status of a Teams Rooms device is Unhealthy - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [11]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [12]: https://web.archive.org/web/20240809202624/https://learn.microsoft.com/en-us/windows-hardware/drivers/mobilebroadband/provisioning-windows-using-a-website "Provisioning Windows Using a Website - Windows drivers | Microsoft Learn | learn.microsoft.com"
+                            [13]: https://web.archive.org/web/20240114123718/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-overview "Network Connectivity Status Indicator overview for Windows | Microsoft Learn | learn.microsoft.com"
+                            [14]: https://web.archive.org/web/20240809202709/https://learn.microsoft.com/en-us/azure/backup/install-mars-agent "Install the Microsoft Azure Recovery Services (MARS) agent - Azure Backup | Microsoft Learn | learn.microsoft.com"
+                            [15]: https://web.archive.org/web/20240809202750/https://learn.microsoft.com/en-us/azure/backup/backup-support-matrix-mabs-dpm "MABS & System Center DPM support matrix - Azure Backup | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: BlockViaHostsFile
+                                parameters:
+                                    domain: msftncsi.com
+                            -
+                                function: BlockViaHostsFile
+                                parameters:
+                                    domain: dns.msftncsi.com
+                            -
+                                function: BlockViaHostsFile
+                                parameters:
+                                    domain: ipv6.msftncsi.com
+                            -
+                                function: BlockViaHostsFile
+                                parameters:
+                                    domain: msftconnecttest.com
+                            -
+                                function: BlockViaHostsFile
+                                parameters:
+                                    domain: www.msftconnecttest.com
+                            -
+                                function: BlockViaHostsFile
+                                parameters:
+                                    domain: ipv6.msftconnecttest.com
+                    -
+                        name: >-
+                            Disable "Network Location Awareness (NLA)" service
+                            (breaks auto-reconnect, connectivity status, network identification)
+                        docs: |- # refactor-with-variables: Same • NCSI caution
+                            This script disables the Network Location Awareness (NLA) service.
+
+                            NLA collects and stores network configuration information and notifies programs of changes [1] [2] [3] [4] [5] [6].
+                            This data collection can pose privacy concerns.
+                            It determines network connectivity type and properties, helping Windows manage connections [7] [8].
+                            NLA uses the Network Connectivity Status Indicator (NCSI) to assess internet connectivity [7] [9].
+                            NCSI is responsible for detecting Internet connectivity status [9].
+
+                            Key functions of NLA:
+
+                            - Generates unique identifiers (GUIDs) for each network interface [6] [10]
+                            - Interacts with Windows Firewall to apply appropriate rules based on network profiles [10]
+                            - Provides connectivity status for various applications such as Microsoft Teams and Windows Update [8]
+
+                            Benefits of disabling NLA:
+
+                            - Enhances privacy by stopping communication with Microsoft servers for connectivity detection (NCSI) [7] [8] [9] [11]
+                            - Increases security by reducing potential vulnerabilities [12] [13]
+                            - Reduces background processes, potentially optimizing system performance [4] [15]
+
+                            Microsoft considers this service 'OK to disable' to reduce data collection and optimize system performance [4].
+                            Disabling NLA does not impact the essential operations of the operating system [14].
+                            Citrix recommends disabling it on VDI/RDS machines [15].
+
+                            Side effects of disabling NLA:
+
+                            - Lack of network configuration information [1] [2] [3] [4] [5] [11]
+                            - Failure of related services on Windows 10 such as `Dhcp`, `nsi`, `RpcSs`, `Tcpip`
+                            `EventLog` and `netprofm` [2] [3]
+                            - Issues with network identification (such as "Home", "Work", "Public") and firewall profile determination [10]
+                            - Broken internet connectivity status detection and network status alerts [7] [9]
+                            - Problems with captive portal (hotspot) detection [11]
+                            - Difficulties with the auto-reconnect functionality of different apps [6] [14] [16]
+
+                            > **Caution**: This may lead to:
+                            > - Lack of immediate feedback on network status.
+                            > - Potential functionality issues in the system and applications that rely on NCSI for network information.
+                            > - Reduced ability of Windows and other components to determine internet connectivity.
+                            > - Windows and other software may incorrectly report that you're offline.
+                            > - Issues with automatically opening the sign-in page when a captive portal (hotspot) is detected.
+
+                            ### Overview of default service statuses
+
+                            This service runs and starts by default on Windows 10 [2] [3] but not on Windows 11 [1].
+                            NLA service is available on both Windows 10 [2] [3] and Windows 11 [1],
+                            but its NCSI functionality applies to Windows 10 and Windows Server 2019 and earlier versions [11].
+                            Its functionality has been replaced by Network List Service (NLS) on Windows 11 and Windows Server 2022 and later [8] [11].
+                            This script does not disable this service on Windows 11 as it no longer manages NCSI and offers no clear privacy benefit.
+                            This script targets Windows 10, where disabling NLA enhances privacy by preventing NCSI functionality.
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
+                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
+
+                            [1]: https://web.archive.org/web/20240810075341/https://batcmd.com/windows/11/services/nlasvc/ "Network Location Awareness - Windows 11 Service - batcmd.com | batcmd.com"
+                            [2]: https://web.archive.org/web/20240520132332/https://batcmd.com/windows/10/services/nlasvc/ "Network Location Awareness - Windows 10 Service - batcmd.com | batcmd.com"
+                            [3]: https://web.archive.org/web/20240113010240/https://revertservice.com/10/nlasvc/ "Network Location Awareness (NlaSvc) Service Defaults in Windows 10 | revertservice.com"
+                            [4]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                            [5]: https://web.archive.org/web/20240218231654/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#network-location-awareness "Security guidelines for system services in Windows Server 2016 | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20240809205224/https://learn.microsoft.com/en-us/windows/win32/winsock/the-role-of-nla-2 "The Role of NLA - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20240620094739/https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/internet-explorer-edge-open-connect-corporate-public-network "An Internet Explorer or Edge window opens when your computer connects to a corporate network or a public network - Windows Client | Microsoft Learn | learn.microsoft.com"
+                            [8]: https://web.archive.org/web/20240722112607/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-ncsi-guidance "Network Connection Status Indicator (NCSI) troubleshooting guidance - Windows Server | Microsoft Learn | learn.microsoft.com"
+                            [9]: https://web.archive.org/web/20121226172641/http://blogs.technet.com/b/networking/archive/2012/12/20/the-network-connection-status-icon.aspx "The Network Connection Status Icon - Microsoft Enterprise Networking Team - Site Home - TechNet Blogs | blogs.technet.com"
+                            [10]: https://web.archive.org/web/20121103135524/http://blogs.technet.com/b/networking/archive/2010/09/08/network-location-awareness-nla-and-how-it-relates-to-windows-firewall-profiles.aspx "Network Location Awareness (NLA) and how it relates to Windows Firewall Profiles - Microsoft Enterprise Networking Team - Site Home - TechNet Blogs | blogs.technet.com"
+                            [11]: https://web.archive.org/web/20240114123854/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-frequently-asked-questions "Network Connectivity Status Indicator FAQ for Windows | Microsoft Learn | learn.microsoft.com"
+                            [12]: https://web.archive.org/web/20240809205000/https://nvd.nist.gov/vuln/detail/CVE-2020-1437 "NVD - CVE-2020-1437 | nvd.nist.gov"
+                            [13]: https://web.archive.org/web/20240809205115/https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-0006 "CVE - CVE-2015-0006 | cve.mitre.org"
+                            [14]: https://web.archive.org/web/20240809205040/https://security.stackexchange.com/questions/15466/how-do-these-windows-services-affect-the-security-of-windows-firewall "How do these Windows services affect the security of Windows Firewall? - Information Security Stack Exchange | security.stackexchange.com"
+                            [15]: https://web.archive.org/web/20240809205236/https://jans.cloud/wp-content/uploads/2017/12/Execute_History.html "Citrix Optimizer Report | jans.cloud"
+                            [16]: https://web.archive.org/web/20240809205207/https://learn.microsoft.com/en-us/previous-versions/windows/desktop/mpc/checking-availability-before-attempting-use "Checking Availability Before Attempting Use | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: NlaSvc # Check: (Get-Service -Name NlaSvc).StartType
+                                defaultStartupMode: Automatic # Set "Automatic" as this script is Windows 10 only. Default: Automatic on Windows 10 | Manual on Windows 11
+                                maximumWindowsVersion: Windows10-MostRecent # Windows 10 only - The service does not provide NCSI functionality in Windows 11
+                    -
+                        name: >-
+                            Disable "Network List Service (NLS)" service
+                            (breaks connectivity status, network identification, network connection icon, connectivity with some Microsoft apps)
+                        docs: |-
+                            This script disables "Network List Service (NLS)" service.
+                            This service is technically identified as `netprofm` [1] [2] [3] [4] [5] [6].
+
+                            NLS collects and stores properties for connected networks and notifies applications of changes [1] [2] [4] [5] [6] [7] [8].
+                            It manages network-related information similarly to how a computer caches domain name IP addresses [7].
+
+                            Benefits of disabling NLS:
+
+                            - Enhancing your privacy.
+                              Disabling this service halts communication with Microsoft servers for connectivity detection [1] [3].
+                            - Improving your security by reducing the attack surface.
+                              Any service or application is a potential point of attack [1].
+                              It's a security best-practices to disable or remove any unneeded services [1].
+                              NLS has had vulnerabilities in the past [9].
+                            - Optimizing system performance.
+                              This service is associated with high CPU usage [10].
+
+                            However, disabling NLS may cause several issues:
+
+                            - Windows Firewall may default to the Public profile [11].
+                            - The **Network Sharing Center** may not display profile types or connection status [11].
+                            - The network connection icon may not appear on the Windows taskbar [11].
+                            - **Microsoft** 365 and **Office** apps may have activation [12] and network connection issues [13].
+                            - **SQL Server** and **SQL Server Agent** services may fail to start [14].
+                            - Network properties may not change or be managed efficiently [7].
+                            - Other Windows services may fail:
+                            - On Windows 10:
+                                Network Location Awareness (`NlaSvc`) [4] [6], Remote Procedure Call (RPC) (`RpcSs`) [4] [6],
+                                HomeGroup Provider (`HomeGroupProvider`) [4] [6], Microsoft App-V Client (`AppVClient`) [4] [6],
+                                Network Connected Devices Auto-Setup (`NcdAutoSetup`) [4] [6].
+                            - On Windows 11:
+                                Network Store Interface Service (`nsi`) [5], Remote Procedure Call (RPC) (`RpcSs`) [5],
+                                TCP/IP Protocol Driver (`tcpip`) [5], Microsoft App-V Client (`AppVClient`) [5],
+                                Network Connected Devices Auto-Setup (`NcdAutoSetup`) [5]
+
+                            NLS is responsible for NCSI functionality only on Windows 11 and Windows Server 2022 or later [3] [15].
+                            Earlier versions like Windows Server 2019 and Windows 10 use Network Location Awareness (NLA) for NCSI [15].
+
+                            Microsoft states that disabling NLS only affects network information display and does not impact system behavior [11].
+                            Broadcom confirms that it is safe to disable this service [16].
+                            The Center for Internet Security (CIS) recommends disabling this service [1].
+                            Citrix recommends disabling this service on VDI\RDS machines [17].
+                            However, Microsoft has not provided clear guidance on whether this service should be disabled [2] [8].
+                            It states that the effects of disabling this service are not fully evaluated [2].
+
+                            Despite recommendations from authorities, this script does not disable NLS on Windows 11.
+                            Disabling NLS on Windows 11 causes your `explorer.exe` to crash and relaunch repeatedly [18].
+                            These issues were last confirmed in tests on Windows 11 Pro 23H2.
+                            The `explorer.exe` process repeatedly crashes, causing the screen to flash continuously and preventing the taskbar from loading.
+
+                            > **Caution**: This may lead to:
+                            > - Lack of immediate feedback on network status.
+                            > - Potential functionality issues in the system and applications that rely on NCSI for network information.
+                            > - Reduced ability of Windows and other components to determine internet connectivity.
+                            > - Windows and other software may incorrectly report that you're offline.
+                            > - Issues with automatically opening the sign-in page when a captive portal (hotspot) is detected.
+
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🟢 Running | Manual |
+                            | Windows 11 (≥ 23H2) | 🟢 Running | Manual |
+
+                            [1]: https://web.archive.org/web/20240714183805/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Windows_Server_2008_R2_v2_0_0.pdf "CIS Microsoft Windows Server 2008 R2 | v2.0.0 - 10-04-2013 | paper.bobylive.com"
+                            [2]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20240722112607/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-ncsi-guidance "Network Connection Status Indicator (NCSI) troubleshooting guidance - Windows Server | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240809205708/https://batcmd.com/windows/10/services/netprofm/ "Network List Service - Windows 10 Service - batcmd.com | batcmd.com"
+                            [5]: https://web.archive.org/web/20240809205829/https://batcmd.com/windows/11/services/netprofm/ "Network List Service - Windows 11 Service - batcmd.com | batcmd.com"
+                            [6]: https://web.archive.org/web/20240809205813/https://revertservice.com/10/netprofm/ "Network List Service (netprofm) Defaults in Windows 10 | revertservice.com"
+                            [7]: https://web.archive.org/web/20240809205040/https://security.stackexchange.com/questions/15466/how-do-these-windows-services-affect-the-security-of-windows-firewall "How do these Windows services affect the security of Windows Firewall? - Information Security Stack Exchange | security.stackexchange.com"
+                            [8]: https://web.archive.org/web/20240218231654/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#network-list-service "Security guidelines for system services in Windows Server 2016 | Microsoft Learn | learn.microsoft.com"
+                            [9]: https://web.archive.org/web/20240809210027/https://nvd.nist.gov/vuln/detail/CVE-2020-1209 "NVD - CVE-2020-1209 | nvd.nist.gov"
+                            [10]: https://archive.ph/2024.08.09-210032/https://www.reddit.com/r/Windows10/comments/ix4n5h/what_is_network_list_service_why_is_it_using_up/ "What is network list service? Why is it using up all my cpu? : r/Windows10 | www.reddit.com"
+                            [11]: https://web.archive.org/web/20240809205533/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/windows-fireware-rule-block-udp-communication "UDP communication is blocked by the Windows Firewall rule in WSFC - Windows Server | Microsoft Learn"
+                            [12]: https://web.archive.org/web/20240809205558/https://learn.microsoft.com/en-us/office/troubleshoot/activation/network-connection-issues "Microsoft 365 Apps activation network connection issues - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [13]: https://web.archive.org/web/20240809205739/https://learn.microsoft.com/en-us/office/troubleshoot/office-suite-issues/files-fail-to-open "Office files in SharePoint fail to open from an Office 2016 client - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [14]: https://web.archive.org/web/20240809205639/https://learn.microsoft.com/en-us/troubleshoot/sql/database-engine/startup-shutdown/agent-service-fails-start-stand-alone-server "Agent Service fails to start on standalone server - SQL Server | Microsoft Learn | learn.microsoft.com"
+                            [15]: https://web.archive.org/web/20240114123854/https://learn.microsoft.com/en-us/windows-server/networking/ncsi/ncsi-frequently-asked-questions "Network Connectivity Status Indicator FAQ for Windows | Microsoft Learn | learn.microsoft.com"
+                            [16]: http://archive.ph/2024.08.10-101158/https://ftpdocs.broadcom.com/cadocs/0/CA%20Network%20Flow%20Analysis%209%201%203-ENU/Bookshelf_Files/HTML/NFA_Upgrade_Guide_en_US/1975755.html "Disable Unneeded Services on Windows Server 2008 R2 | ftpdocs.broadcom.com"
+                            [17]: https://web.archive.org/web/20240809205236/https://jans.cloud/wp-content/uploads/2017/12/Execute_History.html "Citrix Optimizer Report | jans.cloud"
+                            [18]: https://web.archive.org/web/20230307114810/https://www.elevenforum.com/t/services-in-22h2.11916/ "Services in 22H2 | Windows 11 Forum | www.elevenforum.com"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: netprofm # Check: (Get-Service -Name netprofm).StartType
+                                defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                                maximumWindowsVersion: Windows10-MostRecent # Disabling breaks `explorer.exe` (last tested Windows 11 Pro 23H2)
+            -
                 category: Disable Windows Update data collection
                 children:
                     -
@@ -5631,17 +6182,6 @@ actions:
                         dataType: REG_DWORD
                         data: "0"
                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 21H2) and Windows 11 Pro (≥ 22H2)
-            -
-                name: Disable active probing to Microsoft NCSI server
-                recommend: strict
-                call:
-                    function: SetRegistryValue
-                    parameters:
-                        keyPath: HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet
-                        valueName: EnableActiveProbing
-                        dataType: REG_DWORD
-                        data: '0'
-                        dataOnRevert: '1' # Default value: `1` on Windows 10 Pro (≥ 21H2) | `1` on Windows 11 Pro (≥ 22H2)
             -
                 name: Opt out of Windows privacy consent
                 recommend: standard
@@ -29674,6 +30214,8 @@ functions:
             - name: defaultStartupMode      # Allowed values: Automatic | Manual
             - name: ignoreMissingOnRevert   # When set to true, the revert operation will skip any actions for services that cannot be found, instead of failing.
               optional: true
+            - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         call:
             -
                 function: Comment
@@ -29683,7 +30225,7 @@ functions:
             -
                 # Marked: refactor-with-revert-call, refactor-with-variables
                 #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
-                function: RunPowerShell
+                function: RunPowerShellWithWindowsVersionConstraints
                 # Careful with Set-Service cmdlet:
                 #   1. It exits with positive code even if service is disabled
                 #   2. It had breaking API change for `-StartupMode` parameter:
@@ -29694,6 +30236,7 @@ functions:
                 #           https://github.com/PowerShell/PowerShell/blob/v7.2.0/src/Microsoft.PowerShell.Commands.Management/commands/management/Service.cs#L2966-L2978
                 #           https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.4
                 parameters:
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                     code: |-
                         $serviceName = '{{ $serviceName }}'
                         Write-Host "Disabling service: `"$serviceName`"."
