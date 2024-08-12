@@ -721,7 +721,7 @@ actions:
                             [1]: https://web.archive.org/web/20240801124433/https://forensafe.com/blogs/typedpaths.html "Typed Paths Blog | forensafe.com"
                             [2]: https://web.archive.org/web/20240801124441/https://www.3fforensics.com/forensics/typed-paths.html "New Orleans Forensics, Expert computer forensics. NOLA Forensics. Mobile forensics, Memory forensics, Disk forensics. | Forensics | www.3fforensics.com"
                             [3]: https://web.archive.org/web/20240801102250/https://www.elevenforum.com/t/clear-file-explorer-history-in-windows-11.8468/ "Clear File Explorer History in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
-                            [4]: https://archive.ph/2024.08.01-102204/https://x.com/dez_/status/1560101453150257154 "Joe Desimone on X: \"@Hexacorn ever come across this technique before ? Is it some kind of odd persistence? Explorer\TypedPaths\url1 https://t.co/iyQgumE7sS\" / X | x.com"
+                            [4]: https://archive.ph/2024.08.01-102204/https://x.com/dez_/status/1560101453150257154 "Joe Desimone on X: \"@Hexacorn ever come across this technique before ? Is it some kind of odd persistence? Explorer\TypedPaths\url1 \" / X | x.com"
                         call:
                             function: ClearRegistryValues
                             parameters:
@@ -5073,7 +5073,7 @@ actions:
                                                 valueName: AllowDesktopAnalyticsProcessing
                                                 dataType: REG_DWORD
                                                 data: "0"
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
                                         name: Disable sending device name in Windows diagnostic data
                                         recommend: strict
@@ -5096,7 +5096,7 @@ actions:
                                                 valueName: AllowDeviceNameInTelemetry
                                                 dataType: REG_DWORD
                                                 data: "0"
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
                                         name: Disable collection of Edge browsing data for Desktop Analytics
                                         recommend: strict
@@ -5124,7 +5124,7 @@ actions:
                                                 valueName: MicrosoftEdgeDataOptIn # MDM name: ConfigureTelemetryForMicrosoft365Analytics
                                                 dataType: REG_DWORD
                                                 data: "0"
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
                                         name: Disable diagnostics data processing for Business cloud
                                         recommend: strict
@@ -5153,7 +5153,7 @@ actions:
                                                 valueName: AllowWUfBCloudProcessing
                                                 dataType: REG_DWORD
                                                 data: "0"
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
                                         name: Disable Update Compliance processing of diagnostics data
                                         recommend: standard
@@ -5186,7 +5186,7 @@ actions:
                                                 valueName: AllowUpdateComplianceProcessing
                                                 dataType: REG_DWORD
                                                 data: "0"
-                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 name: Disable commercial usage of collected data
                                 recommend: standard
@@ -5211,7 +5211,7 @@ actions:
                                         valueName: AllowCommercialDataPipeline
                                         dataType: REG_DWORD
                                         data: "0"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                     -
                         name: Disable diagnostic and usage telemetry
                         recommend: standard
@@ -5254,7 +5254,7 @@ actions:
                                     valueName: AllowTelemetry
                                     dataType: REG_DWORD
                                     data: "0"
-                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                     -
                         name: Disable automatic cloud configuration downloads
                         recommend: strict
@@ -5297,7 +5297,7 @@ actions:
                                 valueName: DisableOneSettingsDownloads
                                 dataType: REG_DWORD
                                 data: "1"
-                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                     -
                         name: Disable license telemetry
                         recommend: standard
@@ -5308,7 +5308,7 @@ actions:
                                 valueName: NoGenTicket
                                 dataType: REG_DWORD
                                 data: "1"
-                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                     -
                         name: Disable error reporting
                         recommend: standard
@@ -5385,7 +5385,7 @@ actions:
                                     valueName: Disabled
                                     dataType: REG_DWORD
                                     data: "1"
-                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 function: SetRegistryValue
                                 parameters:
@@ -5393,7 +5393,7 @@ actions:
                                     valueName: Disabled
                                     dataType: REG_DWORD
                                     data: "1"
-                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 function: Comment
                                 parameters:
@@ -5414,7 +5414,7 @@ actions:
                                     valueName: DefaultOverrideBehavior
                                     dataType: REG_DWORD
                                     data: "1"
-                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 function: Comment
                                 parameters:
@@ -5427,7 +5427,7 @@ actions:
                                     valueName: DontSendAdditionalData
                                     dataType: REG_DWORD
                                     data: "1"
-                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 function: SetRegistryValue
                                 parameters:
@@ -5435,7 +5435,7 @@ actions:
                                     valueName: LoggingDisabled
                                     dataType: REG_DWORD
                                     data: "1"
-                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 function: DisableScheduledTask
                                 parameters:
@@ -6037,7 +6037,7 @@ actions:
                                             valueName: PreventDeviceMetadataFromNetwork
                                             dataType: REG_DWORD
                                             data: "1"
-                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 name: Disable inclusion of drivers with Windows updates
                                 docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsUpdate::ExcludeWUDriversInQualityUpdate
@@ -6049,7 +6049,7 @@ actions:
                                         valueName: ExcludeWUDriversInQualityUpdate
                                         dataType: REG_DWORD
                                         data: "1"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H3)
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 name: Disable Windows Update device driver search
                                 docs: https://www.stigviewer.com/stig/windows_7/2018-02-12/finding/V-21965
@@ -6846,7 +6846,7 @@ actions:
                                     [5]: https://web.archive.org/web/20240120135454/https://www.winhelponline.com/blog/disable-web-results-windows-10-start-menu/ "How to Disable Web Search in Windows 10 Start menu | Winhelponline | www.winhelponline.com"
                                     [6]: https://web.archive.org/web/20240120194244/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsExplorer::DisableSearchBoxSuggestions "Turn off display of recent search entries in the File Explorer search box | admx.help"
                                     [7]: https://web.archive.org/web/20240120194340/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-windowsexplorer#disablesearchboxsuggestions "ADMX_WindowsExplorer Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
-                                    [8]: https://web.archive.org/web/20240120194603/https://www.pcastuces.com/pratique/astuces/6080-print.htm "PC Astuces - Désactiver les recommandations dans la recherche - Windows 10 | www.pcastuces.com"
+                                    [8]: https://archive.ph/2024.07.19-094152/https://www.pcastuces.com/pratique/astuces/6080-print.htm "PC Astuces - Désactiver les recommandations dans la recherche - Windows 10 | www.pcastuces.com"
                                     [9]: https://web.archive.org/web/20240120194547/https://www.deskmodder.de/phpBB3/viewtopic.php?t=23243 "Websuche in der Windows 10 Taskleiste deaktivieren - Deskmodder.de | www.deskmodder.de"
                                 call:
                                     -
@@ -6945,8 +6945,8 @@ actions:
 
                                     [1]: https://web.archive.org/web/20240120135419/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DoNotUseWebResults "Don't search the web or display web results in Search"
                                     [2]: https://web.archive.org/web/20240120140023/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#donotusewebresults "Search Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
-                                    [4]: https://web.archive.org/web/20240120135454/https://www.winhelponline.com/blog/disable-web-results-windows-10-start-menu/ "How to Disable Web Search in Windows 10 Start menu | Winhelponline | www.winhelponline.com"
                                     [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20240120135454/https://www.winhelponline.com/blog/disable-web-results-windows-10-start-menu/ "How to Disable Web Search in Windows 10 Start menu | Winhelponline | www.winhelponline.com"
                                     [5]: https://web.archive.org/web/20240120135331/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DoNotUseWebResultsOnMeteredConnections "Don't search the web or display web results in Search over metered connections | admx.help"
                                 call:
                                     -
@@ -9469,47 +9469,47 @@ actions:
                                             Disabling the Hubs Sidebar also deactivates the following features:
 
                                             - **Copilot in Edge**:
-                                              This feature was known as *Bing Chat* [11], *Discover in Edge* [2], *Bing Discover* [2], *Edge Discover* [3],
-                                              *Discover app* [4], *Discover experience* [4], or simply *Discover* [4].
-                                              It collects personal data including URLs, page titles, user queries, browsing context, and
-                                              conversation histories [5].
-                                              It enables the discovery of content relevant to the page you are browsing, such as summaries and
-                                              source information [4].
-                                              By default, this feature sends URLs to Microsoft Bing for related recommendations [3]
-                                              Disabling the Hubs Sidebar is the recommended method to also disable Copilot in Edge [3] [4].
-                                              Disabling it stops this data collection, improving your privacy.
+                                                This feature was known as *Bing Chat* [2], *Discover in Edge* [3] [4], *Bing Discover* [3],
+                                                *Discover app* [5], *Discover experience* [4], or simply *Discover* [3] [4].
+                                                It collects personal data including URLs, page titles, user queries, browsing context, and
+                                                conversation histories [6] [7].
+                                                It enables the discovery of content relevant to the page you are browsing, such as summaries and
+                                                source information [4].
+                                                Disabling the Hubs Sidebar is the recommended method to also disable Copilot in Edge [4] [8].
+                                                Disabling it stops this data collection, improving your privacy.
                                             - **Sidebar apps**:
-                                              Disabling the Hubs Sidebar also deactivates all sidebar apps [6].
-                                              This script disables also the sidebar in Progressive Web Apps (PWAs) [6].
-                                              This script prevents all sidebar apps from being activated [6].
+                                                Disabling the Hubs Sidebar also deactivates all sidebar apps [5].
+                                                This script disables also the sidebar in Progressive Web Apps (PWAs) [5].
+                                                This script prevents all sidebar apps from being activated [5].
                                             - **Standalone Sidebar**:
-                                              Disabling the Hubs Sidebar also turns off any standalone sidebar modes [7].
-                                              This mode displays the Sidebar in a fixed position on the desktop, separate from the browser frame [7].
-                                              Disabling this reduces background resource usage, thereby optimizing system performance [8].
+                                                Disabling the Hubs Sidebar also turns off any standalone sidebar modes [9].
+                                                This mode displays the Sidebar in a fixed position on the desktop, separate from the browser frame [9].
+                                                Disabling this reduces background resource usage, thereby optimizing system performance [10].
 
                                             The script configures the following Edge policies:
 
-                                            | Edge policy                             | Affected Edge versions       |
-                                            |-----------------------------------------|------------------------------|
-                                            | `HubsSidebarEnabled` [1] [2] [6] [9] [10] | Edge ≥ 99 [1]               |
-                                            | `StandaloneHubsSidebarEnabled` [7] [8]  | Edge ≥ 88 and ≤ 119 [7]     |
+                                            | Edge policy                               | Affected Edge versions       |
+                                            |-------------------------------------------|------------------------------|
+                                            | `HubsSidebarEnabled` [1] [3] [5] [8] [11] | Edge ≥ 99 [1]                |
+                                            | `StandaloneHubsSidebarEnabled` [9] [10]   | Edge ≥ 88 and ≤ 119 [9]      |
 
-                                            The new settings will take effect after you restart the browser [6].
+                                            The new settings will take effect after you restart the browser [5].
 
                                             > **Caution**:
                                             > - This will display the message "Your browser is managed by your organization" on the settings page.
                                             > - This locks settings and prevents them from being changed on the settings page.
 
                                             [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#hubssidebarenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
-                                            [2]: https://web.archive.org/web/20240328062746/https://techcommunity.microsoft.com/t5/discussions/copilot-or-discover-browser-extension-not-working-as-expected/m-p/4097297 "Copilot or Discover browser extension not working as expected for managed Edge browser - Microsoft Community Hub | techcommunity.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240623213328/https://blogs.bing.com/search/november-2023/our-vision-to-bring-microsoft-copilot-to-everyone-and-more "Our vision to bring Microsoft Copilot to everyone, and more | Bing Search Blog | blogs.bing.com"
+                                            [3]: https://web.archive.org/web/20240328062746/https://techcommunity.microsoft.com/t5/discussions/copilot-or-discover-browser-extension-not-working-as-expected/m-p/4097297 "Copilot or Discover browser extension not working as expected for managed Edge browser - Microsoft Community Hub | techcommunity.microsoft.com"
                                             [4]: https://web.archive.org/web/20240101215939/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-relnote-archive-beta-channel "Archived release notes for Microsoft Edge Beta Channel | Microsoft Learn | learn.microsoft.com"
-                                            [5]: https://web.archive.org/web/20240519104435/https://learn.microsoft.com/en-us/copilot/edge#data-used-by--in-edge "Copilot in Edge | Microsoft Learn | learn.microsoft.com"
-                                            [6]: https://web.archive.org/web/20240519104338/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-sidebar#allow-or-block-the-sidebar-in-group-policy "Manage the sidebar in Microsoft Edge | Microsoft Learn | learn.microsoft.com"
-                                            [7]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#standalonehubssidebarenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
-                                            [8]: https://web.archive.org/web/20240519104546/https://answers.microsoft.com/en-us/microsoftedge/forum/all/microsoft-edge-running-in-the-background/b827d6dc-8853-4258-a2e1-a760e93df561 "Microsoft Edge running in the background - Microsoft Community | answers.microsoft.com"
-                                            [9]: https://web.archive.org/web/20240519104435/https://learn.microsoft.com/en-us/copilot/edge#manage--in-edge "Copilot in Edge | Microsoft Learn | learn.microsoft.com"
-                                            [10]: https://web.archive.org/web/20240122064120/https://learn.microsoft.com/en-us/windows/client-management/manage-windows-copilot "Manage Copilot in Windows - Windows Client Management | Microsoft Learn | learn.microsoft.com"
-                                            [11]: https://web.archive.org/web/20240623213328/https://blogs.bing.com/search/november-2023/our-vision-to-bring-microsoft-copilot-to-everyone-and-more "Our vision to bring Microsoft Copilot to everyone, and more | Bing Search Blog | blogs.bing.com"
+                                            [5]: https://web.archive.org/web/20240519104338/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-sidebar#allow-or-block-the-sidebar-in-group-policy "Manage the sidebar in Microsoft Edge | Microsoft Learn | learn.microsoft.com"
+                                            [6]: https://web.archive.org/web/20240623123514/https://learn.microsoft.com/en-us/microsoft-edge/privacy-whitepaper/#shopping  "Microsoft Edge Privacy Whitepaper - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                                            [7]: https://web.archive.org/web/20240519104435/https://learn.microsoft.com/en-us/copilot/edge#data-used-by--in-edge "Copilot in Edge | Microsoft Learn | learn.microsoft.com"
+                                            [8]: https://web.archive.org/web/20240519104435/https://learn.microsoft.com/en-us/copilot/edge#manage--in-edge "Copilot in Edge | Microsoft Learn | learn.microsoft.com"
+                                            [9]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#standalonehubssidebarenabled "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
+                                            [10]: https://web.archive.org/web/20240519104546/https://answers.microsoft.com/en-us/microsoftedge/forum/all/microsoft-edge-running-in-the-background/b827d6dc-8853-4258-a2e1-a760e93df561 "Microsoft Edge running in the background - Microsoft Community | answers.microsoft.com"
+                                            [11]: https://web.archive.org/web/20240122064120/https://learn.microsoft.com/en-us/windows/client-management/manage-windows-copilot "Manage Copilot in Windows - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             -
                                                 function: SetEdgePolicyViaRegistry
@@ -10904,17 +10904,19 @@ actions:
                                     
                                     This script prevents such data sharing by disabling the search suggestions feature [1] [2] [3].
                                     As a result, users will no longer receive search suggestions when typing in the Address bar,
-                                    thereby enhancing privacy [1] [2] [3].
+                                    thereby enhancing privacy [1] [2] [3] [4].
 
                                     Disabling this feature reduces potential privacy risks by preventing data sharing.
+                                    Microsoft recommends this action to reduce their data collection to protect your privacy [4].
                                     This may also improve system performance by reducing processing workload.
 
-                                    This script configures the `ShowSearchSuggestionsGlobal` policy [1] [2] [3].
+                                    This script configures the `ShowSearchSuggestionsGlobal` policy [1] [2] [3] [4].
                                     This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
 
-                                    [1]: https://web.archive.org/web/20240314100851/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/group-policies/address-bar-settings-gp "Microsoft Edge - Address bar group policies | Microsoft Learn | learn.microsoft.com"
+                                    [1]: https://web.archive.org/web/20240314100851/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/group-policies/address-bar-settings-gp#configure-search-suggestions-in-address-bar "Microsoft Edge - Address bar group policies | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240624135139/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.MicrosoftEdge::AllowSearchSuggestionsinAddressBar "Configure search suggestions in Address bar | admx.help"
                                     [3]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/configure-search-suggestions-in-address-bar "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#131-microsoft-edge-group-policies "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
                                 call:
                                     function: SetLegacyEdgePolicyViaRegistry
                                     parameters:
@@ -11616,14 +11618,31 @@ actions:
                 name: Disable "Razer Game Scanner Service"
                 recommend: standard
                 docs: |-
-                    ### Overview of default task statuses
+                    This script disables the `Razer Game Scanner Service`.
 
-                    `\Adobe Acrobat Update Task` [1] (tested with Razer Synapse 3.9.311 and Razer Cortex 10.12.6.0):
+                    The service is part of the **Razer Synapse** software suite [1] [2].
+                    It runs the `GameScannerService.exe` process [3] [4].
+                    This process scans your computer for installed games to optimize Razer device settings
+                    and saves all settings to the cloud [2].
+
+                    Disabling this service enhances privacy by preventing data transmission to Razer servers.
+                    It also improves system performance by reducing heavy resource usage [1] [2] [3].
+
+                    Recent versions of the Razer Synapse software no longer include this service (last tested on version 3.9.311).
+
+                    ### Overview of default service statuses
+
+                    `Razer Game Scanner Service` (tested with Razer Synapse 3.9.311 and Razer Cortex 10.12.6.0):
 
                     | OS Version | Status | Start type |
                     | ---------- | -------| ---------- |
                     | Windows 10 (≥ 21H1) | 🟡 Missing | N/A |
                     | Windows 11 (≥ 22H2) | 🟡 Missing | N/A |
+
+                    [1]: https://web.archive.org/web/20240719204604/https://blog.ultimateoutsider.com/2016/02/razers-terrible-game-scanner-service.html "Ultimate Outsider: Razer's Terrible Game Scanner Service | blog.ultimateoutsider.com"
+                    [2]: https://web.archive.org/web/20240719205425/https://www.file.net/process/gamescannerservice.exe.html "GameScannerService.exe Windows process - What is it? | file.net"
+                    [3]: https://web.archive.org/web/20240719205207/https://bugzilla.mozilla.org/show_bug.cgi?id=1326362 "1326362 - Detect and alert for Razer Game Scanner service | bugzilla.mozilla.org"
+                    [4]: https://web.archive.org/web/20240719205527/https://www.shouldiblockit.com/gamescannerservice.exe-3c242c31d44c9ce758ce1f5c1e614c24.aspx "GameScannerService.exe - Should I Block It? (MD5 3c242c31d44c9ce758ce1f5c1e614c24)"
                 call:
                     function: DisableService
                     parameters:
@@ -14216,7 +14235,7 @@ actions:
                     safeguarding user privacy.
 
                     > **Caution**: This script may impact the delivery of diagnostic and usage-based solutions from
-                    Microsoft [1] [2].
+                    > Microsoft [1] [2].
 
                     ### Blocked Hosts
 
@@ -18422,7 +18441,7 @@ actions:
                                                     [3]: https://web.archive.org/web/20240713100611/https://answers.microsoft.com/en-us/windows/forum/all/i-am-having-issues-changing-my-app-recommendation/16b00c35-05fc-44bc-9e78-e9452cf8d862 "I am Having Issues Changing My App Recommendation Settings - Microsoft Community | answers.microsoft.com"
                                                     [4]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#241-microsoft-defender-smartscreen "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
                                                     [5]: https://github.com/privacysexy-forks/10_0_19045_2251/blob/0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf/C/Windows/System32/smartscreen.exe.strings#L5182 "10_0_19045_2251/C/Windows/System32/smartscreen.exe.strings at 0960c766a4fc8eb5a95d47ac4df6c1d35b9324bf · privacysexy-forks/10_0_19045_2251 · GitHub | github.com"
-                                                    [6]: https://web.archive.org/web/20240713100920/https://www.elevenforum.com/t/choose-where-to-get-apps-in-windows-11.7370/ "Choose where to get apps in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                                    [6]: https://web.archive.org/web/20240724195837/https://www.elevenforum.com/t/choose-where-to-get-apps-in-windows-11.7370/ "Choose where to get apps in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
                                                     [7]: https://web.archive.org/web/20240713101028/https://bugzilla.mozilla.org/show_bug.cgi?id=1659157 "1659157 - Add telemetry to track Win 10 installs in related to the system's MSFT verified app setting. | bugzilla.mozilla.org"
                                                 call:
                                                     -
@@ -19760,7 +19779,7 @@ actions:
                                     | ---------------- | ------ |
                                     | Windows 10 22H2  | 🔴 Disabled |
                                     | Windows 11 22H2  | 🔴 Disabled |
-                                    | Windows 11 22H3  | 🔴 Disabled |
+                                    | Windows 11 23H2  | 🔴 Disabled |
                                 call:
                                     function: DisableScheduledTask
                                     parameters:
@@ -19783,7 +19802,7 @@ actions:
                                     | ---------------- | ------ |
                                     | Windows 10 22H2  | 🔴 Disabled |
                                     | Windows 11 22H2  | 🔴 Disabled |
-                                    | Windows 11 22H3  | 🔴 Disabled |
+                                    | Windows 11 23H2  | 🔴 Disabled |
                                 call:
                                     function: DisableScheduledTask
                                     parameters:
@@ -20446,7 +20465,7 @@ actions:
                                     - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!PauseUpdatesStartTime` (set only in Windows 11 22H2 and later)
                                     - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!PauseUpdatesExpiryTime`
 
-                                    This method has been tested and verified on Windows 10 from version 22H2 and Windows 11 from version 22H3 onwards.
+                                    This method has been tested and verified on Windows 10 from version 22H2 and Windows 11 from version 23H2 onwards.
                                     To ensure functional integrity, all these keys must be added together.
 
                                     While beneficial for Windows Home users [1], note that Group Policy Object (GPO) settings might override these changes.
@@ -23889,7 +23908,7 @@ actions:
                                     | Windows 11 | 22H2 | ✅ |
                                     | Windows 11 | 23H2 | ✅ |
 
-                                    [1]: https://archive.ph/2024.03.25-093648/https://twitter.com/ALumia_Italia/status/1088739425738244096?lang=en 'Aggiornamenti Lumia on X: "Windows Calling Shell App (aka Call) got a new "Store Logo"" / X | twitter.com'
+                                    [1]: https://archive.ph/2024.03.25-093648/https://twitter.com/ALumia_Italia/status/1088739425738244096?lang=en 'Aggiornamenti Lumia on X: "Windows Calling Shell App (aka Call) got a new "Store Logo" / X | twitter.com'
                                     [2]: https://web.archive.org/web/20240103144719/https://www.aggiornamentilumia.it/2018/11/05/windows-10-19h1-in-arrivo-una-nuova-applicazione-per-il-mirroring-chiamate-indiscrezione/ "Windows 10 19H1 | In arrivo una nuova applicazione per il mirroring chiamate [Indiscrezione] - Aggiornamenti Lumia | www.aggiornamentilumia.it"
                                     [3]: https://web.archive.org/web/20240103144732/https://strontic.github.io/xcyclopedia/library/CallingShellApp.exe-C5415F104A4060D90CE1675383308A66.html "CallingShellApp.exe | Calling App to host call progress on shell | STRONTIC | strontic.github.io"
                                 call:
@@ -28169,7 +28188,7 @@ actions:
                                     valueName: IsUserEligible
                                     dataType: REG_DWORD
                                     data: "0"
-                                    deleteOnRevert: 'true' # Default value for this key varies, seen as `0` on some Windows 11 22H3, key does not exist on some Windows 10 22H2
+                                    deleteOnRevert: 'true' # Default value for this key varies, seen as `0` on some Windows 11 23H2, key does not exist on some Windows 10 22H2
                             -
                                 function: ShowComputerRestartSuggestion
                     -
@@ -28199,7 +28218,7 @@ actions:
                                 valueName: AutoOpenCopilotLargeScreens
                                 dataType: REG_DWORD
                                 data: "0"
-                                deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 23H2)
                     -
                         name: Remove "Copilot" icon from taskbar
                         recommend: strict
@@ -28231,7 +28250,7 @@ actions:
                                     valueName: ShowCopilotButton
                                     dataType: REG_DWORD
                                     data: "0"
-                                    deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 23H2)
                             -
                                 function: ShowExplorerRestartSuggestion
             -
@@ -28743,7 +28762,7 @@ actions:
                                 valueName: DisableSnippingTool
                                 dataType: REG_DWORD
                                 data: "1"
-                                deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 23H2)
                     -
                         name: Disable Snipping Tool keyboard shortcut (**Windows logo key** + **Shift** + **S**)
                         docs: |-
@@ -28782,7 +28801,7 @@ actions:
                             This key toggles the setting "Use the Print screen button to open screen snipping" in the control panel [1] [2] [3].
                             Changing this setting through the user interface also modifies this registry entry [3].
                             This key is absent by default in modern Windows versions, confirmed through testing starting with Windows
-                            10 22H2 and Windows 11 22H3, which indicates that the Print Screen shortcut is enabled.
+                            10 22H2 and Windows 11 23H2, which indicates that the Print Screen shortcut is enabled.
 
                             Applying these changes requires restarting File Explorer (`explorer.exe`) [3].
                             Both `explorer.exe` [4] and `Taskbar.dll` [5] reads this configuration at startup.
@@ -28800,7 +28819,7 @@ actions:
                                     valueName: PrintScreenKeyForSnippingEnabled
                                     dataType: REG_DWORD
                                     data: "0"
-                                    deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 23H2)
                             -
                                 function: ShowExplorerRestartSuggestion
     -
@@ -31907,7 +31926,7 @@ functions:
             -
                 function: RunPowerShell
                 parameters:
-                    codeComment: Add a rule to prevent the executable "{{ $executableNameWithExtension }}"" from running via File Explorer
+                    codeComment: Add a rule to prevent the executable "{{ $executableNameWithExtension }}" from running via File Explorer
                     code: |-
                         $executableFilename='{{ $executableNameWithExtension }}'
                         try {
