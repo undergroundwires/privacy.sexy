@@ -28474,32 +28474,94 @@ actions:
                                 serviceName: MessagingService
                                 defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
                     -
-                        name: Disable Windows Push Notifications (breaks network settings view on Windows 10)
-                        recommend: strict
+                        name: Disable Windows Push Notifications
+                        recommend: strict # Enhances privacy but reduces convenience.
                         docs: |-
-                            This script disables the **Windows Push Notification Service (WNS)** (`WpnService` and `WpnUserService`).
-                            
-                            WNS allows third-party developers to send a range of notifications, such as toast, tile, badge, and raw updates,
+                            This script disables the Windows Push Notification Service (WNS), including the
+                            `WpnService` and `WpnUserService`.
+
+                            WNS enables third-party developers to send notifications (toast, tile, badge, and raw updates)
                             from their cloud services [1].
+                            However, this service raises privacy concerns:
 
-                            However, there are privacy concerns with this service:
+                            - It relies on connections to Microsoft cloud servers [1] [2] [3] [4] [5], potentially exposing
+                              user data.
+                              This delivers both local and push notifications to your device [1].
+                            - It may bypass VPN protections and expose your device's real IP address, according to
+                              Wikipedia (uncited) [2].
 
-                            - It relies on connections to Microsoft cloud servers [1] [2] [3] [4] [5] to deliver both local and push
-                              notifications to your device [1].
-                            - It can bypass VPN protections, exposing the device's real IP address, as noted in Wikipedia (uncited) [2].
+                            Running this script will:
 
-                            This script disables `WpnService` (Windows Push Notifications System Service) [3] and
-                            `WpnUserService` (Windows Push Notifications User Service) [4].
-                            
-                            > **Caution**: Disabling the `WpnUserService` system-wide impacts access to network settings on Windows 10,
-                            > possibly causing issues with managing network connections [5] [6]. This issue does not occur on Windows 11 [5].
+                            - Enhance your privacy by reducing data sent to Microsoft servers
+                            - Improve security by limiting potential attack vectors
+                            - Boost system performance by reducing background processes
+
+                            > **Caution**:
+                            > After running this script, you will no longer receive instant notifications from most apps.
+                            > This may include important updates or messages.
+
+                            ### Technical Details
+
+                            This script disables two services:
+
+                            1. `WpnService` (Windows Push Notifications System Service) [3]
+                            2. `WpnUserService` (Windows Push Notifications User Service) [4]
+
+                            Disabling `WpnUserService` may cause these issues:
+
+                            - **Network & Internet** in Settings:
+                              - Windows 10: May cause issues accessing network settings [5] [6] [7].
+                              - Windows 11: No reported issues [5].
+                              - To reproduce (Windows 10):
+                                1. Open **Settings** 
+                                2. Select **Network & Internet**
+                            - **Notification Center** in taskbar:
+                              - All Windows 11 versions:
+                                - Prevents opening **Notification Center** [8] (known as *Action Center* on
+                                  Windows 10 [9]) .
+                                - The **Notification Center** (known as **notification area** on Windows 10 [10])
+                                  is at the right end of the taskbar [11].
+                                - It includes system status icons (e.g., date/time, battery, Wi-Fi) and
+                                  notifications [8] [11].
+                              - To reproduce (Windows 11): Click the **Notification Center** icon on the taskbar.
+                            - **Notifications & Actions** in Settings:
+                              - Some Windows 11 versions: Unable to access **Notifications & Actions** [12] on
+                                Settings app.
+                              - To reproduce (Windows 11):
+                                1. Open **Settings**
+                                2. Select **System**
+                                3. Select **Notifications**
+
+                            Confirmed side effects per Windows version after disabling `WpnUserService` and rebooting:
+
+                            | Windows Version | Taskbar Notifications Center | Notifications & Actions Settings | Network Settings |
+                            | --------------- | ---------------------------- | -------------------------------- |------------------|
+                            | Windows 11 23H2 | 🔴 Affected | 🔴 Affected | 🟢 Unaffected |
+                            | Windows 11 22H2 | 🔴 Affected | 🔴 Affected | 🟢 Unaffected |
+                            | Windows 11 21H2 | 🔴 Affected | 🟢 Unaffected | 🟢 Unaffected |
+                            | Windows 10 22H2 | 🟢 Unaffected | 🟢 Unaffected | 🔴 Breaks |
+                            | Windows 10 21H2 | 🟢 Unaffected | 🟢 Unaffected | 🔴 Breaks |
+                            | Windows 10 20H2 | 🟢 Unaffected | 🟢 Unaffected | 🔴 Breaks |
+                            | Windows 10 19H2 | 🟢 Unaffected | 🟢 Unaffected | 🟢 Unaffected |
+                            | Windows 10 19H1 | 🟢 Unaffected | 🟢 Unaffected | 🟢 Unaffected |
+
+                            Due to these issues, this script disables `WpnUserService` only on Windows 10 version 19H2 and earlier versions.
 
                             ### Overview of default service statuses
 
+                            `WpnService`:
+
                             | OS Version | Status | Start type |
                             | ---------- | -------| ---------- |
-                            | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
-                            | Windows 11 (≥ 23H2) | 🟢 Running | Automatic |
+                            | Windows 10 (≥ 19H1) | 🟢 Running | Automatic |
+                            | Windows 11 (all versions) | 🟢 Running | Automatic |
+
+                            `WpnUserService_<Suffix>`:
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 19H1) | 🟢 Running | Automatic |
+                            | Windows 11 (all versions) | 🟢 Running | Automatic |
 
                             [1]: https://web.archive.org/web/20240218223751/https://learn.microsoft.com/en-us/windows/apps/design/shell/tiles-and-notifications/windows-push-notification-services--wns--overview "Windows Push Notification Services (WNS) overview - Windows apps | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240218223848/https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue "Windows Push Notification Service - Wikipedia | en.wikipedia.org"
@@ -28507,13 +28569,13 @@ actions:
                             [4]: https://web.archive.org/web/20240218223900/https://batcmd.com/windows/10/services/wpnuserservice/ "Windows Push Notifications User Service - Windows 10 Service - batcmd.com | batcmd.com"
                             [5]: https://web.archive.org/web/20240218223920/https://github.com/undergroundwires/privacy.sexy/issues/110 '[BUG]: "SystemSettings.exe - Stack-based buffer" when accessing network settings · Issue #110 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy'
                             [6]: https://web.archive.org/web/20240218225733/https://github.com/undergroundwires/privacy.sexy/issues/166 "[BUG]: Network & Internet Problem after using the script · Issue #166 · undergroundwires/privacy.sexy | GitHub | github.com/undergroundwires/privacy.sexy"
+                            [7]: https://web.archive.org/web/20240812132702/https://github.com/undergroundwires/privacy.sexy/issues/225 "[Improvements] possible workaround for issue #110 · Issue #225 · undergroundwires/privacy.sexy · GitHub | github.com"
+                            [8]: https://web.archive.org/web/20240812131424/https://github.com/undergroundwires/privacy.sexy/issues/314 "[BUG]: Script that breaks calendar in taskbar · Issue #314 · undergroundwires/privacy.sexy · GitHub | github.com"
+                            [9]: https://archive.ph/2024.08.12-133902/https://support.microsoft.com/en-us/windows/how-to-open-notification-center-and-quick-settings-f8dc196e-82db-5d67-f55e-ba5586fbb038%23WindowsVersion=Windows_10 "Windows 10 | How to open Notification Center and Quick Settings - Microsoft Support | support.microsoft.com"
+                            [10]: https://archive.ph/2024.08.12-133132/https://support.microsoft.com/en-us/windows/customize-the-taskbar-notification-area-e159e8d2-9ac5-b2bd-61c5-bb63c1d437c3%23WindowsVersion=Windows_10 "Windows 10 | Customize the taskbar notification area - Microsoft Support | support.microsoft.com"
+                            [11]: https://archive.ph/2024.08.12-133105/https://support.microsoft.com/en-us/windows/customize-the-taskbar-notification-area-e159e8d2-9ac5-b2bd-61c5-bb63c1d437c3%23WindowsVersion=Windows_11 "Windows 11 | Customize the taskbar notification area - Microsoft Support | support.microsoft.com"
+                            [12]: https://web.archive.org/web/20240812131129/https://github.com/undergroundwires/privacy.sexy/issues/227 "[BUG]: Disabling \"Windows Push Notification Service\" also breaks action center · Issue #227 · undergroundwires/privacy.sexy · GitHub | github.com"
                         call:
-                            -
-                                function: ShowMessage
-                                parameters:
-                                    message: Disabling Network settings on Windows 10 is known to break Network settings.
-                                    maximumWindowsVersion: Windows10-MostRecent
-                                    warn: 'true'
                             -
                                 function: DisableService
                                 parameters:
@@ -28526,6 +28588,7 @@ actions:
                                     # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WpnUserService_*").Start
                                     serviceName: WpnUserService
                                     defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
+                                    maximumWindowsVersion: Windows10-1909
                     -
                         category: Disable Xbox services
                         docs: |-
@@ -29611,20 +29674,43 @@ functions:
     -
         name: DisablePerUserService
         parameters:
-            - name: serviceName
-            - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
-        # More about per-user services: https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows
+            - name: serviceName             # The name of the service to disable
+            - name: defaultStartupMode      # Allowed values: Boot | System | Automatic | Manual
+            - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+        docs: |-
+            This function disables both system-wide and per-user services for a specified service.
+
+            Windows creates per-user services when a user signs in and deletes them upon sign-out [1].
+            Per-user services use the naming format <service name>_LUID, where LUID is a locally unique identifier for the user context [1].
+            Per-user services have system-wide counterparts with the same default startup mode [1].
+            These services can only be disabled using registry modifications [1].
+            They are hidden from the **Services** management console and not displayed in the group policy services policy editor [1].
+
+            [1]: https://web.archive.org/web/20240119153912/https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows "Per-user services - Windows Application Management | Microsoft Learn | learn.microsoft.com"
         call:
-            - # System-wide variant: every per-user service has also system-wide counterpart with same default startup mode
+            -
+                function: Comment
+                parameters:
+                    codeComment: 'Disable per-user "{{ $serviceName }}" service for all users'
+                    revertCodeComment: 'Restore per-user "{{ $serviceName }}" service to its default configuration for all users'
+            -
                 function: DisableServiceInRegistry
                 parameters:
                     serviceName: '{{ $serviceName }}'
                     defaultStartupMode: '{{ $defaultStartupMode }}'
-            - # Per-user variant
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+            -
+                function: Comment
+                parameters:
+                    codeComment: 'Disable per-user "{{ $serviceName }}" service for individual user accounts'
+                    revertCodeComment: 'Restore per-user "{{ $serviceName }}" service to its default configuration for individual user accounts'
+            -
                 function: DisableServiceInRegistry
                 parameters:
                     serviceName: '{{ $serviceName }}_*'
                     defaultStartupMode: '{{ $defaultStartupMode }}'
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
     -
         name: RunInlineCode
         #   Marked: refactor-with-partials
@@ -29789,11 +29875,14 @@ functions:
         parameters: # Ensure that this function has the same parameters as `DisableService` and `DisableServiceInRegistryAsTrustedInstaller` to simplify testing and interchangeability.
             - name: serviceName
             - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
+            - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         call:
-            function: RunPowerShell
+            function: RunPowerShellWithWindowsVersionConstraints
             # Marked: refactor-with-revert-call, refactor-with-variables
             #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
             parameters:
+                maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                 code: |- # We do the registry way because GUI, "sc config" or "Set-Service" will not work
                     $serviceQuery = '{{ $serviceName }}'
                     # -- 1. Skip if service does not exist
