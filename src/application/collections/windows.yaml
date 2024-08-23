@@ -15019,19 +15019,20 @@ actions:
                                     [4]: https://web.archive.org/web/20240728212907/https://learn.microsoft.com/en-us/defender-endpoint/enable-cloud-protection-microsoft-defender-antivirus?view=o365-worldwide "Turn on cloud protection in Microsoft Defender Antivirus - Microsoft Defender for Endpoint | Microsoft Learn | ://learn.microsoft.com"
                                 children:
                                     -
-                                        name: Disable Defender "Block at First Sight" feature
+                                        name: Disable Defender Antivirus "Block at First Sight" feature
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
-                                        docs: |- # refactor-with-variables: Same • Security/Privacy Trade-off Caution
-                                            This script disables the "Block at first sight" feature in Microsoft Defender Antivirus.
+                                        docs: |-
+                                            This script disables the "Block at first sight".
 
-                                            Block at first sight is a threat protection feature that quickly detects and blocks new malware [1].
-                                            When Microsoft Defender Antivirus encounters a suspicious file it can't identify, it consults its cloud protection backend [1].
+                                            Block at first sight is **Defender Antivirus** feature [1] [2] [3] [4].
+                                            It protects against threats by quickly detecting and blocking new malware [1].
+                                            When Defender Antivirus encounters a suspicious file it can't identify, it consults its cloud protection backend [1].
                                             The cloud backend uses heuristics, machine learning, and automated analysis to identify malicious files [1].
                                             This back-end is part of **Cloud Protection** [1].
                                             It is also known as **Microsoft Active Protection Service (MAPS)** [1] [2] [3] or **SpyNet** [2].
 
                                             This feature is enabled by default [4], depending on other configurations [1] [2].
-                                            The feature is included in both **Defender Antivirus** and **Defender for Endpoint** [1].
+                                            The feature is included in **Defender for Endpoint** suite [1].
 
                                             Automatically sending files to Microsoft's cloud [1] [3] raises significant privacy concerns.
                                             This script improves your privacy by preventing automatic file uploads to Microsoft.
@@ -15040,6 +15041,10 @@ actions:
                                             However, disabling this feature may reduce your device and network protection levels [1] [3].
                                             The Defense Information Systems Agency (DISA) recommends keeping this feature enabled for additional security [3].
 
+                                            > **Caution**: This change enhances privacy but may reduce overall system security.
+
+                                            ### Technical Details
+
                                             This script configures the option by:
 
                                             - Using the Defender CLI to set the `DisableBlockAtFirstSeen` preference [4].
@@ -15047,8 +15052,6 @@ actions:
                                               Tests indicate that the CLI sets this registry key.
                                             - Setting the registry key `HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet!DisableBlockAtFirstSeen`
                                               to configure the group policy [2] [3].
-
-                                            > **Caution**: This change enhances privacy but may reduce overall system security.
 
                                             [1]: https://web.archive.org/web/20240728153741/https://learn.microsoft.com/en-us/defender-endpoint/configure-block-at-first-sight-microsoft-defender-antivirus?view=o365-worldwide "Enable block at first sight to detect malware in seconds - Microsoft Defender for Endpoint | Microsoft Learn"
                                             [2]: https://web.archive.org/web/20240314124159/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-microsoftdefenderantivirus#disableroutinelytakingaction "ADMX_MicrosoftDefenderAntivirus Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
@@ -15079,19 +15082,20 @@ actions:
                                                     data: "1"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        name: Disable Defender "Extended Cloud Check" feature
+                                        name: Disable Defender Antivirus "Extended Cloud Check" feature
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
-                                        docs: |- # refactor-with-variables: Same • Security/Privacy Trade-off Caution
-                                            This script disables the extended cloud check feature in Microsoft Defender Antivirus by reducing its timeout.
+                                        docs: |-
+                                            This script disables the extended cloud check feature in Defender Antivirus by reducing its timeout.
 
-                                            The extended cloud check allows Defender to block a suspicious file for up to 60 seconds while it is
+                                            The extended cloud check is a Defender Antivirus feature [1] [2] [3] [4].
+                                            It allows Defender to block a suspicious file for up to 60 seconds while it is
                                             scanned in the cloud to verify its safety [1] [2].
                                             This script reduces the extended cloud check timeout to 0, effectively disabling the feature.
                                             This maintains the standard (default) time, which is 10 seconds [1] [2] [3].
 
-                                            This feature is part of **Microsoft Defender Antivirus** [1] [2].
-                                            It is part of Microsoft MAPS [1] [2], also known as SpyNet [4] or Microsoft Active Protection Service [4].
-                                            This feature sends your data, including personal information, to Microsoft [4].
+                                            This feature is part of Microsoft MAPS [1] [2], also known as SpyNet [4] or
+                                            Microsoft Active Protection Service [4].
+                                            It sends your data, including personal information, to Microsoft [4].
 
                                             Disabling this feature enhances privacy by limiting the amount of data sent to Microsoft's cloud for analysis.
                                             may also improve system performance by reducing the waiting time for cloud-based file analysis.
@@ -15100,6 +15104,10 @@ actions:
                                             Disabling the extended cloud check may reduce Defender's ability to detect and block new or complex malware
                                             requiring thorough cloud-based analysis.
 
+                                            > **Caution**: This change enhances privacy but may reduce overall system security.
+
+                                            ### Technical Details
+
                                             This script configures the settings by:
 
                                             - Using the Defender CLI to set the `CloudExtendedTimeout` preference [3].
@@ -15107,8 +15115,6 @@ actions:
                                               Tests show that the CLI sets this registry key.
                                             - Setting the registry key `HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine!MpBafsExtendedTimeout`
                                               to configure the group policy [1].
-
-                                            > **Caution**: This change enhances privacy but may reduce overall system security.
 
                                             [1]: https://web.archive.org/web/20240728164134/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::MpEngine_MpBafsExtendedTimeout "Configure extended cloud check | admx.help"
                                             [2]: https://web.archive.org/web/20240314122554/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#cloudextendedtimeout "Defender Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
@@ -15139,14 +15145,16 @@ actions:
                                                     data: "50"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        name: Disable Defender aggressive cloud protection
+                                        name: Disable Defender Antivirus aggressive cloud protection
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
-                                        docs: |- # refactor-with-variables: Same • Security/Privacy Trade-off Caution
+                                        docs: |-
                                             This script disables the aggressive cloud protection setting in Microsoft Defender Antivirus.
 
-                                            **Cloud protection** delivers faster protection to devices compared to traditional security intelligence updates [4].
+                                            **Cloud protection** delivers faster protection to devices compared to traditional
+                                            security intelligence updates [4].
                                             It works on different aggressiveness levels in blocking and scanning suspicious files [1] [3].
-                                            This feature applies to both **Microsoft Defender Antivirus** [1] [2] [3] [4] and **Microsoft Defender for Endpoint** [4].
+                                            This feature applies to both **Microsoft Defender Antivirus** [1] [2] [3] [4]
+                                            and **Microsoft Defender for Endpoint** [4].
 
                                             By default, the protection level is unconfigured [1] [3] [4].
                                             This default state provides the least protection [4].
@@ -15158,6 +15166,10 @@ actions:
                                             - Increases user control over what runs on their device [4].
                                             - May improve system performance by optimizing scan performance [4].
 
+                                            > **Caution**: This change enhances privacy but may reduce overall system security.
+
+                                            ### Technical Details
+
                                             The script configures this setting by:
 
                                             - Using the Defender CLI to set the `CloudBlockLevel` preference [2].
@@ -15165,8 +15177,6 @@ actions:
                                               Tests show that the CLI sets this registry key.
                                             - Setting the registry key `HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine!MpCloudBlockLevel`
                                               to configure the group policy [1].
-
-                                            > **Caution**: This change enhances privacy but may reduce overall system security.
 
                                             [1]: https://web.archive.org/web/20240728172058/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::MpEngine_MpCloudBlockLevel "Select cloud protection level | admx.help"
                                             [2]: https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps#-cloudblocklevel "Set-MpPreference (Defender) | Microsoft Learn | learn.microsoft.com"
@@ -15197,33 +15207,42 @@ actions:
                                                     data: "2"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        name: Disable Defender cloud-based notifications
+                                        name: Disable Defender Antivirus cloud-based notifications
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
-                                        docs: |- # refactor-with-variables: Same • Security/Privacy Trade-off Caution
+                                        docs: |-
                                             This script disables notifications that can turn off security intelligence in Microsoft Defender.
 
                                             This script prevents the antimalware service from receiving notifications to disable individual
                                             security intelligence [1] [2] [3].
                                             *Security intelligence* is updated information that helps antivirus software detect and protect against
                                             the latest threats, working with cloud-based protection [4].
-                                            The *antimalware service*, also known as Microsoft Defender Antivirus, is essential to both Microsoft Defender
-                                            and Microsoft Defender for Endpoint [5].
+                                            The *antimalware service*, also known as Microsoft Defender Antivirus, is essential to
+                                            both Microsoft Defender and Microsoft Defender for Endpoint [5].
 
-                                            By default, Microsoft uses these notifications to disable security intelligence that may cause false positives [1] [2] [3].
+                                            By default, Microsoft uses these notifications to disable security intelligence that may cause false
+                                            positives [1] [2] [3].
                                             This functionality is provided by Microsoft MAPS (Microsoft Active Protection Service) [1] [2] [3].
                                             MAPS was previously known as Microsoft SpyNet [3] and is recently referred to as Cloud Protection [6].
                                             It operates by collecting potentially sensitive personal data [6].
 
-                                            Disabling these notifications limits Cloud Protection functionality, which inherently shares data with Microsoft [6].
+                                            Disabling these notifications limits Cloud Protection functionality, which inherently shares data with
+                                            Microsoft [6].
                                             You also maintain more control over your system's security settings.
                                             However, this may reduce the accuracy of threat detection, possibly leading to more false positives.
+
+                                            This script primarily configures Defender Antivirus [1] [4] [5] [6].
+                                            It also applies to other Microsoft antimalware solutions such as: Microsoft Security Essentials [4],
+                                            older Windows Defender [4], Microsoft Diagnostics and Recovery Toolset (DaRT) [4], System Center
+                                            Configuration Manager [4], System Center Endpoint Protection [4] and Windows Intune [4].
+
+                                            > **Caution**: This change enhances privacy but may reduce overall system security.
+
+                                            ### Technical Details
 
                                             This script configures the following registry keys:
 
                                             - `HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates!SignatureDisableNotification` [1] [3]
                                             - `HKLM\Software\Policies\Microsoft\Microsoft Antimalware\Signature Updates!SignatureDisableNotification` [2]
-
-                                            > **Caution**: This change enhances privacy but may reduce overall system security.
 
                                             [1]: https://web.archive.org/web/20240314124159/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-microsoftdefenderantivirus#signatureupdate_signaturedisablenotification "ADMX_MicrosoftDefenderAntivirus Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240728184043/https://admx.help/?Category=SystemCenterEndpointProtection&Policy=Microsoft.Policies.Antimalware::signature_updates_signaturedisablenotification "Allow notifications to disable definitions based reports to Microsoft Active Protection Service (MAPS). | admx.help"
@@ -15249,57 +15268,70 @@ actions:
                                                     data: "0"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        name: Disable Defender cloud protection
+                                        name: Disable Defender Antivirus cloud protection reporting
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
-                                        docs: |- # refactor-with-variables: Same • Security/Privacy Trade-off Caution
-                                            This script disables Microsoft Defender's cloud protection.
+                                        docs: |-
+                                            This script disables Microsoft Defender's cloud protection reporting.
 
-                                            Cloud protection is also known as Microsoft MAPS (Microsoft Active Protection Service) [1] [2].
-                                            It is an online community that helps users address potential threats and prevent new malicious software [1] [2] [3] [4].
-                                            Participation in the community is often called *SpyNet membership* [5] [6] or simply *membership* [1] [2] [3].
+                                            **Cloud protection** is was previously also known as
+                                            *Microsoft MAPS (Microsoft Active Protection Service)* [1] [2] [3].
+                                            It was previously known as *Windows Defender Antivirus Cloud Protection Service* [3] and
+                                            *Microsoft Defender Antivirus Cloud Protection Service* [3].
+                                            It's a feature of **Defender Antivirus** [1] [2] [3] [4] [5].
 
-                                            When Defender detects unclassified software or changes, it shows how other members responded to the alert [6].
-                                            Your participation helps Microsoft and others investigate potential threats [6].
+                                            This feature creates an online community that helps users address potential threats and
+                                            prevent new malicious software [1] [2] [3] [6] [7].
+                                            Participation in the community is often called *SpyNet membership* [8] [9]
+                                            or simply *membership* [1] [2] [6].
+
+                                            When Defender detects unclassified software or changes, it shows how other members responded to
+                                            the alert [9].
+                                            Your participation helps Microsoft and others investigate potential threats [9].
 
                                             Cloud protection automatically collects and sends information about software, user behavior,
-                                            and system data [1] [2] [7].
-                                            In some cases, it may transmit sensitive personal information to Microsoft [1] [2] [7].
+                                            and system data [1] [2] [3].
+                                            In some cases, it may transmit sensitive personal information to Microsoft [1] [2] [3].
 
-                                            This feature is off by default on most systems [1] [2] [3] [6] [7], but enabled on some editions, like
-                                            Windows on Azure.
+                                            This feature is off by default on most systems [1] [2] [3] [6] [9].
+                                            However, it may come enabled on some editions, like Windows on Azure.
 
-                                            Disabling cloud protection enhances privacy by preventing the automatic sharing of potentially sensitive data with Microsoft.
-                                            While DISA initially recommended disabling cloud protection [5], they later encouraged enabling it for additional security [8].
-                                            However, CIS continues to recommend deactivation in high-security settings for enhanced privacy [7].
-                                            This script prioritizes privacy by disabling the feature.
+                                            Disabling cloud protection:
 
-                                            Disabling cloud protection may also improve system performance by reducing background data collection and transmission.
+                                            - Enhances privacy by preventing the automatic sharing of potentially sensitive
+                                              data with Microsoft.
+                                              While DISA initially recommended disabling cloud protection [8], they later encouraged enabling it
+                                              for additional security [4].
+                                              However, CIS continues to recommend deactivation in high-security settings for enhanced privacy [3].
+                                              This script prioritizes privacy by disabling the feature.
+                                            - May improve system performance by reducing background data collection and
+                                              transmission.
+                                            - May reduce protection against new threats by limiting Defender's access to community insights and
+                                              real-time updates.
 
-                                            However, this may reduce protection against new threats by limiting Defender's access to community insights and
-                                            real-time updates.
+                                            > **Caution**: This change enhances privacy but may reduce overall system security.
+
+                                            ### Technical Details
 
                                             This script configures the following settings:
 
-                                            - Using the Defender CLI to set the `MAPSReporting` preference [3] [4].
+                                            - Using the Defender CLI to set the `MAPSReporting` preference [6] [7].
                                             - `HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet!SpynetReporting`
-                                              to configure the Group Policy (GPO) setting [1] [2] [5] [6] [7].
+                                              to configure the Group Policy (GPO) setting [1] [2] [3] [8] [9].
                                             - `HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet!LocalSettingOverrideSpynetReporting`
-                                              to consistently apply the desired Group Policy (GPO) setting [7] [9].
+                                              to consistently apply the desired Group Policy (GPO) setting [3] [5].
                                             - `HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet!SpynetReporting`:
                                               This registry key is undocumented but present in recent versions of Windows.
                                               Tests show that changing this value via the CLI also alters the registry value.
 
-                                            > **Caution**: This change enhances privacy but may reduce overall system security.
-
                                             [1]: https://web.archive.org/web/20240314122554/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#allowcloudprotection "Defender Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240314124159/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-microsoftdefenderantivirus#spynetreporting "ADMX_MicrosoftDefenderAntivirus Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
-                                            [3]: https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps#-mapsreporting "Set-MpPreference (Defender) | Microsoft Learn | learn.microsoft.com"
-                                            [4]: https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#mapsreporting "MSFT_MpPreference - powershell.one | powershell.one"
-                                            [5]: https://web.archive.org/web/20240728200604/https://www.stigviewer.com/stig/windows_7/2012-07-02/finding/V-15713 "Turn off Windows Defender SpyNet reporting. | www.stigviewer.com"
-                                            [6]: https://web.archive.org/web/20240728200732/https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::SpyNetReporting "Configure Microsoft SpyNet Reporting | admx.help"
-                                            [7]: https://web.archive.org/web/20240722105035/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Windows_10_Enterprise_Release_21H1_Benchmark_v1_11_0.pdf "18.9.45.3.2 | CIS Microsoft Windows 10 Enterprise (Release 21H1 or older) Benchmark | paper.bobylive.com"
-                                            [8]: https://web.archive.org/web/20240728201806/https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75167 "Windows Defender AV must be configured to join Microsoft MAPS. | www.stigviewer.com"
-                                            [9]: https://web.archive.org/web/20240314124159/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-microsoftdefenderantivirus#spynet_localsettingoverridespynetreporting "ADMX_MicrosoftDefenderAntivirus Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240722105035/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Windows_10_Enterprise_Release_21H1_Benchmark_v1_11_0.pdf "18.9.45.3.2 | CIS Microsoft Windows 10 Enterprise (Release 21H1 or older) Benchmark | paper.bobylive.com"
+                                            [4]: https://web.archive.org/web/20240728201806/https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75167 "Windows Defender AV must be configured to join Microsoft MAPS. | www.stigviewer.com"
+                                            [5]: https://web.archive.org/web/20240314124159/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-microsoftdefenderantivirus#spynet_localsettingoverridespynetreporting "ADMX_MicrosoftDefenderAntivirus Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [6]: https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps#-mapsreporting "Set-MpPreference (Defender) | Microsoft Learn | learn.microsoft.com"
+                                            [7]: https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#mapsreporting "MSFT_MpPreference - powershell.one | powershell.one"
+                                            [8]: https://web.archive.org/web/20240728200604/https://www.stigviewer.com/stig/windows_7/2012-07-02/finding/V-15713 "Turn off Windows Defender SpyNet reporting. | www.stigviewer.com"
+                                            [9]: https://web.archive.org/web/20240728200732/https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::SpyNetReporting "Configure Microsoft SpyNet Reporting | admx.help"
                                         call:
                                             # 0: Disabled, 1: Basic, 2: Advanced (default)
                                             -
@@ -15336,14 +15368,15 @@ actions:
                                                     data: "0"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        name: Disable Defender automatic file submission to Microsoft
+                                        name: Disable Defender Antivirus automatic file submission to Microsoft
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
-                                        docs: |- # refactor-with-variables: Same • Security/Privacy Trade-off Caution
+                                        docs: |-
                                             This script disables Defender's automatic submission of file samples to Microsoft for analysis.
-
+                                            
+                                            Automatic file submission is a feature of **Defender Antivirus** [1] [2] [3] [4] [€].
                                             By default, Defender automatically sends 'safe' file samples to Microsoft for analysis [1] [2].
-                                            This action is part of Microsoft's Advanced Protection Service (MAPS) [1] [2].
-                                            Previously, this service was known as Microsoft SpyNet [1] [2].
+                                            This action is part of **Microsoft's Advanced Protection Service (MAPS)** [1] [2].
+                                            Previously, this service was known as **Microsoft SpyNet** [1] [2].
                                             It is now referred to as **cloud protection** [3].
                                             This automatic collection and submission can include your personal information [3].
 
@@ -15356,6 +15389,10 @@ actions:
                                             on sample submissions to improve its detection capabilities.
                                             The Defense Information Systems Agency (DISA) recommends against disabling sample submission [3].
 
+                                            > **Caution**: This change enhances privacy but may reduce overall system security.
+
+                                            ### Technical Details
+
                                             This script configures the following settings:
 
                                             - Using the Defender CLI to set the `SubmitSamplesConsent` preference [3] [4].
@@ -15364,8 +15401,6 @@ actions:
                                             - `HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet!SubmitSamplesConsent`:
                                               This registry key is undocumented but present in recent versions of Windows.
                                               Tests show that changing this value via the CLI also alters the registry value.
-
-                                            > **Caution**: This change enhances privacy but may reduce overall system security.
 
                                             [1]: https://web.archive.org/web/20240314122554/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#submitsamplesconsent "Defender Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240728192845/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SubmitSamplesConsent "Send file samples when further analysis is required"
@@ -15400,13 +15435,14 @@ actions:
                                                     data: "2"
                                                     dataOnRevert: "1" # Default value: `1` on Windows 10 Pro (≥ 22H2) | `1` on Windows 11 Pro (≥ 23H2)
                                     -
-                                        name: Disable Defender real-time security intelligence updates
+                                        name: Disable Defender Antivirus real-time security intelligence updates
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
-                                        docs: |- # refactor-with-variables: Same • Security/Privacy Trade-off Caution
+                                        docs: |-
                                             This script disables the real-time security intelligence updates in Defender.
 
-                                            Real-time security intelligence updates are part of Microsoft Active Protection Service (MAPS) [1] [2].
-                                            MAPS is also known as Microsoft SpyNet or cloud protection [3].
+                                            Real-time security intelligence updates are a feature of **Defender Antivirus** [1].
+                                            They are part of **Microsoft Active Protection Service (MAPS)** [1] [2].
+                                            MAPS is also known as *Microsoft SpyNet* or *cloud protection* [3].
                                             This service collects and sends personal data and other information to Microsoft [3].
 
                                             When enabled, if Defender encounters an unknown file and MAPS has new intelligence on a threat involving that file,
@@ -15438,21 +15474,50 @@ actions:
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 name: Disable "Malicious Software Reporting Tool" diagnostic data
-                                recommend: strict # Does not contribute to security
-                                docs: |- # refactor-with-variables: Same • Security/Privacy Trade-off Caution
-                                    This script disables the diagnostic data sent by Microsoft's Malicious Software Removal Tool (MSRT) [1].
+                                recommend: strict # No significant security gains
+                                docs: |-
+                                    This script prevents Microsoft's Malicious Software Reporting Tool (MSRT) from transmitting diagnostic data.
 
-                                    Starting from its version 5.39 in August 2016, MSRT was observed to transmit a "Heartbeat Report" to Microsoft
-                                    every time it operated [2].
-                                    This happens even when the Customer Experience Improvement Program (CEIP) is turned off, and even if
-                                    "DiagTrack" is not installed on the computer [2].
-                                    Such a report can be confirmed by viewing the MRT log located at `%windir%\debug\mrt.log` [2].
+                                    **Malicious Software Reporting Tool** is a component of the **Malicious Software Removal Tool (MSRT)** [1].
+                                    The MSRT is designed to detect and remove specific, prevalent malware from Windows computers [2].
+                                    The tool is integrated into **Defender Antivirus** [3].
+                                    It's also downloaded and run automatically by Windows Update in the background [2].
 
-                                    This configures `HKLM\SOFTWARE\Policies\Microsoft\MRT!DontReportInfectionInformation` registry key
-                                    to halt this data sharing with Microsoft [1] [2].
+                                    This tool raises significant privacy concerns:
 
-                                    [1]: https://web.archive.org/web/20231009135123/https://admx.help/?Category=Windows10_Telemetry&Policy=Microsoft.Policies.Win10Privacy::DontReportInfection "Disable Malicious Software Reporting tool diagnostic data | admx.help"
-                                    [2]: https://web.archive.org/web/20231009134353/https://www.askwoody.com/2016/telemetry-from-the-malicious-software-removal-tool/ "Telemetry from the Malicious Software Removal Tool @ AskWoody | www.askwoody.com"
+                                    - It continuously sends data to Microsoft [3].
+                                    - Microsoft is reported to share the data from this tool with government agencies, including police,
+                                      to track citizens [1] [2] [4].
+                                    - Since August 2016 (version 5.39), the tool sends a **Heartbeat Report** to Microsoft each time it runs,
+                                      even when the Customer Experience Improvement Program (CEIP) is turned off [5].
+                                      A *heartbeat report* is a small packet of data sent regularly to inform Microsoft that the tool is
+                                      active and functioning.
+
+                                    Disabling the diagnostic data transmission affects:
+
+                                    - **Privacy:**
+                                      Enhances user privacy by preventing Microsoft from collecting and sharing data from MSRT.
+                                    - **System Performance:**
+                                      May slightly improve system performance by reducing background network activity.
+                                    - **Security:**
+                                      May slightly reduce Microsoft's ability to track and respond to malware threats.
+                                      However, the core antivirus functionality stays intact.
+
+                                    ### Technical Details
+
+                                    This reporting occurs even when the `DiagTrack` service is disabled [5].
+
+                                    Users can verify the MSRT's reporting behavior by examining the log file at `%WINDIR%\debug\mrt.log` [5].
+
+                                    This script configures `HKLM\SOFTWARE\Policies\Microsoft\MRT!DontReportInfectionInformation` registry key
+                                    to halt this data sharing with Microsoft [3] [5] [6].
+
+                                    [1]: https://web.archive.org/web/20240823092939/https://seclists.org/fulldisclosure/2008/May/52 "Full Disclosure: Microsot DID DISCLOSE potential Backdoor | seclists.org"
+                                    [2]: https://web.archive.org/web/20240823092946/https://www.microsoft.com/en-us/download/details.aspx?id=9905 "Download Windows Malicious Software Removal Tool 64-bit from Official Microsoft Download Center | www.microsoft.com"
+                                    [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#24-microsoft-defender-antivirus "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20100419062105/https://www.pcworld.com/businesscenter/article/145257/microsoft_botnethunting_tool_helps_bust_hackers.html "Microsoft Botnet-hunting Tool Helps Bust Hackers - PCWorld Business Center | www.pcworld.com"
+                                    [5]: https://web.archive.org/web/20231009134353/https://www.askwoody.com/2016/telemetry-from-the-malicious-software-removal-tool/ "Telemetry from the Malicious Software Removal Tool @ AskWoody | www.askwoody.com"
+                                    [6]: https://web.archive.org/web/20231009135123/https://admx.help/?Category=Windows10_Telemetry&Policy=Microsoft.Policies.Win10Privacy::DontReportInfection "Disable Malicious Software Reporting tool diagnostic data | admx.help"
                                 call:
                                     function: SetRegistryValue
                                     parameters:
@@ -15462,13 +15527,15 @@ actions:
                                         data: "1"
                                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
-                                name: Disable Defender Watson event reporting
-                                recommend: strict # Does not contribute to security
+                                name: Disable Defender Antivirus Watson event reporting
+                                recommend: strict # No significant security gains
                                 docs: |-
-                                    This script prevents Microsoft Defender from sending Watson events to Microsoft.
+                                    This script prevents Defender from sending Watson events to Microsoft.
 
                                     Watson events are automatically sent reports to Microsoft when a program or service crashes or fails [1].
                                     By default, these reports are sent automatically [1] [2] [3].
+                                    This script specifically targets reporting behavior of **Defender Antivirus** [3] without affecting
+                                    other applications or services that may use Watson events.
 
                                     Disabling Watson events enhances privacy by preventing the automatic submission
                                     of potentially sensitive information about system crashes and failures [1].
@@ -15504,6 +15571,131 @@ actions:
                                             dataType: REG_DWORD
                                             data: '1'
                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                name: Disable Defender Antivirus telemetry
+                                recommend: strict # No significant security gains
+                                docs: |-
+                                    This script disables telemetry collection by Defender, enhancing user privacy.
+
+                                    By default, Microsoft collects telemetry data from Microsoft Defender Antivirus and other
+                                    Defender software [1].
+                                    This data collection is referred to as 1DS telemetry [1].
+                                    Microsoft's One Data Strategy (1DS) centralizes and collects telemetry from various
+                                    Microsoft services and tools [2].
+                                    The strategy collects data from various Microsoft services and tools [2].
+                                    The Microsoft Defender Core Service collects telemetry for Microsoft Defender Antivirus and
+                                    Microsoft Defender for Endpoint [1].
+
+                                    Disabling telemetry enhances privacy by reducing the data sent to Microsoft about your
+                                    system and Defender usage.
+                                    It may also boost performance by reducing resource usage for telemetry collection.
+                                    However, this action may limit Microsoft's ability to improve its antivirus service and address
+                                    issues using user data [1].
+
+                                    ### Technical Details
+
+                                    This script modifies following settings:
+
+                                    - Using the Defender CLI to set the `DisableCoreService1DSTelemetry` preference [1].
+                                    - Setting `HKLM\Software\Policies\Microsoft\Windows Defender\Features\DisableCoreService1DSTelemetry` [1]
+                                      registry key to disable telemetry collection via Group Policy Object (GPO) [1].
+                                    - Setting `HKLM\SOFTWARE\Microsoft\Windows Defender\CoreService\DisableCoreService1DSTelemetry`
+                                      registry key.
+                                      This key directly controls the feature.
+                                      It exists by default in modern Windows versions but is not officially documented.
+
+                                    [1]: https://web.archive.org/web/20240728143438/https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-core-service-overview "Microsoft Defender Core service overview - Microsoft Defender for Endpoint | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240728143740/https://github.com/microsoft/cpp_client_telemetry/blob/main/README.md "microsoft/cpp_client_telemetry: 1DS C++ SDK | github.com"
+                                call:
+                                    -
+                                        function: SetMpPreference
+                                        parameters:
+                                            # 0 = 'Disabled' (default), 1 = 'Enabled', 2 = 'AuditMode'
+                                            property: DisableCoreService1DSTelemetry  # Status:   Get-MpPreference | Select-Object -Property DisableCoreService1DSTelemetry
+                                            value: "$False"     # Set:      Set-MpPreference -Force -DisableCoreService1DSTelemetry $False
+                                            default: "$True"    # Default:  0 (Disabled) | Remove-MpPreference -Force -DisableCoreService1DSTelemetry | Set-MpPreference -DisableCoreService1DSTelemetry "$True"
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\Software\Policies\Microsoft\Windows Defender\Features
+                                            valueName: DisableCoreService1DSTelemetry
+                                            dataType: REG_DWORD
+                                            data: '1'
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                    -
+                                        function: SetRegistryValueAsTrustedInstaller
+                                        # Without TrustedInstaller:
+                                        #   - ❌ Fails with "ERROR: Access is denied." on Windows 11 Pro (>= 23H2)
+                                        #   - ❌ Fails with "ERROR: Access is denied." on Windows 10 Pro (>= 22H2)
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\CoreService
+                                            valueName: DisableCoreService1DSTelemetry
+                                            dataType: REG_DWORD
+                                            data: '1'
+                                            dataOnRevert: '0' # 0 by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                name: Disable Defender Antivirus remote experimentation and configurations
+                                recommend: strict # No significant security gains
+                                docs: |-
+                                    This script disables the remote configurations and experimentation features of the Microsoft Defender Core service.
+
+                                    It enhances privacy by limiting the data Microsoft collects about your system and usage habits.
+                                    It may improve system performance by reducing background processes related to these features.
+                                    Disabling this feature may affect Microsoft's ability to improve the Defender product [1].
+
+                                    This script specifically targets the Microsoft Defender Core Service.
+                                    This service is a part of **Defender Antivirus** and **Defender for Endpoint** products [2].
+                                    It contributes to the stability and performance of these products [2].
+                                    
+                                    This service connects to Microsoft servers to receive remote configurations, manage feature rollouts,
+                                    and participate in experiments [1].
+
+                                    Disabling these features prevents:
+
+                                    - **Remote configurations:** Settings such as feature flags configured by Microsoft on your computer [1].
+                                    - **Controlled feature rollouts:** Gradual introduction of new features to subsets of users [1].
+                                    - **Experiments:** Trials of experimental features.
+
+                                    ### Technical Details
+
+                                    This script configures:
+
+                                    - `HKLM\Software\Policies\Microsoft\Windows Defender\Features!DisableCoreServiceECSIntegration`
+                                      registry key to set the Group Policy Object (GPO) [2].
+                                    - `DisableCoreService1DSTelemetry` preference using the Defender CLI [2].
+                                    - `HKLM\SOFTWARE\Microsoft\Windows Defender\CoreService!DisableCoreServiceECSIntegration` registry key
+                                      to control this feature. While this registry key is present by default in recent versions of Windows,
+                                      it lacks official documentation from Microsoft.
+
+                                    [1]: https://web.archive.org/web/20240823083542/https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-core-service-configurations-and-experimentation "Microsoft Defender Core service configurations and experimentation - Microsoft Defender for Endpoint | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240728143438/https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-core-service-overview "Microsoft Defender Core service overview - Microsoft Defender for Endpoint | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: SetMpPreference
+                                        parameters:
+                                            # 0 = 'Disabled' (default), 1 = 'Enabled', 2 = 'AuditMode'
+                                            property: DisableCoreServiceECSIntegration  # Status:   Get-MpPreference | Select-Object -Property DisableCoreServiceECSIntegration
+                                            value: "$False"     # Set:      Set-MpPreference -Force -DisableCoreServiceECSIntegration $False
+                                            default: "$True"    # Default:  0 (Disabled) | Remove-MpPreference -Force -DisableCoreServiceECSIntegration | Set-MpPreference -DisableCoreServiceECSIntegration "$True"
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\Software\Policies\Microsoft\Windows Defender\Features
+                                            valueName: DisableCoreServiceECSIntegration
+                                            dataType: REG_DWORD
+                                            data: '1'
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                    -
+                                        function: SetRegistryValueAsTrustedInstaller
+                                        # Without TrustedInstaller:
+                                        #   - ❌ Fails with "ERROR: Access is denied." on Windows 11 Pro (>= 23H2)
+                                        #   - ❌ Fails with "ERROR: Access is denied." on Windows 10 Pro (>= 22H2)
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\CoreService
+                                            valueName: DisableCoreServiceECSIntegration
+                                            dataType: REG_DWORD
+                                            data: '1'
+                                            dataOnRevert: '0'
                     -
                         category: Disable Defender Antivirus
                         docs: |-
@@ -17356,6 +17548,72 @@ actions:
                                             #     parameters:
                                             #       fileGlob: '%PROGRAMFILES%\Windows Defender\NisSrv.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
                                             #       grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                    -
+                                        name: Disable Microsoft Defender Core Service
+                                        docs: |-
+                                            This script disables the Microsoft Defender Core service (`MDCoreSvc`).
+
+                                            The Microsoft Defender Core service is a component of **Defender Antivirus** [1] [2].
+                                            It is included in **Microsoft Defender for Endpoint** suite. [1] [2] [3].
+                                            It contributes to the stability and performance of Defender Antivirus [1].
+
+                                            This script improves privacy by disabling this service.
+                                            It reduces data collection associated with Microsoft Defender Antivirus and Microsoft Defender for Endpoint.
+                                            It may also increase system performance by removing a background process.
+                                            However, disabling this service may reduce system security.
+                                            As a core operating system component, its removal may also affect system stability.
+
+                                            ### Technical Details
+
+                                            The service is technically identified as `MDCoreSvc` [1] [2] [4] [5].
+                                            Its executable is `MpDefenderCoreService.exe` [1] [2] [5] [6].
+                                            This process is also known as "Antimalware Core Service" [1] [2] [6].
+                                            It's typically located in the `%PROGRAMDATA%\Microsoft\Windows Defender\Platform\<version number>\`
+                                            folder [6].
+                                            It is found on modern versions of Windows [5].
+
+                                            ### Overview of default service statuses
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
+                                            | Windows 11 (≥ 23H2) | 🟡 Missing | N/A |
+
+                                            [1]: https://web.archive.org/web/20240728143438/https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-core-service-overview "Microsoft Defender Core service overview - Microsoft Defender for Endpoint | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240609145624/https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-antivirus-windows?view=o365-worldwide "Microsoft Defender Antivirus in Windows Overview - Microsoft Defender for Endpoint | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240728143825/https://learn.microsoft.com/en-sg/answers/questions/1778162/how-to-fully-uninstall-clean-up-microsoft-defender "How to fully Uninstall/Clean-up Microsoft Defender Endpoint - Microsoft Q&A | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240728143822/https://github.com/undergroundwires/privacy.sexy/issues/385 "[Bug]: Defender is not completely disabled · Issue #385 · undergroundwires/privacy.sexy | github.com"
+                                            [5]: https://web.archive.org/web/20240724234608/https://techcommunity.microsoft.com/t5/public-sector-blog/december-2023-microsoft-365-us-public-sector-roadmap-newsletter/ba-p/4010161 "December 2023 - Microsoft 365 US Public Sector Roadmap Newsletter - Microsoft Community Hub | techcommunity.microsoft.com"
+                                            [6]: https://web.archive.org/web/20240724234556/https://www.file.net/process/mpdefendercoreservice.exe.html "MpDefenderCoreService.exe Windows process - What is it? | file.net"
+                                        call:
+                                            # -
+                                            #     Commented out because it does not work due to permission errors.
+                                            #     function: DisableServiceInRegistryAsTrustedInstaller
+                                            #     parameters:
+                                            #         # Note: Always get "Permission Denied", could not find a way., https://github.com/undergroundwires/privacy.sexy/issues/385
+                                            #         # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ❌ `DisableServiceInRegistryAsTrustedInstaller`
+                                            #         # Windows 11 (23H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ❌ `DisableServiceInRegistryAsTrustedInstaller`
+                                            #         serviceName: MDCoreSvc # Check: (Get-Service -Name 'MDCoreSvc').StartType
+                                            #         defaultStartupMode: Automatic
+                                            -
+                                                function: TerminateAndBlockExecution
+                                                # Successfully disables Microsoft Defender Core Service
+                                                # and prevents it from running in the background.
+                                                # Tested and verified since Windows 10 Pro 22H2 and Windows 11 Pro 23H2
+                                                # using Windows Defender Antivirus antimalware platform - Version 4.8.2001.100.
+                                                # It requires computer restart as it cannot terminate the process but can prevent its future execution.
+                                                parameters:
+                                                    executableNameWithExtension: MpDefenderCoreService.exe
+                                            # -
+                                            #     Commented out because it does not work due to permission errors.
+                                            #     # Marked: SoftDeleteFilesAsTrustedInstaller
+                                            #     #     Something like SoftDeleteFiles | RunAsTrustedInstaller would solve the issue.
+                                            #     function: SoftDeleteFiles
+                                            #     parameters:
+                                            #         fileGlob: '%PROGRAMDATA%\Microsoft\Windows Defender\Platform\*\MpDefenderCoreService.exe'
+                                            #         grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            -
+                                                function: ShowComputerRestartSuggestion
                     -
                         category: Disable Defender Firewall
                         docs: |-
