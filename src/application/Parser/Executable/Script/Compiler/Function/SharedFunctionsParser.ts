@@ -2,14 +2,12 @@ import type {
   FunctionData, CodeInstruction, CodeFunctionData, CallFunctionData,
   CallInstruction, ParameterDefinitionData,
 } from '@/application/collections/';
-import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
-import { CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
-import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
-import { NoDuplicatedLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoDuplicatedLines';
-import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
+import { validateCode, type CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
 import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
+import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { parseFunctionCalls, type FunctionCallsParser } from './Call/FunctionCallsParser';
@@ -23,14 +21,14 @@ import type { ISharedFunction } from './ISharedFunction';
 export interface SharedFunctionsParser {
   (
     functions: readonly FunctionData[],
-    syntax: ILanguageSyntax,
+    language: ScriptingLanguage,
     utilities?: SharedFunctionsParsingUtilities,
   ): ISharedFunctionCollection;
 }
 
 export const parseSharedFunctions: SharedFunctionsParser = (
   functions: readonly FunctionData[],
-  syntax: ILanguageSyntax,
+  language: ScriptingLanguage,
   utilities = DefaultUtilities,
 ) => {
   const collection = new SharedFunctionCollection();
@@ -39,7 +37,7 @@ export const parseSharedFunctions: SharedFunctionsParser = (
   }
   ensureValidFunctions(functions);
   return functions
-    .map((func) => parseFunction(func, syntax, utilities))
+    .map((func) => parseFunction(func, language, utilities))
     .reduce((acc, func) => {
       acc.addFunction(func);
       return acc;
@@ -49,7 +47,7 @@ export const parseSharedFunctions: SharedFunctionsParser = (
 const DefaultUtilities: SharedFunctionsParsingUtilities = {
   wrapError: wrapErrorWithAdditionalContext,
   parseParameter: parseFunctionParameter,
-  codeValidator: CodeValidator.instance,
+  codeValidator: validateCode,
   createParameterCollection: createFunctionParameterCollection,
   parseFunctionCalls,
 };
@@ -57,20 +55,20 @@ const DefaultUtilities: SharedFunctionsParsingUtilities = {
 interface SharedFunctionsParsingUtilities {
   readonly wrapError: ErrorWithContextWrapper;
   readonly parseParameter: FunctionParameterParser;
-  readonly codeValidator: ICodeValidator;
+  readonly codeValidator: CodeValidator;
   readonly createParameterCollection: FunctionParameterCollectionFactory;
   readonly parseFunctionCalls: FunctionCallsParser;
 }
 
 function parseFunction(
   data: FunctionData,
-  syntax: ILanguageSyntax,
+  language: ScriptingLanguage,
   utilities: SharedFunctionsParsingUtilities,
 ): ISharedFunction {
   const { name } = data;
   const parameters = parseParameters(data, utilities);
   if (hasCode(data)) {
-    validateCode(data, syntax, utilities.codeValidator);
+    validateNonEmptyCode(data, language, utilities.codeValidator);
     return createFunctionWithInlineCode(name, parameters, data.code, data.revertCode);
   }
   // Has call
@@ -78,16 +76,20 @@ function parseFunction(
   return createCallerFunction(name, parameters, calls);
 }
 
-function validateCode(
+function validateNonEmptyCode(
   data: CodeFunctionData,
-  syntax: ILanguageSyntax,
-  validator: ICodeValidator,
+  language: ScriptingLanguage,
+  validate: CodeValidator,
 ): void {
   filterEmptyStrings([data.code, data.revertCode])
     .forEach(
-      (code) => validator.throwIfInvalid(
+      (code) => validate(
         code,
-        [new NoEmptyLines(), new NoDuplicatedLines(syntax)],
+        language,
+        [
+          CodeValidationRule.NoEmptyLines,
+          CodeValidationRule.NoDuplicatedLines,
+        ],
       ),
     );
 }

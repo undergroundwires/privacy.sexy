@@ -1,13 +1,13 @@
 import type { CategoryParser } from '@/application/Parser/Executable/CategoryParser';
 import type { CategoryData } from '@/application/collections/';
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { CategoryCollectionSpecificUtilities } from '@/application/Parser/Executable/CategoryCollectionSpecificUtilities';
+import type { CategoryCollectionContext } from '@/application/Parser/Executable/CategoryCollectionContext';
 import { CategoryStub } from './CategoryStub';
 
 export class CategoryParserStub {
   private configuredParseResults = new Map<CategoryData, Category>();
 
-  private usedUtilities = new Array<CategoryCollectionSpecificUtilities>();
+  private usedUtilities = new Array<CategoryCollectionContext>();
 
   public get(): CategoryParser {
     return (category, utilities) => {
@@ -28,7 +28,7 @@ export class CategoryParserStub {
     return this;
   }
 
-  public getUsedUtilities(): readonly CategoryCollectionSpecificUtilities[] {
+  public getUsedContext(): readonly CategoryCollectionContext[] {
     return this.usedUtilities;
   }
 }

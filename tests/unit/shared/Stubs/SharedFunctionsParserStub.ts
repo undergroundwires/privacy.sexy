@@ -2,13 +2,13 @@ import type { FunctionData } from '@/application/collections/';
 import { sequenceEqual } from '@/application/Common/Array';
 import type { ISharedFunctionCollection } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunctionCollection';
 import type { SharedFunctionsParser } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
-import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
+import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { SharedFunctionCollectionStub } from './SharedFunctionCollectionStub';
 
 export function createSharedFunctionsParserStub() {
   const callHistory = new Array<{
     readonly functions: readonly FunctionData[],
-    readonly syntax: ILanguageSyntax,
+    readonly language: ScriptingLanguage,
   }>();
 
   const setupResults = new Array<{
@@ -26,11 +26,11 @@ export function createSharedFunctionsParserStub() {
 
   const parser: SharedFunctionsParser = (
     functions: readonly FunctionData[],
-    syntax: ILanguageSyntax,
+    language: ScriptingLanguage,
   ) => {
     callHistory.push({
       functions: Array.from(functions),
-      syntax,
+      language,
     });
     const result = findResult(functions);
     return result || new SharedFunctionCollectionStub();

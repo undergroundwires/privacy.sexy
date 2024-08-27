@@ -9,16 +9,16 @@ import { parseDocs, type DocsParser } from './DocumentationParser';
 import { parseScript, type ScriptParser } from './Script/ScriptParser';
 import { createExecutableDataValidator, type ExecutableValidator, type ExecutableValidatorFactory } from './Validation/ExecutableValidator';
 import { ExecutableType } from './Validation/ExecutableType';
-import type { CategoryCollectionSpecificUtilities } from './CategoryCollectionSpecificUtilities';
+import type { CategoryCollectionContext } from './CategoryCollectionContext';
 
 export const parseCategory: CategoryParser = (
   category: CategoryData,
-  collectionUtilities: CategoryCollectionSpecificUtilities,
+  collectionContext: CategoryCollectionContext,
   categoryUtilities: CategoryParserUtilities = DefaultCategoryParserUtilities,
 ) => {
   return parseCategoryRecursively({
     categoryData: category,
-    collectionUtilities,
+    collectionContext,
     categoryUtilities,
   });
 };
@@ -26,14 +26,14 @@ export const parseCategory: CategoryParser = (
 export interface CategoryParser {
   (
     category: CategoryData,
-    collectionUtilities: CategoryCollectionSpecificUtilities,
+    collectionContext: CategoryCollectionContext,
     categoryUtilities?: CategoryParserUtilities,
   ): Category;
 }
 
 interface CategoryParseContext {
   readonly categoryData: CategoryData;
-  readonly collectionUtilities: CategoryCollectionSpecificUtilities;
+  readonly collectionContext: CategoryCollectionContext;
   readonly parentCategory?: CategoryData;
   readonly categoryUtilities: CategoryParserUtilities;
 }
@@ -52,7 +52,7 @@ function parseCategoryRecursively(
       children,
       parent: context.categoryData,
       categoryUtilities: context.categoryUtilities,
-      collectionUtilities: context.collectionUtilities,
+      collectionContext: context.collectionContext,
     });
   }
   try {
@@ -104,7 +104,7 @@ interface ExecutableParseContext {
   readonly data: ExecutableData;
   readonly children: CategoryChildren;
   readonly parent: CategoryData;
-  readonly collectionUtilities: CategoryCollectionSpecificUtilities;
+  readonly collectionContext: CategoryCollectionContext;
   readonly categoryUtilities: CategoryParserUtilities;
 }
 
@@ -124,13 +124,13 @@ function parseUnknownExecutable(context: ExecutableParseContext) {
   if (isCategory(context.data)) {
     const subCategory = parseCategoryRecursively({
       categoryData: context.data,
-      collectionUtilities: context.collectionUtilities,
+      collectionContext: context.collectionContext,
       parentCategory: context.parent,
       categoryUtilities: context.categoryUtilities,
     });
     context.children.subcategories.push(subCategory);
   } else { // A script
-    const script = context.categoryUtilities.parseScript(context.data, context.collectionUtilities);
+    const script = context.categoryUtilities.parseScript(context.data, context.collectionContext);
     context.children.subscripts.push(script);
   }
 }

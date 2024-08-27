@@ -10,7 +10,7 @@ export type CompositeCategoryCollectionValidator = CategoryCollectionValidator &
       ...Parameters<CategoryCollectionValidator>,
       (readonly CategoryCollectionValidator[])?,
     ]
-  ): void;
+  ): ReturnType<CategoryCollectionValidator>;
 };
 
 export const validateCategoryCollection: CompositeCategoryCollectionValidator = (

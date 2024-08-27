@@ -7,7 +7,7 @@ import { createEnumParser, type EnumParser } from '../Common/Enum';
 import { parseCategory, type CategoryParser } from './Executable/CategoryParser';
 import { parseScriptingDefinition, type ScriptingDefinitionParser } from './ScriptingDefinition/ScriptingDefinitionParser';
 import { createTypeValidator, type TypeValidator } from './Common/TypeValidator';
-import { createCollectionUtilities, type CategoryCollectionSpecificUtilitiesFactory } from './Executable/CategoryCollectionSpecificUtilities';
+import { createCategoryCollectionContext, type CategoryCollectionContextFactory } from './Executable/CategoryCollectionContext';
 
 export const parseCategoryCollection: CategoryCollectionParser = (
   content,
@@ -16,9 +16,9 @@ export const parseCategoryCollection: CategoryCollectionParser = (
 ) => {
   validateCollection(content, utilities.validator);
   const scripting = utilities.parseScriptingDefinition(content.scripting, projectDetails);
-  const collectionUtilities = utilities.createUtilities(content.functions, scripting);
+  const collectionContext = utilities.createContext(content.functions, scripting.language);
   const categories = content.actions.map(
-    (action) => utilities.parseCategory(action, collectionUtilities),
+    (action) => utilities.parseCategory(action, collectionContext),
   );
   const os = utilities.osParser.parseEnum(content.os, 'os');
   const collection = utilities.createCategoryCollection({
@@ -60,7 +60,7 @@ interface CategoryCollectionParserUtilities {
   readonly osParser: EnumParser<OperatingSystem>;
   readonly validator: TypeValidator;
   readonly parseScriptingDefinition: ScriptingDefinitionParser;
-  readonly createUtilities: CategoryCollectionSpecificUtilitiesFactory;
+  readonly createContext: CategoryCollectionContextFactory;
   readonly parseCategory: CategoryParser;
   readonly createCategoryCollection: CategoryCollectionFactory;
 }
@@ -69,7 +69,7 @@ const DefaultUtilities: CategoryCollectionParserUtilities = {
   osParser: createEnumParser(OperatingSystem),
   validator: createTypeValidator(),
   parseScriptingDefinition,
-  createUtilities: createCollectionUtilities,
+  createContext: createCategoryCollectionContext,
   parseCategory,
   createCategoryCollection: (...args) => new CategoryCollection(...args),
 };

@@ -3,7 +3,7 @@ import type { CategoryData, ExecutableData } from '@/application/collections/';
 import { parseCategory } from '@/application/Parser/Executable/CategoryParser';
 import { type ScriptParser } from '@/application/Parser/Executable/Script/ScriptParser';
 import { type DocsParser } from '@/application/Parser/Executable/DocumentationParser';
-import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
+import { CategoryCollectionContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionContextStub';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { ExecutableType } from '@/application/Parser/Executable/Validation/ExecutableType';
 import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
@@ -357,9 +357,9 @@ describe('CategoryParser', () => {
           expect(actualParsedScripts.length).to.equal(expectedScripts.length);
           expect(actualParsedScripts).to.have.members(expectedScripts);
         });
-        it('parses all scripts with correct utilities', () => {
+        it('parses all scripts with correct context', () => {
           // arrange
-          const expected = new CategoryCollectionSpecificUtilitiesStub();
+          const expectedContext = new CategoryCollectionContextStub();
           const scriptParser = new ScriptParserStub();
           const childrenData = [
             createScriptDataWithCode(),
@@ -372,24 +372,24 @@ describe('CategoryParser', () => {
           // act
           const actualCategory = new TestContext()
             .withData(categoryData)
-            .withCollectionUtilities(expected)
+            .withCollectionContext(expectedContext)
             .withScriptParser(scriptParser.get())
             .withCategoryFactory(categoryFactorySpy)
             .parseCategory();
           // assert
           const actualParsedScripts = getInitParameters(actualCategory)?.scripts;
           expectExists(actualParsedScripts);
-          const actualUtilities = actualParsedScripts.map(
+          const actualContext = actualParsedScripts.map(
             (s) => scriptParser.getParseParameters(s)[1],
           );
           expect(
-            actualUtilities.every(
-              (actual) => actual === expected,
+            actualContext.every(
+              (actual) => actual === expectedContext,
             ),
             formatAssertionMessage([
-              `Expected all elements to be ${JSON.stringify(expected)}`,
+              `Expected all elements to be ${JSON.stringify(expectedContext)}`,
               'All elements:',
-              indentText(JSON.stringify(actualUtilities)),
+              indentText(JSON.stringify(actualContext)),
             ]),
           ).to.equal(true);
         });
@@ -464,8 +464,7 @@ describe('CategoryParser', () => {
 class TestContext {
   private data: CategoryData = new CategoryDataStub();
 
-  private collectionUtilities:
-  CategoryCollectionSpecificUtilitiesStub = new CategoryCollectionSpecificUtilitiesStub();
+  private collectionContext: CategoryCollectionContextStub = new CategoryCollectionContextStub();
 
   private categoryFactory: CategoryFactory = createCategoryFactorySpy().categoryFactorySpy;
 
@@ -482,10 +481,10 @@ class TestContext {
     return this;
   }
 
-  public withCollectionUtilities(
-    collectionUtilities: CategoryCollectionSpecificUtilitiesStub,
+  public withCollectionContext(
+    collectionContext: CategoryCollectionContextStub,
   ): this {
-    this.collectionUtilities = collectionUtilities;
+    this.collectionContext = collectionContext;
     return this;
   }
 
@@ -517,7 +516,7 @@ class TestContext {
   public parseCategory() {
     return parseCategory(
       this.data,
-      this.collectionUtilities,
+      this.collectionContext,
       {
         createCategory: this.categoryFactory,
         wrapError: this.errorWrapper,

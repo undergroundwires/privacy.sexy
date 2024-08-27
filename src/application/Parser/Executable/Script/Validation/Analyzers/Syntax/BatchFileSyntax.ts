@@ -1,9 +1,9 @@
-import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
+import type { LanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
 
 const BatchFileCommonCodeParts = ['(', ')', 'else', '||'];
 const PowerShellCommonCodeParts = ['{', '}'];
 
-export class BatchFileSyntax implements ILanguageSyntax {
+export class BatchFileSyntax implements LanguageSyntax {
   public readonly commentDelimiters = ['REM', '::'];
 
   public readonly commonCodeParts = [...BatchFileCommonCodeParts, ...PowerShellCommonCodeParts];

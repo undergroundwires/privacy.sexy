@@ -8,12 +8,9 @@ import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub'
 import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
-import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import type { EnumParser } from '@/application/Common/Enum';
-import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
-import { NoDuplicatedLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoDuplicatedLines';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
-import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
+import type { CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { ErrorWrapperStub } from '@tests/unit/shared/Stubs/ErrorWrapperStub';
 import type { ExecutableValidatorFactory } from '@/application/Parser/Executable/Validation/ExecutableValidator';
@@ -26,11 +23,13 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { createScriptFactorySpy } from '@tests/unit/shared/Stubs/ScriptFactoryStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
-import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
-import type { CategoryCollectionSpecificUtilities } from '@/application/Parser/Executable/CategoryCollectionSpecificUtilities';
+import { CategoryCollectionContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionContextStub';
+import type { CategoryCollectionContext } from '@/application/Parser/Executable/CategoryCollectionContext';
 import type { ObjectAssertion } from '@/application/Parser/Common/TypeValidator';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import type { ScriptFactory } from '@/domain/Executables/Script/ScriptFactory';
+import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { itAsserts, itValidatesType, itValidatesName } from '../Validation/ExecutableValidationTester';
 import { generateDataValidationTestScenarios } from '../Validation/DataValidationTestScenarioGenerator';
 
@@ -330,13 +329,13 @@ describe('ScriptParser', () => {
           const script = createScriptDataWithCode();
           const compiler = new ScriptCompilerStub()
             .withCompileAbility(script, expectedCode);
-          const collectionUtilities = new CategoryCollectionSpecificUtilitiesStub()
+          const collectionContext = new CategoryCollectionContextStub()
             .withCompiler(compiler);
           const { scriptFactorySpy, getInitParameters } = createScriptFactorySpy();
           // act
           const actualScript = new TestContext()
             .withData(script)
-            .withCollectionUtilities(collectionUtilities)
+            .withCollectionContext(collectionContext)
             .withScriptFactory(scriptFactorySpy)
             .parseScript();
           // assert
@@ -344,33 +343,12 @@ describe('ScriptParser', () => {
           expect(actualCode).to.equal(expectedCode);
         });
       });
-      describe('syntax', () => {
-        it('set from the context', () => { // tests through script validation logic
-          // arrange
-          const commentDelimiter = 'should not throw';
-          const duplicatedCode = `${commentDelimiter} duplicate-line\n${commentDelimiter} duplicate-line`;
-          const collectionUtilities = new CategoryCollectionSpecificUtilitiesStub()
-            .withSyntax(new LanguageSyntaxStub().withCommentDelimiters(commentDelimiter));
-          const script = createScriptDataWithoutCallOrCodes()
-            .withCode(duplicatedCode);
-          // act
-          const act = () => new TestContext()
-            .withData(script)
-            .withCollectionUtilities(collectionUtilities);
-          // assert
-          expect(act).to.not.throw();
-        });
-      });
       describe('validates a expected', () => {
         it('validates script with inline code (that is not compiled)', () => {
           // arrange
-          const expectedRules = [
-            NoEmptyLines,
-            NoDuplicatedLines,
-          ];
           const expectedCode = 'expected code to be validated';
           const expectedRevertCode = 'expected revert code to be validated';
-          const expectedCodeCalls = [
+          const expectedCodeCalls: readonly string[] = [
             expectedCode,
             expectedRevertCode,
           ];
@@ -383,35 +361,55 @@ describe('ScriptParser', () => {
           // act
           new TestContext()
             .withScriptCodeFactory(scriptCodeFactory)
-            .withCodeValidator(validator)
+            .withCodeValidator(validator.get())
             .parseScript();
           // assert
-          validator.assertHistory({
-            validatedCodes: expectedCodeCalls,
-            rules: expectedRules,
-          });
+          validator.assertValidatedCodes(expectedCodeCalls);
         });
         it('does not validate compiled code', () => {
           // arrange
-          const expectedRules = [];
-          const expectedCodeCalls = [];
           const validator = new CodeValidatorStub();
           const script = createScriptDataWithCall();
           const compiler = new ScriptCompilerStub()
             .withCompileAbility(script, new ScriptCodeStub());
-          const collectionUtilities = new CategoryCollectionSpecificUtilitiesStub()
+          const collectionContext = new CategoryCollectionContextStub()
             .withCompiler(compiler);
           // act
           new TestContext()
             .withData(script)
-            .withCodeValidator(validator)
-            .withCollectionUtilities(collectionUtilities)
+            .withCodeValidator(validator.get())
+            .withCollectionContext(collectionContext)
             .parseScript();
           // assert
-          validator.assertHistory({
-            validatedCodes: expectedCodeCalls,
-            rules: expectedRules,
-          });
+          const calls = validator.callHistory;
+          expect(calls).to.have.lengthOf(0);
+        });
+        it('validates with correct rules', () => {
+          const expectedRules: readonly CodeValidationRule[] = [
+            CodeValidationRule.NoEmptyLines,
+            CodeValidationRule.NoDuplicatedLines,
+            CodeValidationRule.NoTooLongLines,
+          ];
+          const validator = new CodeValidatorStub();
+          // act
+          new TestContext()
+            .withCodeValidator(validator.get())
+            .parseScript();
+          // assert
+          validator.assertValidatedRules(expectedRules);
+        });
+        it('validates with correct language', () => {
+          const expectedLanguage: ScriptingLanguage = ScriptingLanguage.batchfile;
+          const validator = new CodeValidatorStub();
+          const collectionContext = new CategoryCollectionContextStub()
+            .withLanguage(expectedLanguage);
+          // act
+          new TestContext()
+            .withCodeValidator(validator.get())
+            .withCollectionContext(collectionContext)
+            .parseScript();
+          // assert
+          validator.assertValidatedLanguage(expectedLanguage);
         });
       });
     });
@@ -461,15 +459,15 @@ describe('ScriptParser', () => {
 class TestContext {
   private data: ScriptData = createScriptDataWithCode();
 
-  private collectionUtilities
-  : CategoryCollectionSpecificUtilities = new CategoryCollectionSpecificUtilitiesStub();
+  private collectionContext
+  : CategoryCollectionContext = new CategoryCollectionContextStub();
 
   private levelParser: EnumParser<RecommendationLevel> = new EnumParserStub<RecommendationLevel>()
     .setupDefaultValue(RecommendationLevel.Standard);
 
   private scriptFactory: ScriptFactory = createScriptFactorySpy().scriptFactorySpy;
 
-  private codeValidator: ICodeValidator = new CodeValidatorStub();
+  private codeValidator: CodeValidator = new CodeValidatorStub().get();
 
   private errorWrapper: ErrorWithContextWrapper = new ErrorWrapperStub().get();
 
@@ -481,7 +479,7 @@ class TestContext {
     defaultCodePrefix: TestContext.name,
   });
 
-  public withCodeValidator(codeValidator: ICodeValidator): this {
+  public withCodeValidator(codeValidator: CodeValidator): this {
     this.codeValidator = codeValidator;
     return this;
   }
@@ -491,10 +489,10 @@ class TestContext {
     return this;
   }
 
-  public withCollectionUtilities(
-    collectionUtilities: CategoryCollectionSpecificUtilities,
+  public withCollectionContext(
+    collectionContext: CategoryCollectionContext,
   ): this {
-    this.collectionUtilities = collectionUtilities;
+    this.collectionContext = collectionContext;
     return this;
   }
 
@@ -531,7 +529,7 @@ class TestContext {
   public parseScript(): ReturnType<typeof parseScript> {
     return parseScript(
       this.data,
-      this.collectionUtilities,
+      this.collectionContext,
       {
         levelParser: this.levelParser,
         createScript: this.scriptFactory,

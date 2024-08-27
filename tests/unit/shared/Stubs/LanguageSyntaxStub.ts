@@ -1,6 +1,6 @@
-import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
+import type { LanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
 
-export class LanguageSyntaxStub implements ILanguageSyntax {
+export class LanguageSyntaxStub implements LanguageSyntax {
   public commentDelimiters: string[] = [];
 
   public commonCodeParts: string[] = [];
