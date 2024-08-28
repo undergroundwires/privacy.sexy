@@ -15073,14 +15073,14 @@ actions:
                                                     data: "1"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             -
-                                                function: SetRegistryValueAsTrustedInstaller
-                                                # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                function: SetRegistryValue
                                                 parameters:
                                                     keyPath: HKLM\Software\Microsoft\Windows Defender\SpyNet
                                                     valueName: DisableBlockAtFirstSeen
                                                     dataType: REG_DWORD
                                                     data: "1"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 21H2)
                                     -
                                         name: Disable Defender Antivirus "Extended Cloud Check" feature
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
@@ -15342,8 +15342,7 @@ actions:
                                                     # Default value `2` is observed on Azure VMs (URN: MicrosoftWindowsDesktop:*)
                                                     default: "'2'"              # Default:  2 (Advanced) | Remove-MpPreference -Force -MAPSReporting | Set-MpPreference -Force -MAPSReporting 2
                                             -
-                                                function: SetRegistryValueAsTrustedInstaller
-                                                # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                function: SetRegistryValue
                                                 parameters:
                                                     keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet
                                                     valueName: SpyNetReporting
@@ -15351,6 +15350,7 @@ actions:
                                                     data: "0"
                                                     # Default value `2` is observed on Azure VMs (URN: MicrosoftWindowsDesktop:*)
                                                     dataOnRevert: "2" # Default value: `2` on Windows 10 Pro (≥ 22H2) | `2` on Windows 11 Pro (≥ 23H2)
+                                                    elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 21H2)
                                             -
                                                 function: SetRegistryValue
                                                 parameters:
@@ -15426,14 +15426,14 @@ actions:
                                                     data: "2"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             -
-                                                function: SetRegistryValueAsTrustedInstaller
-                                                # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                                function: SetRegistryValue
                                                 parameters:
                                                     keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\Spynet
                                                     valueName: SubmitSamplesConsent
                                                     dataType: REG_DWORD
                                                     data: "2"
                                                     dataOnRevert: "1" # Default value: `1` on Windows 10 Pro (≥ 22H2) | `1` on Windows 11 Pro (≥ 23H2)
+                                                    elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 21H2)
                                     -
                                         name: Disable Defender Antivirus real-time security intelligence updates
                                         recommend: strict # Part of MAPS/SypNet/Cloud Protection that sends personal data to Microsoft
@@ -15623,16 +15623,14 @@ actions:
                                             data: '1'
                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        function: SetRegistryValueAsTrustedInstaller
-                                        # Without TrustedInstaller:
-                                        #   - ❌ Fails with "ERROR: Access is denied." on Windows 11 Pro (>= 23H2)
-                                        #   - ❌ Fails with "ERROR: Access is denied." on Windows 10 Pro (>= 22H2)
+                                        function: SetRegistryValue
                                         parameters:
                                             keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\CoreService
                                             valueName: DisableCoreService1DSTelemetry
                                             dataType: REG_DWORD
                                             data: '1'
-                                            dataOnRevert: '0' # 0 by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            dataOnRevert: '0' # `0` by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                            elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 23H2)
                             -
                                 name: Disable Defender Antivirus remote experimentation and configurations
                                 recommend: strict # No significant security gains
@@ -15686,16 +15684,14 @@ actions:
                                             data: '1'
                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
-                                        function: SetRegistryValueAsTrustedInstaller
-                                        # Without TrustedInstaller:
-                                        #   - ❌ Fails with "ERROR: Access is denied." on Windows 11 Pro (>= 23H2)
-                                        #   - ❌ Fails with "ERROR: Access is denied." on Windows 10 Pro (>= 22H2)
+                                        function: SetRegistryValue
                                         parameters:
                                             keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\CoreService
                                             valueName: DisableCoreServiceECSIntegration
                                             dataType: REG_DWORD
                                             data: '1'
                                             dataOnRevert: '0'
+                                            elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 23H2)
                     -
                         category: Disable Defender Antivirus
                         docs: |-
@@ -15839,23 +15835,23 @@ actions:
                                     [13]: https://web.archive.org/web/20240725111550/https://247tech.co.uk/intune-disables-tamper-protection-by-default/ "Intune disables Tamper Protection by default – 247 TECH | 247tech.co.uk"
                                 call:
                                     -
-                                        function: SetRegistryValueAsTrustedInstaller
-                                        # Without TrustedInstaller: ✅ Windows 10 Pro (20H2) | ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 21H2)
+                                        function: SetRegistryValue
                                         parameters:
                                             keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\Features
                                             valueName: "TamperProtection"
                                             dataType: REG_DWORD
                                             data: "4"
                                             dataOnRevert: "1" # Default value: `1` on Windows 10 Pro (≥ 22H2) | `1` on Windows 11 Pro (≥ 23H2)
+                                            elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ❌ Windows 10 Pro (≥ 22H2) | ❌ Windows 11 Pro (≥ 21H2)
                                     -
-                                        function: SetRegistryValueAsTrustedInstaller
-                                        # Without TrustedInstaller: ✅ Windows 10 Pro (>= 20H2) | ✅ Windows 11 Pro (>= 23H2)
+                                        function: SetRegistryValue
                                         parameters:
                                             keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\Features
                                             valueName: "TamperProtectionSource"
                                             dataType: REG_DWORD
                                             data: "2"
                                             dataOnRevert: "5" # Default value: Missing on Windows 10 Pro (≥ 22H2) | `0` on Windows 11 Pro (≥ 23H2)
+                                            elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ✅ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
                             -
                                 name: Disable outdated Defender Antivirus # Deprecated since Windows 10 version 1903
                                 docs:
@@ -17408,7 +17404,7 @@ actions:
                                 # Windows Defender services are protected, requiring escalated methods to disable them:
                                 #   1. Try `DisableService` first, as this is the standard method recommended for disabling services.
                                 #   2. Try `DisableServiceInRegistry` if the first attempt fails due to access errors.
-                                #   3. Try `DisableServiceInRegistryAsTrustedInstaller` as last effort.
+                                #   3. Try `DisableServiceInRegistry` with `elevateToTrustedInstaller` option as last effort.
                                 children:
                                     -
                                         name: Disable "Microsoft Defender Antivirus Service"
@@ -17427,17 +17423,19 @@ actions:
                                             | Windows 11 (≥ 23H2) | 🟢 Running | Automatic |
                                         call:
                                             -
-                                                # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                function: DisableServiceInRegistryAsTrustedInstaller
+                                                # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                function: DisableServiceInRegistry
                                                 parameters:
                                                     serviceName: WinDefend # Check: (Get-Service -Name 'WinDefend').StartType
                                                     defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
-                                            # - # ❌ "Access is denied" when renaming file, cannot grant permissions (Attempted to perform an unauthorized operation) since Windows 10 22H2 and Windows 11 22H2
-                                            #     function: SoftDeleteFiles
-                                            #     parameters:
-                                            #         fileGlob: '%PROGRAMFILES%\Windows Defender\MsMpEng.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
-                                            #         grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                    elevateToTrustedInstaller: 'true'
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%PROGRAMFILES%\Windows Defender\MsMpEng.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
+                                                    # grantPermissions: false # ❌ Cannot grant permissions since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H2)
+                                                    elevateToTrustedInstaller: 'true' # 🔒️ Protected on Windows 10 Pro (≥ 22H2) | 🔒️ Protected on Windows 11 Pro (≥ 22H2)
                                     -
                                         category: Disable Defender kernel-level drivers
                                         children:
@@ -17457,13 +17455,14 @@ actions:
                                                     # Excluding:
                                                     #   - `%SYSTEMROOT%\System32\drivers\wd\WdNisDrv.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
-                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                        function: DisableServiceInRegistryAsTrustedInstaller
+                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                        function: DisableServiceInRegistry
                                                         parameters:
                                                             serviceName: WdNisDrv # Check: (Get-Service -Name 'WdNisDrv').StartType
                                                             defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
                                                             waitForDependentServicesOnStop: 'true' # Or it fails, `Microsoft Defender Antivirus Network Inspection Service (WdNisSvc)` depends on this
+                                                            elevateToTrustedInstaller: 'true'
                                                     -
                                                         function: SoftDeleteFiles
                                                         parameters:
@@ -17485,13 +17484,14 @@ actions:
                                                     # Excluding:
                                                     #   - `%SYSTEMROOT%\System32\drivers\wd\WdFilter.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
-                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                        function: DisableServiceInRegistryAsTrustedInstaller
+                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                        function: DisableServiceInRegistry
                                                         parameters:
                                                             serviceName: WdFilter # Check: (Get-Service -Name 'WdFilter').StartType
                                                             defaultStartupMode: Boot # Allowed values: Boot | System | Automatic | Manual
                                                             # notStoppable: true # See `sc queryex WdFilter`, tested since Windows 10 22H2, Windows 11 22H2.
+                                                            elevateToTrustedInstaller: 'true'
                                                     -
                                                         function: SoftDeleteFiles
                                                         parameters:
@@ -17512,12 +17512,13 @@ actions:
                                                     # Excluding:
                                                     #   - `%SYSTEMROOT%\System32\drivers\wd\WdBoot.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
-                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                        function: DisableServiceInRegistryAsTrustedInstaller
+                                                        # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                        function: DisableServiceInRegistry
                                                         parameters:
                                                             serviceName: WdBoot # Check: (Get-Service -Name 'WdBoot').StartType
                                                             defaultStartupMode: Boot # Allowed values: Boot | System | Automatic | Manual
+                                                            elevateToTrustedInstaller: 'true'
                                                     -
                                                         function: SoftDeleteFiles
                                                         parameters:
@@ -17537,17 +17538,19 @@ actions:
                                             | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
                                         call:
                                             -
-                                                # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                                function: DisableServiceInRegistryAsTrustedInstaller
+                                                # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                                function: DisableServiceInRegistry
                                                 parameters:
                                                     serviceName: WdNisSvc # Check: (Get-Service -Name 'WdNisSvc').StartType
                                                     defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
-                                            # - # ❌ "Access is denied" when renaming file, cannot grant permissions (Attempted to perform an unauthorized operation) since Windows 10 22H2 and Windows 11 22H2
-                                            #     function: SoftDeleteFiles
-                                            #     parameters:
-                                            #       fileGlob: '%PROGRAMFILES%\Windows Defender\NisSrv.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
-                                            #       grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                                    elevateToTrustedInstaller: 'true'
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%PROGRAMFILES%\Windows Defender\NisSrv.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
+                                                    # grantPermissions: false # ❌ Cannot grant permissions since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 22H2)
+                                                    elevateToTrustedInstaller: 'true' # 🔒️ Protected on Windows 10 Pro (≥ 22H2) | 🔒️ Protected on Windows 11 Pro (≥ 22H2)
                                     -
                                         name: Disable Microsoft Defender Core Service
                                         docs: |-
@@ -17570,9 +17573,12 @@ actions:
                                             This process is also known as "Antimalware Core Service" [1] [2] [6].
                                             It's typically located in the `%PROGRAMDATA%\Microsoft\Windows Defender\Platform\<version number>\`
                                             folder [6].
-                                            It is found on modern versions of Windows [5].
+                                            It may be found on modern versions of Windows [5].
 
                                             ### Overview of default service statuses
+
+                                            According to tests, the availability of this service varies across different Windows versions,
+                                            depending on the installed Defender antivirus updates.
 
                                             | OS Version | Status | Start type |
                                             | ---------- | -------| ---------- |
@@ -17587,14 +17593,15 @@ actions:
                                             [6]: https://web.archive.org/web/20240724234556/https://www.file.net/process/mpdefendercoreservice.exe.html "MpDefenderCoreService.exe Windows process - What is it? | file.net"
                                         call:
                                             # -
-                                            #     Commented out because it does not work due to permission errors.
-                                            #     function: DisableServiceInRegistryAsTrustedInstaller
+                                            #     # Commented out because it does not work due to permission errors.
+                                            #     function: DisableServiceInRegistry
                                             #     parameters:
                                             #         # Note: Always get "Permission Denied", could not find a way., https://github.com/undergroundwires/privacy.sexy/issues/385
-                                            #         # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ❌ `DisableServiceInRegistryAsTrustedInstaller`
-                                            #         # Windows 11 (23H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ❌ `DisableServiceInRegistryAsTrustedInstaller`
+                                            #         # Windows 10 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ❌ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                            #         # Windows 11 (23H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ❌ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
                                             #         serviceName: MDCoreSvc # Check: (Get-Service -Name 'MDCoreSvc').StartType
                                             #         defaultStartupMode: Automatic
+                                            #         elevateToTrustedInstaller: 'true'
                                             -
                                                 function: TerminateAndBlockExecution
                                                 # Successfully disables Microsoft Defender Core Service
@@ -17604,14 +17611,12 @@ actions:
                                                 # It requires computer restart as it cannot terminate the process but can prevent its future execution.
                                                 parameters:
                                                     executableNameWithExtension: MpDefenderCoreService.exe
-                                            # -
-                                            #     Commented out because it does not work due to permission errors.
-                                            #     # Marked: SoftDeleteFilesAsTrustedInstaller
-                                            #     #     Something like SoftDeleteFiles | RunAsTrustedInstaller would solve the issue.
-                                            #     function: SoftDeleteFiles
-                                            #     parameters:
-                                            #         fileGlob: '%PROGRAMDATA%\Microsoft\Windows Defender\Platform\*\MpDefenderCoreService.exe'
-                                            #         grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    fileGlob: '%PROGRAMDATA%\Microsoft\Windows Defender\Platform\*\MpDefenderCoreService.exe'
+                                                    # grantPermissions: false # ❌ Cannot grant permissions since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    elevateToTrustedInstaller: 'true' # 🔒️ Protected on Windows 10 Pro (≥ 22H2) | 🔒️ Protected on Windows 11 Pro (≥ 23H2)
                                             -
                                                 function: ShowComputerRestartSuggestion
                     -
@@ -18015,9 +18020,9 @@ actions:
                                 call:
                                     -
                                         function: DisableServiceInRegistry
-                                        # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                        # Windows 11 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                        # Windows 11 (23H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                        # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                        # Windows 11 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                        # Windows 11 (23H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
                                         parameters:
                                             serviceName: Sense # Check: (Get-Service -Name 'Sense').StartType
                                             defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
@@ -19141,12 +19146,13 @@ actions:
                                     [4]: https://web.archive.org/web/20231013160458/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-antivirus-compatibility?view=o365-worldwide#notes-about-protection-states
                                 call:
                                     -
-                                        # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                        function: DisableServiceInRegistryAsTrustedInstaller
+                                        # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                        # Windows 11 (22H2): ❌ `DisableService` | ❌ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                        function: DisableServiceInRegistry
                                         parameters:
                                             serviceName: SecurityHealthService # Check: (Get-Service -Name 'SecurityHealthService').StartType
                                             defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
+                                            elevateToTrustedInstaller: 'true'
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
@@ -19333,14 +19339,14 @@ actions:
                                                     value: $True                    # Set:      Set-MpPreference -Force -DisablePrivacyMode $True
                                                     default: $False                 # Default:  False | Remove-MpPreference -Force -DisablePrivacyMode | Set-MpPreference -Force -DisablePrivacyMode $False
                                             -
-                                                function: SetRegistryValueAsTrustedInstaller
-                                                # Without TrustedInstaller: ❌ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
+                                                function: SetRegistryValue
                                                 parameters:
                                                     keyPath: HKLM\SOFTWARE\Microsoft\Windows Defender\UX Configuration
                                                     valueName: "DisablePrivacyMode"
                                                     dataType: REG_DWORD
                                                     data: "1"
                                                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                                    elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ❌ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
                                     -
                                         category: Disable sections in "Windows Security"
                                         docs: |-
@@ -20008,15 +20014,16 @@ actions:
                                     [9]: https://web.archive.org/web/20231129203543/https://call4cloud.nl/2022/03/before-we-wipe/ "KB5011487 | KB5011493 | 2022-03 | Windows.old wipe Issue | call4cloud.nl"
                                 call:
                                     -
-                                        # Windows 10 (21H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                        # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                        # Windows 11 (21H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                        # Windows 11 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
-                                        # Windows 11 (23H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistryAsTrustedInstaller`
+                                        # Windows 10 (21H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                        # Windows 10 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                        # Windows 11 (21H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                        # Windows 11 (22H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
+                                        # Windows 11 (23H2): ❌ `DisableService` | ✅ `DisableServiceInRegistry` | ✅ `DisableServiceInRegistry` with `elevateToTrustedInstaller`
                                         function: DisableServiceInRegistry
                                         parameters:
                                             serviceName: WaaSMedicSvc # Check: (Get-Service -Name 'WaaSMedicSvc').StartType
                                             defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                                            elevateToTrustedInstaller: 'true'
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
@@ -29857,13 +29864,7 @@ functions:
         #   Renames files matching a given glob pattern by appending a `.OLD` extension, effectively "soft deleting" them.
         #   It does not touch any of the folders.
         #   This allows for easier restoration and less immediate disruption compared to permanent deletion.
-        # 🤓 Implementation:
-        #   1. (with `grantPermissions`:) Elevate script privileges.
-        #   2. Iterate every file in the given directory, and for each file:
-        #      - (with `grantPermissions`:) Grant permissions to file to be able to modify it.
-        #      - Rename the file.
-        #      - (with `grantPermissions`:) Restore permissions of the file to its original state
-        #   3. (with `grantPermissions`:) Remove elevated script privileges.
+        #   Try `grantPermissions` to elevate privileges first then `elevateToTrustedInstaller` as last effort.´
         parameters:
             - name: fileGlob
             - name: grantPermissions    # Grants permission on the files found, and restores original permissions after modification.
@@ -29872,21 +29873,24 @@ functions:
               optional: true
             - name: beforeIteration     # (Iteration callback) Code to run before iteration.
               optional: true
+            - name: elevateToTrustedInstaller   # See `RunPowerShellWithOptionalElevation`
+              optional: true
         call:
             -
                 function: Comment
                 parameters:
                     codeComment: >-
-                        Soft delete files matching pattern
-                        {{ with $grantPermissions }}(with additional permissions){{ end }}
-                        : "{{ $fileGlob }}"
+                        Soft delete files matching pattern: "{{ $fileGlob }}"
+                        {{ with $grantPermissions }}with additional permissions{{ end }}
+                        {{ with $elevateToTrustedInstaller }}as TrustedInstaller{{ end }}
                     revertCodeComment: >-
-                        Restore files matching pattern
-                        {{ with $grantPermissions }}(with additional permissions){{ end }}
-                        : "{{ $fileGlob }}"
+                        Restore files matching pattern: "{{ $fileGlob }}"
+                        {{ with $grantPermissions }}with additional permissions{{ end }}
+                        {{ with $elevateToTrustedInstaller }}as TrustedInstaller{{ end }}
             -
                 function: IterateGlob
                 parameters:
+                    elevateToTrustedInstaller: '{{ with $elevateToTrustedInstaller }}true{{ end }}'
                     pathGlob: '{{ $fileGlob }}'
                     revertPathGlob: '{{ $fileGlob }}.OLD'
                     recurse: '{{ with $recurse }}{{ . }}{{ end }}'
@@ -30218,22 +30222,33 @@ functions:
                 codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
                 revertCodeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
     -
-        name: RunInlineCodeAsTrustedInstaller
+        name: RunPowerShellWithOptionalElevation
         parameters:
             - name: code                    # Batchfile code to execute with TrustedInstaller privileges.
             - name: revertCode              # Optional batchfile code to revert changes. This code also runs with TrustedInstaller privileges.
               optional: true
+            - name: elevateToTrustedInstaller # When set to true, executes the code with TrustedInstaller privileges.
+              optional: true
             - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
+            - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+            - name: setupCode               # PowerShell code to execute before elevation.
+              optional: true
         docs: |-
-            This function executes PowerShell code with TrustedInstaller privileges, which may be required for performing system-level tasks
-            that require the highest permission levels.
-            This function is designed to handle tasks that cannot be completed under normal user or administrator privileges,
-            such as modifying protected registry keys or system files.
+            This function executes PowerShell code with optional TrustedInstaller privileges, whic
+             may be required for performing system-level tasks that require the highest permission levels.
+
+             It is designed to handle tasks that cannot be completed under normal user or administrator privileges,
+             such as modifying protected registry keys or system files.
         call:
             function: RunPowerShellWithWindowsVersionConstraints
             parameters:
                 minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+                # Issues and workarounds:
+                # privacy.sexy word triggering Defender (https://github.com/undergroundwires/privacy.sexy/issues/421)
+                #   Using `cAByAGkAdgBhAGMAeQAuAHMAZQB4AHkA` base64 encoding of `privacy.sexy`
                 # PowerShell commands (`Unregister-ScheduledTask` and `Get-ScheduledTask`) sometimes fail to find existing tasks.
                 #   Seen e.g. on Windows 11 when reverting scripts after executing them and reboot.
                 #   They are seen to throw different exceptions:
@@ -30253,300 +30268,234 @@ functions:
                 #           - ❌ Not using `Unregister-ScheduledTask $taskName -Confirm:$false` because it sometimes fails with `0x80070002`
                 #           - ✅ Using `schtasks.exe /delete /tn "$taskName" /f` with additional `| Out-Null` or `2>&1 | Out-Null`
                 #                to suppress errors.
-                code: |-
-                    $command = @'
-                        {{ $code }}
-                    '@
-                    $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
-                    $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
-                    $streamOutFile = New-TemporaryFile
-                    $batchFile = New-TemporaryFile
-                    try {
-                        $batchFile = Rename-Item $batchFile "$($batchFile.BaseName).bat" -PassThru
-                        "@echo off`r`n$command`r`nexit 0" | Out-File $batchFile -Encoding ASCII
-                        $taskName = 'privacy.sexy invoke'
-                        schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before, suppress any output
-                        $taskAction = New-ScheduledTaskAction               `
-                            -Execute 'cmd.exe'                              `
-                            -Argument "cmd /c `"$batchFile`" > $streamOutFile 2>&1"
-                        $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-                        Register-ScheduledTask      `
-                            -TaskName $taskName     `
-                            -Action $taskAction     `
-                            -Settings $settings     `
-                            -Force                  `
-                            -ErrorAction Stop       `
-                            | Out-Null
+                setupCode: |-
+                    {{ with $elevateToTrustedInstaller }}
+                    function Invoke-AsTrustedInstaller {
+                        param ( `
+                            [Parameter(Mandatory=$true)] `
+                            [string]$Script `
+                        )
+                        $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
+                        $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
+                        $streamOutFile = New-TemporaryFile
+                        $scriptFile = New-TemporaryFile
                         try {
-                            ($scheduleService = New-Object -ComObject Schedule.Service).Connect()
-                            $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
-                            $timeOutLimit = (Get-Date).AddMinutes(5)
-                            Write-Host "Running as $trustedInstallerName"
-                            while((Get-ScheduledTaskInfo $taskName).LastTaskResult -eq 267009) {
-                                Start-Sleep -Milliseconds 200
-                                if((Get-Date) -gt $timeOutLimit) {
-                                    Write-Warning "Skipping results, it took so long to execute script."
-                                    break;
+                            $scriptFile = Rename-Item `
+                                -LiteralPath $scriptFile `
+                                -NewName "$($scriptFile.BaseName).ps1" `
+                                -PassThru
+                            $Script | Out-File $scriptFile -Encoding UTF8
+                            $taskName = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String(('cAByAGkAdgBhAGMAeQAuAHMAZQB4AHkA'))) + ' invoke'
+                            schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before, suppress any output
+                            $scriptExecutionCommand = "powershell.exe -ExecutionPolicy Bypass -File '$scriptFile' *>&1 | Out-File -FilePath '$streamOutFile' -Encoding UTF8"
+                            $taskAction = New-ScheduledTaskAction `
+                                -Execute 'powershell.exe' `
+                                -Argument "-ExecutionPolicy Bypass -Command `"$scriptExecutionCommand`""
+                            $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+                            Register-ScheduledTask `
+                                -TaskName $taskName `
+                                -Action $taskAction `
+                                -Settings $settings `
+                                -Force `
+                                -ErrorAction Stop `
+                                | Out-Null
+                            try {
+                                ($scheduleService = New-Object -ComObject Schedule.Service).Connect()
+                                $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
+                                $timeOutLimit = (Get-Date).AddMinutes(5)
+                                Write-Host "Running as `"$trustedInstallerName`""
+                                while((Get-ScheduledTaskInfo $taskName).LastTaskResult -eq 267009) {
+                                    Start-Sleep -Milliseconds 200
+                                    if((Get-Date) -gt $timeOutLimit) {
+                                        Write-Warning "Skipping results, it took so long to execute script."
+                                        break
+                                    }
+                                }
+                                if (($result = (Get-ScheduledTaskInfo $taskName).LastTaskResult) -ne 0) {
+                                    Write-Error "Failed to execute with exit code: $result."
                                 }
                             }
-                            if (($result = (Get-ScheduledTaskInfo $taskName).LastTaskResult) -ne 0) {
-                                Write-Error "Failed to execute with exit code: $result."
+                            finally {
+                                schtasks.exe /delete /tn "$taskName" /f | Out-Null # Outputs only errors
                             }
-                        } finally {
-                            schtasks.exe /delete /tn "$taskName" /f | Out-Null # Outputs only errors
+                            Get-Content $streamOutFile
                         }
-                        Get-Content $streamOutFile
-                    } finally {
-                        Remove-Item $streamOutFile, $batchFile
+                        finally {
+                            Remove-Item $streamOutFile, $scriptFile
+                        }
                     }
-                # Marked: refactor-with-variables
-                #   `revertCode` is complete duplicate of `code`.
+                    {{ end }}{{ with $setupCode }}
+                        {{ . }}
+                    {{ end }}
+                code: |-
+                    {{ with $elevateToTrustedInstaller }}
+                    $command = @'
+                    {{ end }}
+                    {{ $code }}
+                    {{ with $elevateToTrustedInstaller }}
+                    '@
+                    Invoke-AsTrustedInstaller "$command"
+                    {{ end }}
                 revertCode: |-
                     {{ with $revertCode }}
+                    {{ with $elevateToTrustedInstaller }}
                     $command = @'
-                        {{ . }}
+                    {{ end }}
+                    {{ . }}
+                    {{ with $elevateToTrustedInstaller }}
                     '@
-                    $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
-                    $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
-                    $streamOutFile = New-TemporaryFile
-                    $batchFile = New-TemporaryFile
-                    try {
-                        $batchFile = Rename-Item $batchFile "$($batchFile.BaseName).bat" -PassThru
-                        "@echo off`r`n$command`r`nexit 0" | Out-File $batchFile -Encoding ASCII
-                        $taskName = 'privacy.sexy invoke'
-                        schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before, suppress any output
-                        $taskAction = New-ScheduledTaskAction               `
-                            -Execute 'cmd.exe'                              `
-                            -Argument "cmd /c `"$batchFile`" > $streamOutFile 2>&1"
-                        $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-                        Register-ScheduledTask      `
-                            -TaskName $taskName     `
-                            -Action $taskAction     `
-                            -Settings $settings     `
-                            -Force                  `
-                            -ErrorAction Stop       `
-                            | Out-Null
-                        try {
-                            ($scheduleService = New-Object -ComObject Schedule.Service).Connect()
-                            $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
-                            $timeOutLimit = (Get-Date).AddMinutes(5)
-                            Write-Host "Running as $trustedInstallerName"
-                            while((Get-ScheduledTaskInfo $taskName).LastTaskResult -eq 267009) {
-                                Start-Sleep -Milliseconds 200
-                                if((Get-Date) -gt $timeOutLimit) {
-                                    Write-Warning "Skipping results, it took so long to execute script."
-                                    break;
-                                }
-                            }
-                            if (($result = (Get-ScheduledTaskInfo $taskName).LastTaskResult) -ne 0) {
-                                Write-Error "Failed to execute with exit code: $result."
-                            }
-                        } finally {
-                            schtasks.exe /delete /tn "$taskName" /f | Out-Null # Outputs only errors
-                        }
-                        Get-Content $streamOutFile
-                    } finally {
-                        Remove-Item $streamOutFile, $batchFile
-                    }
+                    Invoke-AsTrustedInstaller "$command"
+                    {{ end }}
                     {{ end }}
     -
         name: DisableServiceInRegistry
         # 💡 Purpose:
-        #   Disables a specified service via the registry.
-        #   Use this method only if `DisableService` does not work.
-        parameters: # Ensure that this function has the same parameters as `DisableService` and `DisableServiceInRegistryAsTrustedInstaller` to simplify testing and interchangeability.
-            - name: serviceName
-            - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
-            - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
-              optional: true
-        call:
-            function: RunPowerShellWithWindowsVersionConstraints
-            # Marked: refactor-with-revert-call, refactor-with-variables
-            #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
-            parameters:
-                maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
-                code: |- # We do the registry way because GUI, "sc config" or "Set-Service" will not work
-                    $serviceQuery = '{{ $serviceName }}'
-                    # -- 1. Skip if service does not exist
-                    $service = Get-Service -Name $serviceQuery -ErrorAction SilentlyContinue
-                    if(!$service) {
-                        Write-Host "Service query `"$serviceQuery`" did not yield any results, no need to disable it."
-                        Exit 0
-                    }
-                    $serviceName = $service.Name
-                    Write-Host "Disabling service: `"$serviceName`"."
-                    # -- 2. Stop if running
-                    if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                        Write-Host "`"$serviceName`" is running, trying to stop it."
-                        try {
-                            Stop-Service -Name "$serviceName" -Force -ErrorAction Stop
-                            Write-Host "Stopped `"$serviceName`" successfully."
-                        } catch {
-                            Write-Warning "Could not stop `"$serviceName`", it will be stopped after reboot: $_"
-                        }
-                    } else {
-                        Write-Host "`"$serviceName`" is not running, no need to stop."
-                    }
-                    # -- 3. Skip if service info is not found in registry
-                    $registryKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$serviceName"
-                    if(!(Test-Path $registryKey)) {
-                        Write-Host "`"$registryKey`" is not found in registry, cannot enable it."
-                        Exit 0
-                    }
-                    # -- 4. Skip if already disabled
-                    if( $(Get-ItemProperty -Path "$registryKey").Start -eq 4) {
-                        Write-Host "`"$serviceName`" is already disabled from start, no further action is needed."
-                        Exit 0
-                    }
-                    # -- 5. Disable service
-                    try {
-                        Set-ItemProperty $registryKey -Name Start -Value 4 -Force -ErrorAction Stop
-                        Write-Host "Disabled `"$serviceName`" successfully."
-                    } catch {
-                        Write-Error "Could not disable `"$serviceName`": $_"
-                    }
-                revertCode: |-
-                    $serviceQuery = '{{ $serviceName }}'
-                    $defaultStartupMode = '{{ $defaultStartupMode }}'
-                    # -- 1. Skip if service does not exist
-                    $service = Get-Service -Name $serviceQuery -ErrorAction SilentlyContinue
-                    if(!$service) {
-                        Write-Warning "Service query `"$serviceQuery`" did not yield and results, cannot enable it."
-                        Exit 1
-                    }
-                    $serviceName = $service.Name
-                    Write-Host "Enabling service: `"$serviceName`" with `"$defaultStartupMode`" start."
-                    # -- 2. Skip if service info is not found in registry
-                    $registryKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$serviceName"
-                    if(!(Test-Path $registryKey)) {
-                        Write-Warning "`"$registryKey`" is not found in registry, cannot enable it."
-                        Exit 1
-                    }
-                    # -- 3. Enable if not already enabled
-                    $defaultStartupRegValue = `
-                            if ($defaultStartupMode -eq 'Boot') { '0' }           `
-                            elseif($defaultStartupMode -eq 'System') { '1' }      `
-                            elseif($defaultStartupMode -eq 'Automatic') { '2' }   `
-                            elseif($defaultStartupMode -eq 'Manual') { '3' }      `
-                            else { throw "Unknown start mode: $defaultStartupMode"}
-                    if( $(Get-ItemProperty -Path "$registryKey").Start -eq $defaultStartupRegValue) {
-                        Write-Host "`"$serviceName`" is already enabled with `"$defaultStartupMode`" start."
-                    } else {
-                        try {
-                            Set-ItemProperty $registryKey -Name Start -Value $defaultStartupRegValue -Force
-                            Write-Host "Enabled `"$serviceName`" successfully with `"$defaultStartupMode`" start, this may require restarting your computer."
-                        } catch {
-                            Write-Error "Could not enable `"$serviceName`": $_"
-                            Exit 1
-                        }
-                    }
-                    # -- 4. Start if not running (must be enabled first)
-                    if($defaultStartupMode -eq 'Automatic') {
-                        if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                            Write-Host "`"$serviceName`" is not running, trying to start it."
-                            try {
-                                Start-Service $serviceName -ErrorAction Stop
-                                Write-Host "Started `"$serviceName`" successfully."
-                            } catch {
-                                Write-Warning "Could not start `"$serviceName`", requires restart, it will be started after reboot.`r`n$_"
-                            }
-                        } else {
-                            Write-Host "`"$serviceName`" is already running, no need to start."
-                        }
-                    }
-    -
-        name: DisableServiceInRegistryAsTrustedInstaller
-        # 💡 Purpose:
-        #   Disables a specified service via the registry with TrustedInstaller privileges for higher access rights.
-        #   Use this method only if `DisableServiceInRegistry` fails due to permission issues.
-        # Marked: refactor-with-variables
-        #   The logic is almost same as `DisableServiceInRegistry`, but this is executed as TrustedInstaller.
-        #   The logic should be reused.
-        parameters: # Ensure that this function has the same parameters as `DisableService` and `DisableServiceInRegistry` to simplify testing and interchangeability.
+        #   Disables a specified service via the registry with optional TrustedInstaller privileges for higher access rights.
+        #   Use this method only if `DisableService` fails due to permission issues.
+        parameters: # Ensure that this function has the 333same parameters as `DisableService` to simplify testing and interchangeability.
             - name: serviceName
             - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
             - name: waitForDependentServicesOnStop  # Set to `true` to stop the service and wait for all dependent services to stop as well.
               optional: true                        # Set to `false` to stop the service immediately without waiting for dependents.
+            - name: elevateToTrustedInstaller   # See `RunPowerShellWithOptionalElevation`
+              optional: true
+            - name: maximumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         call:
             -
                 function: Comment
                 parameters:
-                    codeComment: "Disable the service `{{ $serviceName }}` using TrustedInstaller privileges"
-                    revertCodeComment: "Restore the service `{{ $serviceName }}` using TrustedInstaller privileges"
+                    codeComment: >-
+                        Disable the service `{{ $serviceName }}`
+                        {{ with $elevateToTrustedInstaller }}using TrustedInstaller privileges{{ end }}
+                    revertCodeComment: >-
+                        Restore the service `{{ $serviceName }}`
+                        {{ with $elevateToTrustedInstaller }}using TrustedInstaller privileges{{ end }}
             -
-                function: RunInlineCodeAsTrustedInstaller
+                function: RunPowerShellWithOptionalElevation
+                # Marked: refactor-with-revert-call, refactor-with-variables
+                #   Implementation shares similar code: `DisableService`, `StopService`, `StartService`
+                # Marked refactor-with-if-syntax:
+                #   {{ with }} is used awkwardly with commented out code.
+                # Stopping services:
+                #   Some services are not stoppable (i.e. WdFilter) and attempting to stop it:
+                #   - With `sc stop` returns `[SC] ControlService FAILED 1052: The requested control is not valid for this service.`.
+                #   - With `Stop-Service` PowerShell cmdlet throws `CouldNotStopService,Microsoft.PowerShell.Commands.StopServiceCommand` error
                 parameters:
-                    # Some services are not stoppable (i.e. WdFilter) and attempting to stop it with `sc stop` returns:
-                    # `[SC] ControlService FAILED 1052: The requested control is not valid for this service.`. This code
-                    # handles it, and provides an user-friendly error message. If the error is something else, it prints the error
-                    # to the console.
-                    # Marked refactor-with-if-syntax:
-                    #   {{ with }} is used awkwardly with commented out code.
+                    elevateToTrustedInstaller: '{{ with $elevateToTrustedInstaller }}true{{ end }}'
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                     code: |-
-                        setlocal EnableDelayedExpansion
-                            set "serviceName={{ $serviceName }}"
-                            {{ with $waitForDependentServicesOnStop }}set "stopWithDependencies=true"{{ end }}
-                            {{ with $waitForDependentServicesOnStop }}:: {{ end }}set "stopWithDependencies=false"
-                            if "!stopWithDependencies!"=="true" (
-                                echo Stopping the service "!serviceName!" and waiting for its dependencies to stop.
-                                net stop "!serviceName!" /yes
-                            ) else (
-                                echo Stopping the service "!serviceName!".
-                                sc stop "!serviceName!" >nul 2>&1
-                            )
-                            if !ERRORLEVEL! EQU 0 (
-                                echo Successfully stopped the service "!serviceName!".
-                            ) else (
-                                if !ERRORLEVEL! EQU 1052 (
-                                    echo Warning: The service "!serviceName!" does not accept a stop command and may need to be stopped manually or on reboot.
-                                ) else (
-                                    echo Error: Failed to stop service "!serviceName!" with exit code: !ERRORLEVEL!. Retrieving more information...
-                                    >&2 net helpmsg !ERRORLEVEL!
-                                )
-                            )
-                            echo Updating registry settings to disable service "!serviceName!"...
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\!serviceName!" /v "Start" /t REG_DWORD /d "4" /f
-                            if !ERRORLEVEL! EQU 0 (
-                                echo Service "!serviceName!" has been successfully disabled in the registry and will not start automatically on next boot.
-                            ) else (
-                                echo Error: Unable to disable service "!serviceName!" in the registry. Please check your permissions or contact your administrator.
-                            )
-                        endlocal
+                        $serviceQuery = '{{ $serviceName }}'
+                        $stopWithDependencies={{ with $waitForDependentServicesOnStop }} $true # {{ end }} $false
+                        # -- 1. Skip if service does not exist
+                        $service = Get-Service -Name $serviceQuery -ErrorAction SilentlyContinue
+                        if(!$service) {
+                            Write-Host "Service query `"$serviceQuery`" did not yield any results, no need to disable it."
+                            Exit 0
+                        }
+                        $serviceName = $service.Name
+                        Write-Host "Disabling service: `"$serviceName`"."
+                        # -- 2. Stop if running
+                        if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                            Write-Host "`"$serviceName`" is running, attempting to stop it."
+                            try {
+                                Write-Host "Stopping the service `"$serviceName`"."
+                                $stopParams = @{ `
+                                    Name = $ServiceName
+                                    Force = $true
+                                    ErrorAction = 'Stop'
+                                }
+                                if (-not $stopWithDependencies) {
+                                    $stopParams['NoWait'] = $true
+                                }
+                                Stop-Service @stopParams
+                                Write-Host "Stopped `"$serviceName`" successfully."
+                            } catch {
+                                if ($_.FullyQualifiedErrorId -eq 'CouldNotStopService,Microsoft.PowerShell.Commands.StopServiceCommand') {
+                                    Write-Warning "The service `"$serviceName`" does not accept a stop command and may need to be stopped manually or on reboot."
+                                } else {
+                                    Write-Warning "Failed to stop service `"$ServiceName`". It will be stopped after reboot. Error: $($_.Exception.Message)"
+                                }
+                            }
+                        } else {
+                            Write-Host "`"$serviceName`" is not running, no need to stop."
+                        }
+                        # -- 3. Skip if service info is not found in registry
+                        $registryKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$serviceName"
+                        if (-Not (Test-Path $registryKey)) {
+                            Write-Host "`"$registryKey`" is not found in registry, cannot enable it."
+                            Exit 0
+                        }
+                        # -- 4. Skip if already disabled
+                        if( $(Get-ItemProperty -Path "$registryKey").Start -eq 4) {
+                            Write-Host "`"$serviceName`" is already disabled from start, no further action is needed."
+                            Exit 0
+                        }
+                        # -- 5. Disable service
+                        try {
+                            Set-ItemProperty `
+                                -LiteralPath $registryKey `
+                                -Name "Start" `
+                                -Value 4 `
+                                -ErrorAction Stop
+                            Write-Host 'Successfully disabled the service. It will not start automatically on next boot.'
+                        } catch {
+                            Write-Error "Failed to disable the service. Error: $($_.Exception.Message)"
+                            Exit 1
+                        }
                     revertCode: |-
-                        setlocal EnableDelayedExpansion
-                            set "serviceName={{ $serviceName }}"
-                            set "defaultStartupMode={{ $defaultStartupMode }}"
-                            set "defaultStartupRegValue=-1"
-                            echo Restoring changes for "!serviceName!"...
-                            if /i "!defaultStartupMode!"=="Boot" (
-                                set "defaultStartupRegValue=0"
-                            ) else if /i "!defaultStartupMode!"=="System" (
-                                set "defaultStartupRegValue=1"
-                            ) else if /i "!defaultStartupMode!"=="Automatic" (
-                                set "defaultStartupRegValue=2"
-                            ) else if /i "!defaultStartupMode!"=="Manual" (
-                                set "defaultStartupRegValue=3"
-                            ) else (
-                                echo Error: Unknown startup mode specified: "!defaultStartupMode!". Revert cannot proceed.
-                                exit /b 1
-                            )
-                            echo Restoring registry settings for service "!serviceName!" to default startup mode "!defaultStartupMode!"...
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\!serviceName!" /v "Start" /t REG_DWORD /d "!defaultStartupRegValue!" /f
-                            if !ERRORLEVEL! EQU 0 (
-                                echo Successfully restored the registry settings for "!serviceName!".
-                            ) else (
-                                echo Error: Failed to update registry settings for "!serviceName!". Check permissions or contact your administrator.
-                            )
-                            if /i not "!defaultStartupMode!"=="Manual" (
-                                echo Attempting to restart service "!serviceName!"...
-                                sc start "!serviceName!" >nul 2>&1
-                                if !ERRORLEVEL! EQU 0 (
-                                    echo Service "!serviceName!" restarted successfully.
-                                ) else (
-                                    echo Warning: Unable to restart service "!serviceName!". It may require a manual start or system reboot.
-                                )
-                            )
-                        endlocal
+                        $serviceQuery = '{{ $serviceName }}'
+                        $defaultStartupMode = '{{ $defaultStartupMode }}'
+                        # -- 1. Skip if service does not exist
+                        $service = Get-Service -Name $serviceQuery -ErrorAction SilentlyContinue
+                        if (!$service) {
+                            Write-Warning "Service query `"$serviceQuery`" did not yield and results, cannot enable it."
+                            Exit 1
+                        }
+                        $serviceName = $service.Name
+                        Write-Host "Restoring registry settings for service `"$serviceName`" to default startup mode `"$defaultStartupMode`"."
+                        # -- 2. Skip if service info is not found in registry
+                        $registryKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$serviceName"
+                        if (-Not (Test-Path $registryKey)) {
+                            Write-Warning "`"$registryKey`" is not found in registry, cannot enable it."
+                            Exit 1
+                        }
+                        # -- 3. Enable if not already enabled
+                        $defaultStartupRegValue = switch ($defaultStartupMode) {
+                            'Boot'      { 0 }
+                            'System'    { 1 }
+                            'Automatic' { 2 }
+                            'Manual'    { 3 }
+                            default {
+                                Write-Error "Error: Unknown startup mode specified: `"$defaultStartupMode`". Revert cannot proceed."
+                                return
+                            }
+                        }
+                        if ($(Get-ItemProperty -Path "$registryKey").Start -eq $defaultStartupRegValue) {
+                            Write-Host "`"$serviceName`" is already enabled with `"$defaultStartupMode`" start."
+                        } else {
+                            try {
+                                Set-ItemProperty $registryKey -Name Start -Value $defaultStartupRegValue -Force
+                                Write-Host "Successfully restored `"$serviceName`" with `"$defaultStartupMode`" start, this may require restarting your computer."
+                            } catch {
+                                Write-Error "Could not enable `"$serviceName`": $_"
+                                Exit 1
+                            }
+                        }
+                        # -- 4. Start if not running (must be enabled first)
+                        if ($defaultStartupMode -ne 'Manual') {
+                            if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                                Write-Host "`"$serviceName`" is not running, trying to start it."
+                                try {
+                                    Start-Service -Name $serviceName -ErrorAction Stop
+                                    Write-Host 'Service started successfully.'
+                                } catch {
+                                    Write-Warning "Failed to restart service. It will be started after reboot. Error: $($_.Exception.Message)"
+                                }
+                            } else {
+                                Write-Host "`"$serviceName`" is already running, no need to start."
+                            }
+                        }
     -
         name: SetMpPreference
         # Configures preferences for Microsoft Defender scans and updates.
@@ -30799,7 +30748,7 @@ functions:
                         }
     -
         name: DisableService
-        parameters: # Ensure that this function has the same parameters as `DisableServiceInRegistry` and `DisableServiceInRegistryAsTrustedInstaller` to simplify testing and interchangeability.
+        parameters: # Ensure that this function has the same parameters as `DisableServiceInRegistry` to simplify testing and interchangeability.
             - name: serviceName
             - name: defaultStartupMode      # Allowed values: Automatic | Manual
             - name: ignoreMissingOnRevert   # When set to true, the revert operation will skip any actions for services that cannot be found, instead of failing.
@@ -31047,9 +30996,12 @@ functions:
               optional: true
             - name: recurse               # If set, includes all files and directories recursively.
               optional: true
+            - name: elevateToTrustedInstaller   # See `RunPowerShellWithOptionalElevation`
+              optional: true
         call:
-            function: RunPowerShell
+            function: RunPowerShellWithOptionalElevation
             parameters:
+                elevateToTrustedInstaller: '{{ with $elevateToTrustedInstaller }}true{{ end }}'
                 code: |-
                     $pathGlobPattern = "{{ $pathGlob }}"
                     $expandedPath = [System.Environment]::ExpandEnvironmentVariables($pathGlobPattern)
@@ -32183,6 +32135,8 @@ functions:
               optional: true
             - name: setupCode                   # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
+            - name: elevateToTrustedInstaller   # See `RunPowerShellWithOptionalElevation`
+              optional: true
             - name: minimumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
         docs: |-
@@ -32190,36 +32144,49 @@ functions:
 
             > 💡 Use this function for a consistent approach instead of directly using `reg add` or `reg delete` commands.
         call:
-            function: RunPowerShellWithWindowsVersionConstraints
-            parameters:
-                setupCode: '{{ with $setupCode }}{{ . }}{{ end }}'
-                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
-                code: |-
-                    $data = '{{ $data }}'
-                    {{ with $evaluateDataAsPowerShell }}
-                        $data = $({{ $data }})
-                    {{ end }}
-                    reg add '{{ $keyPath }}' `
-                        /v '{{ $valueName }}' `
-                        /t '{{ $dataType }}' `
-                        /d "$data" `
-                        /f
-                revertCode: |-
-                    {{ with $deleteOnRevert }}
-                        reg delete '{{ $keyPath }}' `
-                            /v '{{ $valueName }}' `
-                            /f 2>$null
-                    {{ end }}{{ with $dataOnRevert }}
-                        $revertData = '{{ . }}'
+            -
+                function: Comment
+                parameters:
+                    # Avoid outputting the registry data, as it may be ugly code (see `evaluateDataAsPowerShell`)
+                    codeComment: 'Set the registry value: "{{ $keyPath }}!{{ $valueName }}"'
+                    revertCodeComment: >-
+                        {{ with $deleteOnRevert }}
+                            Delete the registry value "{{ $keyPath }}!{{ $valueName }}"
+                        {{ end }}{{ with $dataOnRevert }}
+                            Set the registry value "{{ $keyPath }}!{{ $valueName }}"
+                        {{ end }}
+            -
+                function: RunPowerShellWithOptionalElevation
+                parameters:
+                    setupCode: '{{ with $setupCode }}{{ . }}{{ end }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    elevateToTrustedInstaller: '{{ with $elevateToTrustedInstaller }}true{{ end }}'
+                    code: |-
+                        $data = '{{ $data }}'
                         {{ with $evaluateDataAsPowerShell }}
-                            $revertData = $({{ . }})
+                            $data = $({{ $data }})
                         {{ end }}
                         reg add '{{ $keyPath }}' `
                             /v '{{ $valueName }}' `
                             /t '{{ $dataType }}' `
-                            /d "$revertData" `
+                            /d "$data" `
                             /f
-                    {{ end }}
+                    revertCode: |-
+                        {{ with $deleteOnRevert }}
+                            reg delete '{{ $keyPath }}' `
+                                /v '{{ $valueName }}' `
+                                /f 2>$null
+                        {{ end }}{{ with $dataOnRevert }}
+                            $revertData = '{{ . }}'
+                            {{ with $evaluateDataAsPowerShell }}
+                                $revertData = $({{ . }})
+                            {{ end }}
+                            reg add '{{ $keyPath }}' `
+                                /v '{{ $valueName }}' `
+                                /t '{{ $dataType }}' `
+                                /d "$revertData" `
+                                /f
+                        {{ end }}
     -
         name: EnableTLSProtocol
         parameters:
@@ -33008,37 +32975,6 @@ functions:
                     {{ end }}
                 code: '{{ $code }}'
                 revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
-    -
-        name: SetRegistryValueAsTrustedInstaller
-        parameters: # The parameters should be always in sync/compatible with `SetRegistryValue`.
-            - name: keyPath                 # Full path of the subkey or entry to be added.
-            - name: valueName               # Name of the add registry entry.
-            - name: dataType                # Type for the registry entry.
-            - name: data                    # Data for the new registry entry.
-            - name: deleteOnRevert          # Set to 'true' to revert to the initial state by deleting the registry key.
-              optional: true
-            - name: dataOnRevert            # Specifies the value to restore when reverting the registry change, instead of deleting the entry.
-              optional: true
-            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
-              optional: true
-        docs: >-
-            Sets registry value using TrustedInstaller privileges.
-            
-            > - 💡 Use this function for a consistent approach instead of directly using `reg add` or `reg delete` commands.
-            > - ❗️ Use this function only when `SetRegistryValue` fails with permission errors.
-        call:
-        # Marked: refactor-with-variables
-        #   Should be re-using same code as SetRegistryValue but only as TrustedInstaller.
-            function: RunInlineCodeAsTrustedInstaller
-            parameters:
-                code: reg add "{{ $keyPath }}" /v "{{ $valueName }}" /t "{{ $dataType }}" /d "{{ $data }}" /f
-                revertCode: |-
-                    {{ with $deleteOnRevert }}
-                        reg delete "{{ $keyPath }}" /v "{{ $valueName }}" /f 2>nul
-                    {{ end }}{{ with $dataOnRevert }}
-                        reg add "{{ $keyPath }}" /v "{{ $valueName }}" /t "{{ $dataType }}" /d "{{ . }}" /f
-                    {{ end }}
-                minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
     -
         name: DeleteVisualStudioLicense
         parameters:
