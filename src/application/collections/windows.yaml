@@ -22463,11 +22463,8 @@ actions:
                     [4]: https://github.com/undergroundwires/privacy.sexy/issues/200 "[BUG]: Microsoft Advertising app removal failure · Issue #200 · undergroundwires/privacy.sexy"
                 children:
                     # 💡 Good information for development:
-                    #   - Find out package name from store ID: https://archive.ph/2023.10.20-135401/https://learn.microsoft.com/en-us/mem/configmgr/protect/deploy-use/find-a-pfn-for-per-app-vpn
-                    # ❗ Excluded apps with justifications:
-                    #  - `Microsoft.Windows.ShellExperienceHost`: "Start app", required for different setting windows such as WiFi and battery panes in action bar.
-                    #  - `Windows.immersivecontrolpanel`        : "Settings app", required for settings view.
-                    #  - Framework apps:
+                    #   - Find out package name from store ID: https://archive.today/2023.10.20-135401/https://learn.microsoft.com/en-us/mem/configmgr/protect/deploy-use/find-a-pfn-for-per-app-vpn
+                    #  - Excluding framework apps:
                     #       Excluded apps:
                     #           Microsoft.UI.Xaml.CBS, Microsoft.NET.Native.Framework.2.2, Microsoft.NET.Native.Runtime.2.2, Microsoft.VCLibs.140.00.UWPDesktop, Microsoft.UI.Xaml.2.7
                     #           Microsoft.VCLibs.140.00, Microsoft.UI.Xaml.2.4, Microsoft.WindowsAppRuntime.CBS, Microsoft.WindowsAppRuntime.1.2, Microsoft.UI.Xaml.2.0, Microsoft.Advertising.Xaml
@@ -24782,17 +24779,242 @@ actions:
                             System apps are pre-installed [1] [2] applications located in the `C:\Windows*` directory [1] [2].
                             These apps are typically found on `C:\Windows\SystemApps\{PackageFamilyName}` or `C:\Windows\{ShortAppName}` folders.
 
-                            To view all system apps:
+                            They are integral components of the Windows operating system [1].
+                            Removing certain system apps may improve privacy by reducing data collection.
+                            It can also improve system performance by freeing up system resources.
+
+                            These scripts can make significant changes to your Windows system.
+                            While these scripts aim to improve privacy, they may also affect system functionality.
+                            These scripts remove several built-in Windows applications and modify system settings.
+                            This can affect your system's behavior and potentially break certain features.
+                            Removing certain apps or changing settings may disable features you rely on.
+                            Apply only the changes you fully understand and need, rather than running all scripts indiscriminately.
+
+                            To list all system apps:
 
                             1. Open a PowerShell command prompt.
                             2. Execute the following command: `Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, PublisherId, InstallLocation`
 
-                            They are integral components of the Windows operating system [1].
-                            However, by removing unnecessary system apps, users can enhance their privacy by reducing potential data
-                            collection points and streamlining their system.
+                            > **Caution:** Uninstalling a system app may improve privacy but can also disable critical features and affect system functionality.
+
+                            ### Excluded System apps
+
+                            Some system apps are excluded from removal by privacy.sexy due to their critical role in OS functionality and lack of
+                            documented privacy benefits.
+
+                            #### Shell Experience Host (`Microsoft.Windows.ShellExperienceHost`)
+
+                            It provides a windowed interface for universal apps [3] [4].
+                            It is required for the desktop's visual elements, including transparency effects, Start Menu layout, desktop
+                            background slideshow [5] [6].
+                            Initially, it consumed significant CPU and memory resources, but subsequent optimizations have improved its
+                            efficiency [3] [7].
+                            Since the Windows 10 19H1, the Start menu has been managed separately from it to enhance reliability and
+                            performance [8].
+                            This app comes pre-installed on certain versions of Windows [9].
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ✅ |
+                            | Windows 10 | 20H2 | ✅ |
+                            | Windows 10 | 21H2 | ✅ |
+                            | Windows 10 | 22H2 | ✅ |
+                            | Windows 11 | 21H2 | ✅ |
+                            | Windows 11 | 22H2 | ✅ |
+                            | Windows 11 | 23H2 | ✅ |
+
+                            #### Start Menu Experience Host (`Microsoft.Windows.StartMenuExperienceHost`)
+
+                            It handles hosting Windows Start menu [8].
+                            Stopping or disabling the process removes Start menu functionality, causing live tiles to stop updating and
+                            leading to other UI issues [10].
+                            Disabling it makes the Start menu disappear [11].
+                            Disabling leads to issues with Start Menu, Taskbar, and Action Center [12].
+                            This app comes pre-installed on certain versions of Windows [9].
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ✅ |
+                            | Windows 10 | 20H2 | ✅ |
+                            | Windows 10 | 21H2 | ✅ |
+                            | Windows 10 | 22H2 | ✅ |
+                            | Windows 11 | 21H2 | ✅ |
+                            | Windows 11 | 22H2 | ✅ |
+                            | Windows 11 | 23H2 | ✅ |
+
+                            #### Windows Feature Experience Pack (`MicrosoftWindows.Client.Core`)
+
+                            *Windows Feature Experience Pack* incorporates `MicrosoftWindows.Client.Core` as a store app [13].
+
+                            Microsoft launched the *Windows Feature Experience Pack* to deliver feature enhancements independently
+                            of the major Windows update cycles [14].
+                            The aim is to expand the release schedule, with the ultimate goal of integrating these updates into
+                            the regular Windows Update service [14].
+                            This pack enables the development of specific features and functionalities independently [14].
+
+                            The app is known to provide functionality for:
+
+                            - Start menu [13] [15]
+                            - Snipping tool [14] [15] [16]
+                            - Taskbar (system tray) [13] [15] [17]
+                            - File explorer functionality [15]
+                            - Adaptive cards [15] (card layout [18])
+                            - Split keyboard mode for the touch keyboard [14]
+
+                            The package's functionality extends beyond these listed features.
+                            Microsoft plans to add more features to this package [14].
+                            According to tests, Microsoft includes new components in this package, such as `FREUserInterface`
+                            and `VoiceAccessHost`, as observed in version 23H3.
+                            This app comes pre-installed on certain versions of Windows [9].
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ❌ |
+                            | Windows 10 | 20H2 | ❌ |
+                            | Windows 10 | 21H2 | ❌ |
+                            | Windows 10 | 22H2 | ❌ |
+                            | Windows 11 | 21H2 | ❌ |
+                            | Windows 11 | 22H2 | ✅ |
+                            | Windows 11 | 23H2 | ✅ |
+
+                            #### Settings (`Windows.immersivecontrolpanel`)
+
+                            This app provides the Settings interface [19] [20] [21] [22] [23].
+                            This app replaced the Control Panel in older Windows versions [19] [21] [23].
+                            Removing this app disables access to the Settings interface, preventing users from adjusting preferences,
+                            configuring the operating system, and managing connected devices [21].
+                            This app comes pre-installed on certain versions of Windows [9].
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ✅ |
+                            | Windows 10 | 20H2 | ✅ |
+                            | Windows 10 | 21H2 | ✅ |
+                            | Windows 10 | 22H2 | ✅ |
+                            | Windows 11 | 21H2 | ✅ |
+                            | Windows 11 | 22H2 | ✅ |
+                            | Windows 11 | 23H2 | ✅ |
+
+                            #### Windows Feature Experience Pack (`MicrosoftWindows.Client.CBS`)
+
+                            This package, in combination with `MicrosoftWindows.Client.Core` [13], enables the **Windows Feature Experience Pack** [13] [24] [25] [27] [28] [29].
+
+                            This app provides UI (User Interface) and UX (User Experience) features, independent of the main operating system [24] [25] [26] [27].
+                            **CBS** in this package name means *Component-Based Servicing* [26] [30] [31] [32].
+                            Microsoft uses it to update these UI/UX features independently of the core operating system, using different update cycles [24] [25] [26] [27] [30].
+
+                            This package includes features such as:
+
+                            - **System tray** features [13] [32]
+                            - **Taskbar** features [13] [32]
+                            - Text input features [24] [25] [29] [31] [33] (replacing older `InputApp` package [29] [31] [32] [33]) including:
+                              - **Emoji picker** [24] [31] [33]
+                              - **On-screen keyboard** [24] [31] [32] [33] [34]
+                              - **Handwriting panel** [24] [32]
+                            - Iris features [25] [29] [32]
+                            - **Snip & Sketch** app [29] [35] (screen clipping [25] [29] [31] [32] [35])
+                            - **Start Menu** [13] [25] [31] [32] [34] [35] [36]
+                            - **Search** in taskbar/start menu (Cortana) [25] [32] [36]
+                            - **Windows Backup** features [28] [37]
+                            - **Web features** for store apps [25] [32]
+                            - **Get Started** app [25] [32] [34]
+                            - **News and Interests** widget [25]
+                            - **File Explorer** functions such as icons [38]
+
+                            Removing this package disables these functionalities [34], confirmed by tests.
+                            To preserve these essential features, privacy.sexy does not remove this app.
+
+                            This app comes pre-installed on certain versions of Windows [9].
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ✅ |
+                            | Windows 10 | 20H2 | ✅ |
+                            | Windows 10 | 21H2 | ✅ |
+                            | Windows 10 | 22H2 | ✅ |
+                            | Windows 11 | 21H2 | ✅ |
+                            | Windows 11 | 22H2 | ✅ |
+                            | Windows 11 | 23H2 | ✅ |
+
+                            ### File Explorer (Extensions) (`MicrosoftWindows.Client.FileExp`)
+
+                            File Explorer (Extensions) is an experimental (canary) app from Microsoft for enhancing File Explorer [39].
+                            This app is identified as `MicrosoftWindows.Client.FileExp` [39] [40] [41].
+
+                            It adds new features to File Explorer, such as context menu enhancements, command
+                            bar extensions, tabs, details pane, folder view, navigation content extensions [40].
+                            It also introduces a Gallery view for some users [39] [41].
+
+                            It uses **Windows App SDK** for the File Explorer [39] [41].
+                            The Windows App SDK is a toolkit that simplifies the creation of Windows desktop apps by combining traditional
+                            and modern development methods [42].
+
+                            This app is part of Microsoft's effort to modularize Windows, separating system functions into individual
+                            apps [39] [41]. 
+                            This modularization allows for easier and quicker updates and improvements [39].
+
+                            This app raises several privacy concerns:
+
+                            - Data collection: This app includes telemetry features that collect data [40] [43].
+                            - Telemetry: The app includes automatic data collection and transmission functions [40] [43].
+                            - Consent by use: Using the app implies agreement to its data collection practices.
+
+                            Tests confirm that deleting this app completely disables the File Explorer in Windows 11 23H2.
+                            This app comes pre-installed on certain versions of Windows [9].
+
+                            | OS | Version | Existence |
+                            | -- | ------- | --------- |
+                            | Windows 10 | 19H2 | ❌ |
+                            | Windows 10 | 20H2 | ❌ |
+                            | Windows 10 | 21H2 | ❌ |
+                            | Windows 10 | 22H2 | ❌ |
+                            | Windows 11 | 21H2 | ❌ |
+                            | Windows 11 | 22H2 | ❌ |
+                            | Windows 11 | 23H2 | ✅ |
 
                             [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                             [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                            [3]: https://archive.ph/2024.08.14-081253/https://outbyte.com/blog/windows-shell-experience-host-high-cpu/ "What is Windows Shell Experience Host? Issue with High CPU | outbyte.com"
+                            [4]: https://web.archive.org/web/20240814085728/https://books.google.com/books?id=nEJRDwAAQBAJ&pg=PT512&lpg=PT512&redir_esc=y%23v=onepage&q&f=false#v=onepage&q&f=false "Windows Security Monitoring: Scenarios and Patterns - Andrei Miroshnikov - Google Books | books.google.com"
+                            [5]: https://web.archive.org/web/20240316180731/https://www.liberiangeek.net/2023/09/solved-windows-shell-experience-host-using-high-memory/ "Solved: Windows Shell Experience Host Using High Memory | Liberian Geek | www.liberiangeek.net"
+                            [6]: https://web.archive.org/web/20240316180755/https://www.howtogeek.com/865743/what-is-shell-infrastructure-host-and-why-is-it-running-on-my-pc/ "What Is \"Shell Infrastructure Host\" and Why Is It Running on My PC? | www.howtogeek.com"
+                            [7]: https://web.archive.org/web/20240316180938/https://answers.microsoft.com/en-us/windows/forum/all/high-disk-utilization-100/1bfdb912-14f3-4b95-863c-dc261a4f4d6c "High Disk Utilization 100% - Microsoft Community | answers.microsoft.com"
+                            [8]: https://web.archive.org/web/20240316173550/https://learn.microsoft.com/en-us/windows-insider/archive/new-in-19h1#the-next-step-in-improving-start-reliability "What was new in 19H1 Windows 10 Insider Preview Builds - Windows Insider Program | Microsoft Learn | learn.microsoft.com"
+                            [9]: https://web.archive.org/web/20230610014325/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn | learn.microsoft.com"
+                            [10]: https://web.archive.org/web/20240316175810/https://windowsreport.com/startmenuexperiencehost-exe/ "Startmenuexperiencehost.exe: What Is It & How to Disable It | windowsreport.com"
+                            [11]: https://web.archive.org/web/20240814085912/https://github.com/undergroundwires/privacy.sexy/issues/316 "Can't open start menu · Issue #316 · undergroundwires/privacy.sexy | github.com"
+                            [12]: https://web.archive.org/web/20240316180026/https://www.file.net/process/startmenuexperiencehost.exe.html "StartMenuExperienceHost.exe Windows process - What is it? | www.file.net"
+                            [13]: https://web.archive.org/web/20240320082029/https://rcmtech.wordpress.com/2022/11/10/windows-11-22h2-no-start-menu-or-taskbar-buttons-after-2022-11-monthly-update/ "Windows 11 22H2: No Start Menu or Taskbar buttons after 2022-11 monthly update | Robin CM's IT Blog | rcmtech.wordpress.com"
+                            [14]: https://web.archive.org/web/20240320082149/https://blogs.windows.com/windows-insider/2020/11/30/releasing-windows-feature-experience-pack-120-2212-1070-0-to-the-beta-channel/ "Releasing Windows Feature Experience Pack 120.2212.1070.0 to the Beta Channel | Windows Insider Blog | blogs.windows.com"
+                            [15]: https://archive.ph/2024.03.20-082058/https://twitter.com/XenoPanther/status/1504870414702592003 "Xeno on X: "Parts of have been moved to MicrosoftWindows.Client.Core" / X | twitter.com/XenoPanther"
+                            [16]: https://web.archive.org/web/20240320082048/https://answers.microsoft.com/en-us/insider/forum/all/snipping-tool-issues-with-build-25295/065a6718-70a0-4e3b-ab1b-21f6315c0296 "Snipping Tool issues with Build 25295 - Microsoft Community | answers.microsoft.com"
+                            [17]: https://web.archive.org/web/20240320082135/https://www.windowslatest.com/2022/07/20/microsoft-begins-experimenting-with-taskbar-upgrade-for-windows-11/ "Microsoft is finally experimenting with taskbar upgrade for Windows 11 | www.windowslatest.com"
+                            [18]: https://web.archive.org/web/20240320082111/https://superuser.com/questions/1769683/windows-11-snap-layouts-force-all-6-layout-options-irrespective-of-display-res "Windows 11 Snap Layouts: force all 6 layout options (irrespective of display resolution)? - Super User | superuser.com"
+                            [19]: https://web.archive.org/web/20240320091703/https://www.file.net/process/systemsettings.exe.html "SystemSettings.exe Windows process - What is it? | www.file.net"
+                            [20]: https://web.archive.org/web/20240320095956/https://learn.microsoft.com/en-us/archive/msdn-technet-forums/e567938f-733e-4974-a2e7-b03845ec2411 "Immersive Control Panel not working | Microsoft Learn | learn.microsoft.com"
+                            [21]: https://web.archive.org/web/20240320100018/https://en.wikipedia.org/wiki/Settings_%28Windows%29 "Settings (Windows) - Wikipedia | en.wikipedia.org"
+                            [22]: https://web.archive.org/web/20240320100559/https://valinet.ro/2022/05/24/Set-default-apps-in-Windows-11.html "Set default apps in Windows 11 (restore the Windows 10 Settings app in Windows 11) | valinet | valinet.ro"
+                            [23]: https://web.archive.org/web/20240320100801/https://4sysops.com/archives/fix-settings-app-crashes-in-windows-10-and-windows-11/ "Fix Settings app crashes in Windows 10 and Windows 11 – 4sysops | 4sysops.com"
+                            [24]: https://web.archive.org/web/20230805011221/https://www.file.net/process/textinputhost.exe.html "TextInputHost.exe Windows process - What is it? | file.net"
+                            [25]: https://web.archive.org/web/20240105085347/https://oofhours.com/2021/06/15/digging-into-windows-11/ "Digging into Windows 11 – Out of Office Hours | oofhours.com"
+                            [26]: https://web.archive.org/web/20240309045221/https://techcommunity.microsoft.com/t5/ask-the-performance-team/understanding-component-based-servicing/ba-p/373012 "Understanding Component-Based Servicing | techcommunity.microsoft.com"
+                            [27]: https://web.archive.org/web/20240103235231/https://borncity.com/win/2021/01/31/windows-10-windows-feature-experience-pack-insides/ "Windows 10: Windows Feature Experience Pack Insides | Born's Tech and Windows World | borncity.com"
+                            [28]: https://web.archive.org/web/20240124162927/https://www.neowin.net/news/kb5030211-was-almost-flawless-until-microsoft-force-installed-windows-backup-app-on-ltsc/ "KB5030211 was almost flawless until Microsoft force installed Windows Backup app on LTSC - Neowin | www.neowin.net"
+                            [29]: https://web.archive.org/web/20240103235229/https://oofhours.com/2021/01/27/digging-into-the-windows-feature-experience-pack/ "Digging into the Windows Feature Experience Pack – Out of Office Hours | oofhours.com"
+                            [30]: https://web.archive.org/web/20240306180722/https://learn.microsoft.com/en-us/windows/deployment/update/servicing-stack-updates "Servicing stack updates - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                            [31]: https://web.archive.org/web/20240306195634/https://www.dobreprogramy.pl/windows-10-i-nowosci-w-21h1-co-dostarcza-paczka-odblokowujaca,6628630872111233a 'Windows 10 i nowości w 21H1. Co dostarcza "paczka odblokowująca"? | www.dobreprogramy.pl'
+                            [32]: https://archive.ph/2024.03.28-112202/https://www.ntlite.com/community/index.php?threads/windowsclient-cbs-required-to-install-uwp-packages-and-use-mail-and-calendar.2363/ "WindowsClient.CBS required to install UWP Packages and use Mail and Calendar | NTLite Forums | www.ntlite.com"
+                            [33]: https://web.archive.org/web/20220803145757/https://res260.medium.com/%EF%B8%8F-%EF%B8%8F-windows-forensics-how-to-retrieve-and-parse-the-emoji-picker-history-in-the-filesystem-d3766282325a "🕵️‍♂️ Windows Forensics: How to Retrieve and Parse the Emoji Picker History in the FileSystem 👀 | by Émilio Gonzalez | Medium | res260.medium.com"
+                            [34]: https://web.archive.org/web/20220128033302/https://www.ntlite.com/community/index.php?threads/for-win11s-excessive-streamlining.2486/ "For Win11's excessive streamlining | NTLite Forums | www.ntlite.com"
+                            [35]: https://web.archive.org/web/20240814090124/https://community.spiceworks.com/t/problem-with-snip-sketch/947611/1 "Problem with Snip & Sketch - Windows - Spiceworks Community | community.spiceworks.com"
+                            [36]: https://archive.ph/2024.03.28-113337/https://github.com/valinet/ExplorerPatcher/blob/9b68cc0635bacde57ff8ae7b957f164d84d9ebde/CHANGELOG.md?plain=1%23L1086 "ExplorerPatcher/CHANGELOG.md at 9b68cc0635bacde57ff8ae7b957f164d84d9ebde · valinet/ExplorerPatcher · GitHub | github.com/valinet/ExplorerPatcher"
+                            [37]: https://web.archive.org/web/20240205181250/https://learn.microsoft.com/en-us/answers/questions/1368828/how-to-remove-windowsbackupclient-exe "How to remove WindowsBackupClient.exe? - Microsoft Q&A | learn.microsoft.com"
+                            [38]: https://web.archive.org/web/20240814090035/https://github.com/MahApps/MahApps.Metro.IconPacks/issues/290 "Include the Microsoft Windows11 explorer icons · Issue #290 · MahApps/MahApps.Metro.IconPacks · GitHub | github.com/MahApps"
+                            [39]: https://web.archive.org/web/20240813085908/https://www.gamingdeputy.com/windows-11-file-explorer-and-print-dialog-now-under-systemapp/ "Windows 11: File Explorer and print dialog now under SystemApp - GAMINGDEPUTY | gamingdeputy.com"
+                            [40]: https://web.archive.org/web/20240813085950/https://pastebin.com/pK3wDcFW "appxmanifest.xml | MicrosoftWindows.Client.FileExp_cw5n1h2txyewy | privacy.sexy - Pastebin.com"
+                            [41]: https://web.archive.org/web/20240813085908/https://www.deskmodder.de/blog/2023/03/09/windows-11-datei-explorer-und-druck-dialog-jetzt-unter-systemapp/ "Windows 11: Datei Explorer und Druck-Dialog jetzt unter SystemApp - Deskmodder.de | deskmodder.de"
+                            [42]: https://web.archive.org/web/20240813090031/https://learn.microsoft.com/en-us/windows/apps/windows-app-sdk/ "Build desktop Windows apps with the Windows App SDK - Windows apps | Microsoft Learn | learn.microsoft.com"
+                            [43]: https://web.archive.org/web/20240813090027/https://github.com/privacysexy-forks/WindowsAppSDK "privacysexy-forks/WindowsAppSDK: The Windows App SDK empowers all Windows desktop apps with modern Windows UI, APIs, and platform features, including back-compat support, shipped via NuGet. | github.com"
                         children:
                             -
                                 name: Remove "File Picker" app
@@ -24891,9 +25113,30 @@ actions:
                                         packageName: F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE # Get-AppxPackage F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE
                                         publisherId: cw5n1h2txyewy
                             -
-                                name: Remove "InputApp" app
+                                name: Remove "Microsoft Text Input Application" app
+                                recommend: strict # Deprecated, impact on modern systems would be minimal
                                 docs: |-
-                                    This app comes pre-installed on certain versions of Windows [1] [2].
+                                    This script removes the "Microsoft Text Input Application" [1] [2] [3] [4],
+                                    also known as *Input App* [5] or `InputApp` [5] [6] [7].
+
+                                    This app comes pre-installed on certain versions of Windows [6] [7].
+                                    It processes keystrokes and offers features like:
+
+                                    - Emoji Keyboard (using `Win+Dot/Period`) [1] [8]
+                                    - Screenshot tools such as screen clipping (using `PrtScn`) [1]
+                                    - Clipboard history (using `Win-V`) [1] [9]
+                                    - Touch keyboard [2] [8] [10] [11]
+                                    - On-screen keyboard [8] [10]
+                                    - Handwriting panel [8] [10]
+
+                                    The app's main process is `WindowsInternal.ComposableShell.Experiences.TextInput.InputApp.exe` [1] [3] [5] [8] [9] [10] [11] [12].
+
+                                    The app has been deprecated and replaced by the Windows Feature Experience Pack (`MicrosoftWindows.Client.CBS`) in newer Windows versions [12] [13].
+                                    It's safe to remove this outdated app on modern systems.
+                                    Removing this app improves privacy by reducing data processing by Microsoft and enhances system performance by lowering active processes.
+
+                                    > **Caution**: Removing this app on older Windows versions (19H2 and earlier), disables key features like the on-screen keyboard,
+                                    > touch support, and emoji dialog.
 
                                     ### Overview of default preinstallation
 
@@ -24907,8 +25150,19 @@ actions:
                                     | Windows 11 | 22H2 | ❌ |
                                     | Windows 11 | 23H2 | ❌ |
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [1]: https://archive.ph/2024.03.31-121334/https://www.reddit.com/r/techsupport/comments/7oa5ho/what_is_microsoft_text_input_application/ "What is Microsoft text input application? : r/techsupport | www.reddit.com"
+                                    [2]: https://web.archive.org/web/20240331121608/https://www.tenforums.com/general-support/133209-microsoft-text-input-application-inicio-start-english-processes.html "Microsoft Text Input Application/Inicio (Start in English) processes Solved - Windows 10 Forums | www.tenforums.com"
+                                    [3]: https://web.archive.org/web/20240331121516/http://virtmachine.ru/microsoft-text-input-application-chto-eto-za-protsess-windowsinternal-composableshell-experiences-textinput-inputapp-exe.html "Microsoft Text input Application — что это за процесс? (WindowsInternal.ComposableShell.Experiences.TextInput.InputApp.exe) | virtmachine.ru"
+                                    [4]: https://archive.ph/2024.03.31-121557/https://community.spiceworks.com/t/windows-10-explorer-hanging-quickbooks-crashing/760896/1 "Windows 10 Explorer Hanging - QuickBooks Crashing - Windows - Spiceworks Community | community.spiceworks.com"
+                                    [5]: https://web.archive.org/web/20240331121131/https://stackoverflow.com/questions/53642522/how-to-launch-windowsinternal-composableshell-experiences-textinput-inputapp/53648370#53648370 "c# - How to launch WindowsInternal.ComposableShell.Experiences.TextInput.InputApp - Stack Overflow | stackoverflow.com"
+                                    [6]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                    [7]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [8]: https://web.archive.org/web/20240331121536/https://answers.microsoft.com/en-us/windows/forum/all/windowsinternalcomposableshellexperiencestextinput/a1ce3228-5dd4-47aa-8e48-252ba6fa1483 "windowsinternal.composableshell.experiences.textinput.inputapp.exe - Microsoft Community | answers.microsoft.com"
+                                    [9]: https://web.archive.org/web/20240331121433/https://superuser.com/questions/1506378/launch-clipboard-history-winv-keyboard-shortcut-through-cli "windows - Launch Clipboard History (Win+V keyboard shortcut) through CLI - Super User | superuser.com"
+                                    [10]: https://web.archive.org/web/20240331121235/https://www.file.net/process/windowsinternal.composableshell.experiences.textinput.inputapp.exe.html "WindowsInternal.ComposableShell.Experiences.TextInput.InputApp.exe Windows process - What is it? | www.file.net"
+                                    [11]: https://web.archive.org/web/20240331121740/https://stackoverflow.com/questions/38774139/show-touch-keyboard-tabtip-exe-in-windows-10-anniversary-edition "winapi - Show touch keyboard (TabTip.exe) in Windows 10 Anniversary edition - Stack Overflow | stackoverflow.com"
+                                    [12]: https://web.archive.org/web/20240331121458/https://www.tenforums.com/general-support/133209-microsoft-text-input-application-inicio-start-english-processes-3.html "Microsoft Text Input Application/Inicio (Start in English) processes Solved - Page 3 - Windows 10 Forums | www.tenforums.com"
+                                    [13]: https://web.archive.org/web/20240103235229/https://oofhours.com/2021/01/27/digging-into-the-windows-feature-experience-pack/ "Digging into the Windows Feature Experience Pack – Out of Office Hours | oofhours.com"
                                 call:
                                     function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
@@ -25152,6 +25406,8 @@ actions:
 
                                             ### Overview of default preinstallation
 
+                                            `Microsoft.MicrosoftEdge`:
+
                                             | OS | Version | Existence |
                                             | -- |:-------:|:---------:|
                                             | Windows 10 | 19H2 | ✅ |
@@ -25162,16 +25418,35 @@ actions:
                                             | Windows 11 | 22H2 | ✅ |
                                             | Windows 11 | 23H2 | ❌ |
 
+                                            `Microsoft.MicrosoftEdge.Stable`:
+
+                                            | OS | Version | Existence |
+                                            | -- | ------- | --------- |
+                                            | Windows 10 | 19H2 | ❌ |
+                                            | Windows 10 | 20H2 | ✅ |
+                                            | Windows 10 | 21H2 | ✅ |
+                                            | Windows 10 | 22H2 | ✅ |
+                                            | Windows 11 | 21H2 | ✅ |
+                                            | Windows 11 | 22H2 | ✅ |
+                                            | Windows 11 | 23H2 | ✅ |
+
                                             [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                             [2]: https://web.archive.org/web/20231006175115/https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp "AppLocker CSP - Windows Client Management | Microsoft Learn"
                                             [3]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                             [4]: https://web.archive.org/web/20231004085037/https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge "Lifecycle FAQ - Internet Explorer and Microsoft Edge | Microsoft Learn"
                                             [5]: https://web.archive.org/web/20231008125552/https://support.microsoft.com/en-us/windows/-windows-activity-history-and-your-privacy-2b279964-44ec-8c2f-e0c2-6779b07d2cbd "Windows activity history and your privacy - Microsoft Support"
                                         call:
-                                            function: UninstallNonRemovableStoreAppWithCleanup
-                                            parameters:
-                                                packageName: Microsoft.MicrosoftEdge # Get-AppxPackage Microsoft.MicrosoftEdge
-                                                publisherId: 8wekyb3d8bbwe
+                                            -
+                                                function: UninstallNonRemovableStoreAppWithCleanup
+                                                parameters:
+                                                    
+                                                    packageName: Microsoft.MicrosoftEdge # Get-AppxPackage Microsoft.MicrosoftEdge
+                                                    publisherId: 8wekyb3d8bbwe
+                                            -
+                                                function: UninstallStoreApp
+                                                parameters:
+                                                    packageName: Microsoft.MicrosoftEdge.Stable # Get-AppxPackage Microsoft.MicrosoftEdge.Stable
+                                                    publisherId: 8wekyb3d8bbwe
                                     -
                                         name: Remove "Microsoft Edge Dev Tools Client" app
                                         recommend: strict
@@ -25817,17 +26092,38 @@ actions:
                                         packageName: Microsoft.Windows.ContentDeliveryManager # Get-AppxPackage Microsoft.Windows.ContentDeliveryManager
                                         publisherId: cw5n1h2txyewy
                             -
-                                name: Remove "Search" app (breaks Windows search)
+                                name: Remove "Search" app
+                                recommend: strict
                                 docs: |-
-                                    This script removes two specific apps from Windows:
+                                    This script removes the "Search" app from Windows to improve privacy.
 
-                                    - `Microsoft.Windows.Cortana`: Commonly known as Cortana [1] [2] [3]. This app comes pre-installed on certain versions of Windows [1] [2] [3].
-                                    - `Microsoft.Windows.Search`: Introduced in Windows 10 2004, this app took over the role of `Microsoft.Windows.Cortana` to provide search functionality [4].
-                                    The executable for this app is `SearchApp.exe`, located at `C:\Windows\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy\SearchApp.exe` [5] [6].
-                                    This app powers the Windows search bar [5]. Some community reports have indicated that this app may collect data to display advertisements [7] [8].
+                                    The search app was previously known as `Microsoft.Windows.Cortana`.
+                                    This app was commonly known as Cortana [1] [2] [3].
+                                    It was pre-installed on older versions of Windows 10 [1] [2] [3].
+                                    It collected personal data such as contacts, emails, calendar events, voice inputs, and searches [4].
+                                    Cortana has been retired, with end-of-support reached in 2024 [5].
 
-                                    Removing these apps contributes to user privacy by eliminating potential data collection points. However, please note that running this script will disfunction
-                                    the built-in Windows search functionality. Weigh the trade-off between improved privacy and the loss of search functionality before proceeding.
+                                    `Microsoft.Windows.Search` is introduced in Windows 10 version 2004 [6].
+                                    This app replaced Cortana's role in providing search functionality [6]
+                                    Its executable, `SearchApp.exe`, is located at `C:\Windows\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy\SearchApp.exe` [7] [8].
+                                    This app powers the Windows search bar [7] [8].
+                                    Community reports suggest that this app may collect data to display advertisements [9] [10].
+
+                                    Removing these apps enhances privacy by eliminating potential data collection.
+                                    It improves security by reducing the attack surface.
+                                    Additionally, removing these unnecessary apps may boost system performance by freeing up resources
+
+                                    Removing these apps may cause the taskbar search to become unresponsive [11] [12], though File Explorer search remains functional.
+                                    This has been confirmed on following versions on Windows:
+
+                                    | Windows Version | App Removed | Taskbar Search Functionality |
+                                    |-----------------|-------------|--------------------------------|
+                                    | Windows 10 Pro (19H1/1903, 19H2/1909) | Cortana | 🔴 Unresponsive |
+                                    | Windows 10 Pro (20H2, 21H2, 22H2) | Search app | 🔴 Unresponsive |
+                                    | Windows 11 (21H2) | Search app | 🟢 No impact |
+
+                                    Due to these impacts, the script does not remove `Microsoft.Windows.Cortana` at all and removes `Microsoft.Windows.Search`
+                                    on Windows versions where it's known that it has no impact.
 
                                     ### Overview of default preinstallation
 
@@ -25835,6 +26131,7 @@ actions:
 
                                     | OS | Version | Existence |
                                     | -- |:-------:|:---------:|
+                                    | Windows 10 | 19H1 | ✅ |
                                     | Windows 10 | 19H2 | ✅ |
                                     | Windows 10 | 20H2 | ❌ |
                                     | Windows 10 | 21H2 | ❌ |
@@ -25847,6 +26144,7 @@ actions:
 
                                     | OS | Version | Existence |
                                     | -- |:-------:|:---------:|
+                                    | Windows 10 | 19H1 | ❌ |
                                     | Windows 10 | 19H2 | ❌ |
                                     | Windows 10 | 20H2 | ✅ |
                                     | Windows 10 | 21H2 | ✅ |
@@ -25858,22 +26156,21 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20231006175115/https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp "AppLocker CSP - Windows Client Management | Microsoft Learn"
                                     [3]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
-                                    [4]: https://web.archive.org/web/20231007222810/https://answers.microsoft.com/en-us/windows/forum/all/applocker-blocking-windows-search-functionality/5509bfcc-061c-49e0-803d-6dbb1bc6a839 "Applocker Blocking windows search functionality Win 10 - 2004 - Microsoft Community"
-                                    [5]: https://web.archive.org/web/20231007222923/https://learn.microsoft.com/en-us/answers/questions/461791/kb5003637-problem-with-windows-search-bar "KB5003637 Problem With Windows Search Bar - Microsoft Q&A"
-                                    [6]: https://web.archive.org/web/20231007222844/https://learn.microsoft.com/en-us/answers/questions/842652/unable-to-start-a-dcom-server-microsoftwindows-cli?cid=kerryherger&page=2 "Unable to start a DCOM Server - MicrosoftWindows.Client.CBS_120.2212.4170.0_x64__cw5n1h2txyewy!InputApp as Unavailable/Unavailable. Error 2147942402 (TextInputHost.exe) - Microsoft Q&A"
-                                    [7]: https://web.archive.org/web/20231007222907/https://learn.microsoft.com/en-us/answers/questions/175856/windows-10-20h2-searchapp-exe-network-connection "Windows 10 20H2 searchapp.exe - network connection - Microsoft Q&A"
-                                    [8]: https://web.archive.org/web/20231007222922/https://learn.microsoft.com/en-us/answers/questions/893937/searchapp-exe-connecting-to-ms-for-no-reason "Searchapp.exe connecting to MS for no reason. - Microsoft Q&A"
+                                    [4]: https://web.archive.org/web/20211028113404/https://support.microsoft.com/en-us/windows/cortana-and-privacy-47e5856e-3680-d930-22e1-71ec6cdde231 "Cortana and privacy | support.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240814092925/https://support.microsoft.com/en-us/topic/end-of-support-for-cortana-d025b39f-ee5b-4836-a954-0ab646ee1efa "End of support for Cortana - Microsoft Support | support.microsoft.com"
+                                    [6]: https://web.archive.org/web/20231007222810/https://answers.microsoft.com/en-us/windows/forum/all/applocker-blocking-windows-search-functionality/5509bfcc-061c-49e0-803d-6dbb1bc6a839 "Applocker Blocking windows search functionality Win 10 - 2004 - Microsoft Community"
+                                    [7]: https://web.archive.org/web/20231007222923/https://learn.microsoft.com/en-us/answers/questions/461791/kb5003637-problem-with-windows-search-bar "KB5003637 Problem With Windows Search Bar - Microsoft Q&A"
+                                    [8]: https://web.archive.org/web/20231007222844/https://learn.microsoft.com/en-us/answers/questions/842652/unable-to-start-a-dcom-server-microsoftwindows-cli?cid=kerryherger&page=2 "Unable to start a DCOM Server - MicrosoftWindows.Client.CBS_120.2212.4170.0_x64__cw5n1h2txyewy!InputApp as Unavailable/Unavailable. Error 2147942402 (TextInputHost.exe) - Microsoft Q&A"
+                                    [9]: https://web.archive.org/web/20231007222907/https://learn.microsoft.com/en-us/answers/questions/175856/windows-10-20h2-searchapp-exe-network-connection "Windows 10 20H2 searchapp.exe - network connection - Microsoft Q&A"
+                                    [10]: https://web.archive.org/web/20231007222922/https://learn.microsoft.com/en-us/answers/questions/893937/searchapp-exe-connecting-to-ms-for-no-reason "Searchapp.exe connecting to MS for no reason. - Microsoft Q&A"
+                                    [11]: https://archive.ph/2024.08.15-071830/https://www.reddit.com/r/Windows10/comments/dadm4j/windows_search_does_not_work_at_all/ "Windows Search Does not work at all : r/Windows10 | www.reddit.com"
+                                    [12]: https://web.archive.org/web/20240815072418/https://serverfault.com/questions/1020745/why-is-windows-search-no-longer-working-after-changing-user-principal-name "Why is Windows Search no longer working after changing User Principal Name? - Server Fault | serverfault.com"
                                 call:
-                                    -
-                                        function: UninstallNonRemovableStoreAppWithCleanup
-                                        parameters:
-                                            packageName: Microsoft.Windows.Cortana # Get-AppxPackage Microsoft.Windows.Cortana
-                                            publisherId: cw5n1h2txyewy
-                                    -
-                                        function: UninstallStoreApp
-                                        parameters:
-                                            packageName: Microsoft.Windows.Search # Get-AppxPackage Microsoft.Windows.Search
-                                            publisherId: cw5n1h2txyewy
+                                    function: UninstallNonRemovableStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Windows.Search # Get-AppxPackage Microsoft.Windows.Search
+                                        publisherId: cw5n1h2txyewy
+                                        minimumWindowsVersion: Windows11-21H2
                             -
                                 name: Remove "Holographic First Run" app
                                 recommend: standard
@@ -26231,10 +26528,36 @@ actions:
                                         packageName: Microsoft.XboxGameCallableUI # Get-AppxPackage Microsoft.XboxGameCallableUI
                                         publisherId: cw5n1h2txyewy
                             -
-                                name: Remove "CBS Preview" app
+                                name: Remove "Camera Barcode Scanner" app
                                 recommend: standard
                                 docs: |-
-                                    This app comes pre-installed on certain versions of Windows [1] [2].
+                                    This script removes the Camera Barcode Scanner app from Windows, enhancing privacy and security.
+
+                                    The Camera Barcode Scanner app uses software to detect barcodes through your device's camera [1].
+                                    A camera barcode scanner uses a standard camera lens with auto-focus and a software decoder,
+                                    which Windows pairs dynamically to enable barcode scanning for Universal Windows Platform (UWP)
+                                    apps [2].
+                                    Digimarc Corporation provides this app [2].
+
+                                    The `Windows.CBSPreview` system app [1] [3] and the
+                                    `Microsoft-OneCore-PointOfService-CameraBarcodeScanner` Windows feature [1] include this app.
+
+                                    Removing this app improves your privacy by:
+
+                                    - Reducing potential data collection related to barcode scanning activities
+                                    - Restricting the system's ability to process visual data from your camera
+
+                                    It also enhances your security by:
+
+                                    - Decreasing the attack surface for potential vulnerabilities in the barcode scanning software
+                                    - Reducing the risk of unauthorized access to your camera for barcode scanning purposes
+
+                                    Removing this app also improves system performance by:
+
+                                    - Freeing up storage space
+                                    - Reducing background processes related to barcode scanning capabilities
+
+                                    This app comes pre-installed on certain versions of Windows [4] [5].
 
                                     ### Overview of default preinstallation
 
@@ -26248,8 +26571,11 @@ actions:
                                     | Windows 11 | 22H2 | ✅ |
                                     | Windows 11 | 23H2 | ✅ |
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [1]: https://web.archive.org/web/20240813084222/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/removable-packages/microsoft-onecore-pointofservice-camerabarcodescanner "Package - Camera Barcode Scanner - Windows IoT Enterprise | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20240813084214/https://learn.microsoft.com/en-us/windows/uwp/devices-sensors/pos-camerabarcode "Camera barcode scanner - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240813084119/https://strontic.github.io/xcyclopedia/library/CameraBarcodeScannerPreview.exe-4EE408E0F7C59B9F472C4908336FFCD8.html "CameraBarcodeScannerPreview.exe | CameraBarcodeScannerPreview | STRONTIC | strontic.github.io"
+                                    [4]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                    [5]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
                                     function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
@@ -26407,6 +26733,167 @@ actions:
                                             parameters:
                                                 packageName: Windows.PrintDialog # Get-AppxPackage Windows.PrintDialog
                                                 publisherId: cw5n1h2txyewy
+                            -
+                                name: Remove "Narrator QuickStart" app
+                                recommend: strict
+                                docs: |-
+                                    This script removes the "Narrator QuickStart" app.
+                                    This app is technically known as `NarratorQuickStart` [1].
+
+                                    The "Narrator QuickStart" is a brief tutorial designed to help new users familiarize
+                                    themselves with the Narrator application [2]. The tutorial is accessible through a
+                                    "QuickStart" button within Narrator, a link in settings, and from the initial Welcome
+                                    page of Windows [3]. It provides a step-by-step guide on using keyboard shortcuts and
+                                    other features to effectively use Narrator [4] [5].
+
+                                    Narrator is a screen-reading tool built into Windows 11 and Windows 10, aiding users
+                                    in tasks like using apps, browsing the web, and reading or authoring documents by
+                                    reading text on the screen [6]. The script targets only the "Narrator QuickStart"
+                                    tutorial, not the Narrator application itself.
+
+                                    Besides removing the app, this script also disables the QuickStart by modifying the
+                                    following the `HKCU\Software\Microsoft\Narrator\QuickStart!SkipQuickStart` key [7] to protect
+                                    the system integrity.
+
+                                    Identified in testing, removing this app does not completely eleminate the tutorial.
+
+                                    This app comes pre-installed on certain versions of Windows [1] [2] [4].
+                                    Introduced in Windows 10 [1] [2] [4], this feature has been part of the OS since version 1903 [2].
+
+                                    > **Caution**: Removing this app may disable features in the tutorial for new users of the Narrator app,
+                                    > This could impact the learning experience for new users of Narrator.
+                                    > This script is recommended for users who are already familiar with Narrator, do not require the tutorial,
+                                    > or will never use the Narrator feature.
+
+                                    ### Overview of default preinstallation
+
+                                    | OS | Version | Existence |
+                                    | -- | ------- | --------- |
+                                    | Windows 10 | 19H2 | ✅ |
+                                    | Windows 10 | 20H2 | ✅ |
+                                    | Windows 10 | 21H2 | ✅ |
+                                    | Windows 10 | 22H2 | ✅ |
+                                    | Windows 11 | 21H2 | ✅ |
+                                    | Windows 11 | 22H2 | ✅ |
+                                    | Windows 11 | 23H2 | ✅ |
+
+                                    [1]: https://web.archive.org/web/20240116113328/https://blogs.microsoft.com/accessibility/accessibility-updates-coming-to-windows-10/ "Accessibility Updates Coming to Windows 10 - Microsoft Accessibility Blog | blogs.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240116113513/https://techcommunity.microsoft.com/t5/windows-it-pro-blog/what-s-new-for-it-pros-in-windows-10-version-1903/ba-p/622024 "What’s new for IT pros in Windows 10, version 1903 - Microsoft Community Hub | techcommunity.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240116113331/https://blogs.windows.com/windows-insider/2018/08/16/announcing-windows-10-insider-preview-build-18219/ "Announcing Windows 10 Insider Preview Build 18219 | Windows Insider Blog | blogs.windows.com"
+                                    [4]: https://web.archive.org/web/20240116113346/https://blogs.windows.com/windowsexperience/2018/10/03/windows-10-accessibility-in-the-october-2018-update/ "Windows 10 accessibility in the October 2018 Update | Windows Experience Blog | blogs.windows.com"
+                                    [5]: https://web.archive.org/web/20240116113311/https://learn.microsoft.com/en-us/windows-insider/archive/new-in-rs5#narrator-improvements "What was new in RS5 Windows 10 Insider Preview Builds - Windows Insider Program | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240319085229/https://support.microsoft.com/en-us/windows/complete-guide-to-narrator-e4397a0d-ef4f-b386-d8ae-c172f109bdb1 "Complete guide to Narrator - Microsoft Support | support.microsoft.com"
+                                    [7]: https://web.archive.org/web/20240319095757/https://winaero.com/disable-narrator-quickstart-guide-windows-10/ "Disable Narrator QuickStart Guide in Windows 10 | winaero.com"
+                                    [8]: https://web.archive.org/web/20240319101016/https://www.elevenforum.com/t/enable-or-disable-show-narrator-home-when-narrator-starts-in-windows-11.6674/ "Enable or Disable Show Narrator Home when Narrator Starts in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                call:
+                                    -
+                                        function: UninstallNonRemovableStoreApp
+                                        parameters:
+                                            packageName: NarratorQuickStart # Get-AppxPackage NarratorQuickStart
+                                            publisherId: 8wekyb3d8bbwe
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKCU\Software\Microsoft\Narrator\QuickStart
+                                            valueName: SkipQuickStart
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                name: Remove "GPU Eject Dialog" app
+                                recommend: strict
+                                docs: |-
+                                    This script removes the GPU Eject Dialog app, enhancing the process of safely disconnecting external GPUs via Thunderbolt 3 [1].
+                                    Like USB drives, this feature lets Windows safely unmount external GPUs.
+                                    It provides the dialog to close any GPU-running applications to prevent data loss before detachment [1].
+
+                                    The "GPU Eject Dialog" becomes visible when attempting to safely remove an external graphics card via the
+                                    *Safely Remove Hardware and Eject Media* icon [1].
+                                    It shows applications using the external GPU, enabling their closure for safe detachment [1].
+
+                                    It lists any applications actively using the external GPU, allowing users to close them and safely detach the GPU [1].
+                                    If no applications are running, no dialog is shown, and the GPU can be safely removed [1].
+                                    
+                                    This app comes pre-installed on certain versions of Windows [1] [2].
+                                    Introduced in Windows 10, this feature has been included since the Insider Preview Build 17623 [1].
+
+                                    > **Caution**: While removing this app may not affect those without external GPUs, it could risk data and hardware safety for
+                                    > users relying on external GPUs during disconnection.
+
+                                    ### Overview of default preinstallation
+
+                                    | OS | Version | Existence |
+                                    | -- | ------- | --------- |
+                                    | Windows 10 | 19H2 | ✅ |
+                                    | Windows 10 | 20H2 | ✅ |
+                                    | Windows 10 | 21H2 | ✅ |
+                                    | Windows 10 | 22H2 | ✅ |
+                                    | Windows 11 | 21H2 | ✅ |
+                                    | Windows 11 | 22H2 | ✅ |
+                                    | Windows 11 | 23H2 | ✅ |
+
+                                    [1]: https://web.archive.org/web/20240319085707/https://blogs.windows.com/windows-insider/2018/03/16/announcing-windows-10-insider-preview-build-17623-for-skip-ahead/ "Announcing Windows 10 Insider Preview Build 17623 for Skip Ahead | Windows Insider Blog | blogs.windows.com"
+                                    [2]: https://web.archive.org/web/20230610014325/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: UninstallNonRemovableStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Windows.XGpuEjectDialog # Get-AppxPackage Microsoft.Windows.XGpuEjectDialog
+                                        publisherId: cw5n1h2txyewy
+                            -
+                                name: Remove "Windows Undocked Developer Kit (UDK)" app
+                                recommend: strict
+                                docs: |-
+                                    This script removes the "Windows Undocked Developer Kit (UDK)" app.
+                                    This app is also known as `UndockedDevKit` [1], *Undocked Developer Kit* [2], *Undocked Dev Kit* [3], *Windows UDK* [2] [3], or *Undocked Shell* [4].
+                                    It dynamically introduces new features and updates to the Windows desktop environment [4] [5], independent of full system updates [4].
+
+                                    *Shell* encompasses the desktop interface elements, such as the *Start Menu*, *Taskbar*, and *File Explorer*.
+                                    The UDK app makes it possible to update and customize these parts of the Windows Shell [4] [5] separately from the overall operating system [4].
+                                    This modularity allows for quicker introduction of UI improvements or new features [4] [5] [6] without waiting for system-wide updates [4].
+
+                                    It adds a plugin/hook system to File Explorer [4] [5].
+                                    It allows the operating system to dynamically load different UI elements [4].
+                                    It supports *shell hot swapping* [6] (also known as *Dynamic Shell Switching* [4]).
+                                    This enables users to download new shells from the Store or switch between them on the fly [4].
+
+                                    Benefits of removing this app include:
+
+                                    - **Control Over Updates**: Users can better manage their system's functionalities by limiting access only to the features they use, enhancing security against unauthorized use or exploitation.
+                                    - **Reduced Data Transmission**: This reduces the amount of data transmitted to and from Microsoft's update servers, lowering the risk of unintentional data exposure.
+                                    - **System Optimization**: Eliminating the plugin system's overhead in File Explorer [6] may improve system performance [5] [6].
+                                    - **Reduced Attack Surface**: Removing the app reduces potential vulnerabilities it may bring, thereby enhancing system security.
+
+                                    This app comes pre-installed on certain versions of Windows [1].
+
+                                    > **Caution**:
+                                    > Removing the app may lead to:
+                                    >   - Loss of functionality, impacting dynamic shell switching and quick iteration of design and code.
+                                    >   - Delayed access to new shell components and features.
+                                    >   - The possibility of unknown side effects, as this app is not documented officially by Microsoft.
+
+                                    ### Overview of default preinstallation
+
+                                    | OS | Version | Existence |
+                                    | -- | ------- | --------- |
+                                    | Windows 10 | 19H2 | ❌ |
+                                    | Windows 10 | 20H2 | ✅ |
+                                    | Windows 10 | 21H2 | ✅ |
+                                    | Windows 10 | 22H2 | ✅ |
+                                    | Windows 11 | 21H2 | ✅ |
+                                    | Windows 11 | 22H2 | ✅ |
+                                    | Windows 11 | 23H2 | ✅ |
+
+                                    [1]: https://web.archive.org/web/20230610014325/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240321102101/https://www.dllme.com/dll/files/windowsudk_shellcommon "windowsudk.shellcommon.dll : Free .DLL download. - DLLme.com | www.dllme.com"
+                                    [3]: https://web.archive.org/web/20240321102221/https://strontic.github.io/xcyclopedia/library/windowsudk.shellcommon.dll-AA8B2A24FBC79C2F491B4A527B4A9A42.html "windowsudk.shellcommon.dll | Windows Undocked Dev Kit Shellcommon DLL | STRONTIC | strontic.github.io"
+                                    [4]: https://web.archive.org/web/20240321105425/https://mspoweruser.com/latest-windows-10-20h1-preview-build-shows-microsoft-is-making-the-windows-10-shell-piecemeal-upgradable/ "Latest Windows 10 20H1 Preview Build shows Microsoft is making the Windows 10 Shell piecemeal upgradable - MSPoweruser | mspoweruser.com"
+                                    [5]: https://web.archive.org/web/20240321102532/https://www.gearrice.com/update/take-advantage-of-this-bug-in-windows-11-explorer-to-speed-up-its-performance/ "Take advantage of this 'bug' in Windows 11 Explorer... to speed up its performance - GEARRICE | www.gearrice.com"
+                                    [6]: https://archive.ph/2024.03.21-103452/https://twitter.com/thebookisclosed/status/1698427451951522219 "λlbacore 🥝 on X | twitter.com"
+                                call:
+                                    function: UninstallNonRemovableStoreApp
+                                    parameters:
+                                        packageName: MicrosoftWindows.UndockedDevKit # Get-AppxPackage MicrosoftWindows.UndockedDevKit
+                                        publisherId: cw5n1h2txyewy
             - 
                 category: Remove OneDrive
                 docs: |-
@@ -29615,11 +30102,18 @@ functions:
         parameters:
             - name: packageName
             - name: publisherId
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         call:
             -
-                function: RunPowerShell
+                function: Comment
                 parameters:
-                    codeComment: Uninstall '{{ $packageName }}' Microsoft Store app.
+                    codeComment: Uninstall '{{ $packageName }}' Store app
+                    revertCodeComment: Reinstall '{{ $packageName }}' if it was previously uninstalled
+            -
+                function: RunPowerShellWithWindowsVersionConstraints
+                parameters:
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                     code: Get-AppxPackage '{{ $packageName }}' | Remove-AppxPackage
                     # This script attempts to reinstall the app that was just uninstalled, if necessary.
                     # Re-installation strategy:
@@ -29638,7 +30132,6 @@ functions:
                     #           - `%WINDIR%\{ShortAppName}` (for system apps)
                     #           - `%SYSTEMDRIVE%\Program Files\WindowsApps\{PackageName}` (for non-system apps)
                     #         View all package locations: `Get-AppxPackage | Sort Name | Format-Table Name, InstallLocation`
-                    revertCodeComment: Reinstall '{{ $packageName }}' if it was previously uninstalled.
                     revertCode: |-
                         $packageName='{{ $packageName }}'
                         $publisherId='{{ $publisherId }}'
@@ -29695,17 +30188,23 @@ functions:
                             "You may search for it or an alternative in the Microsoft Store or " + `
                             "consider using an earlier version of Windows where this package was originally provided."
             -
-                function: CreateRegistryKey
+                function: Comment
                 parameters:
                     codeComment: Mark '{{ $packageName }}' as deprovisioned to block reinstall during Windows updates.
                     revertCodeComment: Remove '{{ $packageName }}' from deprovisioned list to allow reinstall during updates.
+            -
+                function: CreateRegistryKey
+                parameters:
                     keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\{{ $packageName }}_{{ $publisherId }}
                     deleteOnRevert: 'true'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
     -
         name: UninstallNonRemovableStoreApp
         parameters:
             - name: packageName
             - name: publisherId
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         docs: |-
             This function uninstalls a non-removable app by marking it as removable and then
             running the built-in app uninstallation process.
@@ -29730,23 +30229,30 @@ functions:
             [3]: https://web.archive.org/web/20240809111127/https://github.com/undergroundwires/privacy.sexy/issues/287 "\"Remove system apps\" breaks windows commulative updates · Issue #287 · undergroundwires/privacy.sexy | github.com"
         call:
             -
-                function: CreateRegistryKey
+                function: Comment
                 parameters:
                     codeComment: Enable removal of system app '{{ $packageName }}' by marking it as "EndOfLife"
+                    revertCodeComment: Remove ability to remove system app '{{ $packageName }}' to match operating system defaults
+            -
+                function: CreateRegistryKey
+                parameters:
                     keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$CURRENT_USER_SID\{{ $packageName }}_{{ $publisherId }}
                     replaceSid: 'true'
                     deleteOnRevert: 'true' # Although unnecessary due to the `DeleteRegistryKey` step later, this handles edge cases where this value may exist.
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
             -
                 function: UninstallStoreApp
                 parameters:
                     packageName: '{{ $packageName }}'
                     publisherId: '{{ $publisherId }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
             -
                 function: DeleteRegistryKey
                 parameters:
                     codeComment: Revert '{{ $packageName }}' to its default, non-removable state.
                     keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$CURRENT_USER_SID\{{ $packageName }}_{{ $publisherId }}
                     replaceSid: 'true'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
     -
         name: UninstallNonRemovableStoreAppWithCleanup # ❗️ Prefer `UninstallNonRemovableStoreApp` for new scripts
         # 💡 Purpose:
@@ -29761,6 +30267,8 @@ functions:
         parameters:
             - name: packageName
             - name: publisherId
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         call:
             -
                 function: ClearStoreAppDataBeforeUninstallation
@@ -29772,6 +30280,7 @@ functions:
                 parameters:
                     packageName: '{{ $packageName }}'
                     publisherId: '{{ $publisherId }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
             -
                 function: ClearStoreAppDataAfterUninstallation
                 parameters:
@@ -31510,37 +32019,23 @@ functions:
               optional: true
             - name: deleteOnRevert  # Set to 'true' to revert to the initial state by deleting the registry key.
               optional: true
-            - name: codeComment
-              optional: true
-            - name: revertCodeComment
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
         call:
-            # Marked: refactor-with-variables
-            #   - Replacing SID is same as `DeleteRegistryKey`
-            #   - Registry path construction with hive is same as `DeleteRegistryValue` and `DeleteRegistryKey`
-            #   - Deleting on revert is same as `DeleteRegistryKey`
-            function: RunPowerShell
-            parameters:
-                code: |-
-                    $keyPath='{{ $keyPath }}'
-                    $registryHive = $keyPath.Split('\')[0]
-                    $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
-                    {{ with $replaceSid }}
-                        $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
-                        $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
-                    {{ end }}
-                    if (Test-Path $registryPath) {
-                        Write-Host "Skipping, no action needed, registry path `"$registryPath`" already exists."
-                        exit 0
-                    }
-                    try {
-                        New-Item -Path $registryPath -Force -ErrorAction Stop | Out-Null
-                        Write-Host "Successfully created the registry key at path `"$registryPath`"."
-                    } catch {
-                        Write-Error "Failed to create the registry key at path `"$registryPath`": $($_.Exception.Message)"
-                    }
-                revertCode: |-
-                    {{ with $deleteOnRevert }}
+            -
+                function: Comment
+                parameters:
+                    codeComment: 'Create "{{ $keyPath }}" registry key'
+                    revertCodeComment: '{{ with $deleteOnRevert }}Restore "{{ $keyPath }}" registry key by deleting it{{ end }}'
+            -
+                # Marked: refactor-with-variables
+                #   - Replacing SID is same as `DeleteRegistryKey`
+                #   - Registry path construction with hive is same as `DeleteRegistryValue` and `DeleteRegistryKey`
+                #   - Deleting on revert is same as `DeleteRegistryKey`
+                function: RunPowerShellWithWindowsVersionConstraints
+                parameters:
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    code: |-
                         $keyPath='{{ $keyPath }}'
                         $registryHive = $keyPath.Split('\')[0]
                         $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
@@ -31548,24 +32043,41 @@ functions:
                             $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
                             $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
                         {{ end }}
-                        Write-Host "Removing registry key at `"$registryPath`"."
-                        if (-not (Test-Path -LiteralPath $registryPath)) {
-                            Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                        if (Test-Path $registryPath) {
+                            Write-Host "Skipping, no action needed, registry path `"$registryPath`" already exists."
                             exit 0
                         }
                         try {
-                            Remove-Item `
-                                -LiteralPath $registryPath `
-                                -Force `
-                                -ErrorAction Stop `
-                                | Out-Null
-                            Write-Host "Successfully removed the registry key at path `"$registryPath`"."
+                            New-Item -Path $registryPath -Force -ErrorAction Stop | Out-Null
+                            Write-Host "Successfully created the registry key at path `"$registryPath`"."
                         } catch {
-                            Write-Error "Failed to remove the registry key at path `"$registryPath`": $($_.Exception.Message)"
+                            Write-Error "Failed to create the registry key at path `"$registryPath`": $($_.Exception.Message)"
                         }
-                    {{ end }}
-                codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
-                revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
+                    revertCode: |-
+                        {{ with $deleteOnRevert }}
+                            $keyPath='{{ $keyPath }}'
+                            $registryHive = $keyPath.Split('\')[0]
+                            $registryPath = "$($registryHive):$($keyPath.Substring($registryHive.Length))"
+                            {{ with $replaceSid }}
+                                $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
+                                $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
+                            {{ end }}
+                            Write-Host "Removing registry key at `"$registryPath`"."
+                            if (-not (Test-Path -LiteralPath $registryPath)) {
+                                Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                                exit 0
+                            }
+                            try {
+                                Remove-Item `
+                                    -LiteralPath $registryPath `
+                                    -Force `
+                                    -ErrorAction Stop `
+                                    | Out-Null
+                                Write-Host "Successfully removed the registry key at path `"$registryPath`"."
+                            } catch {
+                                Write-Error "Failed to remove the registry key at path `"$registryPath`": $($_.Exception.Message)"
+                            }
+                        {{ end }}
     -
         name: DeleteRegistryKey
         # Removes the entire registry key, including all subkeys and values.
@@ -31579,6 +32091,8 @@ functions:
             - name: codeComment
               optional: true
             - name: maximumWindowsVersion # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+            - name: minimumWindowsVersion # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
         call:
             -
@@ -31597,6 +32111,7 @@ functions:
                 function: RunPowerShellWithWindowsVersionConstraints
                 parameters:
                     maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                     code: |-
                         $keyPath='{{ $keyPath }}'
                         $registryHive = $keyPath.Split('\')[0]
@@ -32925,56 +33440,76 @@ functions:
                                             #   Windows11-21H2 | Windows10-MostRecent (most recent Windows) |
                                             #   Windows10-22H2 | Windows10-1909 | Windows10-1903
         call:
-            function: RunPowerShellWithSetup
-            parameters:
-                # Marked: refactor-with-if-syntax
-                #   If checks can be handled during compile time.
-                setupCode: |- # See: Find build numbers: https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions
-                    {{ with $minimumWindowsVersion }}
-                        $versionName = '{{ . }}'
-                        $buildNumber = switch ($versionName) {
-                            'Windows11-FirstRelease' { '10.0.22000' }
-                            'Windows11-21H2' { '10.0.22000' }
-                            'Windows10-22H2' { '10.0.19045' }
-                            'Windows10-21H2' { '10.0.19044' }
-                            'Windows10-20H2' { '10.0.19042' }
-                            'Windows10-1909' { '10.0.18363' }
-                            'Windows10-1607' { '10.0.14393' }
-                            default {
-                                throw "Internal privacy.sexy error: No build for minimum Windows '$versionName'"
+            -
+                function: Comment
+                parameters:
+                    # Marked: refactor-with-variables
+                    #   The output message is same for code and revert.
+                    codeComment: >-
+                        {{ with $minimumWindowsVersion }}
+                            This operation will not run on Windows versions earlier than {{ . }}.
+                        {{ end }}{{ with $maximumWindowsVersion }}
+                            This operation will not run on Windows versions later than {{ . }}.
+                        {{ end }}
+                    revertCodeComment: >-
+                        {{ with $revertCode }}
+                            {{ with $minimumWindowsVersion }}
+                                This operation will not run on Windows versions earlier than {{ . }}.
+                            {{ end }}{{ with $maximumWindowsVersion }}
+                                This operation will not run on Windows versions later than {{ . }}.
+                            {{ end }}
+                        {{ end }}
+            -
+                function: RunPowerShellWithSetup
+                parameters:
+                    # Marked: refactor-with-if-syntax
+                    #   If checks can be handled during compile time.
+                    setupCode: |- # See: Find build numbers: https://en.wikipedia.org/wiki/List_of_Microsoft_Windows_versions
+                        {{ with $minimumWindowsVersion }}
+                            $versionName = '{{ . }}'
+                            $buildNumber = switch ($versionName) {
+                                'Windows11-FirstRelease' { '10.0.22000' }
+                                'Windows11-21H2' { '10.0.22000' }
+                                'Windows10-22H2' { '10.0.19045' }
+                                'Windows10-21H2' { '10.0.19044' }
+                                'Windows10-20H2' { '10.0.19042' }
+                                'Windows10-1909' { '10.0.18363' }
+                                'Windows10-1607' { '10.0.14393' }
+                                default {
+                                    throw "Internal privacy.sexy error: No build for minimum Windows '$versionName'"
+                                }
                             }
-                        }
-                        $minVersion = [System.Version]::Parse($buildNumber)
-                        $version = [Environment]::OSVersion.Version
-                        $versionNoPatch = [System.Version]::new($version.Major, $version.Minor, $version.Build)
-                        if ($versionNoPatch -lt $minVersion) {
-                            Write-Output "Skipping: Windows ($versionNoPatch) is below minimum $minVersion ($versionName)"
-                            Exit 0
-                        }
-                    {{ end }}{{ with $maximumWindowsVersion }}
-                        $versionName = '{{ . }}'
-                        $buildNumber = switch ($versionName) {
-                            'Windows11-21H2' { '10.0.22000' }
-                            'Windows10-MostRecent' { '10.0.19045' }
-                            'Windows10-22H2' { '10.0.19045' }
-                            'Windows10-1909' { '10.0.18363' }
-                            'Windows10-1903' { '10.0.18362' }
-                            default {
-                                throw "Internal privacy.sexy error: No build for maximum Windows '$versionName'"
+                            $minVersion = [System.Version]::Parse($buildNumber)
+                            $version = [Environment]::OSVersion.Version
+                            $versionNoPatch = [System.Version]::new($version.Major, $version.Minor, $version.Build)
+                            if ($versionNoPatch -lt $minVersion) {
+                                Write-Output "Skipping: Windows ($versionNoPatch) is below minimum $minVersion ($versionName)"
+                                Exit 0
                             }
-                        }
-                        $maxVersion=[System.Version]::Parse($buildNumber)
-                        $version = [Environment]::OSVersion.Version
-                        $versionNoPatch = [System.Version]::new($version.Major, $version.Minor, $version.Build)
-                        if ($versionNoPatch -gt $maxVersion) {
-                            Write-Output "Skipping: Windows ($versionNoPatch) is above maximum $maxVersion ($versionName)"
-                            Exit 0
-                        }
-                    {{ end }}{{ with $setupCode }}
-                    {{ . }}
-                    {{ end }}
-                code: '{{ $code }}'
-                revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
+                        {{ end }}{{ with $maximumWindowsVersion }}
+                            $versionName = '{{ . }}'
+                            $buildNumber = switch ($versionName) {
+                                'Windows11-21H2' { '10.0.22000' }
+                                'Windows10-MostRecent' { '10.0.19045' }
+                                'Windows10-22H2' { '10.0.19045' }
+                                'Windows10-1909' { '10.0.18363' }
+                                'Windows10-1903' { '10.0.18362' }
+                                default {
+                                    throw "Internal privacy.sexy error: No build for maximum Windows '$versionName'"
+                                }
+                            }
+                            $maxVersion=[System.Version]::Parse($buildNumber)
+                            $version = [Environment]::OSVersion.Version
+                            $versionNoPatch = [System.Version]::new($version.Major, $version.Minor, $version.Build)
+                            if ($versionNoPatch -gt $maxVersion) {
+                                Write-Output "Skipping: Windows ($versionNoPatch) is above maximum $maxVersion ($versionName)"
+                                Exit 0
+                            }
+                        {{ end }}{{ with $setupCode }}
+                        {{ . }}
+                        {{ end }}
+                    code: '{{ $code }}'
+                    revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
     -
         name: DeleteVisualStudioLicense
         parameters:
