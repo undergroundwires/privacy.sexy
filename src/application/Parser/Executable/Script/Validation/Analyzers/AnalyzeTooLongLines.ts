@@ -12,7 +12,7 @@ export const analyzeTooLongLines: CodeValidationAnalyzer = (
       lineNumber: line.lineNumber,
       error: [
         `Line is too long (${line.text.length}).`,
-        `It exceed maximum allowed length ${maxLineLength}.`,
+        `It exceed maximum allowed length ${maxLineLength} by ${line.text.length - maxLineLength} characters.`,
         'This may cause bugs due to unintended trimming by operating system, shells or terminal emulators.',
       ].join(' '),
     }));
@@ -39,6 +39,6 @@ function getMaxAllowedLineLength(language: ScriptingLanguage): number {
       */
       return 1048576; // Minimum value for reliability
     default:
-      throw new Error(`Unsupported language: ${language}`);
+      throw new Error(`Unsupported language: ${ScriptingLanguage[language]} (${language})`);
   }
 }

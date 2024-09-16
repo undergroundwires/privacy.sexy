@@ -46,9 +46,33 @@ function formatLines(
 ): string {
   return lines.map((line) => {
     const badLine = invalidLines.find((invalidLine) => invalidLine.lineNumber === line.lineNumber);
-    if (!badLine) {
-      return `[${line.lineNumber}] ✅ ${line.text}`;
-    }
-    return `[${badLine.lineNumber}] ❌ ${line.text}\n\t⟶ ${badLine.error}`;
+    return formatLine({
+      lineNumber: line.lineNumber,
+      text: line.text,
+      error: badLine?.error,
+    });
   }).join('\n');
+}
+function formatLine(
+  line: {
+    readonly lineNumber: number;
+    readonly text: string;
+    readonly error?: string;
+  },
+): string {
+  let text = `[${line.lineNumber}] `;
+  text += line.error ? '❌' : '✅';
+  text += ` ${trimLine(line.text)}`;
+  if (line.error) {
+    text += `\n\t⟶ ${line.error}`;
+  }
+  return text;
+}
+
+function trimLine(line: string) {
+  const maxLength = 500;
+  if (line.length > maxLength) {
+    line = `${line.substring(0, maxLength)}... [Rest of the line trimmed]`;
+  }
+  return line;
 }
