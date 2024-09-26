@@ -43,9 +43,10 @@ function bindMethodsOfObject<T>(obj: T): T {
     if (!prototype.hasOwnProperty.call(obj, property)) {
       return; // Skip properties not directly on the prototype
     }
-    const value = obj[property];
+    const propertyKey = property as keyof (typeof obj);
+    const value = obj[propertyKey];
     if (isFunction(value)) {
-      (obj as object)[property] = value.bind(obj);
+      obj[propertyKey] = value.bind(obj);
     }
   });
   return obj;

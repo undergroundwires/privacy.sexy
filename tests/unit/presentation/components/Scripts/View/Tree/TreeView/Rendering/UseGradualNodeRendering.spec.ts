@@ -237,7 +237,7 @@ describe('useGradualNodeRendering', () => {
   });
   it('skips scheduling when no nodes to render', () => {
     // arrange
-    const nodes = [];
+    const nodes = new Array<TreeNode>();
     const nodesStub = new UseCurrentTreeNodesStub()
       .withQueryableNodes(new QueryableNodesStub().withFlattenedNodes(nodes));
     const delaySchedulerStub = new DelaySchedulerStub();

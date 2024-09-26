@@ -78,10 +78,12 @@ function setCommandLineFlagsFromEnvironmentVariables() {
   };
   Object.entries(flagEnvironmentVariableKeyMappings)
     .forEach(([flag, environmentVariableKey]) => {
+      const flagValue = Number.parseInt(flag, 10) as CommandLineFlag;
+      const flagDefinition = COMMAND_LINE_FLAGS[flagValue];
       if (process.env[environmentVariableKey] !== undefined) {
         process.argv = [
           ...process.argv,
-          COMMAND_LINE_FLAGS[flag],
+          flagDefinition,
         ];
       }
     });

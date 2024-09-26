@@ -74,7 +74,7 @@ describe('CategoryCollectionState', () => {
   describe('selection', () => {
     it('initializes with empty scripts', () => {
       // arrange
-      const expectedScripts = [];
+      const expectedScripts: readonly SelectedScript[] = [];
       let actualScripts: readonly SelectedScript[] | undefined;
       const selectionFactoryMock: SelectionFactory = (_, scripts) => {
         actualScripts = scripts;

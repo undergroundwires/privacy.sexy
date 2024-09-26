@@ -9,6 +9,7 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 describe('useUserSelectionState', () => {
   describe('currentSelection', () => {
@@ -170,8 +171,8 @@ describe('useUserSelectionState', () => {
       describe('triggers change', () => {
         it('with new selected scripts array reference', async () => {
           // arrange
-          const oldSelectedScriptsArrayReference = [];
-          const newSelectedScriptsArrayReference = [];
+          const oldSelectedScriptsArrayReference = new Array<SelectedScript>();
+          const newSelectedScriptsArrayReference = new Array<SelectedScript>();
           const scriptSelectionStub = new ScriptSelectionStub()
             .withSelectedScripts(oldSelectedScriptsArrayReference);
           const collectionStateStub = new UseCollectionStateStub()
@@ -191,7 +192,7 @@ describe('useUserSelectionState', () => {
         });
         it('with same selected scripts array reference', async () => {
           // arrange
-          const sharedSelectedScriptsReference = [];
+          const sharedSelectedScriptsReference = new Array<SelectedScript>();
           const scriptSelectionStub = new ScriptSelectionStub()
             .withSelectedScripts(sharedSelectedScriptsReference);
           const collectionStateStub = new UseCollectionStateStub()

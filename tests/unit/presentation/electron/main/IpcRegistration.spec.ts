@@ -65,7 +65,7 @@ describe('IpcRegistration', () => {
           // act
           context.run();
           // assert
-          const channel = IpcChannelDefinitions[key];
+          const channel = IpcChannelDefinitions[key as ChannelDefinitionKey] as IpcChannel<unknown>;
           const actualInstance = getRegisteredInstance(channel);
           expect(actualInstance).to.equal(expectedInstance);
         });

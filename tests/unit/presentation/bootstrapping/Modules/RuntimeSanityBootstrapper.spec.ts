@@ -1,20 +1,21 @@
 import { describe, it, expect } from 'vitest';
-import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
-import { RuntimeSanityValidator } from '@/presentation/bootstrapping/Modules/RuntimeSanityValidator';
+import type { SanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/SanityCheckOptions';
+import { RuntimeSanityBootstrapper } from '@/presentation/bootstrapping/Modules/RuntimeSanityBootstrapper';
 import { expectDoesNotThrowAsync, expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
+import type { RuntimeSanityValidator } from '@/infrastructure/RuntimeSanity/SanityChecks';
 
-describe('RuntimeSanityValidator', () => {
+describe('RuntimeSanityBootstrapper', () => {
   it('calls validator with correct options upon bootstrap', async () => {
     // arrange
-    const expectedOptions: ISanityCheckOptions = {
+    const expectedOptions: SanityCheckOptions = {
       validateEnvironmentVariables: true,
       validateWindowVariables: true,
     };
-    let actualOptions: ISanityCheckOptions | undefined;
-    const validatorMock = (options) => {
+    let actualOptions: SanityCheckOptions | undefined;
+    const validatorMock: RuntimeSanityValidator = (options) => {
       actualOptions = options;
     };
-    const sut = new RuntimeSanityValidator(validatorMock);
+    const sut = new RuntimeSanityBootstrapper(validatorMock);
     // act
     await sut.bootstrap();
     // assert
@@ -26,7 +27,7 @@ describe('RuntimeSanityValidator', () => {
     const validatorMock = () => {
       throw new Error(expectedMessage);
     };
-    const sut = new RuntimeSanityValidator(validatorMock);
+    const sut = new RuntimeSanityBootstrapper(validatorMock);
     // act
     const act = async () => { await sut.bootstrap(); };
     // assert
@@ -35,7 +36,7 @@ describe('RuntimeSanityValidator', () => {
   it('runs successfully if validator passes', async () => {
     // arrange
     const validatorMock = () => { /* NOOP */ };
-    const sut = new RuntimeSanityValidator(validatorMock);
+    const sut = new RuntimeSanityBootstrapper(validatorMock);
     // act
     const act = async () => { await sut.bootstrap(); };
     // assert

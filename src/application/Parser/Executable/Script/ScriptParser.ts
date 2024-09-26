@@ -106,7 +106,7 @@ function validateScript(
 ): asserts script is NonNullable<ScriptData> {
   validator.assertType((v) => v.assertObject<CallScriptData & CodeScriptData>({
     value: script,
-    valueName: `Script '${script.name}'` ?? 'Script',
+    valueName: script.name ? `Script '${script.name}'` : 'Script',
     allowedProperties: [
       'name', 'recommend', 'code', 'revertCode', 'call', 'docs',
     ],

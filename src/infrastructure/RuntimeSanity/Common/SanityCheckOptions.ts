@@ -1,4 +1,4 @@
-export interface ISanityCheckOptions {
+export interface SanityCheckOptions {
   readonly validateEnvironmentVariables: boolean;
   readonly validateWindowVariables: boolean;
 }

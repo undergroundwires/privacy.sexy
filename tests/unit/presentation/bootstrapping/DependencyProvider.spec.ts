@@ -7,12 +7,14 @@ import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFact
 import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { itIsTransientFactory } from '@tests/unit/shared/TestCases/TransientFactoryTests';
 import { executeInComponentSetupContext } from '@tests/shared/Vue/ExecuteInComponentSetupContext';
+import type { PropertyKeys } from '@/TypeHelpers';
+
+type InjectionKeyType = PropertyKeys<typeof InjectionKeys>;
+type DependencyInjectionTestFunction = (injectionKey: symbol) => void;
 
 describe('DependencyProvider', () => {
   describe('provideDependencies', () => {
-    const testCases: {
-      readonly [K in keyof typeof InjectionKeys]: (injectionKey: symbol) => void;
-    } = {
+    const testCases: Record<InjectionKeyType, DependencyInjectionTestFunction> = {
       useCollectionState: createTransientTests(),
       useApplication: createSingletonTests(),
       useRuntimeEnvironment: createSingletonTests(),
@@ -27,7 +29,8 @@ describe('DependencyProvider', () => {
       useAutoUnsubscribedEventListener: createTransientTests(),
     };
     Object.entries(testCases).forEach(([key, runTests]) => {
-      const registeredKey = InjectionKeys[key].key;
+      const injectionKey = key as InjectionKeyType;
+      const registeredKey = InjectionKeys[injectionKey].key;
       describe(`Key: "${registeredKey.toString()}"`, () => {
         runTests(registeredKey);
       });
@@ -35,7 +38,7 @@ describe('DependencyProvider', () => {
   });
 });
 
-function createTransientTests() {
+function createTransientTests(): DependencyInjectionTestFunction {
   return (injectionKey: symbol) => {
     it('should register a function when transient dependency is resolved', () => {
       // arrange
@@ -73,7 +76,7 @@ function createTransientTests() {
   };
 }
 
-function createSingletonTests() {
+function createSingletonTests(): DependencyInjectionTestFunction {
   return (injectionKey: symbol) => {
     it('should register an object when singleton dependency is resolved', () => {
       // arrange

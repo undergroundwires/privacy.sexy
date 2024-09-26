@@ -7,6 +7,7 @@ import { UseUserSelectionStateStub } from '@tests/unit/shared/Stubs/UseUserSelec
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import type { TreeNodeId } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import type { Executable } from '@/domain/Executables/Executable';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 describe('useSelectedScriptNodeIds', () => {
   it('returns an empty array when no scripts are selected', () => {
@@ -44,7 +45,7 @@ describe('useSelectedScriptNodeIds', () => {
     });
     it('when the selection state changes', () => {
       // arrange
-      const initialScripts = [];
+      const initialScripts = new Array<SelectedScript>();
       const changedScripts = [
         new SelectedScriptStub(new ScriptStub('id-1')),
         new SelectedScriptStub(new ScriptStub('id-2')),

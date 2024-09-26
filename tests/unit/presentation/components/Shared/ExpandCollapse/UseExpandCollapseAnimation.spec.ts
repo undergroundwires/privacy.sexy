@@ -67,7 +67,7 @@ function runSharedTestsForAnimation(
     };
     const element = document.createElement('div');
     Object.entries(expectedStyleValues).forEach(([key, value]) => {
-      element.style[key] = value;
+      element.style[key as keyof MutatedStyleProperties] = value;
     });
     const timer = new TimerStub();
     const hookResult = useExpandCollapseAnimation(timer);
@@ -78,7 +78,8 @@ function runSharedTestsForAnimation(
     await promise;
     // assert
     Object.entries(expectedStyleValues).forEach(([key, expectedStyleValue]) => {
-      const actualStyleValue = element.style[key];
+      const styleProperty = key as keyof MutatedStyleProperties;
+      const actualStyleValue = element.style[styleProperty];
       expect(actualStyleValue).to.equal(expectedStyleValue, formatAssertionMessage([
         `Style key: ${key}`,
         `Expected style value: ${expectedStyleValue}`,
@@ -86,7 +87,7 @@ function runSharedTestsForAnimation(
         `Initial style value: ${expectedStyleValues}`,
         'All styles:',
         ...Object.entries(expectedStyleValues)
-          .map(([k, value]) => indentText(`- ${k} > actual: "${element.style[k]}" | expected: "${value}"`)),
+          .map(([k, value]) => indentText(`- ${k} > actual: "${actualStyleValue}" | expected: "${value}"`)),
       ]));
     });
   });

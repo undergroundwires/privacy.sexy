@@ -1,8 +1,8 @@
 import { it, expect } from 'vitest';
-import type { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
+import type { SanityValidator } from '@/infrastructure/RuntimeSanity/Common/SanityValidator';
 
 export function itNoErrorsOnCurrentEnvironment(
-  factory: () => ISanityValidator,
+  factory: () => SanityValidator,
 ) {
   it('it does report errors on current environment', () => {
     // arrange

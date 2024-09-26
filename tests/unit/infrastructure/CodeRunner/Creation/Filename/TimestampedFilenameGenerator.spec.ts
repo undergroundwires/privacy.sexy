@@ -37,9 +37,9 @@ describe('TimestampedFilenameGenerator', () => {
       // act
       const filename = generateFilenamePartsForTesting({ date });
       // assert
-      expect(filename.timestamp).to.equal(expectedTimestamp, formatAssertionMessage[
-        `Generated filename: ${filename.generatedFilename}`
-      ]);
+      expect(filename.timestamp).to.equal(expectedTimestamp, formatAssertionMessage([
+        `Generated filename: ${filename.generatedFilename}`,
+      ]));
     });
     describe('extension', () => {
       it('uses correct extension', () => {
@@ -48,9 +48,9 @@ describe('TimestampedFilenameGenerator', () => {
         // act
         const filename = generateFilenamePartsForTesting({ extension: expectedExtension });
         // assert
-        expect(filename.extension).to.equal(expectedExtension, formatAssertionMessage[
-          `Generated filename: ${filename.generatedFilename}`
-        ]);
+        expect(filename.extension).to.equal(expectedExtension, formatAssertionMessage([
+          `Generated filename: ${filename.generatedFilename}`,
+        ]));
       });
       describe('handles absent extension', () => {
         itEachAbsentStringValue((absentExtension) => {
@@ -59,9 +59,9 @@ describe('TimestampedFilenameGenerator', () => {
           // act
           const filename = generateFilenamePartsForTesting({ extension: absentExtension });
           // assert
-          expect(filename.extension).to.equal(expectedExtension, formatAssertionMessage[
-            `Generated file name: ${filename.generatedFilename}`
-          ]);
+          expect(filename.extension).to.equal(expectedExtension, formatAssertionMessage([
+            `Generated file name: ${filename.generatedFilename}`,
+          ]));
         }, { excludeNull: true });
       });
       it('errors on dot-starting extension', () => {

@@ -165,11 +165,14 @@ function createScriptLanguageScenarios(): readonly ScriptLanguageScenario[] {
     [ScriptingLanguage.batchfile]: 8191,
     [ScriptingLanguage.shellscript]: 1048576,
   };
-  return Object.entries(maxLengths).map(([language, length]): ScriptLanguageScenario => ({
-    description: `${ScriptingLanguage[language]} (max: ${length})`,
-    language: Number.parseInt(language, 10) as ScriptingLanguage,
-    maxLength: length,
-  }));
+  return Object.entries(maxLengths).map(([language, length]): ScriptLanguageScenario => {
+    const languageValue = Number.parseInt(language, 10) as ScriptingLanguage;
+    return {
+      description: `${ScriptingLanguage[languageValue]} (max: ${length})`,
+      language: languageValue,
+      maxLength: length,
+    };
+  });
 }
 
 class TestContext {

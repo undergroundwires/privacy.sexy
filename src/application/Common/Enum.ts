@@ -33,23 +33,25 @@ function parseEnumValue<T extends EnumType, TEnumValue extends EnumType>(
   if (!casedValue) {
     throw new Error(`unknown ${enumName}: "${value}"`);
   }
-  return enumVariable[casedValue as keyof typeof enumVariable];
+  return enumVariable[casedValue as keyof EnumVariable<T, TEnumValue>];
 }
 
 export function getEnumNames
 <T extends EnumType, TEnumValue extends EnumType>(
   enumVariable: EnumVariable<T, TEnumValue>,
-): string[] {
+): (string & keyof EnumVariable<T, TEnumValue>)[] {
   return Object
     .values(enumVariable)
-    .filter((enumMember): enumMember is string => isString(enumMember));
+    .filter((
+      enumMember,
+    ): enumMember is string & (keyof EnumVariable<T, TEnumValue>) => isString(enumMember));
 }
 
 export function getEnumValues<T extends EnumType, TEnumValue extends EnumType>(
   enumVariable: EnumVariable<T, TEnumValue>,
 ): TEnumValue[] {
   return getEnumNames(enumVariable)
-    .map((level) => enumVariable[level]) as TEnumValue[];
+    .map((name) => enumVariable[name]) as TEnumValue[];
 }
 
 export function assertInRange<T extends EnumType, TEnumValue extends EnumType>(

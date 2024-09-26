@@ -2,7 +2,7 @@ import { describe } from 'vitest';
 import { ExpressionPosition } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { WithParser } from '@/application/Parser/Executable/Script/Compiler/Expressions/SyntaxParsers/WithParser';
 import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
-import { SyntaxParserTestsRunner } from './SyntaxParserTestsRunner';
+import { SyntaxParserTestsRunner, type ExpectResultTestScenario } from './SyntaxParserTestsRunner';
 
 describe('WithParser', () => {
   const sut = new WithParser();
@@ -120,7 +120,7 @@ describe('WithParser', () => {
       describe('does not render scope', () => {
         runner.expectResults(
           ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
-            .map((testCase) => ({
+            .map((testCase): ExpectResultTestScenario => ({
               name: `does not render when value is "${testCase.valueName}"`,
               code: '{{ with $parameter }}dark{{ end }} ',
               args: (args) => args
@@ -138,7 +138,7 @@ describe('WithParser', () => {
       describe('renders scope', () => {
         runner.expectResults(
           ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
-            .map((testCase) => ({
+            .map((testCase): ExpectResultTestScenario => ({
               name: `does not render when value is "${testCase.valueName}"`,
               code: '{{ with $parameter }}dark{{ end }} ',
               args: (args) => args

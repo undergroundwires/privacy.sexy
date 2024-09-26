@@ -7,6 +7,7 @@ import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefin
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 describe('UserScriptGenerator', () => {
   describe('scriptingDefinition', () => {
@@ -143,7 +144,7 @@ describe('UserScriptGenerator', () => {
     it('without script; returns empty', () => {
       // arrange
       const sut = new UserScriptGenerator();
-      const selectedScripts = [];
+      const selectedScripts: readonly SelectedScript[] = [];
       const definition = new ScriptingDefinitionStub();
       // act
       const actual = sut.buildCode(selectedScripts, definition);

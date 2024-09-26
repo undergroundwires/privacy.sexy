@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
-import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { SanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/SanityCheckOptions';
 import { SanityCheckOptionsStub } from '@tests/unit/shared/Stubs/SanityCheckOptionsStub';
-import type { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
+import type { SanityValidator } from '@/infrastructure/RuntimeSanity/Common/SanityValidator';
 import { SanityValidatorStub } from '@tests/unit/shared/Stubs/SanityValidatorStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
@@ -11,7 +11,7 @@ describe('SanityChecks', () => {
   describe('validateRuntimeSanity', () => {
     describe('parameter validation', () => {
       describe('throws when validators are empty', () => {
-        itEachAbsentCollectionValue<ISanityValidator>((absentCollection) => {
+        itEachAbsentCollectionValue<SanityValidator>((absentCollection) => {
           // arrange
           const expectedError = 'missing validators';
           const validators = absentCollection;
@@ -138,9 +138,9 @@ describe('SanityChecks', () => {
 });
 
 class TestContext {
-  private options: ISanityCheckOptions = new SanityCheckOptionsStub();
+  private options: SanityCheckOptions = new SanityCheckOptionsStub();
 
-  private validators: ISanityValidator[] = [new SanityValidatorStub()];
+  private validators: SanityValidator[] = [new SanityValidatorStub()];
 
   public withOptionsSetup(
     setup: (stub: SanityCheckOptionsStub) => SanityCheckOptionsStub,
@@ -148,12 +148,12 @@ class TestContext {
     return this.withOptions(setup(new SanityCheckOptionsStub()));
   }
 
-  public withOptions(options: ISanityCheckOptions): this {
+  public withOptions(options: SanityCheckOptions): this {
     this.options = options;
     return this;
   }
 
-  public withValidators(validators: ISanityValidator[]): this {
+  public withValidators(validators: SanityValidator[]): this {
     this.validators = validators;
     return this;
   }

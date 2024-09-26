@@ -383,7 +383,7 @@ function createExpressionFactorySpy() {
   };
   return {
     createExpression,
-    getInitParameters: (expression) => createdExpressions.get(expression),
+    getInitParameters: (expression: IExpression) => createdExpressions.get(expression),
   };
 }
 

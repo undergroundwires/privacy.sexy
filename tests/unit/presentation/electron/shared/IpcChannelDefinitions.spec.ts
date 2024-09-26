@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import type { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
 import { type ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
 
 describe('IpcChannelDefinitions', () => {
@@ -25,7 +24,7 @@ describe('IpcChannelDefinitions', () => {
       [definitionKey, { expectedNamespace, expectedAccessibleMembers }],
     ) => {
       describe(`channel: "${definitionKey}"`, () => {
-        const ipcChannelUnderTest = IpcChannelDefinitions[definitionKey] as IpcChannel<unknown>;
+        const ipcChannelUnderTest = IpcChannelDefinitions[definitionKey as ChannelDefinitionKey];
         it('has expected namespace', () => {
           // act
           const actualNamespace = ipcChannelUnderTest.namespace;

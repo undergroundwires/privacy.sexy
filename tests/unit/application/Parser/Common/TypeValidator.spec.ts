@@ -135,7 +135,7 @@ describe('createTypeValidator', () => {
       });
       it('throws error for empty collection', () => {
         // arrange
-        const emptyArrayValue = [];
+        const emptyArrayValue: unknown[] = [];
         const valueName = 'empty collection value';
         const expectedMessage = `'${valueName}' cannot be an empty array.`;
         const { assertNonEmptyCollection } = createTypeValidator();
@@ -251,7 +251,7 @@ describe('createTypeValidator', () => {
 });
 
 function createObjectWithProperties(properties: readonly string[]): object {
-  const object = {};
+  const object: Record<string, unknown> = {};
   properties.forEach((propertyName) => {
     object[propertyName] = 'arbitrary value';
   });

@@ -78,7 +78,7 @@
     "start-server-and-test": "^2.0.4",
     "terser": "^5.31.3",
     "tslib": "^2.6.3",
-    "typescript": "^5.4.5",
+    "typescript": "~5.5.4",
     "vite": "^5.3.4",
     "vitest": "^2.0.3",
     "vue-tsc": "^2.0.26",

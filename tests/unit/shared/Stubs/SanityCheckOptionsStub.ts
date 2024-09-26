@@ -1,6 +1,6 @@
-import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { SanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/SanityCheckOptions';
 
-export class SanityCheckOptionsStub implements ISanityCheckOptions {
+export class SanityCheckOptionsStub implements SanityCheckOptions {
   public validateWindowVariables = false;
 
   public validateEnvironmentVariables = false;

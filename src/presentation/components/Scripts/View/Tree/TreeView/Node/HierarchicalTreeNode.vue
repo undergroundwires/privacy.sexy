@@ -39,7 +39,7 @@
           :tree-root="treeRoot"
           :rendering-strategy="renderingStrategy"
         >
-          <template #node-content="slotProps">
+          <template #node-content="slotProps: NodeMetadata">
             <slot name="node-content" v-bind="slotProps" />
           </template>
         </HierarchicalTreeNode>
@@ -55,6 +55,7 @@ import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { useNodeState } from './UseNodeState';
 import LeafTreeNode from './LeafTreeNode.vue';
 import InteractableNode from './InteractableNode.vue';
+import type { NodeMetadata } from '../../NodeContent/NodeMetadata';
 import type { TreeRoot } from '../TreeRoot/TreeRoot';
 import type { TreeNode, TreeNodeId } from './TreeNode';
 import type { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
@@ -107,6 +108,7 @@ export default defineComponent({
     );
 
     return {
+      NodeMetadata: Object as PropType<NodeMetadata>,
       renderedNodeIds,
       isExpanded,
       toggleExpand,

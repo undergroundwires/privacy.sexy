@@ -15,7 +15,7 @@ export type DuplicateLinesAnalyzer = CodeValidationAnalyzer & {
 export const analyzeDuplicateLines: DuplicateLinesAnalyzer = (
   lines: readonly CodeLine[],
   language: ScriptingLanguage,
-  syntaxFactory = createSyntax,
+  syntaxFactory: SyntaxFactory = createSyntax,
 ) => {
   const syntax = syntaxFactory(language);
   return lines

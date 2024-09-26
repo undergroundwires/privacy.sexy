@@ -279,7 +279,7 @@ describe('DebouncedScriptSelection', () => {
     it('throws error when an empty script array is passed', () => {
       // arrange
       const expectedError = 'Provided script array is empty. To deselect all scripts, please use the deselectAll() method instead.';
-      const scripts = [];
+      const scripts: readonly Script[] = [];
       const scriptSelection = new DebouncedScriptSelectionBuilder().build();
       // act
       const act = () => scriptSelection.selectOnly(scripts);

@@ -77,7 +77,8 @@ describe('WindowVariablesValidator', () => {
     });
 
     describe('does not throw when a property is valid', () => {
-      const testScenarios: Record<PropertyKeys<Required<WindowVariables>>, ReadonlyArray<{
+      type WindowVariable = PropertyKeys<Required<WindowVariables>>;
+      const testScenarios: Record<WindowVariable, ReadonlyArray<{
         readonly description: string;
         readonly validValue: unknown;
       }>> = {
@@ -117,8 +118,10 @@ describe('WindowVariablesValidator', () => {
           validValueScenarios.forEach(({ description, validValue }) => {
             it(description, () => {
               // arrange
-              const input = new WindowVariablesStub();
-              input[propertyKey] = validValue;
+              const input: WindowVariables = {
+                ...new WindowVariablesStub(),
+                [propertyKey]: validValue,
+              };
               const context = new ValidateWindowVariablesTestSetup()
                 .withWindowVariables(input);
               // act
@@ -173,8 +176,10 @@ describe('WindowVariablesValidator', () => {
                 name: propertyKey as keyof WindowVariables,
                 value: invalidValue,
               });
-              const input = new WindowVariablesStub();
-              input[propertyKey] = invalidValue;
+              const input: WindowVariables = {
+                ...new WindowVariablesStub(),
+                [propertyKey]: invalidValue,
+              };
               const context = new ValidateWindowVariablesTestSetup()
                 .withWindowVariables(input);
               // act

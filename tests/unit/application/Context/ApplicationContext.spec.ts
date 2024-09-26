@@ -50,16 +50,33 @@ describe('ApplicationContext', () => {
         // assert
         expectEmptyState(sut.state);
       });
-      it('throws when OS is unknown to application', () => {
+      it('rethrows when application cannot provide collection for supported OS', () => {
         // arrange
         const expectedError = 'expected error from application';
-        const applicationStub = new ApplicationStub();
+        const initialOs = OperatingSystem.Android;
+        const targetOs = OperatingSystem.ChromeOS;
+        const context = new ObservableApplicationContextFactory()
+          .withAppContainingCollections(initialOs, targetOs)
+          .withInitialOs(initialOs);
+        // act
+        const sut = context.construct();
+        const { app } = context;
+        app.getCollection = () => { throw new Error(expectedError); };
+        const act = () => sut.changeContext(targetOs);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+      it('throws when OS state is unknown to application', () => {
+        // arrange
+        const knownOs = OperatingSystem.Android;
+        const unknownOs = OperatingSystem.ChromeOS;
+        const expectedError = `Operating system "${OperatingSystem[unknownOs]}" state is unknown.`;
         const sut = new ObservableApplicationContextFactory()
-          .withApp(applicationStub)
+          .withAppContainingCollections(knownOs)
+          .withInitialOs(knownOs)
           .construct();
         // act
-        applicationStub.getCollection = () => { throw new Error(expectedError); };
-        const act = () => sut.changeContext(OperatingSystem.Android);
+        const act = () => sut.changeContext(unknownOs);
         // assert
         expect(act).to.throw(expectedError);
       });
@@ -181,14 +198,28 @@ describe('ApplicationContext', () => {
         const actual = sut.state.os;
         expect(actual).to.deep.equal(expected);
       });
-      it('throws when OS is unknown to application', () => {
+      it('rethrows when application cannot provide collection for supported OS', () => {
         // arrange
         const expectedError = 'expected error from application';
-        const applicationStub = new ApplicationStub();
-        applicationStub.getCollection = () => { throw new Error(expectedError); };
+        const knownOperatingSystem = OperatingSystem.macOS;
+        const context = new ObservableApplicationContextFactory()
+          .withAppContainingCollections(knownOperatingSystem)
+          .withInitialOs(knownOperatingSystem);
+        const { app } = context;
+        app.getCollection = () => { throw new Error(expectedError); };
+        // act
+        const act = () => context.construct();
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+      it('throws when OS is not supported', () => {
+        // arrange
+        const unknownInitialOperatingSystem = OperatingSystem.BlackBerry10;
+        const expectedError = `Operating system "${OperatingSystem[unknownInitialOperatingSystem]}" is not supported.`;
         // act
         const act = () => new ObservableApplicationContextFactory()
-          .withApp(applicationStub)
+          .withAppContainingCollections(OperatingSystem.Android /* unrelated */)
+          .withInitialOs(unknownInitialOperatingSystem)
           .construct();
         // assert
         expect(act).to.throw(expectedError);
@@ -222,24 +253,24 @@ class ObservableApplicationContextFactory {
 
   private initialOs = ObservableApplicationContextFactory.DefaultOs;
 
-  constructor() {
+  public constructor() {
     this.withAppContainingCollections(ObservableApplicationContextFactory.DefaultOs);
   }
 
   public withAppContainingCollections(
     ...oses: OperatingSystem[]
-  ): ObservableApplicationContextFactory {
+  ): this {
     const collectionValues = oses.map((os) => new CategoryCollectionStub().withOs(os));
     const app = new ApplicationStub().withCollections(...collectionValues);
     return this.withApp(app);
   }
 
-  public withApp(app: IApplication): ObservableApplicationContextFactory {
+  public withApp(app: IApplication): this {
     this.app = app;
     return this;
   }
 
-  public withInitialOs(initialOs: OperatingSystem) {
+  public withInitialOs(initialOs: OperatingSystem): this {
     this.initialOs = initialOs;
     return this;
   }
@@ -250,6 +281,7 @@ class ObservableApplicationContextFactory {
     return sut;
   }
 }
+
 function getDuplicates<T>(list: readonly T[]): T[] {
   return list.filter((item, index) => list.indexOf(item) !== index);
 }
