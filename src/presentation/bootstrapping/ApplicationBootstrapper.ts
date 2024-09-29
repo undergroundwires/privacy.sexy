@@ -1,4 +1,4 @@
-import { RuntimeSanityValidator } from './Modules/RuntimeSanityValidator';
+import { RuntimeSanityBootstrapper } from './Modules/RuntimeSanityBootstrapper';
 import { AppInitializationLogger } from './Modules/AppInitializationLogger';
 import { DependencyBootstrapper } from './Modules/DependencyBootstrapper';
 import { MobileSafariActivePseudoClassEnabler } from './Modules/MobileSafariActivePseudoClassEnabler';
@@ -17,7 +17,7 @@ export class ApplicationBootstrapper implements Bootstrapper {
 
   private static getAllBootstrappers(): Bootstrapper[] {
     return [
-      new RuntimeSanityValidator(),
+      new RuntimeSanityBootstrapper(),
       new DependencyBootstrapper(),
       new AppInitializationLogger(),
       new MobileSafariActivePseudoClassEnabler(),

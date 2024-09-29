@@ -1,5 +1,5 @@
 import type { QueryableNodes } from './QueryableNodes';
-import type { TreeNode } from '../../../Node/TreeNode';
+import type { TreeNode, TreeNodeId } from '../../../Node/TreeNode';
 
 export class TreeNodeNavigator implements QueryableNodes {
   public readonly flattenedNodes: readonly TreeNode[];
@@ -8,10 +8,10 @@ export class TreeNodeNavigator implements QueryableNodes {
     this.flattenedNodes = flattenNodes(rootNodes);
   }
 
-  public getNodeById(id: string): TreeNode {
-    const foundNode = this.flattenedNodes.find((node) => node.id === id);
+  public getNodeById(nodeId: TreeNodeId): TreeNode {
+    const foundNode = this.flattenedNodes.find((node) => node.id === nodeId);
     if (!foundNode) {
-      throw new Error(`Node could not be found: ${id}`);
+      throw new Error(`Node could not be found: ${nodeId}`);
     }
     return foundNode;
   }

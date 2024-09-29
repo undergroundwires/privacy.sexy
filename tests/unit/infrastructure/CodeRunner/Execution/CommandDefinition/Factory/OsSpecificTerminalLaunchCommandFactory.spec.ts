@@ -17,7 +17,8 @@ describe('OsSpecificTerminalLaunchCommandFactory', () => {
       [OperatingSystem.Linux]: LinuxVisibleTerminalCommand,
       [OperatingSystem.macOS]: MacOsVisibleTerminalCommand,
     };
-    AllSupportedOperatingSystems.forEach((operatingSystem) => {
+    AllSupportedOperatingSystems.forEach((operatingSystemValue) => {
+      const operatingSystem = operatingSystemValue as SupportedOperatingSystem;
       it(`${OperatingSystem[operatingSystem]}`, () => {
         // arrange
         const expectedDefinitionType = testScenarios[operatingSystem];

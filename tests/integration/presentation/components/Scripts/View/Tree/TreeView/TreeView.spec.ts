@@ -129,7 +129,11 @@ function createSampleNodes(): TreeInputNodeDataWithMetadata[] {
   ];
 }
 
-function waitForStableDom(rootElement, timeout = 3000, interval = 200): Promise<void> {
+function waitForStableDom(
+  rootElement: Node,
+  timeout = 3000,
+  interval = 200,
+): Promise<void> {
   return new Promise((resolve, reject) => {
     let lastTimeoutId: ReturnType<typeof setTimeout>;
     const observer = new MutationObserver(() => {

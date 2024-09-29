@@ -1,4 +1,4 @@
-import { indentText } from '@tests/shared/Text';
+import { indentText } from '@/application/Common/Text/IndentText';
 import { fetchWithTimeout } from './FetchWithTimeout';
 import { getDomainFromUrl } from './UrlDomainProcessing';
 

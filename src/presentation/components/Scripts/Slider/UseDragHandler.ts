@@ -3,6 +3,7 @@ import {
 } from 'vue';
 import { throttle } from '@/application/Common/Timing/Throttle';
 import type { Ref } from 'vue';
+import type { LifecycleHook } from '../../Shared/Hooks/Common/LifecycleHook';
 
 const ThrottleInMs = 15;
 
@@ -10,6 +11,7 @@ export function useDragHandler(
   draggableElementRef: Readonly<Ref<HTMLElement | undefined>>,
   dragDomModifier: DragDomModifier = new GlobalDocumentDragDomModifier(),
   throttler = throttle,
+  onTeardown: LifecycleHook = onUnmounted,
 ) {
   const displacementX = ref(0);
   const isDragging = ref(false);
@@ -52,7 +54,7 @@ export function useDragHandler(
     element.addEventListener('pointerdown', startDrag);
   }
 
-  onUnmounted(() => {
+  onTeardown(() => {
     stopDrag();
   });
 

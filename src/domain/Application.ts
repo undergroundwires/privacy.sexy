@@ -1,6 +1,6 @@
 import { OperatingSystem } from './OperatingSystem';
 import type { IApplication } from './IApplication';
-import type { ICategoryCollection } from './ICategoryCollection';
+import type { ICategoryCollection } from './Collection/ICategoryCollection';
 import type { ProjectDetails } from './Project/ProjectDetails';
 
 export class Application implements IApplication {

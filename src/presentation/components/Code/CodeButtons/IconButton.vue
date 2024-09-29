@@ -79,11 +79,11 @@ export default defineComponent({
   box-shadow: 0 3px 9px $color-primary-darkest;
   border-radius: 4px;
 
+  @include clickable;
+
   .button__icon {
     font-size: $font-size-absolute-x-large;
   }
-
-  @include clickable;
 
   @include hover-or-touch {
     background: $color-surface;

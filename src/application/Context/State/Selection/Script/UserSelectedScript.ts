@@ -1,17 +1,16 @@
-import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import type { Script } from '@/domain/Executables/Script/Script';
-import type { SelectedScript } from './SelectedScript';
+import type { RepositoryEntity } from '@/application/Repository/RepositoryEntity';
 
-type SelectedScriptId = SelectedScript['id'];
+export class UserSelectedScript implements RepositoryEntity {
+  public readonly id: string;
 
-export class UserSelectedScript extends BaseEntity<SelectedScriptId> {
   constructor(
     public readonly script: Script,
     public readonly revert: boolean,
   ) {
-    super(script.id);
+    this.id = script.executableId;
     if (revert && !script.canRevert()) {
-      throw new Error(`The script with ID '${script.id}' is not reversible and cannot be reverted.`);
+      throw new Error(`The script with ID '${script.executableId}' is not reversible and cannot be reverted.`);
     }
   }
 }

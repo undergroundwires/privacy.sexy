@@ -19,8 +19,13 @@ export class FilterResultStub implements FilterResult {
 
   public withSomeMatches() {
     return this
-      .withCategoryMatches([new CategoryStub(3).withScriptIds('script-1')])
-      .withScriptMatches([new ScriptStub('script-2')]);
+      .withCategoryMatches([
+        new CategoryStub(`[${FilterResultStub.name}]-matched-category-1`)
+          .withScriptIds(`[${FilterResultStub.name}]-matched-script-1`),
+      ])
+      .withScriptMatches([
+        new ScriptStub(`[${FilterResultStub.name}]-matched-script-2`),
+      ]);
   }
 
   public withCategoryMatches(matches: readonly Category[]) {

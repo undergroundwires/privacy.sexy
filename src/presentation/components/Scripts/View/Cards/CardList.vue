@@ -44,6 +44,7 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { hasDirective } from './NonCollapsingDirective';
 import CardListItem from './CardListItem.vue';
 
@@ -58,12 +59,12 @@ export default defineComponent({
 
     const width = ref<number | undefined>();
 
-    const categoryIds = computed<readonly number[]>(
-      () => currentState.value.collection.actions.map((category) => category.id),
+    const categoryIds = computed<readonly ExecutableId[]>(
+      () => currentState.value.collection.actions.map((category) => category.executableId),
     );
-    const activeCategoryId = ref<number | undefined>(undefined);
+    const activeCategoryId = ref<ExecutableId | undefined>(undefined);
 
-    function onSelected(categoryId: number, isExpanded: boolean) {
+    function onSelected(categoryId: ExecutableId, isExpanded: boolean) {
       activeCategoryId.value = isExpanded ? categoryId : undefined;
     }
 

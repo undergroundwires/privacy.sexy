@@ -83,7 +83,7 @@ function findElementFast(
   win: Cypress.AUTWindow,
   query: string,
   handler: (element: Element) => void,
-  timeoutInMs = 5000,
+  timeoutInMs = 10000,
 ): void {
   const endTime = Date.now() + timeoutInMs;
   const finder = new ContinuousRunner();

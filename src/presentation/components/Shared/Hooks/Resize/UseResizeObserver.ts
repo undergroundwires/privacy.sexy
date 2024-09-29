@@ -5,14 +5,15 @@ import {
 import { throttle, type ThrottleFunction } from '@/application/Common/Timing/Throttle';
 import { useResizeObserverPolyfill } from './UseResizeObserverPolyfill';
 import { useAnimationFrameLimiter } from './UseAnimationFrameLimiter';
+import type { LifecycleHook } from '../Common/LifecycleHook';
 
 export function useResizeObserver(
   config: ResizeObserverConfig,
   usePolyfill = useResizeObserverPolyfill,
   useFrameLimiter = useAnimationFrameLimiter,
   throttler: ThrottleFunction = throttle,
-  onSetup: LifecycleHookRegistration = onBeforeMount,
-  onTeardown: LifecycleHookRegistration = onBeforeUnmount,
+  onSetup: LifecycleHook = onBeforeMount,
+  onTeardown: LifecycleHook = onBeforeUnmount,
 ) {
   const { resetNextFrame, cancelNextFrame } = useFrameLimiter();
   // This prevents the 'ResizeObserver loop completed with undelivered notifications' error when
@@ -63,5 +64,3 @@ export interface ResizeObserverConfig {
 }
 
 export type ObservedElementReference = Readonly<Ref<HTMLElement | undefined>>;
-
-export type LifecycleHookRegistration = (callback: () => void) => void;

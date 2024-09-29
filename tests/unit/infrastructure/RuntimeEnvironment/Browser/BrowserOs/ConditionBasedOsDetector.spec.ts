@@ -119,14 +119,15 @@ describe('ConditionBasedOsDetector', () => {
     });
 
     describe('user agent checks', () => {
-      const testScenarios: ReadonlyArray<{
+      interface UserAgentTestScenario {
         readonly description: string;
         readonly buildEnvironment: (environment: BrowserEnvironmentStub) => BrowserEnvironmentStub;
         readonly buildCondition: (condition: BrowserConditionStub) => BrowserConditionStub;
         readonly detects: boolean;
-      }> = [
+      }
+      const testScenarios: ReadonlyArray<UserAgentTestScenario> = [
         ...getAbsentStringTestCases({ excludeUndefined: true, excludeNull: true })
-          .map((testCase) => ({
+          .map((testCase): UserAgentTestScenario => ({
             description: `does not detect when user agent is empty (${testCase.valueName})`,
             buildEnvironment: (environment) => environment.withUserAgent(testCase.absentValue),
             buildCondition: (condition) => condition,

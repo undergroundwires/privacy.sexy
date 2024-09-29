@@ -39,7 +39,7 @@
           :tree-root="treeRoot"
           :rendering-strategy="renderingStrategy"
         >
-          <template #node-content="slotProps">
+          <template #node-content="slotProps: NodeMetadata">
             <slot name="node-content" v-bind="slotProps" />
           </template>
         </HierarchicalTreeNode>
@@ -55,8 +55,9 @@ import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { useNodeState } from './UseNodeState';
 import LeafTreeNode from './LeafTreeNode.vue';
 import InteractableNode from './InteractableNode.vue';
+import type { NodeMetadata } from '../../NodeContent/NodeMetadata';
 import type { TreeRoot } from '../TreeRoot/TreeRoot';
-import type { TreeNode } from './TreeNode';
+import type { TreeNode, TreeNodeId } from './TreeNode';
 import type { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import type { PropType } from 'vue';
 
@@ -69,7 +70,7 @@ export default defineComponent({
   },
   props: {
     nodeId: {
-      type: String,
+      type: String as PropType<TreeNodeId>,
       required: true,
     },
     treeRoot: {
@@ -107,6 +108,7 @@ export default defineComponent({
     );
 
     return {
+      NodeMetadata: Object as PropType<NodeMetadata>,
       renderedNodeIds,
       isExpanded,
       toggleExpand,
@@ -133,13 +135,13 @@ export default defineComponent({
 .expansible-node {
   display: flex;
   flex-direction: row;
+
+  align-items: center;
+
   .leaf-node {
     flex: 1; // Expands the node horizontally, allowing its content to utilize full width for child item alignment, such as icons and text.
     overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
   }
-
-  flex-direction: row;
-  align-items: center;
 
   .expand-collapse-caret {
     $caret-size: 24px;

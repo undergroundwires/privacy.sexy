@@ -120,17 +120,15 @@ function getArrowPositionStyles(
   coordinations: Partial<Coords>,
   placement: Placement,
 ): CSSProperties {
-  const style: CSSProperties = {};
-  style.position = 'absolute';
-  const { x, y } = coordinations;
-  if (x) {
-    style.left = `${x}px`;
-  } else if (y) { // either X or Y is calculated
-    style.top = `${y}px`;
-  }
+  const { x, y } = coordinations; // either X or Y is calculated
   const oppositeSide = getCounterpartBoxOffsetProperty(placement);
-  style[oppositeSide.toString()] = `-${ARROW_SIZE_IN_PX}px`;
-  return style;
+  const newStyle: CSSProperties = {
+    [oppositeSide]: `-${ARROW_SIZE_IN_PX}px`,
+    position: 'absolute',
+    left: x ? `${x}px` : undefined,
+    top: y ? `${y}px` : undefined,
+  };
+  return newStyle;
 }
 
 function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSProperties {
@@ -220,9 +218,6 @@ $color-tooltip-background: $color-primary-darkest;
 }
 
 .tooltip__overlay {
-  @include set-visibility(false);
-  @include fixed-fullscreen;
-
   /*
     The z-index is set for both visible and invisible states to ensure it maintains its stacking order
     above other elements during transitions. This approach prevents the tooltip from falling behind other
@@ -235,6 +230,9 @@ $color-tooltip-background: $color-primary-darkest;
     This prevents unintentional layout issues or overflow.
   */
   white-space: normal;
+
+  @include set-visibility(false);
+  @include fixed-fullscreen;
 }
 
 .tooltip__trigger {

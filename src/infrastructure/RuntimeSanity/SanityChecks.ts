@@ -1,16 +1,23 @@
 import { EnvironmentVariablesValidator } from './Validators/EnvironmentVariablesValidator';
-import type { ISanityCheckOptions } from './Common/ISanityCheckOptions';
-import type { ISanityValidator } from './Common/ISanityValidator';
+import type { SanityCheckOptions } from './Common/SanityCheckOptions';
+import type { SanityValidator } from './Common/SanityValidator';
 
-const DefaultSanityValidators: ISanityValidator[] = [
+const DefaultSanityValidators: SanityValidator[] = [
   new EnvironmentVariablesValidator(),
 ];
 
+export interface RuntimeSanityValidator {
+  (
+    options: SanityCheckOptions,
+    validators?: readonly SanityValidator[],
+  ): void;
+}
+
 /* Helps to fail-fast on errors */
-export function validateRuntimeSanity(
-  options: ISanityCheckOptions,
-  validators: readonly ISanityValidator[] = DefaultSanityValidators,
-): void {
+export const validateRuntimeSanity: RuntimeSanityValidator = (
+  options: SanityCheckOptions,
+  validators: readonly SanityValidator[] = DefaultSanityValidators,
+) => {
   if (!validators.length) {
     throw new Error('missing validators');
   }
@@ -26,9 +33,9 @@ export function validateRuntimeSanity(
   if (errorMessages.length > 0) {
     throw new Error(`Sanity check failed.\n${errorMessages.join('\n---\n')}`);
   }
-}
+};
 
-function getErrorMessage(validator: ISanityValidator): string | undefined {
+function getErrorMessage(validator: SanityValidator): string | undefined {
   const errorMessages = [...validator.collectErrors()];
   if (!errorMessages.length) {
     return undefined;

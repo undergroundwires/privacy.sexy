@@ -6,7 +6,7 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { getCategoryStub, CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
-import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
+import { CategoryCollectionContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionContextStub';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import type { CollectionData, ScriptingDefinitionData, FunctionData } from '@/application/collections/';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
@@ -14,12 +14,12 @@ import type { NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator } from
 import type { EnumParser } from '@/application/Common/Enum';
 import type { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
-import type { CategoryCollectionSpecificUtilitiesFactory } from '@/application/Parser/Executable/CategoryCollectionSpecificUtilities';
+import type { CategoryCollectionContextFactory } from '@/application/Parser/Executable/CategoryCollectionContext';
 import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';
 import { CategoryParserStub } from '@tests/unit/shared/Stubs/CategoryParserStub';
 import { createCategoryCollectionFactorySpy } from '@tests/unit/shared/Stubs/CategoryCollectionFactoryStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 
 describe('CategoryCollectionParser', () => {
   describe('parseCategoryCollection', () => {
@@ -28,7 +28,7 @@ describe('CategoryCollectionParser', () => {
       const data = new CollectionDataStub();
       const expectedAssertion: ObjectAssertion<CollectionData> = {
         value: data,
-        valueName: 'collection',
+        valueName: 'Collection',
         allowedProperties: [
           'os', 'scripting', 'actions', 'functions',
         ],
@@ -48,7 +48,7 @@ describe('CategoryCollectionParser', () => {
         const actions = [getCategoryStub('test1'), getCategoryStub('test2')];
         const expectedAssertion: NonEmptyCollectionAssertion = {
           value: actions,
-          valueName: '"actions" in collection',
+          valueName: '\'actions\' in collection',
         };
         const validator = new TypeValidatorStub();
         const context = new TestContext()
@@ -66,7 +66,10 @@ describe('CategoryCollectionParser', () => {
           getInitParameters,
         } = createCategoryCollectionFactorySpy();
         const actionsData = [getCategoryStub('test1'), getCategoryStub('test2')];
-        const expectedActions = [new CategoryStub(1), new CategoryStub(2)];
+        const expectedActions = [
+          new CategoryStub('expected-action-1'),
+          new CategoryStub('expected-action-2'),
+        ];
         const categoryParserStub = new CategoryParserStub()
           .withConfiguredParseResult(actionsData[0], expectedActions[0])
           .withConfiguredParseResult(actionsData[1], expectedActions[1]);
@@ -83,12 +86,12 @@ describe('CategoryCollectionParser', () => {
         expect(actualActions).to.have.lengthOf(expectedActions.length);
         expect(actualActions).to.have.members(expectedActions);
       });
-      describe('utilities', () => {
-        it('parses actions with correct utilities', () => {
+      describe('context', () => {
+        it('parses actions with correct context', () => {
           // arrange
-          const expectedUtilities = new CategoryCollectionSpecificUtilitiesStub();
-          const utilitiesFactory: CategoryCollectionSpecificUtilitiesFactory = () => {
-            return expectedUtilities;
+          const expectedContext = new CategoryCollectionContextStub();
+          const contextFactory: CategoryCollectionContextFactory = () => {
+            return expectedContext;
           };
           const actionsData = [getCategoryStub('test1'), getCategoryStub('test2')];
           const collectionData = new CollectionDataStub()
@@ -96,53 +99,54 @@ describe('CategoryCollectionParser', () => {
           const categoryParserStub = new CategoryParserStub();
           const context = new TestContext()
             .withData(collectionData)
-            .withCollectionUtilitiesFactory(utilitiesFactory)
+            .withCollectionContextFactory(contextFactory)
             .withCategoryParser(categoryParserStub.get());
           // act
           context.parseCategoryCollection();
           // assert
-          const usedUtilities = categoryParserStub.getUsedUtilities();
-          expect(usedUtilities).to.have.lengthOf(2);
-          expect(usedUtilities[0]).to.equal(expectedUtilities);
-          expect(usedUtilities[1]).to.equal(expectedUtilities);
+          const actualContext = categoryParserStub.getUsedContext();
+          expect(actualContext).to.have.lengthOf(2);
+          expect(actualContext[0]).to.equal(expectedContext);
+          expect(actualContext[1]).to.equal(expectedContext);
         });
         describe('construction', () => {
-          it('creates utilities with correct functions data', () => {
+          it('creates with correct functions data', () => {
             // arrange
             const expectedFunctionsData = [createFunctionDataWithCode()];
             const collectionData = new CollectionDataStub()
               .withFunctions(expectedFunctionsData);
             let actualFunctionsData: ReadonlyArray<FunctionData> | undefined;
-            const utilitiesFactory: CategoryCollectionSpecificUtilitiesFactory = (data) => {
+            const contextFactory: CategoryCollectionContextFactory = (data) => {
               actualFunctionsData = data;
-              return new CategoryCollectionSpecificUtilitiesStub();
+              return new CategoryCollectionContextStub();
             };
             const context = new TestContext()
               .withData(collectionData)
-              .withCollectionUtilitiesFactory(utilitiesFactory);
+              .withCollectionContextFactory(contextFactory);
             // act
             context.parseCategoryCollection();
             // assert
             expect(actualFunctionsData).to.equal(expectedFunctionsData);
           });
-          it('creates utilities with correct scripting definition', () => {
+          it('creates with correct language', () => {
             // arrange
-            const expectedScripting = new ScriptingDefinitionStub();
+            const expectedLanguage = ScriptingLanguage.batchfile;
             const scriptingDefinitionParser: ScriptingDefinitionParser = () => {
-              return expectedScripting;
+              return new ScriptingDefinitionStub()
+                .withLanguage(expectedLanguage);
             };
-            let actualScripting: IScriptingDefinition | undefined;
-            const utilitiesFactory: CategoryCollectionSpecificUtilitiesFactory = (_, scripting) => {
-              actualScripting = scripting;
-              return new CategoryCollectionSpecificUtilitiesStub();
+            let actualLanguage: ScriptingLanguage | undefined;
+            const contextFactory: CategoryCollectionContextFactory = (_, language) => {
+              actualLanguage = language;
+              return new CategoryCollectionContextStub();
             };
             const context = new TestContext()
-              .withCollectionUtilitiesFactory(utilitiesFactory)
+              .withCollectionContextFactory(contextFactory)
               .withScriptDefinitionParser(scriptingDefinitionParser);
             // act
             context.parseCategoryCollection();
             // assert
-            expect(actualScripting).to.equal(expectedScripting);
+            expect(actualLanguage).to.equal(expectedLanguage);
           });
         });
       });
@@ -242,9 +246,9 @@ class TestContext {
   private osParser: EnumParser<OperatingSystem> = new EnumParserStub<OperatingSystem>()
     .setupDefaultValue(OperatingSystem.Android);
 
-  private collectionUtilitiesFactory
-  : CategoryCollectionSpecificUtilitiesFactory = () => {
-      return new CategoryCollectionSpecificUtilitiesStub();
+  private collectionContextFactory
+  : CategoryCollectionContextFactory = () => {
+      return new CategoryCollectionContextStub();
     };
 
   private scriptDefinitionParser: ScriptingDefinitionParser = () => new ScriptingDefinitionStub();
@@ -289,10 +293,10 @@ class TestContext {
     return this;
   }
 
-  public withCollectionUtilitiesFactory(
-    collectionUtilitiesFactory: CategoryCollectionSpecificUtilitiesFactory,
+  public withCollectionContextFactory(
+    collectionContextFactory: CategoryCollectionContextFactory,
   ): this {
-    this.collectionUtilitiesFactory = collectionUtilitiesFactory;
+    this.collectionContextFactory = collectionContextFactory;
     return this;
   }
 
@@ -304,7 +308,7 @@ class TestContext {
         osParser: this.osParser,
         validator: this.validator,
         parseScriptingDefinition: this.scriptDefinitionParser,
-        createUtilities: this.collectionUtilitiesFactory,
+        createContext: this.collectionContextFactory,
         parseCategory: this.categoryParser,
         createCategoryCollection: this.categoryCollectionFactory,
       },

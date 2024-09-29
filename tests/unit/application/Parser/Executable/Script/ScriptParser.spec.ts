@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { ScriptData, CallScriptData, CodeScriptData } from '@/application/collections/';
-import { parseScript, type ScriptFactory } from '@/application/Parser/Executable/Script/ScriptParser';
+import { parseScript } from '@/application/Parser/Executable/Script/ScriptParser';
 import { type DocsParser } from '@/application/Parser/Executable/DocumentationParser';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
@@ -8,12 +8,9 @@ import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub'
 import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
-import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import type { EnumParser } from '@/application/Common/Enum';
-import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
-import { NoDuplicatedLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoDuplicatedLines';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
-import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
+import type { CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { ErrorWrapperStub } from '@tests/unit/shared/Stubs/ErrorWrapperStub';
 import type { ExecutableValidatorFactory } from '@/application/Parser/Executable/Validation/ExecutableValidator';
@@ -26,56 +23,212 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { createScriptFactorySpy } from '@tests/unit/shared/Stubs/ScriptFactoryStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
-import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
-import type { CategoryCollectionSpecificUtilities } from '@/application/Parser/Executable/CategoryCollectionSpecificUtilities';
+import { CategoryCollectionContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionContextStub';
+import type { CategoryCollectionContext } from '@/application/Parser/Executable/CategoryCollectionContext';
 import type { ObjectAssertion } from '@/application/Parser/Common/TypeValidator';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ScriptFactory } from '@/domain/Executables/Script/ScriptFactory';
+import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { itAsserts, itValidatesType, itValidatesName } from '../Validation/ExecutableValidationTester';
 import { generateDataValidationTestScenarios } from '../Validation/DataValidationTestScenarioGenerator';
 
 describe('ScriptParser', () => {
   describe('parseScript', () => {
-    it('parses name correctly', () => {
-      // arrange
-      const expected = 'test-expected-name';
-      const scriptData = createScriptDataWithCode()
-        .withName(expected);
-      const { scriptFactorySpy, getInitParameters } = createScriptFactorySpy();
-      // act
-      const actualScript = new TestContext()
-        .withData(scriptData)
-        .withScriptFactory(scriptFactorySpy)
-        .parseScript();
-      // assert
-      const actualName = getInitParameters(actualScript)?.name;
-      expect(actualName).to.equal(expected);
+    describe('property validation', () => {
+      describe('validates object', () => {
+        // arrange
+        const expectedScript = createScriptDataWithCall();
+        const expectedContext: ScriptErrorContext = {
+          type: ExecutableType.Script,
+          self: expectedScript,
+        };
+        const expectedAssertion: ObjectAssertion<CallScriptData & CodeScriptData> = {
+          value: expectedScript,
+          valueName: expectedScript.name,
+          allowedProperties: [
+            'name', 'recommend', 'code', 'revertCode', 'call', 'docs',
+          ],
+        };
+        itValidatesType(
+          (validatorFactory) => {
+            // act
+            new TestContext()
+              .withData(expectedScript)
+              .withValidatorFactory(validatorFactory)
+              .parseScript();
+            // assert
+            return {
+              expectedDataToValidate: expectedScript,
+              expectedErrorContext: expectedContext,
+              assertValidation: (validator) => validator.assertObject(expectedAssertion),
+            };
+          },
+        );
+      });
+      describe('validates union type', () => {
+        // arrange
+        const testScenarios = generateDataValidationTestScenarios<ScriptData>(
+          {
+            assertErrorMessage: 'Neither "call" or "code" is defined.',
+            expectFail: [{
+              description: 'with no call or code',
+              data: createScriptDataWithoutCallOrCodes(),
+            }],
+            expectPass: [
+              {
+                description: 'with call',
+                data: createScriptDataWithCall(),
+              },
+              {
+                description: 'with code',
+                data: createScriptDataWithCode(),
+              },
+            ],
+          },
+          {
+            assertErrorMessage: 'Both "call" and "revertCode" are defined.',
+            expectFail: [{
+              description: 'with both call and revertCode',
+              data: createScriptDataWithCall()
+                .withRevertCode('revert-code'),
+            }],
+            expectPass: [
+              {
+                description: 'with call, without revertCode',
+                data: createScriptDataWithCall()
+                  .withRevertCode(undefined),
+              },
+              {
+                description: 'with revertCode, without call',
+                data: createScriptDataWithCode()
+                  .withRevertCode('revert code'),
+              },
+            ],
+          },
+          {
+            assertErrorMessage: 'Both "call" and "code" are defined.',
+            expectFail: [{
+              description: 'with both call and code',
+              data: createScriptDataWithCall()
+                .withCode('code'),
+            }],
+            expectPass: [
+              {
+                description: 'with call, without code',
+                data: createScriptDataWithCall()
+                  .withCode(''),
+              },
+              {
+                description: 'with code, without call',
+                data: createScriptDataWithCode()
+                  .withCode('code'),
+              },
+            ],
+          },
+        );
+        testScenarios.forEach(({
+          description, expectedPass, data: scriptData, expectedMessage,
+        }) => {
+          describe(description, () => {
+            itAsserts({
+              expectedConditionResult: expectedPass,
+              test: (validatorFactory) => {
+                const expectedContext: ScriptErrorContext = {
+                  type: ExecutableType.Script,
+                  self: scriptData,
+                };
+                // act
+                new TestContext()
+                  .withData(scriptData)
+                  .withValidatorFactory(validatorFactory)
+                  .parseScript();
+                // assert
+                expectExists(expectedMessage);
+                return {
+                  expectedErrorMessage: expectedMessage,
+                  expectedErrorContext: expectedContext,
+                };
+              },
+            });
+          });
+        });
+      });
     });
-    it('parses docs correctly', () => {
-      // arrange
-      const expectedDocs = ['https://expected-doc1.com', 'https://expected-doc2.com'];
-      const { scriptFactorySpy, getInitParameters } = createScriptFactorySpy();
-      const scriptData = createScriptDataWithCode()
-        .withDocs(expectedDocs);
-      const docsParser: DocsParser = (data) => data.docs as typeof expectedDocs;
-      // act
-      const actualScript = new TestContext()
-        .withData(scriptData)
-        .withScriptFactory(scriptFactorySpy)
-        .withDocsParser(docsParser)
-        .parseScript();
-      // assert
-      const actualDocs = getInitParameters(actualScript)?.docs;
-      expect(actualDocs).to.deep.equal(expectedDocs);
+    describe('id', () => {
+      it('creates ID correctly', () => {
+        // arrange
+        const expectedId: ExecutableId = 'expected-id';
+        const scriptData = createScriptDataWithCode()
+          .withName(expectedId);
+        const { scriptFactorySpy, getInitParameters } = createScriptFactorySpy();
+        // act
+        const actualScript = new TestContext()
+          .withData(scriptData)
+          .withScriptFactory(scriptFactorySpy)
+          .parseScript();
+        // assert
+        const actualId = getInitParameters(actualScript)?.executableId;
+        expect(actualId).to.equal(expectedId);
+      });
     });
-    it('gets script from the factory', () => {
-      // arrange
-      const expectedScript = new ScriptStub('expected-script');
-      const scriptFactory: ScriptFactory = () => expectedScript;
-      // act
-      const actualScript = new TestContext()
-        .withScriptFactory(scriptFactory)
-        .parseScript();
-      // assert
-      expect(actualScript).to.equal(expectedScript);
+    describe('name', () => {
+      it('parses name correctly', () => {
+        // arrange
+        const expected = 'test-expected-name';
+        const scriptData = createScriptDataWithCode()
+          .withName(expected);
+        const { scriptFactorySpy, getInitParameters } = createScriptFactorySpy();
+        // act
+        const actualScript = new TestContext()
+          .withData(scriptData)
+          .withScriptFactory(scriptFactorySpy)
+          .parseScript();
+        // assert
+        const actualName = getInitParameters(actualScript)?.name;
+        expect(actualName).to.equal(expected);
+      });
+      describe('validates name', () => {
+        // arrange
+        const expectedName = 'expected script name to be validated';
+        const script = createScriptDataWithCall()
+          .withName(expectedName);
+        const expectedContext: ScriptErrorContext = {
+          type: ExecutableType.Script,
+          self: script,
+        };
+        itValidatesName((validatorFactory) => {
+          // act
+          new TestContext()
+            .withData(script)
+            .withValidatorFactory(validatorFactory)
+            .parseScript();
+          // assert
+          return {
+            expectedNameToValidate: expectedName,
+            expectedErrorContext: expectedContext,
+          };
+        });
+      });
+    });
+    describe('docs', () => {
+      it('parses docs correctly', () => {
+        // arrange
+        const expectedDocs = ['https://expected-doc1.com', 'https://expected-doc2.com'];
+        const { scriptFactorySpy, getInitParameters } = createScriptFactorySpy();
+        const scriptData = createScriptDataWithCode()
+          .withDocs(expectedDocs);
+        const docsParser: DocsParser = (data) => data.docs as typeof expectedDocs;
+        // act
+        const actualScript = new TestContext()
+          .withData(scriptData)
+          .withScriptFactory(scriptFactorySpy)
+          .withDocsParser(docsParser)
+          .parseScript();
+        // assert
+        const actualDocs = getInitParameters(actualScript)?.docs;
+        expect(actualDocs).to.deep.equal(expectedDocs);
+      });
     });
     describe('level', () => {
       describe('generated `undefined` level if given absent value', () => {
@@ -176,13 +329,13 @@ describe('ScriptParser', () => {
           const script = createScriptDataWithCode();
           const compiler = new ScriptCompilerStub()
             .withCompileAbility(script, expectedCode);
-          const collectionUtilities = new CategoryCollectionSpecificUtilitiesStub()
+          const collectionContext = new CategoryCollectionContextStub()
             .withCompiler(compiler);
           const { scriptFactorySpy, getInitParameters } = createScriptFactorySpy();
           // act
           const actualScript = new TestContext()
             .withData(script)
-            .withCollectionUtilities(collectionUtilities)
+            .withCollectionContext(collectionContext)
             .withScriptFactory(scriptFactorySpy)
             .parseScript();
           // assert
@@ -190,33 +343,12 @@ describe('ScriptParser', () => {
           expect(actualCode).to.equal(expectedCode);
         });
       });
-      describe('syntax', () => {
-        it('set from the context', () => { // tests through script validation logic
-          // arrange
-          const commentDelimiter = 'should not throw';
-          const duplicatedCode = `${commentDelimiter} duplicate-line\n${commentDelimiter} duplicate-line`;
-          const collectionUtilities = new CategoryCollectionSpecificUtilitiesStub()
-            .withSyntax(new LanguageSyntaxStub().withCommentDelimiters(commentDelimiter));
-          const script = createScriptDataWithoutCallOrCodes()
-            .withCode(duplicatedCode);
-          // act
-          const act = () => new TestContext()
-            .withData(script)
-            .withCollectionUtilities(collectionUtilities);
-          // assert
-          expect(act).to.not.throw();
-        });
-      });
       describe('validates a expected', () => {
         it('validates script with inline code (that is not compiled)', () => {
           // arrange
-          const expectedRules = [
-            NoEmptyLines,
-            NoDuplicatedLines,
-          ];
           const expectedCode = 'expected code to be validated';
           const expectedRevertCode = 'expected revert code to be validated';
-          const expectedCodeCalls = [
+          const expectedCodeCalls: readonly string[] = [
             expectedCode,
             expectedRevertCode,
           ];
@@ -229,205 +361,96 @@ describe('ScriptParser', () => {
           // act
           new TestContext()
             .withScriptCodeFactory(scriptCodeFactory)
-            .withCodeValidator(validator)
+            .withCodeValidator(validator.get())
             .parseScript();
           // assert
-          validator.assertHistory({
-            validatedCodes: expectedCodeCalls,
-            rules: expectedRules,
-          });
+          validator.assertValidatedCodes(expectedCodeCalls);
         });
         it('does not validate compiled code', () => {
           // arrange
-          const expectedRules = [];
-          const expectedCodeCalls = [];
           const validator = new CodeValidatorStub();
           const script = createScriptDataWithCall();
           const compiler = new ScriptCompilerStub()
             .withCompileAbility(script, new ScriptCodeStub());
-          const collectionUtilities = new CategoryCollectionSpecificUtilitiesStub()
+          const collectionContext = new CategoryCollectionContextStub()
             .withCompiler(compiler);
           // act
           new TestContext()
             .withData(script)
-            .withCodeValidator(validator)
-            .withCollectionUtilities(collectionUtilities)
+            .withCodeValidator(validator.get())
+            .withCollectionContext(collectionContext)
             .parseScript();
           // assert
-          validator.assertHistory({
-            validatedCodes: expectedCodeCalls,
-            rules: expectedRules,
-          });
+          const calls = validator.callHistory;
+          expect(calls).to.have.lengthOf(0);
         });
-      });
-    });
-    describe('validation', () => {
-      describe('validates for name', () => {
-        // arrange
-        const expectedName = 'expected script name to be validated';
-        const script = createScriptDataWithCall()
-          .withName(expectedName);
-        const expectedContext: ScriptErrorContext = {
-          type: ExecutableType.Script,
-          self: script,
-        };
-        itValidatesName((validatorFactory) => {
+        it('validates with correct rules', () => {
+          const expectedRules: readonly CodeValidationRule[] = [
+            CodeValidationRule.NoEmptyLines,
+            CodeValidationRule.NoDuplicatedLines,
+            CodeValidationRule.NoTooLongLines,
+          ];
+          const validator = new CodeValidatorStub();
           // act
           new TestContext()
-            .withData(script)
-            .withValidatorFactory(validatorFactory)
+            .withCodeValidator(validator.get())
             .parseScript();
           // assert
-          return {
-            expectedNameToValidate: expectedName,
-            expectedErrorContext: expectedContext,
-          };
+          validator.assertValidatedRules(expectedRules);
         });
-      });
-      describe('validates for defined data', () => {
-        // arrange
-        const expectedScript = createScriptDataWithCall();
-        const expectedContext: ScriptErrorContext = {
-          type: ExecutableType.Script,
-          self: expectedScript,
-        };
-        const expectedAssertion: ObjectAssertion<CallScriptData & CodeScriptData> = {
-          value: expectedScript,
-          valueName: expectedScript.name,
-          allowedProperties: [
-            'name', 'recommend', 'code', 'revertCode', 'call', 'docs',
-          ],
-        };
-        itValidatesType(
-          (validatorFactory) => {
-            // act
-            new TestContext()
-              .withData(expectedScript)
-              .withValidatorFactory(validatorFactory)
-              .parseScript();
-            // assert
-            return {
-              expectedDataToValidate: expectedScript,
-              expectedErrorContext: expectedContext,
-              assertValidation: (validator) => validator.assertObject(expectedAssertion),
-            };
-          },
-        );
-      });
-      describe('validates data', () => {
-        // arrange
-        const testScenarios = generateDataValidationTestScenarios<ScriptData>(
-          {
-            assertErrorMessage: 'Neither "call" or "code" is defined.',
-            expectFail: [{
-              description: 'with no call or code',
-              data: createScriptDataWithoutCallOrCodes(),
-            }],
-            expectPass: [
-              {
-                description: 'with call',
-                data: createScriptDataWithCall(),
-              },
-              {
-                description: 'with code',
-                data: createScriptDataWithCode(),
-              },
-            ],
-          },
-          {
-            assertErrorMessage: 'Both "call" and "revertCode" are defined.',
-            expectFail: [{
-              description: 'with both call and revertCode',
-              data: createScriptDataWithCall()
-                .withRevertCode('revert-code'),
-            }],
-            expectPass: [
-              {
-                description: 'with call, without revertCode',
-                data: createScriptDataWithCall()
-                  .withRevertCode(undefined),
-              },
-              {
-                description: 'with revertCode, without call',
-                data: createScriptDataWithCode()
-                  .withRevertCode('revert code'),
-              },
-            ],
-          },
-          {
-            assertErrorMessage: 'Both "call" and "code" are defined.',
-            expectFail: [{
-              description: 'with both call and code',
-              data: createScriptDataWithCall()
-                .withCode('code'),
-            }],
-            expectPass: [
-              {
-                description: 'with call, without code',
-                data: createScriptDataWithCall()
-                  .withCode(''),
-              },
-              {
-                description: 'with code, without call',
-                data: createScriptDataWithCode()
-                  .withCode('code'),
-              },
-            ],
-          },
-        );
-        testScenarios.forEach(({
-          description, expectedPass, data: scriptData, expectedMessage,
-        }) => {
-          describe(description, () => {
-            itAsserts({
-              expectedConditionResult: expectedPass,
-              test: (validatorFactory) => {
-                const expectedContext: ScriptErrorContext = {
-                  type: ExecutableType.Script,
-                  self: scriptData,
-                };
-                // act
-                new TestContext()
-                  .withData(scriptData)
-                  .withValidatorFactory(validatorFactory)
-                  .parseScript();
-                // assert
-                expectExists(expectedMessage);
-                return {
-                  expectedErrorMessage: expectedMessage,
-                  expectedErrorContext: expectedContext,
-                };
-              },
-            });
-          });
+        it('validates with correct language', () => {
+          const expectedLanguage: ScriptingLanguage = ScriptingLanguage.batchfile;
+          const validator = new CodeValidatorStub();
+          const collectionContext = new CategoryCollectionContextStub()
+            .withLanguage(expectedLanguage);
+          // act
+          new TestContext()
+            .withCodeValidator(validator.get())
+            .withCollectionContext(collectionContext)
+            .parseScript();
+          // assert
+          validator.assertValidatedLanguage(expectedLanguage);
         });
       });
     });
-    describe('rethrows exception if script factory fails', () => {
-      // arrange
-      const givenData = createScriptDataWithCode();
-      const expectedContextMessage = 'Failed to parse script.';
-      const expectedError = new Error();
-      const validatorFactory: ExecutableValidatorFactory = () => {
-        const validatorStub = new ExecutableValidatorStub();
-        validatorStub.createContextualErrorMessage = (message) => message;
-        return validatorStub;
-      };
-      // act & assert
-      itThrowsContextualError({
-        throwingAction: (wrapError) => {
-          const factoryMock: ScriptFactory = () => {
-            throw expectedError;
-          };
-          new TestContext()
-            .withScriptFactory(factoryMock)
-            .withErrorWrapper(wrapError)
-            .withValidatorFactory(validatorFactory)
-            .withData(givenData)
-            .parseScript();
-        },
-        expectedWrappedError: expectedError,
-        expectedContextMessage,
+    describe('script creation', () => {
+      it('creates script from the factory', () => {
+        // arrange
+        const expectedScript = new ScriptStub('expected-script');
+        const scriptFactory: ScriptFactory = () => expectedScript;
+        // act
+        const actualScript = new TestContext()
+          .withScriptFactory(scriptFactory)
+          .parseScript();
+        // assert
+        expect(actualScript).to.equal(expectedScript);
+      });
+      describe('rethrows exception if script factory fails', () => {
+        // arrange
+        const givenData = createScriptDataWithCode();
+        const expectedContextMessage = 'Failed to parse script.';
+        const expectedError = new Error();
+        const validatorFactory: ExecutableValidatorFactory = () => {
+          const validatorStub = new ExecutableValidatorStub();
+          validatorStub.createContextualErrorMessage = (message) => message;
+          return validatorStub;
+        };
+        // act & assert
+        itThrowsContextualError({
+          throwingAction: (wrapError) => {
+            const factoryMock: ScriptFactory = () => {
+              throw expectedError;
+            };
+            new TestContext()
+              .withScriptFactory(factoryMock)
+              .withErrorWrapper(wrapError)
+              .withValidatorFactory(validatorFactory)
+              .withData(givenData)
+              .parseScript();
+          },
+          expectedWrappedError: expectedError,
+          expectedContextMessage,
+        });
       });
     });
   });
@@ -436,15 +459,15 @@ describe('ScriptParser', () => {
 class TestContext {
   private data: ScriptData = createScriptDataWithCode();
 
-  private collectionUtilities
-  : CategoryCollectionSpecificUtilities = new CategoryCollectionSpecificUtilitiesStub();
+  private collectionContext
+  : CategoryCollectionContext = new CategoryCollectionContextStub();
 
   private levelParser: EnumParser<RecommendationLevel> = new EnumParserStub<RecommendationLevel>()
     .setupDefaultValue(RecommendationLevel.Standard);
 
   private scriptFactory: ScriptFactory = createScriptFactorySpy().scriptFactorySpy;
 
-  private codeValidator: ICodeValidator = new CodeValidatorStub();
+  private codeValidator: CodeValidator = new CodeValidatorStub().get();
 
   private errorWrapper: ErrorWithContextWrapper = new ErrorWrapperStub().get();
 
@@ -456,7 +479,7 @@ class TestContext {
     defaultCodePrefix: TestContext.name,
   });
 
-  public withCodeValidator(codeValidator: ICodeValidator): this {
+  public withCodeValidator(codeValidator: CodeValidator): this {
     this.codeValidator = codeValidator;
     return this;
   }
@@ -466,10 +489,10 @@ class TestContext {
     return this;
   }
 
-  public withCollectionUtilities(
-    collectionUtilities: CategoryCollectionSpecificUtilities,
+  public withCollectionContext(
+    collectionContext: CategoryCollectionContext,
   ): this {
-    this.collectionUtilities = collectionUtilities;
+    this.collectionContext = collectionContext;
     return this;
   }
 
@@ -506,7 +529,7 @@ class TestContext {
   public parseScript(): ReturnType<typeof parseScript> {
     return parseScript(
       this.data,
-      this.collectionUtilities,
+      this.collectionContext,
       {
         levelParser: this.levelParser,
         createScript: this.scriptFactory,

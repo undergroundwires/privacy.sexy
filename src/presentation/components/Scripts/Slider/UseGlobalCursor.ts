@@ -1,9 +1,11 @@
 import { watch, type Ref, onUnmounted } from 'vue';
+import type { LifecycleHook } from '../../Shared/Hooks/Common/LifecycleHook';
 
 export function useGlobalCursor(
   isActive: Readonly<Ref<boolean>>,
   cursorCssValue: string,
   documentAccessor: CursorStyleDomModifier = new GlobalDocumentCursorStyleDomModifier(),
+  onTeardown: LifecycleHook = onUnmounted,
 ) {
   const cursorStyle = createCursorStyle(cursorCssValue, documentAccessor);
 
@@ -15,7 +17,7 @@ export function useGlobalCursor(
     }
   });
 
-  onUnmounted(() => {
+  onTeardown(() => {
     documentAccessor.removeElement(cursorStyle);
   });
 }

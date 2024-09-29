@@ -1,4 +1,4 @@
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { ScriptToCategorySelectionMapper } from './Category/ScriptToCategorySelectionMapper';
 import { DebouncedScriptSelection } from './Script/DebouncedScriptSelection';
 import type { CategorySelection } from './Category/CategorySelection';

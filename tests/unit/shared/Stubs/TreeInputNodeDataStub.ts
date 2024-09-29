@@ -1,7 +1,8 @@
 import type { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
+import type { TreeNodeId } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 
 export class TreeInputNodeDataStub implements TreeInputNodeData {
-  public id = 'stub-id';
+  public id: TreeNodeId = 'stub-id';
 
   public children?: readonly TreeInputNodeData[];
 
@@ -14,7 +15,7 @@ export class TreeInputNodeDataStub implements TreeInputNodeData {
     return this;
   }
 
-  public withId(id: string): this {
+  public withId(id: TreeNodeId): this {
     this.id = id;
     return this;
   }

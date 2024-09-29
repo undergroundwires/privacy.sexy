@@ -4,7 +4,7 @@ import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
 import { Version } from '@/domain/Version';
 import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { UpdateProgressBar } from '../UpdateProgressBar';
+import { UpdateProgressBar } from '../ProgressBar/UpdateProgressBar';
 import {
   promptForManualUpdate, promptInstallerOpenError,
   promptIntegrityCheckFailure, promptDownloadError,
@@ -100,7 +100,7 @@ async function withProgressBar(
 ) {
   const progressBar = new UpdateProgressBar();
   await action(progressBar);
-  progressBar.close();
+  progressBar.closeIfOpen();
 }
 
 async function isIntegrityPreserved(

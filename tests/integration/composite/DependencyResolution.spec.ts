@@ -1,10 +1,10 @@
 import { it, describe, expect } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
-import { defineComponent, inject } from 'vue';
+import { inject } from 'vue';
 import { type InjectionKeySelector, InjectionKeys, injectKey } from '@/presentation/injectionSymbols';
 import { provideDependencies } from '@/presentation/bootstrapping/DependencyProvider';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import type { IApplicationContext } from '@/application/Context/IApplicationContext';
+import { executeInComponentSetupContext } from '@tests/shared/Vue/ExecuteInComponentSetupContext';
 
 describe('DependencyResolution', () => {
   describe('all dependencies can be injected', async () => {
@@ -16,7 +16,7 @@ describe('DependencyResolution', () => {
         // act
         const resolvedDependency = resolve(() => key, dependencies);
         // assert
-        expect(resolvedDependency).to.toBeDefined();
+        expect(resolvedDependency).toBeDefined();
       });
     });
   });
@@ -40,13 +40,14 @@ function resolve<T>(
   providedKeys: ProvidedKeys,
 ): T | undefined {
   let injectedDependency: T | undefined;
-  shallowMount(defineComponent({
-    setup() {
+  executeInComponentSetupContext({
+    setupCallback: () => {
       injectedDependency = injectKey(selector);
     },
-  }), {
-    global: {
-      provide: providedKeys,
+    mountOptions: {
+      global: {
+        provide: providedKeys,
+      },
     },
   });
   return injectedDependency;

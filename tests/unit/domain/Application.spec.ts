@@ -3,7 +3,7 @@ import { Application } from '@/domain/Application';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { getAbsentCollectionTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('Application', () => {

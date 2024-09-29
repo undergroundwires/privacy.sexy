@@ -1,6 +1,6 @@
 import { InlinePowerShell } from './PipeDefinitions/InlinePowerShell';
 import { EscapeDoubleQuotes } from './PipeDefinitions/EscapeDoubleQuotes';
-import type { IPipe } from './IPipe';
+import type { Pipe } from './Pipe';
 
 const RegisteredPipes = [
   new EscapeDoubleQuotes(),
@@ -8,19 +8,19 @@ const RegisteredPipes = [
 ];
 
 export interface IPipeFactory {
-  get(pipeName: string): IPipe;
+  get(pipeName: string): Pipe;
 }
 
 export class PipeFactory implements IPipeFactory {
-  private readonly pipes = new Map<string, IPipe>();
+  private readonly pipes = new Map<string, Pipe>();
 
-  constructor(pipes: readonly IPipe[] = RegisteredPipes) {
+  constructor(pipes: readonly Pipe[] = RegisteredPipes) {
     for (const pipe of pipes) {
       this.registerPipe(pipe);
     }
   }
 
-  public get(pipeName: string): IPipe {
+  public get(pipeName: string): Pipe {
     validatePipeName(pipeName);
     const pipe = this.pipes.get(pipeName);
     if (!pipe) {
@@ -29,7 +29,7 @@ export class PipeFactory implements IPipeFactory {
     return pipe;
   }
 
-  private registerPipe(pipe: IPipe): void {
+  private registerPipe(pipe: Pipe): void {
     validatePipeName(pipe.name);
     if (this.pipes.has(pipe.name)) {
       throw new Error(`Pipe name must be unique: "${pipe.name}"`);

@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { indentText } from '@tests/shared/Text';
+import { indentText } from '@/application/Common/Text/IndentText';
 import type { ExecOptions, ExecException } from 'child_process';
 
 const TIMEOUT_IN_SECONDS = 180;

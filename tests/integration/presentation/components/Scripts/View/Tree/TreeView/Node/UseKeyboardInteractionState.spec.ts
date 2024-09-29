@@ -1,8 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
-import { defineComponent } from 'vue';
 import { useKeyboardInteractionState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/UseKeyboardInteractionState';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { executeInComponentSetupContext } from '@tests/shared/Vue/ExecuteInComponentSetupContext';
 
 describe('useKeyboardInteractionState', () => {
   describe('isKeyboardBeingUsed', () => {
@@ -49,12 +48,12 @@ function triggerKeyPress() {
 
 function mountWrapperComponent() {
   let returnObject: ReturnType<typeof useKeyboardInteractionState> | undefined;
-  const wrapper = shallowMount(defineComponent({
-    setup() {
+  const wrapper = executeInComponentSetupContext({
+    setupCallback: () => {
       returnObject = useKeyboardInteractionState();
     },
-    template: '<div></div>',
-  }));
+    disableAutoUnmount: true,
+  });
   expectExists(returnObject);
   return {
     returnObject,

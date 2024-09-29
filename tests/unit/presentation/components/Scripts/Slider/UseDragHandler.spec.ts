@@ -4,6 +4,8 @@ import { useDragHandler, type DragDomModifier } from '@/presentation/components/
 import { ThrottleStub } from '@tests/unit/shared/Stubs/ThrottleStub';
 import { type ThrottleFunction } from '@/application/Common/Timing/Throttle';
 import type { ConstructorArguments } from '@/TypeHelpers';
+import type { LifecycleHook } from '@/presentation/components/Shared/Hooks/Common/LifecycleHook';
+import { LifecycleHookStub } from '@tests/unit/shared/Stubs/LifecycleHookStub';
 
 describe('useDragHandler', () => {
   describe('initially', () => {
@@ -80,7 +82,7 @@ describe('useDragHandler', () => {
       const finalDragX = 150;
       const expectedDisplacementX = finalDragX - initialDragX;
       const mockElement = document.createElement('div');
-      const dragDomModifierMock = new DragDomModifierMock();
+      const dragDomModifierMock = createDragDomModifierMock();
 
       // act
       const { displacementX } = initializeDragHandlerWithMocks({
@@ -100,7 +102,7 @@ describe('useDragHandler', () => {
         'pointermove',
       ];
       const mockElement = document.createElement('div');
-      const dragDomModifierMock = new DragDomModifierMock();
+      const dragDomModifierMock = createDragDomModifierMock();
 
       // act
       initializeDragHandlerWithMocks({
@@ -153,7 +155,7 @@ describe('useDragHandler', () => {
         const expectedTotalThrottledEvents = 3;
         const throttleStub = new ThrottleStub();
         const mockElement = document.createElement('div');
-        const dragDomModifierMock = new DragDomModifierMock();
+        const dragDomModifierMock = createDragDomModifierMock();
 
         // act
         initializeDragHandlerWithMocks({
@@ -176,7 +178,7 @@ describe('useDragHandler', () => {
         const mockElement = document.createElement('div');
         const initialDragX = 100;
         const firstDisplacementX = 10;
-        const dragDomModifierMock = new DragDomModifierMock();
+        const dragDomModifierMock = createDragDomModifierMock();
 
         // act
         const { displacementX } = initializeDragHandlerWithMocks({
@@ -199,7 +201,7 @@ describe('useDragHandler', () => {
       // arrange
       const expectedDraggingState = false;
       const mockElement = document.createElement('div');
-      const dragDomModifierMock = new DragDomModifierMock();
+      const dragDomModifierMock = createDragDomModifierMock();
 
       // act
       const { isDragging } = initializeDragHandlerWithMocks({
@@ -215,7 +217,7 @@ describe('useDragHandler', () => {
     it('removes event listeners', () => {
       // arrange
       const mockElement = document.createElement('div');
-      const dragDomModifierMock = new DragDomModifierMock();
+      const dragDomModifierMock = createDragDomModifierMock();
 
       // act
       initializeDragHandlerWithMocks({
@@ -230,17 +232,40 @@ describe('useDragHandler', () => {
       expect(actualEvents).to.have.lengthOf(0);
     });
   });
+  describe('on teardown', () => {
+    it('removes event listeners', () => {
+      // arrange
+      const teardownHook = new LifecycleHookStub();
+      const mockElement = document.createElement('div');
+      const dragDomModifierMock = createDragDomModifierMock();
+
+      // act
+      initializeDragHandlerWithMocks({
+        draggableElementRef: ref(mockElement),
+        dragDomModifier: dragDomModifierMock,
+        onTeardown: teardownHook.getHook(),
+      });
+      mockElement.dispatchEvent(createMockPointerEvent('pointerdown', { clientX: 100 }));
+      teardownHook.executeAllCallbacks();
+
+      // assert
+      const actualEvents = [...dragDomModifierMock.events];
+      expect(actualEvents).to.have.lengthOf(0);
+    });
+  });
 });
 
 function initializeDragHandlerWithMocks(mocks?: {
   readonly dragDomModifier?: DragDomModifier;
   readonly draggableElementRef?: Ref<HTMLElement>;
   readonly throttler?: ThrottleFunction,
+  readonly onTeardown?: LifecycleHook,
 }) {
   return useDragHandler(
     mocks?.draggableElementRef ?? ref(document.createElement('div')),
-    mocks?.dragDomModifier ?? new DragDomModifierMock(),
+    mocks?.dragDomModifier ?? createDragDomModifierMock(),
     mocks?.throttler ?? new ThrottleStub().withImmediateExecution(true).func,
+    mocks?.onTeardown ?? new LifecycleHookStub().getHook(),
   );
 }
 
@@ -248,22 +273,25 @@ function createMockPointerEvent(...args: ConstructorArguments<typeof PointerEven
   return new MouseEvent(...args) as PointerEvent; // jsdom does not support `PointerEvent` constructor, https://github.com/jsdom/jsdom/issues/2527
 }
 
-class DragDomModifierMock implements DragDomModifier {
-  public events = new Map<keyof DocumentEventMap, EventListener>();
-
-  public addEventListenerToDocument(type: keyof DocumentEventMap, handler: EventListener): void {
-    this.events.set(type, handler);
-  }
-
-  public removeEventListenerFromDocument(type: keyof DocumentEventMap): void {
-    this.events.delete(type);
-  }
-
-  public simulateEvent(type: keyof DocumentEventMap, event: Event) {
-    const handler = this.events.get(type);
-    if (!handler) {
-      throw new Error(`No event handler registered for: ${type}`);
-    }
-    handler(event);
-  }
+function createDragDomModifierMock(): DragDomModifier & {
+  simulateEvent(type: keyof DocumentEventMap, event: Event): void;
+  readonly events: Map<keyof DocumentEventMap, EventListener>;
+} {
+  const events = new Map<keyof DocumentEventMap, EventListener>();
+  return {
+    addEventListenerToDocument: (type, handler) => {
+      events.set(type, handler);
+    },
+    removeEventListenerFromDocument: (type) => {
+      events.delete(type);
+    },
+    simulateEvent: (type, event) => {
+      const handler = events.get(type);
+      if (!handler) {
+        throw new Error(`No event handler registered for: ${type}`);
+      }
+      handler(event);
+    },
+    events,
+  };
 }

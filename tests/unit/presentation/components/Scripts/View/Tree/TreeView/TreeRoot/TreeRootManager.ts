@@ -1,7 +1,7 @@
 import { SingleNodeCollectionFocusManager } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/Focus/SingleNodeCollectionFocusManager';
 import type { TreeNodeCollection } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/TreeNodeCollection';
 import { TreeNodeInitializerAndUpdater } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/TreeNodeInitializerAndUpdater';
-import { TreeRootManager } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRootManager';
+import { TreeRootManager, type FocusManagerFactory } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRootManager';
 import { SingleNodeFocusManagerStub } from '@tests/unit/shared/Stubs/SingleNodeFocusManagerStub';
 import { TreeNodeCollectionStub } from '@tests/unit/shared/Stubs/TreeNodeCollectionStub';
 
@@ -19,9 +19,12 @@ describe('TreeRootManager', () => {
     it('set by constructor as expected', () => {
       // arrange
       const expectedCollection = new TreeNodeCollectionStub();
-      const sut = new TreeRootManager();
+      const context = new TestContext()
+        .withNodeCollection(expectedCollection);
       // act
-      const actualCollection = sut.collection;
+      const actualCollection = context
+        .build()
+        .collection;
       // assert
       expect(actualCollection).to.equal(expectedCollection);
     });
@@ -39,15 +42,41 @@ describe('TreeRootManager', () => {
     it('creates with same collection it uses', () => {
       // arrange
       let usedCollection: TreeNodeCollection | undefined;
-      const factoryMock = (collection) => {
+      const factoryMock: FocusManagerFactory = (collection) => {
         usedCollection = collection;
         return new SingleNodeFocusManagerStub();
       };
-      const sut = new TreeRootManager(new TreeNodeCollectionStub(), factoryMock);
+      const context = new TestContext()
+        .withFocusManagerFactory(factoryMock);
       // act
-      const expected = sut.collection;
+      const expected = context
+        .build()
+        .collection;
       // assert
       expect(usedCollection).to.equal(expected);
     });
   });
 });
+
+class TestContext {
+  private nodeCollection: TreeNodeCollection = new TreeNodeCollectionStub();
+
+  private focusManagerFactory: FocusManagerFactory = () => new SingleNodeFocusManagerStub();
+
+  public withFocusManagerFactory(focusManagerFactory: FocusManagerFactory): this {
+    this.focusManagerFactory = focusManagerFactory;
+    return this;
+  }
+
+  public withNodeCollection(nodeCollection: TreeNodeCollection): this {
+    this.nodeCollection = nodeCollection;
+    return this;
+  }
+
+  public build(): TreeRootManager {
+    return new TreeRootManager(
+      this.nodeCollection,
+      this.focusManagerFactory,
+    );
+  }
+}

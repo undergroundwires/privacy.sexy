@@ -3,7 +3,7 @@ import { unlink, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { app } from 'electron/main';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { UpdateProgressBar } from '../UpdateProgressBar';
+import { UpdateProgressBar } from '../ProgressBar/UpdateProgressBar';
 import { retryFileSystemAccess } from './RetryFileSystemAccess';
 import type { UpdateInfo } from 'electron-updater';
 import type { ReadableStream } from 'node:stream/web';

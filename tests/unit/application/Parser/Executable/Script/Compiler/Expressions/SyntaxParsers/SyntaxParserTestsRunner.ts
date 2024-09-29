@@ -114,7 +114,7 @@ export class SyntaxParserTestsRunner {
   }
 }
 
-interface ExpectResultTestScenario {
+export interface ExpectResultTestScenario {
   readonly name: string;
   readonly code: string;
   readonly args: (

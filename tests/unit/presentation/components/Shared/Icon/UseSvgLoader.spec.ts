@@ -4,7 +4,7 @@ import {
 import { ref } from 'vue';
 import type { IconName } from '@/presentation/components/Shared/Icon/IconName';
 import { type FileLoaders, clearIconCache, useSvgLoader } from '@/presentation/components/Shared/Icon/UseSvgLoader';
-import { waitForValueChange } from '@tests/shared/WaitForValueChange';
+import { waitForValueChange } from '@tests/shared/Vue/WaitForValueChange';
 
 describe('useSvgLoader', () => {
   beforeEach(() => {

@@ -1,9 +1,9 @@
 import type { ScriptData } from '@/application/collections/';
-import type { IScriptCompiler } from '@/application/Parser/Executable/Script/Compiler/IScriptCompiler';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
+import type { ScriptCompiler } from '@/application/Parser/Executable/Script/Compiler/ScriptCompiler';
 import { ScriptCodeStub } from './ScriptCodeStub';
 
-export class ScriptCompilerStub implements IScriptCompiler {
+export class ScriptCompilerStub implements ScriptCompiler {
   public compilableScripts = new Map<ScriptData, ScriptCode>();
 
   public canCompile(script: ScriptData): boolean {

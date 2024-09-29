@@ -7,9 +7,9 @@ export function createIpcConsumerProxy<T>(
   channel: IpcChannel<T>,
   electronIpcRenderer: Electron.IpcRenderer = ipcRenderer,
 ): AsyncMethods<T> {
-  const facade: Partial<T> = {};
+  const facade: Partial<AsyncMethods<T>> = {};
   channel.accessibleMembers.forEach((member) => {
-    const functionKey = member as string;
+    const functionKey = member as (keyof T & string);
     const ipcChannel = getIpcChannelIdentifier(channel.namespace, functionKey);
     facade[functionKey] = ((...args: unknown[]) => {
       return electronIpcRenderer.invoke(ipcChannel, ...args);

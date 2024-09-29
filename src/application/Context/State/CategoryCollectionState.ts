@@ -1,4 +1,4 @@
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { AdaptiveFilterContext } from './Filter/AdaptiveFilterContext';
 import { ApplicationCode } from './Code/ApplicationCode';

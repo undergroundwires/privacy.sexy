@@ -22,7 +22,7 @@ export const createFunctionCallArgument: FunctionCallArgumentFactory = (
   utilities.validateParameterName(parameterName);
   utilities.typeValidator.assertNonEmptyString({
     value: argumentValue,
-    valueName: `Missing argument value for the parameter "${parameterName}".`,
+    valueName: `Function parameter '${parameterName}'`,
   });
   return {
     parameterName,

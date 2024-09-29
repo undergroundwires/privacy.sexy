@@ -42,7 +42,7 @@ function getCallSequence(calls: FunctionCallsData, validator: TypeValidator): Fu
   if (isArray(calls)) {
     validator.assertNonEmptyCollection({
       value: calls,
-      valueName: 'function call sequence',
+      valueName: 'Function call sequence',
     });
     return calls as FunctionCallData[];
   }
@@ -56,7 +56,7 @@ function parseFunctionCall(
 ): FunctionCall {
   utilities.typeValidator.assertObject({
     value: call,
-    valueName: 'function call',
+    valueName: 'Function call',
     allowedProperties: ['function', 'parameters'],
   });
   const callArgs = parseArgs(call.parameters, utilities.createCallArgument);

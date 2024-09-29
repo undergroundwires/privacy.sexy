@@ -37,7 +37,7 @@ function validateData(
 ): void {
   validator.assertObject({
     value: data,
-    valueName: 'scripting definition',
+    valueName: 'Scripting definition',
     allowedProperties: ['language', 'fileExtension', 'startCode', 'endCode'],
   });
 }

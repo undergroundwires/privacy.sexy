@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { SanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/SanityCheckOptions';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
 import { isBoolean } from '@/TypeHelpers';
 
@@ -21,8 +21,8 @@ describe('SanityChecks', () => {
   });
 });
 
-function generateTestOptions(): ISanityCheckOptions[] {
-  const defaultOptions: ISanityCheckOptions = {
+function generateTestOptions(): SanityCheckOptions[] {
+  const defaultOptions: SanityCheckOptions = {
     validateEnvironmentVariables: true,
     validateWindowVariables: true,
   };

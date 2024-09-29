@@ -1800,7 +1800,7 @@ actions:
                             # References for spctl --master-disable
                                 - https://web.archive.org/web/20240523173608/https://www.manpagez.com/man/8/spctl/
                             # References for /var/db/SystemPolicy-prefs.plist
-                                - https://krypted.com/mac-security/manage-gatekeeper-from-the-command-line-in-mountain-lion/
+                                - https://web.archive.org/web/20240810103202/https://krypted.com/mac-security/manage-gatekeeper-from-the-command-line-in-mountain-lion/
                                 - https://community.jamf.com/t5/jamf-pro/users-can-t-change-password-greyed-out/m-p/54228
                         code: |-
                             os_major_ver=$(sw_vers -productVersion | awk -F "." '{print $1}')
@@ -1842,10 +1842,10 @@ actions:
                             fi
             -
                 name: Disable library validation entitlement (library signature validation)
-                docs:
-                    - https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation
-                    - https://www.macenhance.com/docs/general/sip-library-validation.html
-                    - https://www.naut.ca/blog/2020/11/13/forbidden-commands-to-liberate-macos/
+                docs: |-
+                    - [Disable Library Validation Entitlement | Apple Developer Documentation | developer.apple.com](https://archive.ph/2024.07.19-101811/https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation)
+                    - [Forbidden Commands to Speed Up macOS | www.naut.ca](https://web.archive.org/web/20240625020749/https://www.naut.ca/blog/2020/11/13/forbidden-commands-to-liberate-macos/)
+                    - [macEnhance | macEnhance.com](https://web.archive.org/web/20220622212008/https://www.macenhance.com/docs/general/sip-library-validation.html)
                 code: sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist 'DisableLibraryValidation' -bool true
                 revertCode: sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist 'DisableLibraryValidation' -bool false
             -

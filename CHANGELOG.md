@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.13.6 (2024-08-13)
+
+* win: improve service disabling as TrustedInstaller | [5d365f6](https://github.com/undergroundwires/privacy.sexy/commit/5d365f65fa0e34925b16b2eac2af53c31e34e99a)
+* Fix documentation button spacing on small screens | [70959cc](https://github.com/undergroundwires/privacy.sexy/commit/70959ccadafac5abcfa83e90cdb0537890b05f14)
+* Fix close button overlap by scrollbar | [19ea8db](https://github.com/undergroundwires/privacy.sexy/commit/19ea8dbc5bc2dc436200cd40bf2a84c3fc3c6471)
+* win: refactor version-specific actions | [0239b52](https://github.com/undergroundwires/privacy.sexy/commit/0239b523859d5c2b80033cc03f0248a9af35f28f)
+* win: support Microsoft Store Firefox installations | [8d7a7eb](https://github.com/undergroundwires/privacy.sexy/commit/8d7a7eb434b2d83e32fa758db7e6798849bad41c)
+* Refactor text utilities and expand their usage | [851917e](https://github.com/undergroundwires/privacy.sexy/commit/851917e049c41c679644ddbe8ad4b6e45e5c8f35)
+* Bump dependencies to latest | [dd7239b](https://github.com/undergroundwires/privacy.sexy/commit/dd7239b8c14027274926279a4c8c7e5845b55558)
+* Refactor styles to match new CSS nesting behavior | [abe03ce](https://github.com/undergroundwires/privacy.sexy/commit/abe03cef3f691f6e56faee991cd2da9c45244279)
+* Improve compiler error display for latest Chromium | [b16e136](https://github.com/undergroundwires/privacy.sexy/commit/b16e13678ce1b8a6871eba8196e82bb321410067)
+* Fix intermittent `ModalDialog` unit test failures | [a650558](https://github.com/undergroundwires/privacy.sexy/commit/a6505587bf4a448f5f3de930004a95ee203416b8)
+* Ensure tests do not log warning or errors | [ae0165f](https://github.com/undergroundwires/privacy.sexy/commit/ae0165f1fe7dba9dd8ddaa1afa722a939772d3b6)
+* win: improve disabling SmartScreen #385 | [11e566d](https://github.com/undergroundwires/privacy.sexy/commit/11e566d0e5177214a2600f3fd2097aea62373b24)
+* win: unify registry setting as TrustedInstaller | [8526d25](https://github.com/undergroundwires/privacy.sexy/commit/8526d2510b34cbd7e79342f79d444419f601b186)
+* win: improve, fix, restructure CEIP disabling | [c2d3cdd](https://github.com/undergroundwires/privacy.sexy/commit/c2d3cddc47d8d4b34bff63d959612919fa971012)
+* win: centralize, improve Defender data collection | [b185255](https://github.com/undergroundwires/privacy.sexy/commit/b185255a0a72d5bfa96d6cf60f868ecc67149d68)
+* win: fix and document VStudio license removal | [109fc01](https://github.com/undergroundwires/privacy.sexy/commit/109fc01c9a047002c4309e7f8a2ca4647c494a8a)
+* win: improve registry/recent cleaning | [48d97af](https://github.com/undergroundwires/privacy.sexy/commit/48d97afdf6c2964cab7951208e1b0a02c3fd4c9b)
+* Relax linting to allow null recommendation | [6fbc816](https://github.com/undergroundwires/privacy.sexy/commit/6fbc81675f7f063c4ee2502b8d9f169aacb39ae4)
+* Refactor executable IDs to use strings #262 | [ded55a6](https://github.com/undergroundwires/privacy.sexy/commit/ded55a66d6044a03d4e18330e146b69d159509a3)
+* win: fix, improve and unify Windows version logic | [f89c232](https://github.com/undergroundwires/privacy.sexy/commit/f89c2322b05d19b82914b20416ecefd7bc7e3702)
+* Fix PowerShell code block inlining in compiler | [d77c3cb](https://github.com/undergroundwires/privacy.sexy/commit/d77c3cbbe212d9929e083181cc331b45d01e2883)
+* win: improve registry value deletion #381 | [55c23e9](https://github.com/undergroundwires/privacy.sexy/commit/55c23e9d4cee3b7f74c26a4ac8516535048d67f2)
+* win: improve folder hiding in "This PC" #16 | [e8add5e](https://github.com/undergroundwires/privacy.sexy/commit/e8add5ec08d2e8b7636cc9c8f0f9a33e4b004265)
+* win: improve Microsoft Edge associations removal | [c2f4b68](https://github.com/undergroundwires/privacy.sexy/commit/c2f4b6878635e97f9c4be7bf2ee194a2deebb38a)
+* win: unify registry data setting, fix #380 | [4cea6b2](https://github.com/undergroundwires/privacy.sexy/commit/4cea6b26ec2717c792c2471cc587f370274f90c4)
+* win: improve disabling NCSI #189, #216, #279 | [c7e57b8](https://github.com/undergroundwires/privacy.sexy/commit/c7e57b8913f409a1c149ba598dc2f8786df0f9a9)
+* win, mac: fix minor typos, formatting, dead URLs | [29e1069](https://github.com/undergroundwires/privacy.sexy/commit/29e1069bf2bc317e3c255b38c1ba0ab078b42d98)
+* win: fix, constrain and document WNS #227 #314 | [50ba00b](https://github.com/undergroundwires/privacy.sexy/commit/50ba00b0af6232fc9187532635b04c4d9d9a68af)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.13.5...0.13.6)
+
 ## 0.13.5 (2024-06-26)
 
 * ci/cd: centralize and bump artifact uploads | [22d6c79](https://github.com/undergroundwires/privacy.sexy/commit/22d6c7991eb2c138578a7d41950f301906dbf703)

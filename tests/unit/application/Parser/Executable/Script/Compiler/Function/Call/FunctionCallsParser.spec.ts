@@ -57,7 +57,7 @@ describe('FunctionCallsParser', () => {
         const data = new FunctionCallDataStub();
         const expectedAssertion: ObjectAssertion<FunctionCallData> = {
           value: data,
-          valueName: 'function call',
+          valueName: 'Function call',
           allowedProperties: [
             'function', 'parameters',
           ],
@@ -117,7 +117,7 @@ describe('FunctionCallsParser', () => {
         const data: FunctionCallsData = [new FunctionCallDataStub()];
         const expectedAssertion: NonEmptyCollectionAssertion = {
           value: data,
-          valueName: 'function call sequence',
+          valueName: 'Function call sequence',
         };
         const validator = new TypeValidatorStub();
         const context = new TestContext()
@@ -134,7 +134,7 @@ describe('FunctionCallsParser', () => {
         const data: FunctionCallsData = [expectedValidatedCallData];
         const expectedAssertion: ObjectAssertion<FunctionCallData> = {
           value: expectedValidatedCallData,
-          valueName: 'function call',
+          valueName: 'Function call',
           allowedProperties: [
             'function', 'parameters',
           ],

@@ -1,7 +1,7 @@
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { indentText } from '@/application/Common/Text/IndentText';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import { indentText } from '@tests/shared/Text';
 import { ErrorWrapperStub } from '@tests/unit/shared/Stubs/ErrorWrapperStub';
 
 interface ContextualErrorTestScenario {

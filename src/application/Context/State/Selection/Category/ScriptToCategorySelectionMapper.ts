@@ -1,5 +1,5 @@
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import type { CategorySelectionChange, CategorySelectionChangeCommand } from './CategorySelectionChange';
 import type { CategorySelection } from './CategorySelection';
 import type { ScriptSelection } from '../Script/ScriptSelection';
@@ -23,7 +23,7 @@ export class ScriptToCategorySelectionMapper implements CategorySelection {
       return false;
     }
     return scripts.every(
-      (script) => selectedScripts.some((selected) => selected.id === script.id),
+      (script) => selectedScripts.some((selected) => selected.id === script.executableId),
     );
   }
 
@@ -50,7 +50,7 @@ export class ScriptToCategorySelectionMapper implements CategorySelection {
     const scripts = category.getAllScriptsRecursively();
     const scriptsChangesInCategory = scripts
       .map((script): ScriptSelectionChange => ({
-        scriptId: script.id,
+        scriptId: script.executableId,
         newStatus: {
           ...change.newStatus,
         },

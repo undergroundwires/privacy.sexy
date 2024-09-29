@@ -17,7 +17,7 @@ describe('parseTreeInput', () => {
 
   it('returns an empty array if given an empty array', () => {
     // arrange
-    const input = [];
+    const input = new Array<TreeInputNodeData>();
     // act
     const nodes = parseTreeInput(input);
     // assert

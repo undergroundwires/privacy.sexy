@@ -1,4 +1,4 @@
-import { indentText } from '@tests/shared/Text';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 export class TestExecutionDetailsLogger {
   public logTestSectionStartDelimiter(): void {

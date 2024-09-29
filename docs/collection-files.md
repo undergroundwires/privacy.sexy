@@ -30,6 +30,8 @@ Related documentation:
 
 ### Executables
 
+They represent independently executable actions with documentation and reversibility.
+
 An Executable is a logical entity that can
 
 - execute once compiled,

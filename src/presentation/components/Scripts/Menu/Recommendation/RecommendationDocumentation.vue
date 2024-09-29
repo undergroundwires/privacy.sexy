@@ -110,8 +110,9 @@ export default defineComponent({
   @include apply-icon-color($color-danger);
 }
 .recommendation {
+  align-items: center;
+
   @include horizontal-stack;
   @include apply-icon-color($color-caution);
-  align-items: center;
 }
 </style>

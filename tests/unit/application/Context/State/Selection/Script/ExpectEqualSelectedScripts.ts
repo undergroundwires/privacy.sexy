@@ -1,4 +1,5 @@
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { indentText } from '@/application/Common/Text/IndentText';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 export function expectEqualSelectedScripts(
@@ -37,11 +38,11 @@ function expectSameRevertStates(
   expect(scriptsWithDifferentRevertStates).to.have.lengthOf(0, formatAssertionMessage([
     'Scripts with different revert states:',
     scriptsWithDifferentRevertStates
-      .map((s) => [
+      .map((s) => indentText([
         `Script ID: "${s.id}"`,
         `Actual revert state: "${s.revert}"`,
         `Expected revert state: "${expected.find((existing) => existing.id === s.id)?.revert ?? 'unknown'}"`,
-      ].map((line) => `\t${line}`).join('\n'))
+      ].join('\n')))
       .join('\n---\n'),
   ]));
 }

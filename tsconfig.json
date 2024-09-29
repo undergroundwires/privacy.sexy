@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2018",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "importHelpers": true,
@@ -8,6 +8,7 @@
     "jsx": "preserve",
     "moduleResolution": "Bundler",
     "strictNullChecks": true,
+    "noImplicitAny": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,

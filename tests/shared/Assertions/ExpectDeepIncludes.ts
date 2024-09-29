@@ -1,5 +1,5 @@
+import { indentText } from '@/application/Common/Text/IndentText';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import { indentText } from '@tests/shared/Text';
 
 /**
  * Asserts that an array deeply includes a specified item by comparing JSON-serialized versions.

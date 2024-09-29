@@ -1,8 +1,8 @@
-import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
-import type { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
+import type { SanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/SanityCheckOptions';
+import type { SanityValidator } from '@/infrastructure/RuntimeSanity/Common/SanityValidator';
 
-export class SanityValidatorStub implements ISanityValidator {
-  public shouldValidateArgs = new Array<ISanityCheckOptions>();
+export class SanityValidatorStub implements SanityValidator {
+  public shouldValidateArgs = new Array<SanityCheckOptions>();
 
   public name = 'sanity-validator-stub';
 
@@ -10,7 +10,7 @@ export class SanityValidatorStub implements ISanityValidator {
 
   private shouldValidateResult = true;
 
-  public shouldValidate(options: ISanityCheckOptions): boolean {
+  public shouldValidate(options: SanityCheckOptions): boolean {
     this.shouldValidateArgs.push(options);
     return this.shouldValidateResult;
   }

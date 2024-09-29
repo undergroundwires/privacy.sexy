@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
-import ModalContainer from '@/presentation/components/Shared/Modal/ModalContainer.vue';
 
 const DOM_CLOSE_BUTTON_SELECTOR = '.dialog__close-button';
 const MODAL_CONTAINER_COMPONENT_NAME = 'ModalContainer';
@@ -19,18 +18,19 @@ describe('ModalDialog.vue', () => {
   describe(`binds the visibility flag ${MODAL_CONTAINER_COMPONENT_NAME}`, () => {
     it('given true', () => {
       // arrange & act
-      const wrapper = mountComponent({ modelValue: true, deepMount: true });
+      const wrapper = mountComponent({ modelValue: true });
 
       // assert
-      const modalContainerWrapper = wrapper.findComponent(ModalContainer);
+      const modalContainerWrapper = wrapper.findComponent({ name: MODAL_CONTAINER_COMPONENT_NAME });
+
       expect(modalContainerWrapper.props('modelValue')).to.equal(true);
     });
     it('given false', () => {
       // arrange & act
-      const wrapper = mountComponent({ modelValue: false, deepMount: true });
+      const wrapper = mountComponent({ modelValue: false });
 
       // assert
-      const modalContainerWrapper = wrapper.findComponent(ModalContainer);
+      const modalContainerWrapper = wrapper.findComponent({ name: MODAL_CONTAINER_COMPONENT_NAME });
       expect(modalContainerWrapper.props('modelValue')).to.equal(false);
     });
   });
@@ -65,17 +65,20 @@ describe('ModalDialog.vue', () => {
 function mountComponent(options?: {
   readonly modelValue?: boolean,
   readonly slotHtml?: string,
-  readonly deepMount?: boolean,
 }) {
-  const mountFunction = options?.deepMount === true ? mount : shallowMount;
-  const wrapper = mountFunction(ModalDialog, {
-    props: options?.modelValue !== undefined ? { modelValue: options?.modelValue } : undefined,
+  const wrapper = shallowMount(ModalDialog, {
+    props: {
+      modelValue: options?.modelValue !== undefined
+        ? options?.modelValue
+        : true /* provide default value to required property */,
+    },
     slots: options?.slotHtml !== undefined ? { default: options?.slotHtml } : undefined,
     global: {
-      stubs: options?.deepMount === true ? undefined : {
+      stubs: {
         [MODAL_CONTAINER_COMPONENT_NAME]: {
           name: MODAL_CONTAINER_COMPONENT_NAME,
           template: '<slot />',
+          props: ['modelValue'],
         },
       },
     },

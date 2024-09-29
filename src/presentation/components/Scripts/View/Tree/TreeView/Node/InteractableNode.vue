@@ -18,13 +18,13 @@ import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { useNodeState } from './UseNodeState';
 import { useKeyboardInteractionState } from './UseKeyboardInteractionState';
 import type { TreeRoot } from '../TreeRoot/TreeRoot';
-import type { TreeNode } from './TreeNode';
+import type { TreeNode, TreeNodeId } from './TreeNode';
 import type { PropType } from 'vue';
 
 export default defineComponent({
   props: {
     nodeId: {
-      type: String,
+      type: String as PropType<TreeNodeId>,
       required: true,
     },
     treeRoot: {

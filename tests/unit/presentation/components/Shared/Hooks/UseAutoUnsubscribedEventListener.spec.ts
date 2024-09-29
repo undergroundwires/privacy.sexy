@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick, shallowRef } from 'vue';
 import { useAutoUnsubscribedEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
-import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { expectDoesNotThrowAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
+import type { LifecycleHook } from '@/presentation/components/Shared/Hooks/Common/LifecycleHook';
+import { LifecycleHookStub } from '@tests/unit/shared/Stubs/LifecycleHookStub';
 
 describe('UseAutoUnsubscribedEventListener', () => {
   describe('startListening', () => {
@@ -17,9 +17,10 @@ describe('UseAutoUnsubscribedEventListener', () => {
         const callback = (event: Event) => {
           actualEvent = event;
         };
+        const context = new TestContext();
         // act
-        const { returnObject } = mountWrapper();
-        returnObject.startListening(eventTarget, eventType, callback);
+        const { startListening } = context.use();
+        startListening(eventTarget, eventType, callback);
         eventTarget.dispatchEvent(expectedEvent);
         // assert
         expect(actualEvent).to.equal(expectedEvent);
@@ -33,13 +34,16 @@ describe('UseAutoUnsubscribedEventListener', () => {
         };
         const eventTarget = new EventTarget();
         const eventType: keyof HTMLElementEventMap = 'abort';
+        const teardownHook = new LifecycleHookStub();
+        const context = new TestContext()
+          .withOnTeardown(teardownHook.getHook());
         // act
-        const { wrapper } = mountWrapper({
-          setup: (listener) => listener.startListening(eventTarget, eventType, callback),
-        });
-        wrapper.unmount();
+        const { startListening } = context.use();
+        startListening(eventTarget, eventType, callback);
+        teardownHook.executeAllCallbacks();
         eventTarget.dispatchEvent(new CustomEvent(eventType));
         // assert
+        expect(teardownHook.totalRegisteredCallbacks).to.greaterThan(0);
         expect(isCallbackCalled).to.equal(expectedCallbackCall);
       });
     });
@@ -54,9 +58,10 @@ describe('UseAutoUnsubscribedEventListener', () => {
         const callback = (event: Event) => {
           actualEvent = event;
         };
+        const context = new TestContext();
         // act
-        const { returnObject } = mountWrapper();
-        returnObject.startListening(eventTargetRef, eventType, callback);
+        const { startListening } = context.use();
+        startListening(eventTargetRef, eventType, callback);
         eventTarget.dispatchEvent(expectedEvent);
         // assert
         expect(actualEvent).to.equal(expectedEvent);
@@ -72,9 +77,10 @@ describe('UseAutoUnsubscribedEventListener', () => {
         const callback = (event: Event) => {
           actualEvent = event;
         };
+        const context = new TestContext();
         // act
-        const { returnObject } = mountWrapper();
-        returnObject.startListening(targetRef, eventType, callback);
+        const { startListening } = context.use();
+        startListening(targetRef, eventType, callback);
         targetRef.value = newValue;
         await nextTick();
         newValue.dispatchEvent(expectedEvent);
@@ -84,10 +90,11 @@ describe('UseAutoUnsubscribedEventListener', () => {
       it('does not throw if initial element is undefined', () => {
         // arrange
         const targetRef = shallowRef(undefined);
+        const context = new TestContext();
         // act
-        const { returnObject } = mountWrapper();
+        const { startListening } = context.use();
         const act = () => {
-          returnObject.startListening(targetRef, 'abort', () => { /* NO OP */ });
+          startListening(targetRef, 'abort', () => { /* NO OP */ });
         };
         // assert
         expect(act).to.not.throw();
@@ -95,9 +102,10 @@ describe('UseAutoUnsubscribedEventListener', () => {
       it('does not throw when reference becomes undefined', async () => {
         // arrange
         const targetRef = shallowRef<EventTarget | undefined>(new EventTarget());
+        const context = new TestContext();
         // act
-        const { returnObject } = mountWrapper();
-        returnObject.startListening(targetRef, 'abort', () => { /* NO OP */ });
+        const { startListening } = context.use();
+        startListening(targetRef, 'abort', () => { /* NO OP */ });
         const act = async () => {
           targetRef.value = undefined;
           await nextTick();
@@ -117,9 +125,10 @@ describe('UseAutoUnsubscribedEventListener', () => {
         const targetRef = shallowRef(oldValue);
         const eventType: keyof HTMLElementEventMap = 'abort';
         const expectedEvent = new CustomEvent(eventType);
+        const context = new TestContext();
         // act
-        const { returnObject } = mountWrapper();
-        returnObject.startListening(targetRef, eventType, callback);
+        const { startListening } = context.use();
+        startListening(targetRef, eventType, callback);
         targetRef.value = newValue;
         await nextTick();
         oldValue.dispatchEvent(expectedEvent);
@@ -136,11 +145,13 @@ describe('UseAutoUnsubscribedEventListener', () => {
         const target = new EventTarget();
         const targetRef = shallowRef(target);
         const eventType: keyof HTMLElementEventMap = 'abort';
+        const teardownHook = new LifecycleHookStub();
+        const context = new TestContext()
+          .withOnTeardown(teardownHook.getHook());
         // act
-        const { wrapper } = mountWrapper({
-          setup: (listener) => listener.startListening(targetRef, eventType, callback),
-        });
-        wrapper.unmount();
+        const { startListening } = context.use();
+        startListening(targetRef, eventType, callback);
+        teardownHook.executeAllCallbacks();
         target.dispatchEvent(new CustomEvent(eventType));
         // assert
         expect(isCallbackCalled).to.equal(expectedCallbackCall);
@@ -149,24 +160,18 @@ describe('UseAutoUnsubscribedEventListener', () => {
   });
 });
 
-function mountWrapper(options?: {
-  readonly constructorArgs?: Parameters<typeof useAutoUnsubscribedEventListener>,
-  /** Running inside `setup` allows simulating lifecycle events like unmounting. */
-  readonly setup?: (returnObject: ReturnType<typeof useAutoUnsubscribedEventListener>) => void,
-}) {
-  let returnObject: ReturnType<typeof useAutoUnsubscribedEventListener> | undefined;
-  const wrapper = shallowMount({
-    setup() {
-      returnObject = useAutoUnsubscribedEventListener(...(options?.constructorArgs ?? []));
-      if (options?.setup) {
-        options.setup(returnObject);
-      }
-    },
-    template: '<div></div>',
-  });
-  expectExists(returnObject);
-  return {
-    wrapper,
-    returnObject,
-  };
+class TestContext {
+  private onTeardown: LifecycleHook = new LifecycleHookStub()
+    .getHook();
+
+  public withOnTeardown(onTeardown: LifecycleHook): this {
+    this.onTeardown = onTeardown;
+    return this;
+  }
+
+  public use(): ReturnType<typeof useAutoUnsubscribedEventListener> {
+    return useAutoUnsubscribedEventListener(
+      this.onTeardown,
+    );
+  }
 }

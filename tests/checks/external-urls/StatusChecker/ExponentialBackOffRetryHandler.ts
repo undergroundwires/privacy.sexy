@@ -1,5 +1,5 @@
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
-import { indentText } from '@tests/shared/Text';
+import { indentText } from '@/application/Common/Text/IndentText';
 import { type UrlStatus, formatUrlStatus } from './UrlStatus';
 
 const DefaultBaseRetryIntervalInMs = 5 /* sec */ * 1000;

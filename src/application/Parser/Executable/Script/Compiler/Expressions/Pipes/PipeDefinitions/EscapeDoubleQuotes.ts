@@ -1,11 +1,11 @@
-import type { IPipe } from '../IPipe';
+import type { Pipe } from '../Pipe';
 
-export class EscapeDoubleQuotes implements IPipe {
+export class EscapeDoubleQuotes implements Pipe {
   public readonly name: string = 'escapeDoubleQuotes';
 
   public apply(raw: string): string {
     if (!raw) {
-      return raw;
+      return '';
     }
     return raw.replaceAll('"', '"^""');
     /* eslint-disable vue/max-len */

@@ -31,7 +31,7 @@ function validateCollectionsData(
 ) {
   validator.assertNonEmptyCollection({
     value: collections,
-    valueName: 'collections',
+    valueName: 'Collections',
   });
 }
 
