@@ -4,7 +4,7 @@ import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/I
 import type { IUserScriptGenerator } from '@/application/Context/State/Code/Generation/IUserScriptGenerator';
 import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
 import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import type { IUserScript } from '@/application/Context/State/Code/Generation/IUserScript';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
@@ -182,7 +182,7 @@ describe('ApplicationCode', () => {
 
 interface ScriptGenerationParameters {
   readonly scripts: readonly SelectedScript[];
-  readonly definition: IScriptingDefinition;
+  readonly definition: ScriptingDefinition;
 }
 class UserScriptGeneratorMock implements IUserScriptGenerator {
   private prePlanned = new Map<ScriptGenerationParameters, IUserScript>();
@@ -197,7 +197,7 @@ class UserScriptGeneratorMock implements IUserScriptGenerator {
 
   public buildCode(
     selectedScripts: readonly SelectedScript[],
-    scriptingDefinition: IScriptingDefinition,
+    scriptingDefinition: ScriptingDefinition,
   ): IUserScript {
     for (const [parameters, result] of this.prePlanned) {
       if (selectedScripts === parameters.scripts

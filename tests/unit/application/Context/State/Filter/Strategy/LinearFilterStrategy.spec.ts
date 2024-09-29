@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
@@ -259,9 +259,9 @@ function expectScriptMatches(
 class FilterStrategyTestBuilder {
   private filter: string = `[${FilterStrategyTestBuilder.name}]filter`;
 
-  private collection: ICategoryCollection = new CategoryCollectionStub();
+  private collection: CategoryCollection = new CategoryCollectionStub();
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }

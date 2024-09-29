@@ -2,7 +2,7 @@ import { shell } from 'electron';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
 import { Version } from '@/domain/Version';
-import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
+import { loadProjectDetails } from '@/application/Loader/ProjectDetails/MetadataProjectDetailsLoader';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { UpdateProgressBar } from '../ProgressBar/UpdateProgressBar';
 import {
@@ -139,7 +139,7 @@ interface UpdateUrls {
 }
 
 function getRemoteUpdateUrls(targetVersion: string): UpdateUrls {
-  const existingProject = parseProjectDetails();
+  const existingProject = loadProjectDetails();
   const targetProject = new GitHubProjectDetails(
     existingProject.name,
     new Version(targetVersion),

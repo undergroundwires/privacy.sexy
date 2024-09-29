@@ -3,7 +3,7 @@ import { ApplicationContext } from '@/application/Context/ApplicationContext';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import type { IApplicationContext, IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
-import type { IApplication } from '@/domain/IApplication';
+import type { Application } from '@/domain/Application';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
@@ -247,7 +247,7 @@ describe('ApplicationContext', () => {
 class ObservableApplicationContextFactory {
   private static DefaultOs = OperatingSystem.Windows;
 
-  public app: IApplication;
+  public app: Application;
 
   public firedEvents = new Array<IApplicationContextChangedEvent>();
 
@@ -265,7 +265,7 @@ class ObservableApplicationContextFactory {
     return this.withApp(app);
   }
 
-  public withApp(app: IApplication): this {
+  public withApp(app: Application): this {
     this.app = app;
     return this;
   }

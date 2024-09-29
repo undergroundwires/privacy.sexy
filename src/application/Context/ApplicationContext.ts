@@ -1,6 +1,6 @@
-import type { IApplication } from '@/domain/IApplication';
+import type { Application } from '@/domain/Application';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { assertInRange } from '@/application/Common/Enum';
 import { CategoryCollectionState } from './State/CategoryCollectionState';
@@ -12,7 +12,7 @@ type StateMachine = Map<OperatingSystem, ICategoryCollectionState>;
 export class ApplicationContext implements IApplicationContext {
   public readonly contextChanged = new EventSource<IApplicationContextChangedEvent>();
 
-  public collection: ICategoryCollection;
+  public collection: CategoryCollection;
 
   public currentOs: OperatingSystem;
 
@@ -23,7 +23,7 @@ export class ApplicationContext implements IApplicationContext {
   private readonly states: StateMachine;
 
   public constructor(
-    public readonly app: IApplication,
+    public readonly app: Application,
     initialContext: OperatingSystem,
   ) {
     this.setContext(initialContext);
@@ -59,7 +59,7 @@ export class ApplicationContext implements IApplicationContext {
 
 function validateOperatingSystem(
   os: OperatingSystem,
-  app: IApplication,
+  app: Application,
 ): void {
   assertInRange(os, OperatingSystem);
   if (!app.getSupportedOsList().includes(os)) {
@@ -67,7 +67,7 @@ function validateOperatingSystem(
   }
 }
 
-function initializeStates(app: IApplication): StateMachine {
+function initializeStates(app: Application): StateMachine {
   const machine = new Map<OperatingSystem, ICategoryCollectionState>();
   for (const collection of app.collections) {
     machine.set(collection.os, new CategoryCollectionState(collection));

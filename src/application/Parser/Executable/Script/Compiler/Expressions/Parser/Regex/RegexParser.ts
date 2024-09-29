@@ -1,4 +1,4 @@
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import { Expression, type ExpressionEvaluator } from '../../Expression/Expression';
 import { createPositionFromRegexFullMatch, type ExpressionPositionFactory } from '../../Expression/ExpressionPositionFactory';
 import { createFunctionParameterCollection, type FunctionParameterCollectionFactory } from '../../../Function/Parameter/FunctionParameterCollectionFactory';

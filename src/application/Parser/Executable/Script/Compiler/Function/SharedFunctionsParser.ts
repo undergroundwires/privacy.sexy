@@ -4,7 +4,7 @@ import type {
 } from '@/application/collections/';
 import { validateCode, type CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
 import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
 import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';

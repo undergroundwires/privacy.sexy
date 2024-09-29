@@ -1,7 +1,7 @@
 import type { FunctionData, ScriptData, CallInstruction } from '@/application/collections/';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import { validateCode, type CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import { createScriptCode, type ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
 import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';

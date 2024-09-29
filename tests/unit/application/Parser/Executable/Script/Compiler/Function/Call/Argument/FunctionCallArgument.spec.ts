@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createFunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import type { NonEmptyStringAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import type { NonEmptyStringAssertion, TypeValidator } from '@/application/Compiler/Common/TypeValidator';
 import { createParameterNameValidatorStub } from '@tests/unit/shared/Stubs/ParameterNameValidatorStub';
 import type { ParameterNameValidator } from '@/application/Parser/Executable/Script/Compiler/Function/Shared/ParameterNameValidator';
 

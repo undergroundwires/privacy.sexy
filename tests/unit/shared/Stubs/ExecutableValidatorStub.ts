@@ -1,5 +1,5 @@
 import type { ExecutableValidator, ExecutableValidatorFactory } from '@/application/Parser/Executable/Validation/ExecutableValidator';
-import type { TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import type { TypeValidator } from '@/application/Compiler/Common/TypeValidator';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export const createExecutableValidatorFactoryStub

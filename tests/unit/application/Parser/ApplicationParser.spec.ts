@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
-import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
+import { loadProjectDetails } from '@/application/Loader/ProjectDetails/MetadataProjectDetailsLoader';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
@@ -9,12 +9,13 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
 import { CategoryCollectionParserStub } from '@tests/unit/shared/Stubs/CategoryCollectionParserStub';
-import { ProjectDetailsParserStub } from '@tests/unit/shared/Stubs/ProjectDetailsParserStub';
+import { ProjectDetailsLoaderStub as ProjectDetailsLoaderStub } from '@tests/unit/shared/Stubs/ProjectDetailsLoaderStub';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import type { CategoryCollectionParser } from '@/application/Parser/CategoryCollectionParser';
-import type { NonEmptyCollectionAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import type { NonEmptyCollectionAssertion, TypeValidator } from '@/application/Compiler/Common/TypeValidator';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import type { ProjectDetailsLoader } from '@/application/Loader/ProjectDetails/ProjectDetailsLoader';
 
 describe('ApplicationParser', () => {
   describe('parseApplication', () => {
@@ -39,27 +40,27 @@ describe('ApplicationParser', () => {
       });
     });
     describe('projectDetails', () => {
-      it('projectDetailsParser is used to create the instance', () => {
+      it('loader is used to create the instance', () => {
         // arrange
         const expectedProjectDetails = new ProjectDetailsStub();
-        const projectDetailsParserStub = new ProjectDetailsParserStub()
+        const loaderStub = new ProjectDetailsLoaderStub()
           .withReturnValue(expectedProjectDetails);
         const sut = new ApplicationParserBuilder()
-          .withProjectDetailsParser(projectDetailsParserStub.getStub());
+          .withProjectDetailsLoader(loaderStub.getStub());
         // act
         const app = sut.parseApplication();
         // assert
         const actualProjectDetails = app.projectDetails;
         expect(expectedProjectDetails).to.deep.equal(actualProjectDetails);
       });
-      it('projectDetailsParser is used to parse collection', () => {
+      it('loader is used to parse collection', () => {
         // arrange
         const expectedProjectDetails = new ProjectDetailsStub();
-        const projectDetailsParserStub = new ProjectDetailsParserStub()
+        const loaderStub = new ProjectDetailsLoaderStub()
           .withReturnValue(expectedProjectDetails);
         const collectionParserStub = new CategoryCollectionParserStub();
         const sut = new ApplicationParserBuilder()
-          .withProjectDetailsParser(projectDetailsParserStub.getStub())
+          .withProjectDetailsLoader(loaderStub.getStub())
           .withCategoryCollectionParser(collectionParserStub.getStub());
         // act
         sut.parseApplication();
@@ -77,7 +78,7 @@ describe('ApplicationParser', () => {
         const testScenarios: {
           readonly description: string;
           readonly input: readonly CollectionData[];
-          readonly output: readonly ICategoryCollection[];
+          readonly output: readonly CategoryCollection[];
         }[] = [
           {
             description: 'single collection',
@@ -153,8 +154,7 @@ class ApplicationParserBuilder {
   private categoryCollectionParser
   : CategoryCollectionParser = new CategoryCollectionParserStub().getStub();
 
-  private projectDetailsParser
-  : typeof parseProjectDetails = new ProjectDetailsParserStub().getStub();
+  private projectDetailsLoader: ProjectDetailsLoader = new ProjectDetailsLoaderStub().getStub();
 
   private validator: TypeValidator = new TypeValidatorStub();
 
@@ -167,10 +167,10 @@ class ApplicationParserBuilder {
     return this;
   }
 
-  public withProjectDetailsParser(
-    projectDetailsParser: typeof parseProjectDetails,
+  public withProjectDetailsLoader(
+    projectDetailsLoader: typeof loadProjectDetails,
   ): this {
-    this.projectDetailsParser = projectDetailsParser;
+    this.projectDetailsLoader = projectDetailsLoader;
     return this;
   }
 
@@ -189,7 +189,7 @@ class ApplicationParserBuilder {
       this.collectionsData,
       {
         parseCategoryCollection: this.categoryCollectionParser,
-        parseProjectDetails: this.projectDetailsParser,
+        loadProjectDetails: this.projectDetailsLoader,
         validator: this.validator,
       },
     );

@@ -3,7 +3,7 @@ import type { ICategoryCollectionState } from '@/application/Context/State/ICate
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import type { FilterContext } from '@/application/Context/State/Filter/FilterContext';
@@ -23,7 +23,7 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
     return this.collection.os;
   }
 
-  public collection: ICategoryCollection = new CategoryCollectionStub().withSomeActions();
+  public collection: CategoryCollection = new CategoryCollectionStub().withSomeActions();
 
   public selection: UserSelection = new UserSelectionStub();
 
@@ -39,7 +39,7 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
       );
   }
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }

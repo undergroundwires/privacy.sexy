@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { UserSelectionFacade } from '@/application/Context/State/Selection/UserSelectionFacade';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import type { ScriptsFactory, CategoriesFactory } from '@/application/Context/State/Selection/UserSelectionFacade';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
@@ -17,7 +17,7 @@ describe('UserSelectionFacade', () => {
       it('constructs with expected collection', () => {
         // arrange
         const expectedCollection = new CategoryCollectionStub();
-        let actualCollection: ICategoryCollection | undefined;
+        let actualCollection: CategoryCollection | undefined;
         const factoryMock: ScriptsFactory = (collection) => {
           actualCollection = collection;
           return new ScriptSelectionStub();
@@ -55,7 +55,7 @@ describe('UserSelectionFacade', () => {
       it('constructs with expected collection', () => {
         // arrange
         const expectedCollection = new CategoryCollectionStub();
-        let actualCollection: ICategoryCollection | undefined;
+        let actualCollection: CategoryCollection | undefined;
         const factoryMock: CategoriesFactory = (_, collection) => {
           actualCollection = collection;
           return new CategorySelectionStub();
@@ -94,7 +94,7 @@ describe('UserSelectionFacade', () => {
 });
 
 class UserSelectionFacadeBuilder {
-  private collection: ICategoryCollection = new CategoryCollectionStub();
+  private collection: CategoryCollection = new CategoryCollectionStub();
 
   private selectedScripts: readonly SelectedScript[] = [];
 
@@ -102,7 +102,7 @@ class UserSelectionFacadeBuilder {
 
   private categoriesFactory: CategoriesFactory = () => new CategorySelectionStub();
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }

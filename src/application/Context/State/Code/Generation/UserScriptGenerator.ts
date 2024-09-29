@@ -1,5 +1,5 @@
 import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { CodePosition } from '../Position/CodePosition';
 import { CodeBuilderFactory } from './CodeBuilderFactory';
@@ -15,7 +15,7 @@ export class UserScriptGenerator implements IUserScriptGenerator {
 
   public buildCode(
     selectedScripts: ReadonlyArray<SelectedScript>,
-    scriptingDefinition: IScriptingDefinition,
+    scriptingDefinition: ScriptingDefinition,
   ): IUserScript {
     if (!selectedScripts.length) {
       return { code: '', scriptPositions: new Map<SelectedScript, ICodePosition>() };

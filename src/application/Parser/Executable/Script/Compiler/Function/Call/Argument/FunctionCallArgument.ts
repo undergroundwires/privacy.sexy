@@ -1,4 +1,4 @@
-import { createTypeValidator, type TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import { createTypeValidator, type TypeValidator } from '@/application/Compiler/Common/TypeValidator';
 import { validateParameterName, type ParameterNameValidator } from '@/application/Parser/Executable/Script/Compiler/Function/Shared/ParameterNameValidator';
 
 export interface FunctionCallArgument {

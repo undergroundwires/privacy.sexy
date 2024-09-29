@@ -10,9 +10,9 @@ import { CategoryCollectionContextStub } from '@tests/unit/shared/Stubs/Category
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import type { CollectionData, ScriptingDefinitionData, FunctionData } from '@/application/collections/';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import type { NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import type { NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator } from '@/application/Compiler/Common/TypeValidator';
 import type { EnumParser } from '@/application/Common/Enum';
-import type { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
+import type { ScriptingDefinitionCompiler } from '@/application/Compiler/Collection/ScriptingDefinition/ScriptingDefinitionParser';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
 import type { CategoryCollectionContextFactory } from '@/application/Parser/Executable/CategoryCollectionContext';
 import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';
@@ -131,7 +131,7 @@ describe('CategoryCollectionParser', () => {
           it('creates with correct language', () => {
             // arrange
             const expectedLanguage = ScriptingLanguage.batchfile;
-            const scriptingDefinitionParser: ScriptingDefinitionParser = () => {
+            const scriptingDefinitionParser: ScriptingDefinitionCompiler = () => {
               return new ScriptingDefinitionStub()
                 .withLanguage(expectedLanguage);
             };
@@ -159,7 +159,7 @@ describe('CategoryCollectionParser', () => {
           getInitParameters,
         } = createCategoryCollectionFactorySpy();
         const expected = new ScriptingDefinitionStub();
-        const scriptingDefinitionParser: ScriptingDefinitionParser = () => {
+        const scriptingDefinitionParser: ScriptingDefinitionCompiler = () => {
           return expected;
         };
         const context = new TestContext()
@@ -178,7 +178,7 @@ describe('CategoryCollectionParser', () => {
           .withScripting(expectedData);
         let actualData: ScriptingDefinitionData | undefined;
         const scriptingDefinitionParser
-        : ScriptingDefinitionParser = (data: ScriptingDefinitionData) => {
+        : ScriptingDefinitionCompiler = (data: ScriptingDefinitionData) => {
           actualData = data;
           return new ScriptingDefinitionStub();
         };
@@ -195,7 +195,7 @@ describe('CategoryCollectionParser', () => {
         const expectedProjectDetails = new ProjectDetailsStub();
         let actualDetails: ProjectDetails | undefined;
         const scriptingDefinitionParser
-        : ScriptingDefinitionParser = (_, details: ProjectDetails) => {
+        : ScriptingDefinitionCompiler = (_, details: ProjectDetails) => {
           actualDetails = details;
           return new ScriptingDefinitionStub();
         };
@@ -251,7 +251,7 @@ class TestContext {
       return new CategoryCollectionContextStub();
     };
 
-  private scriptDefinitionParser: ScriptingDefinitionParser = () => new ScriptingDefinitionStub();
+  private scriptDefinitionParser: ScriptingDefinitionCompiler = () => new ScriptingDefinitionStub();
 
   private categoryParser: CategoryParser = new CategoryParserStub().get();
 
@@ -283,7 +283,7 @@ class TestContext {
     return this;
   }
 
-  public withScriptDefinitionParser(scriptDefinitionParser: ScriptingDefinitionParser): this {
+  public withScriptDefinitionParser(scriptDefinitionParser: ScriptingDefinitionCompiler): this {
     this.scriptDefinitionParser = scriptDefinitionParser;
     return this;
   }

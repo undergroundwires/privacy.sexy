@@ -1,4 +1,4 @@
-import { createTypeValidator, type TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import { createTypeValidator, type TypeValidator } from '@/application/Compiler/Common/TypeValidator';
 
 export interface ParameterNameValidator {
   (

@@ -12,12 +12,12 @@ import type { CodeValidator } from '@/application/Parser/Executable/Script/Valid
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
-import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { createScriptCodeFactoryStub } from '@tests/unit/shared/Stubs/ScriptCodeFactoryStub';
-import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
+import { itThrowsContextualError } from '@tests/unit/application/Compiler/Common/ContextualErrorTester';
 import type { SharedFunctionsParser } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
 import type { ScriptCompiler } from '@/application/Parser/Executable/Script/Compiler/ScriptCompiler';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';

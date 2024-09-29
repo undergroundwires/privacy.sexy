@@ -1,4 +1,4 @@
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { AdaptiveFilterContext } from './Filter/AdaptiveFilterContext';
 import { ApplicationCode } from './Code/ApplicationCode';
@@ -18,7 +18,7 @@ export class CategoryCollectionState implements ICategoryCollectionState {
   public readonly filter: FilterContext;
 
   public constructor(
-    public readonly collection: ICategoryCollection,
+    public readonly collection: CategoryCollection,
     selectionFactory = DefaultSelectionFactory,
     codeFactory = DefaultCodeFactory,
     filterFactory = DefaultFilterFactory,

@@ -1,14 +1,14 @@
-import type { IApplication } from '@/domain/IApplication';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
+import type { Application } from '@/domain/IApplication';
+import { injectKey } from '@/presentation/injectionSymbols';
 
 export async function dumpNames(): Promise<string> {
-  const application = await ApplicationFactory.Current.getApp();
+  const { application } = injectKey((keys) => keys.useApplication);
   const names = collectNames(application);
   const output = names.join('\n');
   return output;
 }
 
-function collectNames(application: IApplication): string[] {
+function collectNames(application: Application): string[] {
   const { collections } = application;
 
   const allNames = [

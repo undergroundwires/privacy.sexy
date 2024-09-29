@@ -7,7 +7,7 @@ import { CategoryCollectionContextStub } from '@tests/unit/shared/Stubs/Category
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { ExecutableType } from '@/application/Parser/Executable/Validation/ExecutableType';
 import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
-import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import { ErrorWrapperStub } from '@tests/unit/shared/Stubs/ErrorWrapperStub';
 import type { ExecutableValidatorFactory } from '@/application/Parser/Executable/Validation/ExecutableValidator';
 import { ExecutableValidatorStub, createExecutableValidatorFactoryStub } from '@tests/unit/shared/Stubs/ExecutableValidatorStub';
@@ -18,11 +18,11 @@ import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { ScriptParserStub } from '@tests/unit/shared/Stubs/ScriptParserStub';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import type { NonEmptyCollectionAssertion, ObjectAssertion } from '@/application/Parser/Common/TypeValidator';
+import type { NonEmptyCollectionAssertion, ObjectAssertion } from '@/application/Compiler/Common/TypeValidator';
 import { indentText } from '@/application/Common/Text/IndentText';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import type { CategoryFactory } from '@/domain/Executables/Category/CategoryFactory';
-import { itThrowsContextualError } from '../Common/ContextualErrorTester';
+import { itThrowsContextualError } from '../../Compiler/Common/ContextualErrorTester';
 import { itValidatesName, itValidatesType, itAsserts } from './Validation/ExecutableValidationTester';
 import { generateDataValidationTestScenarios } from './Validation/DataValidationTestScenarioGenerator';
 

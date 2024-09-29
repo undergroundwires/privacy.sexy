@@ -5,7 +5,7 @@ import type { IExpressionsCompiler } from '@/application/Parser/Executable/Scrip
 import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import type { FunctionCallCompilationContext } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
 import { ParsedFunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/ParsedFunctionCall';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import { createFunctionCallArgument, type FunctionCallArgument, type FunctionCallArgumentFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import type { ArgumentCompiler } from './ArgumentCompiler';
 

@@ -4,7 +4,7 @@ import type {
   FunctionCallParametersData,
 } from '@/application/collections/';
 import { isArray, isPlainObject } from '@/TypeHelpers';
-import { createTypeValidator, type TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import { createTypeValidator, type TypeValidator } from '@/application/Compiler/Common/TypeValidator';
 import { FunctionCallArgumentCollection } from './Argument/FunctionCallArgumentCollection';
 import { ParsedFunctionCall } from './ParsedFunctionCall';
 import { createFunctionCallArgument, type FunctionCallArgumentFactory } from './Argument/FunctionCallArgument';

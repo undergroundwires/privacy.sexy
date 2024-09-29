@@ -1,5 +1,5 @@
 import { isString } from '@/TypeHelpers';
-import { createTypeValidator, type TypeValidator } from '../../Common/TypeValidator';
+import { createTypeValidator, type TypeValidator } from '../../../Compiler/Common/TypeValidator';
 import { type ExecutableErrorContext } from './ExecutableErrorContext';
 import { createExecutableContextErrorMessage, type ExecutableContextErrorMessageCreator } from './ExecutableErrorContextMessage';
 

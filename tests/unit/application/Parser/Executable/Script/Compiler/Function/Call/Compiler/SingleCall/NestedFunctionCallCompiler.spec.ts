@@ -9,8 +9,8 @@ import { SingleCallCompilerStub } from '@tests/unit/shared/Stubs/SingleCallCompi
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import type { CompiledCode } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
-import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { itThrowsContextualError } from '@tests/unit/application/Compiler/Common/ContextualErrorTester';
+import type { ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 
 describe('NestedFunctionCallCompiler', () => {

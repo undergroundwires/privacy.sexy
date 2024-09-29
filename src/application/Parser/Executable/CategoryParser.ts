@@ -1,7 +1,7 @@
 import type {
   CategoryData, ScriptData, ExecutableData,
 } from '@/application/collections/';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { createCategory, type CategoryFactory } from '@/domain/Executables/Category/CategoryFactory';

@@ -4,7 +4,7 @@ import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { BatchedDebounceStub } from '@tests/unit/shared/Stubs/BatchedDebounceStub';
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
@@ -624,7 +624,7 @@ function isScriptStubArray(obj: readonly unknown[]): obj is readonly ScriptStub[
 }
 
 class DebouncedScriptSelectionBuilder {
-  private collection: ICategoryCollection = new CategoryCollectionStub()
+  private collection: CategoryCollection = new CategoryCollectionStub()
     .withSomeActions();
 
   private selectedScripts: readonly SelectedScript[] = [];
@@ -643,7 +643,7 @@ class DebouncedScriptSelectionBuilder {
     return this;
   }
 
-  public withCollection(collection: ICategoryCollection) {
+  public withCollection(collection: CategoryCollection) {
     this.collection = collection;
     return this;
   }

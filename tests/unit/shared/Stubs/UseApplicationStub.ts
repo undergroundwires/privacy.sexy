@@ -1,11 +1,11 @@
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
-import type { IApplication } from '@/domain/IApplication';
+import type { Application } from '@/domain/IApplication';
 import { ApplicationStub } from './ApplicationStub';
 
 export class UseApplicationStub {
-  private application: IApplication = new ApplicationStub();
+  private application: Application = new ApplicationStub();
 
-  public withState(application: IApplication) {
+  public withState(application: Application) {
     this.application = application;
     return this;
   }

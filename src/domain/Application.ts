@@ -1,44 +1,11 @@
-import { OperatingSystem } from './OperatingSystem';
-import type { IApplication } from './IApplication';
-import type { ICategoryCollection } from './Collection/ICategoryCollection';
+import type { OperatingSystem } from './OperatingSystem';
+import type { CategoryCollection } from './Collection/CategoryCollection';
 import type { ProjectDetails } from './Project/ProjectDetails';
 
-export class Application implements IApplication {
-  constructor(
-    public projectDetails: ProjectDetails,
-    public collections: readonly ICategoryCollection[],
-  ) {
-    validateCollections(collections);
-  }
+export interface Application {
+  readonly projectDetails: ProjectDetails;
+  readonly collections: readonly CategoryCollection[];
 
-  public getSupportedOsList(): OperatingSystem[] {
-    return this.collections.map((collection) => collection.os);
-  }
-
-  public getCollection(operatingSystem: OperatingSystem): ICategoryCollection {
-    const collection = this.collections.find((c) => c.os === operatingSystem);
-    if (!collection) {
-      throw new Error(`Operating system "${OperatingSystem[operatingSystem]}" is not defined in application`);
-    }
-    return collection;
-  }
-}
-
-function validateCollections(collections: readonly ICategoryCollection[]) {
-  if (!collections.length) {
-    throw new Error('missing collections');
-  }
-  if (collections.filter((c) => !c).length > 0) {
-    throw new Error('missing collection in the list');
-  }
-  const osList = collections.map((c) => c.os);
-  const duplicates = getDuplicates(osList);
-  if (duplicates.length > 0) {
-    throw new Error(`multiple collections with same os: ${
-      duplicates.map((os) => OperatingSystem[os].toLowerCase()).join('", "')}`);
-  }
-}
-
-function getDuplicates(list: readonly OperatingSystem[]): OperatingSystem[] {
-  return list.filter((os, index) => list.indexOf(os) !== index);
+  getSupportedOsList(): OperatingSystem[];
+  getCollection(operatingSystem: OperatingSystem): CategoryCollection;
 }

@@ -11,9 +11,9 @@ import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataS
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import type { CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
-import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
-import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
+import { itThrowsContextualError } from '@tests/unit/application/Compiler/Common/ContextualErrorTester';
 import type { FunctionParameterCollectionFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterCollectionFactory';
 import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import type { FunctionCallsParser } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCallsParser';

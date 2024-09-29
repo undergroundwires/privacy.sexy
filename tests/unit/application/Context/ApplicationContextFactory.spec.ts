@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
-import type { IApplicationFactory } from '@/application/IApplicationFactory';
-import type { IApplication } from '@/domain/IApplication';
+import type { ApplicationProvider } from '@/application/Loader/ApplicationProvider';
+import type { Application } from '@/domain/Application';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
@@ -91,11 +91,11 @@ describe('ApplicationContextFactory', () => {
   });
 });
 
-function mockFactoryWithCollection(result: ICategoryCollection): IApplicationFactory {
+function mockFactoryWithCollection(result: CategoryCollection): ApplicationProvider {
   return mockFactoryWithApp(new ApplicationStub().withCollection(result));
 }
 
-function mockFactoryWithApp(app: IApplication): IApplicationFactory {
+function mockFactoryWithApp(app: Application): ApplicationProvider {
   return {
     getApp: () => Promise.resolve(app),
   };

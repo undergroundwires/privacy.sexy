@@ -1,7 +1,7 @@
 import type { Script } from '@/domain/Executables/Script/Script';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { scrambledEqual } from '@/application/Common/Array';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { RecommendationStatusType } from './RecommendationStatusType';
@@ -33,12 +33,12 @@ export function getCurrentRecommendationStatus(
 
 export interface SelectionCheckContext {
   readonly selection: ReadonlyScriptSelection;
-  readonly collection: ICategoryCollection;
+  readonly collection: CategoryCollection;
 }
 
 export interface SelectionMutationContext {
   readonly selection: ScriptSelection,
-  readonly collection: ICategoryCollection,
+  readonly collection: CategoryCollection,
 }
 
 interface RecommendationStatusTypeHandler {

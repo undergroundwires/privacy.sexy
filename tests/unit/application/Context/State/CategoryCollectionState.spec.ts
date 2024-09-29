@@ -4,9 +4,9 @@ import { CategoryCollectionState } from '@/application/Context/State/CategoryCol
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { ApplicationCodeStub } from '@tests/unit/shared/Stubs/ApplicationCodeStub';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import type { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
@@ -21,7 +21,7 @@ describe('CategoryCollectionState', () => {
       const expectedScripting = new ScriptingDefinitionStub();
       const collection = new CategoryCollectionStub()
         .withScripting(expectedScripting);
-      let actualScripting: IScriptingDefinition | undefined;
+      let actualScripting: ScriptingDefinition | undefined;
       const codeFactoryMock: CodeFactory = (_, scripting) => {
         actualScripting = scripting;
         return new ApplicationCodeStub();
@@ -91,7 +91,7 @@ describe('CategoryCollectionState', () => {
     it('initializes with the provided collection', () => {
       // arrange
       const expectedCollection = new CategoryCollectionStub();
-      let actualCollection: ICategoryCollection | undefined;
+      let actualCollection: CategoryCollection | undefined;
       const selectionFactoryMock: SelectionFactory = (collection) => {
         actualCollection = collection;
         return new UserSelectionStub();
@@ -110,7 +110,7 @@ describe('CategoryCollectionState', () => {
     it('initializes with the provided collection for filtering', () => {
       // arrange
       const expectedCollection = new CategoryCollectionStub();
-      let actualCollection: ICategoryCollection | undefined;
+      let actualCollection: CategoryCollection | undefined;
       const filterFactoryMock: FilterFactory = (collection) => {
         actualCollection = collection;
         return new FilterContextStub();
@@ -128,7 +128,7 @@ describe('CategoryCollectionState', () => {
 });
 
 class CategoryCollectionStateBuilder {
-  private collection: ICategoryCollection = new CategoryCollectionStub();
+  private collection: CategoryCollection = new CategoryCollectionStub();
 
   private codeFactory: CodeFactory = () => new ApplicationCodeStub();
 
@@ -136,7 +136,7 @@ class CategoryCollectionStateBuilder {
 
   private filterFactory: FilterFactory = () => new FilterContextStub();
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }

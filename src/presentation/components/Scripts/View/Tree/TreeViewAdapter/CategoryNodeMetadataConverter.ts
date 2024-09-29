@@ -1,18 +1,18 @@
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import type { Executable } from '@/domain/Executables/Executable';
 import { type NodeMetadata, NodeType } from '../NodeContent/NodeMetadata';
 import type { TreeNodeId } from '../TreeView/Node/TreeNode';
 
-export function parseAllCategories(collection: ICategoryCollection): NodeMetadata[] {
+export function parseAllCategories(collection: CategoryCollection): NodeMetadata[] {
   return createCategoryNodes(collection.actions);
 }
 
 export function parseSingleCategory(
   categoryId: ExecutableId,
-  collection: ICategoryCollection,
+  collection: CategoryCollection,
 ): NodeMetadata[] {
   const category = collection.getCategory(categoryId);
   const tree = parseCategoryRecursively(category);

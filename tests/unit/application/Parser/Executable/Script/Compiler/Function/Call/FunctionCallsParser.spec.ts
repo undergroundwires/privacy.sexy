@@ -5,7 +5,7 @@ import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataS
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import type {
   NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator,
-} from '@/application/Parser/Common/TypeValidator';
+} from '@/application/Compiler/Common/TypeValidator';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
 import type { FunctionCallArgumentFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import { FunctionCallArgumentFactoryStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentFactoryStub';

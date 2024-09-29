@@ -1,7 +1,7 @@
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 
-export class ScriptingDefinitionStub implements IScriptingDefinition {
+export class ScriptingDefinitionStub implements ScriptingDefinition {
   public fileExtension = '.bat';
 
   public language = ScriptingLanguage.batchfile;

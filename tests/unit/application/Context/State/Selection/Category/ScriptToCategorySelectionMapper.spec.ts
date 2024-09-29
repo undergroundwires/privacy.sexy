@@ -2,7 +2,7 @@ import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { ScriptToCategorySelectionMapper } from '@/application/Context/State/Selection/Category/ScriptToCategorySelectionMapper';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 import type { CategorySelectionChange } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
@@ -225,14 +225,14 @@ describe('ScriptToCategorySelectionMapper', () => {
 class ScriptToCategorySelectionMapperBuilder {
   private scriptSelection: ScriptSelection = new ScriptSelectionStub();
 
-  private collection: ICategoryCollection = new CategoryCollectionStub();
+  private collection: CategoryCollection = new CategoryCollectionStub();
 
   public withScriptSelection(scriptSelection: ScriptSelection): this {
     this.scriptSelection = scriptSelection;
     return this;
   }
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }

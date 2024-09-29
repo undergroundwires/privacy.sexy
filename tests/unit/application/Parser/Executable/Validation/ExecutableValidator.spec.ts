@@ -6,7 +6,7 @@ import { ContextualExecutableValidator, createExecutableDataValidator, type Exec
 import type { ExecutableContextErrorMessageCreator } from '@/application/Parser/Executable/Validation/ExecutableErrorContextMessage';
 import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import type { TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import type { TypeValidator } from '@/application/Compiler/Common/TypeValidator';
 
 describe('createExecutableDataValidator', () => {
   it(`returns an instance of ${ContextualExecutableValidator.name}`, () => {

@@ -2,7 +2,7 @@ import type { ScriptData, CodeScriptData, CallScriptData } from '@/application/c
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import { validateCode, type CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Compiler/Common/ContextualError';
 import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { createScriptCode } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import type { Script } from '@/domain/Executables/Script/Script';

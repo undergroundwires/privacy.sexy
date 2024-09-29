@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
 import { validateParameterName } from '@/application/Parser/Executable/Script/Compiler/Function/Shared/ParameterNameValidator';
-import type { NonEmptyStringAssertion } from '@/application/Parser/Common/TypeValidator';
+import type { NonEmptyStringAssertion } from '@/application/Compiler/Common/TypeValidator';
 
 describe('ParameterNameValidator', () => {
   it('asserts correctly', () => {
