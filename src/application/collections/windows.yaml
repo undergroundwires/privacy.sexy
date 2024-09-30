@@ -20122,6 +20122,494 @@ actions:
                                                     keyPath: HKLM\Software\Microsoft\WindowsRuntime\ActivatableClassId\Windows.Internal.Security.SmartScreen.AppReputationService
                                                     elevateToTrustedInstaller: 'true' # 🔒️ Protected on Windows 10 Pro (≥ 22H2) | 🔒️ Protected on Windows 11 Pro (≥ 23H2)
                             -
+                                category: Disable SmartScreen Enhanced Phishing Protection
+                                docs: |-
+                                    This category contains scripts to disable SmartScreen's **Enhanced Phishing Protection** feature,
+                                    which monitors password usage and sends data to Microsoft.
+
+                                    This feature collects information from suspicious websites or apps to identify security threats when users enter their passwords [1].
+                                    It was introduced in Windows 11, version 22H2 [1] [2], and is technically identified as `webthreatdefense` (Web Threat Defense) [2].
+
+                                    This feature raises several privacy concerns, including:
+
+                                    - Monitoring of password entries across various applications and websites [1] [2]
+                                    - Collection of additional data in suspicious scenarios, including displayed content, played sounds, and application memory [1] [2]
+                                    - Transmission of telemetry data to Microsoft [1] [2]
+                                    - Potential sharing of data with organizational IT departments via **Intune** and **Defender for Endpoint** [1]
+                                    - Tracking of password reuse across different services [1] [2]
+                                    - Monitoring of password input in common applications like Notepad, Word, OneNote, or Excel [2], and other office apps [1]
+
+                                    Disabling these features enhances privacy by:
+
+                                    - Reducing the sensitive data collected and shared with Microsoft.
+                                    - Limiting the monitoring of password usage across applications.
+                                    - Decreasing the telemetry sent from your device.
+
+                                    It may also improve system performance by reducing background monitoring activities.
+
+                                    However, disabling **Enhanced Phishing Protection** may reduce your security
+                                    by removing alerts that help protect against phishing attacks and unsafe password practices.
+
+                                    > **Caution**:
+                                    > Disabling this feature means you will not receive warnings about potential phishing attacks
+                                    > or unsafe password usage, which may increase your vulnerability.
+
+                                    [1]: https://web.archive.org/web/20240720170645/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/enhanced-phishing-protection?tabs=intune "Enhanced Phishing Protection in Microsoft Defender SmartScreen - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240716182210/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-webthreatdefense "WebThreatDefense Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                children:
+                                    -
+                                        name: Disable SmartScreen Enhanced Phishing Protection Web background services
+                                        docs: |-
+                                            This script disables the `webthreatdefsvc` and `webthreatdefusersvc` services.
+
+                                            These services enhance security by monitoring for unauthorized access to user credentials [1] [2] [3].
+                                            However, these services also collect telemetry [4] [5] and sensor data [5], raising privacy concerns.
+                                            Disabling these services reduces this data collection, thereby enhancing privacy.
+
+                                            Additionally, these services require opening firewall ports [6] and running background services [6],
+                                            which may increase your attack surface and reduce security.
+
+                                            Disabling these services may also improve system performance by reducing background activity.
+
+                                            However, disabling these services may reduce protection against some web threats.
+
+                                            > **Caution:** Disabling this service may reduce your defense against certain web threats.
+
+                                            ### Technical Details
+
+                                            This script disables the related services, their files and COM registrations.
+
+                                            #### Services Overview
+
+                                            | Service | Service Name | Service File |
+                                            | ------- | ------------ | ------------ |
+                                            | `webthreatdefsvc` | Web Threat Defense Endpoint Service [1] | `%SYSTEMROOT%\System32\webthreatdefsvc.dll` [1] [6] |
+                                            | `webthreatdefusersvc` | Web Threat Defense User Service [2] [3] | `%SYSTEMROOT%\System32\webthreatdefusersvc.dll` [2] |
+
+                                            Both services send data to Microsoft, including telemetry data from `MicrosoftTelemetryAssertTriggeredUM` [4] [5]
+                                            and sensor data `Office App Sensor` [5].
+
+                                            These services are associated with  the **Microsoft Defender for Endpoint** suite.
+                                            This program was formerly known as **Windows Advanced Threat Protection** [7].
+                                            They read settings from `Software\Microsoft\Windows Advanced Threat Protection` [4].
+                                            These settings manage **Defender for Endpoint** [8].
+
+                                            These services are linked to **SmartScreen Enhanced Phishing Protection** because:
+
+                                            - They access configurations under `Policies\Microsoft\Windows\WTDS\Components` [4], which
+                                              are specific to SmartScreen Enhanced Phishing Protection [9].
+                                            - They are named Web Threat Defense, and SmartScreen Enhanced Phishing Protection is technically
+                                              named `WebThreatDefense` [9].
+
+                                            They are available on Windows 11 22H2 and later but are missing on earlier Windows versions [1] [2],
+                                            including Windows 10.
+
+                                            #### Services Files
+
+                                            - `webthreatdefsvc.dll` manages web threats using threat intelligence (via `ThreatIntelligence.dll`)
+                                              and interfaces with system resources [4] [10].
+                                            - `webthreatdefusersvc.dll` provides threat detection and management at the user level,
+                                              integrating with real-time monitoring and user activities in Office applications [5] [11].
+
+                                            #### Registry clean-up
+
+                                            This script cleans up following registry keys related to the service:
+
+                                            - `HKLM\SOFTWARE\Microsoft\WindowsRuntime\Server\WebThreatDefSvc` [6] for COM server implementation.
+                                            - `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Svchost\WebThreatDefense` [6] for service host registration.
+                                            - `HKCR\Interface\{ac889b17-df54-4854-a439-d7b68d1e16e8}` [6] for interface registration.
+                                            - `HKCR\CLSID\{E2F1C91D-C762-4B5A-A8C1-4734E48C5FF4}` [6] for COM class registration.
+                                            - `HKLM\Software\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.Service.UserSessionServiceManager` [6] for Windows Runtime class activation.
+                                            - `HKLM\Software\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.Configuration.WTDUserSettings` [6] for Windows Runtime configuration settings.
+
+                                            #### Overview of default service statuses
+
+                                            `webthreatdefsvc`:
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🟡 Missing | N/A |
+                                            | Windows 11 (≥ 23H2) | 🟢 Running | Manual |
+
+                                            `webthreatdefusersvc`:
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🟡 Missing | N/A |
+                                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Automatic |
+
+                                            [1]: https://web.archive.org/web/20240716182225/https://batcmd.com/windows/11/services/webthreatdefsvc/ "Web Threat Defense Service - Windows 11 Service - batcmd.com | batcmd.com"
+                                            [2]: https://web.archive.org/web/20240716182233/https://batcmd.com/windows/11/services/webthreatdefusersvc/ "Web Threat Defense User Service - Windows 11 Service - batcmd.com | batcmd.com"
+                                            [3]: https://web.archive.org/web/20240119153912/https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows#list-of-per-user-services "Per-user services - Windows Application Management | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240924170830/https://github.com/privacysexy-forks/10_0_25197_1000/blob/40c2bd1b216c06e28578a227b520a1bcf6531406/C/Windows/System32/webthreatdefsvc.dll.strings "10_0_25197_1000/C/Windows/System32/webthreatdefsvc.dll.strings at 40c2bd1b216c06e28578a227b520a1bcf6531406 · privacysexy-forks/10_0_25197_1000 · GitHub | github.com"
+                                            [5]: https://web.archive.org/web/20240924190736/https://github.com/privacysexy-forks/10_0_25197_1000/blob/40c2bd1b216c06e28578a227b520a1bcf6531406/C/Windows/System32/webthreatdefusersvc.dll.strings "10_0_25197_1000/C/Windows/System32/webthreatdefusersvc.dll.strings at 40c2bd1b216c06e28578a227b520a1bcf6531406 · privacysexy-forks/10_0_25197_1000 · GitHub | github.com"
+                                            [6]: https://web.archive.org/web/20240924164240/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest "nickel-x64/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
+                                            [7]: https://web.archive.org/web/20240716092018/https://www.microsoft.com/en-us/security/blog/2020/09/22/microsoft-unified-siem-xdr-modernize-security-operations/ "Microsoft delivers unified SIEM and XDR to modernize security operations | Microsoft Security Blog | www.microsoft.com"
+                                            [8]: https://web.archive.org/web/20240717094647/https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-onboarding "Troubleshoot Microsoft Defender for Endpoint onboarding issues - Microsoft Defender for Endpoint | Microsoft Learn | learn.microsoft.com"
+                                            [9]: https://web.archive.org/web/20240716182210/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-webthreatdefense "WebThreatDefense Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [10]: https://web.archive.org/web/20240924175428/https://github.com/privacysexy-forks/10_0_25197_1000/blob/40c2bd1b216c06e28578a227b520a1bcf6531406/C/Windows/System32/webthreatdefsvc.dll.coff "10_0_25197_1000/C/Windows/System32/webthreatdefsvc.dll.coff at 40c2bd1b216c06e28578a227b520a1bcf6531406 · privacysexy-forks/10_0_25197_1000 | github.com"
+                                            [11]: https://web.archive.org/web/20240924175556/https://github.com/privacysexy-forks/10_0_25197_1000/blob/40c2bd1b216c06e28578a227b520a1bcf6531406/C/Windows/System32/webthreatdefusersvc.dll.coff "10_0_25197_1000/C/Windows/System32/webthreatdefusersvc.dll.coff at 40c2bd1b216c06e28578a227b520a1bcf6531406 · privacysexy-forks/10_0_25197_1000 | github.com"
+                                        call:
+                                            -
+                                                function: DisableService
+                                                parameters:
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    serviceName: webthreatdefsvc # (Get-Service -Name 'webthreatdefsvc').StartType
+                                                    defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    fileGlob: '%SYSTEMROOT%\System32\webthreatdefsvc.dll'
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 11 since 22H2 | 🔍 Missing on Windows 10 (≥ 22H2)
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: DisablePerUserService
+                                                parameters:
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    serviceName: webthreatdefusersvc # (Get-Service -Name 'webthreatdefusersvc').StartType
+                                                    defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: SoftDeleteFiles
+                                                parameters:
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    fileGlob: '%SYSTEMROOT%\System32\webthreatdefusersvc.dll'
+                                                    grantPermissions: 'true' # 🔒️ Protected on Windows 11 since 22H2 | 🔍 Missing on Windows 10 (≥ 22H2)
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: SoftDeleteRegistryKey
+                                                parameters:
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    keyPath: HKLM\SOFTWARE\Microsoft\WindowsRuntime\Server\WebThreatDefSvc
+                                                    elevateToTrustedInstaller: 'true'  # 🔒️ Protected on Windows 11 since 22H2 | 🔍 Missing on Windows 10 (≥ 22H2)
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: SoftDeleteRegistryKey
+                                                parameters:
+                                                    # Check: reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Svchost\WebThreatDefense"
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    keyPath: HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Svchost\WebThreatDefense
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: SoftDeleteRegistryKey
+                                                parameters:
+                                                    # Check: reg query "HKLM\Software\Classes\Interface\{ac889b17-df54-4854-a439-d7b68d1e16e8}"
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    keyPath: HKLM\Software\Classes\Interface\{ac889b17-df54-4854-a439-d7b68d1e16e8} # HKCR\Interface\{ac889b17-df54-4854-a439-d7b68d1e16e8} links to it
+                                                    elevateToTrustedInstaller: 'true'  # 🔒️ Protected on Windows 11 since 22H2 | 🔍 Missing on Windows 10 (≥ 22H2)
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: SoftDeleteRegistryKey
+                                                parameters:
+                                                    # Check: reg query "HKLM\Software\Classes\CLSID\{E2F1C91D-C762-4B5A-A8C1-4734E48C5FF4}"
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    keyPath: HKLM\Software\Classes\CLSID\{E2F1C91D-C762-4B5A-A8C1-4734E48C5FF4}
+                                                    elevateToTrustedInstaller: 'true'  # 🔒️ Protected on Windows 11 since 22H2 | 🔍 Missing on Windows 10 (≥ 22H2)
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: SoftDeleteRegistryKey
+                                                parameters:
+                                                    # Check: reg query "HKLM\Software\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.Service.UserSessionServiceManager"
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    keyPath: HKLM\Software\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.Service.UserSessionServiceManager
+                                                    elevateToTrustedInstaller: 'true'  # 🔒️ Protected on Windows 11 since 22H2 | 🔍 Missing on Windows 10 (≥ 22H2)
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                            -
+                                                function: SoftDeleteRegistryKey
+                                                parameters:
+                                                    # Check: reg query "HKLM\Software\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.Configuration.WTDUserSettings"
+                                                    # Availability: ❌ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 23H2)
+                                                    keyPath: HKLM\Software\Microsoft\WindowsRuntime\ActivatableClassId\Microsoft.OneCore.WebThreatDefense.Configuration.WTDUserSettings
+                                                    elevateToTrustedInstaller: 'true'  # 🔒️ Protected on Windows 11 since 22H2 | 🔍 Missing on Windows 10 (≥ 22H2)
+                                                    minimumWindowsVersion: 'Windows11-22H2'
+                                    -
+                                        name: Disable SmartScreen Enhanced Phishing Protection automatic data collection
+                                        recommend: strict # Significant privacy improvement but comes with security trade-off
+                                        docs: |-
+                                            This script disables automatic data collection by SmartScreen's **Enhanced Phishing Protection**.
+
+                                            **Enhanced Phishing Protection** collects additional information when users enter their work or school
+                                            passwords on suspicious websites or apps [1] [2].
+                                            This information may include displayed content, played sounds, and application memory [1] [2].
+
+                                            Microsoft uses this data to enhance SmartScreen's ability to identify malicious websites or apps [1] [2].
+                                            This data helps **Defender SmartScreen** determine if the user entered their work or school password on a
+                                            suspicious website or app [1] [2].
+
+                                            After running this script, **Enhanced Phishing Protection** will no longer collect additional data when
+                                            users enter work or school passwords on potentially malicious sites or apps [2].
+
+                                            This script improves privacy by stopping the collection of potentially sensitive user data.
+                                            It may also slightly boost system performance by reducing background data collection.
+
+                                            However, disabling this feature may weaken phishing protection.
+                                            Organizations like the Center for Internet Security (CIS) recommend keeping this setting enabled for stronger security [1].
+
+                                            > **Caution:**
+                                            > Disabling this feature may increase vulnerability to advanced phishing attacks targeting work or school credentials.
+
+                                            ### Technical Details
+
+                                            This script sets the `CaptureThreatWindow` [2] policy to disabled state.
+
+                                            [1]: https://web.archive.org/web/20240924164530/https://www.tenable.com/audits/items/CIS_Microsoft_Windows_11_Enterprise_v3.0.0_L1.audit:54aecdce87a28d24fd08046713c9dd0c "18.10.75.1.1 (L1) Ensure 'Automatic Data Collection' is set to... | Tenable® | www.tenable.com"
+                                            [2]: https://web.archive.org/web/20240716182210/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-webthreatdefense#automaticdatacollection "WebThreatDefense Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            function: SetWebThreatDefensePolicyDisabledViaRegistry
+                                            parameters:
+                                                valueName: CaptureThreatWindow
+                                    -
+                                        name: Disable SmartScreen Enhanced Phishing Protection "potentially malicious" notifications
+                                        docs: |-
+                                            This script disables the **Enhanced Phishing Protection** warnings in Defender SmartScreen related to potentially
+                                            malicious password entry scenarios.
+
+                                            By default, these warnings are turned off [1].
+                                            This script ensures it remains disabled.
+                                            Disabling this feature stops warnings from appearing when users enter their work or school passwords
+                                            into potentially malicious websites or applications [1].
+
+                                            This option is also known as **Warn me about malicious apps and sites** [2].
+                                            It warns users when they enter their work or school password into potentially malicious situations [1] [3].
+                                            These scenarios include:
+
+                                            - Reported phishing sites [1] [3]
+                                            - Microsoft login URLs with invalid certificates [1] [3]
+                                            - Applications connecting to either of the above [1] [3]
+
+                                            It displays a pop-up notification when users try to access a website blocked by **Defender SmartScreen** [3].
+                                            It helps users understand why a website is blocked and decide whether to proceed [3].
+
+                                            This script enhances privacy by reducing the data sent to Microsoft.
+                                            It may also improve system performance through reduced resource usage, fewer notifications, and less network activity.
+                                            
+                                            However, this script may decrease security.
+                                            The Center for Internet Security (CIS) recommends enabling this feature for better protection against phishing attacks [3].
+
+                                            > **Caution**: Disabling this feature may expose you to phishing attacks and other online threats without warning.
+
+                                            ### Technical Details
+
+                                            This script applies only to Microsoft Accounts [3].
+                                            It is only supported on Microsoft Windows 11 and later versions [1] [3].
+                                            It does not affect on-premises domain-joined accounts [3].
+
+                                            This script sets the `NotifyMalicious` [1] [2] [4] policy to disabled state.
+
+                                            [1]: https://web.archive.org/web/20240716182210/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-webthreatdefense#notifymalicious "WebThreatDefense Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240118235908/https://www.elevenforum.com/t/enable-or-disable-microsoft-defender-smartscreen-phishing-protection-windows-11.5721/ "Enable or Disable Microsoft Defender SmartScreen Phishing Protection Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                            [3]: https://web.archive.org/web/20240924172324/https://www.tenable.com/audits/items/CIS_Microsoft_Windows_11_Enterprise_v3.0.0_L1.audit:9131c40aab73eab101b55f874c48589d "18.10.75.1.2 (L1) Ensure 'Notify Malicious' is set to 'Enabled' | Tenable® | ://www.tenable.com"
+                                            [4]: https://web.archive.org/web/20240924164240/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest "nickel-x64/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
+                                        call:
+                                            function: SetWebThreatDefensePolicyDisabledViaRegistry
+                                            parameters:
+                                                valueName: NotifyMalicious
+                                    -
+                                        name: Disable SmartScreen Enhanced Phishing Protection "password reuse" notifications
+                                        docs: |-
+                                            This script disables the **Warn me about password reuse** feature in Defender SmartScreen's **Enhanced Phishing Protection**.
+
+                                            The script prevents SmartScreen from warning users when they reuse their work or school password across different services [1] [2].
+                                            The feature aims to encourage users to change reused passwords [1].
+
+                                            This feature is off by default [1].
+                                            By explicitly disabling it, the script ensures it remains inactive persistently.
+
+                                            This script improves privacy by reducing the password-related data shared with Microsoft.
+                                            It may also improve system performance by eliminating the background processes that check for password reuse.
+                                            This feature may occasionally misidentify password reuse [2], potentially causing user inconvenience.
+
+                                            However, disabling this feature may reduce security.
+                                            The Center for Internet Security (CIS) recommends keeping it enabled for stronger security [2].
+                                            When active, this feature alerts users if they try to use a password that has been exposed in a known data breach [2].
+                                            This can help reduce the risk of unauthorized access to online accounts and encourage the use of strong, unique passwords [2].
+
+                                            > **Caution**: Disabling this feature means you won't receive warnings about potentially compromised passwords,
+                                            > which may increase your risk of using unsafe passwords.
+
+                                            ### Technical Details
+
+                                            This script sets the `NotifyPasswordReuse` [1] [3] [4] policy to disabled state.
+                                            This setting applies only to Microsoft accounts used for Windows or browser login [2].
+                                            It is only supported on Microsoft Windows 11 and later versions [1] [2].
+                                            It does not affect on-premises domain-joined accounts [2].
+
+                                            [1]: https://web.archive.org/web/20240716182210/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-webthreatdefense#notifypasswordreuse "WebThreatDefense Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240924174830/https://www.tenable.com/audits/items/CIS_Microsoft_Windows_11_Stand-alone_v2.0.0_L1.audit:bcffe7061e6b119dfc3502e67b1976e9 "18.10.76.1.2 Ensure 'Notify Password Reuse' is set to 'Enabled' | Tenable®"
+                                            [3]: https://web.archive.org/web/20240924164240/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest "nickel-x64/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
+                                            [4]: https://web.archive.org/web/20240118235908/https://www.elevenforum.com/t/enable-or-disable-microsoft-defender-smartscreen-phishing-protection-windows-11.5721/ "Enable or Disable Microsoft Defender SmartScreen Phishing Protection Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                        call:
+                                            function: SetWebThreatDefensePolicyDisabledViaRegistry
+                                            parameters:
+                                                valueName: NotifyPasswordReuse
+                                    -
+                                        name: Disable SmartScreen Enhanced Phishing Protection "unsafe apps" notifications
+                                        docs: |-
+                                            This script disables **Defender SmartScreen**'s **Enhanced Phishing Protection** feature that warns
+                                            users about unsafe password storage.
+
+                                            This feature warns you when you enter passwords in apps such as Notepad, Word, OneNote, or Excel [1] [2].
+                                            This option is known as **Warn me about unsafe password storage** [3].
+
+                                            By default, this feature is disabled [1]
+                                            This script explicitly disables this feature to maintain the default behavior consistently.
+
+                                            This script enhances privacy by preventing Microsoft from monitoring password input across applications.
+                                            It may also improve system performance by reducing background processes related to password monitoring.
+
+                                            However, disabling this feature may reduce security.
+                                            Without these warnings, you may unknowingly store passwords in unsafe locations [2].
+                                            This increases the risk of unauthorized access if your device is compromised [2].
+                                            The Center for Internet Security (CIS) recommends enabling this feature to improve security [2].
+
+                                            > **Caution**:
+                                            > Disabling this feature removes warnings about unsafe password storage, which may lead to insecure password practices.
+
+                                            ### Technical Details
+
+                                            This script sets the `NotifyUnsafeApp` [1] [3] [4] policy to disabled state.
+                                            This setting applies only to Microsoft accounts used for computer or browser login [2].
+                                            It is only supported on Microsoft Windows 11 and later versions [1] [2].
+                                            It has no effect on accounts joined to on-premises domains [2].
+
+                                            [1]: https://web.archive.org/web/20240716182210/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-webthreatdefense#notifyunsafeapp "WebThreatDefense Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240924181530/https://www.tenable.com/audits/items/CIS_Microsoft_Windows_11_Stand-alone_v2.0.0_L1.audit:7f9d8484c2dcdd3457c543d9973b6b7a "18.10.76.1.3 Ensure 'Notify Unsafe App' is set to 'Enabled' | Tenable® | www.tenable.com"
+                                            [3]: https://web.archive.org/web/20240118235908/https://www.elevenforum.com/t/enable-or-disable-microsoft-defender-smartscreen-phishing-protection-windows-11.5721/ "Enable or Disable Microsoft Defender SmartScreen Phishing Protection Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                            [4]: https://web.archive.org/web/20240924164240/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest "nickel-x64/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
+                                        call:
+                                            function: SetWebThreatDefensePolicyDisabledViaRegistry
+                                            parameters:
+                                                valueName: NotifyUnsafeApp
+                                    -
+                                        name: Disable SmartScreen Enhanced Phishing Protection audit mode
+                                        docs: |-
+                                            This script disables Enhanced Phishing Protection in Microsoft Defender SmartScreen on Windows.
+
+                                            Enhanced Phishing Protection monitors and captures unsafe password entries, sending telemetry data to
+                                            Microsoft Defender [1] [2].
+                                            In audit mode, users are not notified about potential security risks [1] [2].
+
+                                            Running this script fully disables Enhanced Phishing Protection [1].
+                                            It will no longer capture events, send telemetry, or notify users [1].
+                                            Users will not be able to re-enable it through the graphical interface [1].
+
+                                            This script enhances privacy by preventing the collection and transmission of user data related to password entry events.
+                                            It may also improve system performance by reducing background processes and data transmission.
+
+                                            However, disabling this feature may reduce your protection against phishing attempts.
+                                            The Center for Internet Security (CIS) recommends keeping this feature enabled for better security [2].
+
+                                            > **Caution:**
+                                            > Disabling Enhanced Phishing Protection may leave you more vulnerable to phishing attacks.
+                                            > You will not be able to re-enable this feature without reverting the script's changes.
+                                            > Consider implementing alternative security measures to protect against phishing attempts.
+
+                                            ### Technical Details
+
+                                            This script sets the `ServiceEnabled` policy to disabled state [1] [2] [3] [4].
+                                            By default, this feature is enabled [1].
+                                            This setting only applies to Windows 11, version 22H2 (10.0.22621) and later [1].
+
+                                            [1]: https://web.archive.org/web/20240716182210/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-webthreatdefense#serviceenabled "WebThreatDefense Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240826103724/https://www.tenable.com/audits/items/CIS_Microsoft_Windows_11_Enterprise_v2.0.0_L1.audit:783c73a2e3e7c5b7ed18051225489c55 "18.10.76.1.4 Ensure 'Service Enabled' is set to 'Enabled' | Tenable® | www.tenable.com"
+                                            [3]: https://web.archive.org/web/20240924164240/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest "nickel-x64/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
+                                            [4]: https://web.archive.org/web/20240118235908/https://www.elevenforum.com/t/enable-or-disable-microsoft-defender-smartscreen-phishing-protection-windows-11.5721/ "Enable or Disable Microsoft Defender SmartScreen Phishing Protection Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                        call:
+                                            function: SetWebThreatDefensePolicyDisabledViaRegistry
+                                            parameters:
+                                                valueName: ServiceEnabled
+                                    -
+                                        name: Disable SmartScreen Enhanced Phishing Protection warnings and prompts
+                                        docs: |-
+                                            This script disables the user interface for Enhanced Phishing Protection on Windows.
+
+                                            Enhanced Phishing Protection is a feature in Windows 11 that aims to protect users
+                                            from phishing attacks [1].
+                                            This feature monitors the passwords you enter and warns you if a site may be malicious [1].
+
+                                            This script prevents Enhanced Phishing Protection from displaying warnings and prompts.
+                                            It does not stop the underlying monitoring but disables only the visual warnings and prompts.
+
+                                            This may enhance privacy perception by reducing monitoring notifications, though background
+                                            monitoring continues.
+                                            It may slightly improve system performance by disabling these UI elements.
+                                            However, you will not receive warnings about potential phishing attempts, increasing your
+                                            risk of falling victim to such attacks.
+                                            
+                                            > **Caution**: This action reduces your ability to detect phishing attempts.
+
+                                            ### Technical Details
+
+                                            The script sets the following registry value:
+                                            `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\FeatureFlags!BlockUxDisabled` [2] [3].
+                                            
+                                            This feature is unavailable on Windows 10 and Windows 11 21H2 [1].
+                                            It is enabled by default on Windows 11 [3] (confirmed by tests on version 23H2 and later).
+
+                                            [1]: https://web.archive.org/web/20240720170645/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/enhanced-phishing-protection?tabs=intune "Enhanced Phishing Protection in Microsoft Defender SmartScreen - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/System32/ThreatAssessment.dll.strings#L14141 "10_0_22622_601/C/Windows/System32/ThreatAssessment.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 | github.com"
+                                            [3]: https://web.archive.org/web/20240924164240/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest "nickel-x64/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
+                                        call:
+                                            function: SetRegistryValue
+                                            parameters:
+                                                keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\FeatureFlags
+                                                valueName: BlockUxDisabled
+                                                dataType: REG_DWORD
+                                                data: '1'
+                                                dataOnRevert: '0' # Default value: Missing on Windows 10 Pro (≥ 22H2) | `0` on Windows 11 Pro (≥ 23H2)
+                                                minimumWindowsVersion: Windows11-22H2
+                                                elevateToTrustedInstaller: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 22H2) | 🔒️ Protected on Windows 11 Pro (≥ 23H2)
+                                    -
+                                        name: Disable SmartScreen Enhanced Phishing Protection telemetry
+                                        recommend: strict # Significant privacy improvement without security trade-off
+                                        docs: |-
+                                            This script disables the Enhanced Phishing Protection telemetry feature in Windows.
+
+                                            Enhanced Phishing Protection collects data on phishing attacks to improve Microsoft's security products [1].
+                                            It shares this data across Microsoft's security suite, including Microsoft Defender for Endpoint [1].
+
+                                            This feature allows organizations to monitor unsafe password usage through alerts and reports in
+                                            the Microsoft 365 Defender Portal [1].
+
+                                            This script enhances your privacy by:
+
+                                            - Preventing data collection and sharing related to your online activities.
+                                            - Reducing the data collected by Microsoft and potentially your organization regarding your browsing habits.
+
+                                            However, disabling this feature may:
+
+                                            - Reduce the effectiveness of Microsoft's phishing protection.
+                                            - Limit your organization's ability to detect and respond to phishing threats.
+
+                                            > **Caution**:
+                                            > Disabling this feature may:
+                                            > - Decrease protection against phishing attacks.
+                                            > - Impact your organization's security monitoring if you're using a work or school computer.
+
+                                            ### Technical Details
+
+                                            The script sets the following registry value:
+                                            `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\FeatureFlags!TelemetryCallsEnabled` [2] [3].
+                                            
+                                            This feature is unavailable on Windows 10 and Windows 11 21H2 [1].
+                                            It is enabled by default on Windows 11 Pro (version 23H2 and later versions) [3].
+
+                                            [1]: https://web.archive.org/web/20240720170645/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/enhanced-phishing-protection?tabs=intune "Enhanced Phishing Protection in Microsoft Defender SmartScreen - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/System32/ThreatAssessment.dll.strings#L14142 "10_0_22622_601/C/Windows/System32/ThreatAssessment.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 | github.com"
+                                            [3]: https://web.archive.org/web/20240924164240/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest "nickel-x64/WinSxS/Manifests/amd64_microsoft-onecore-w..reatdefense-service_31bf3856ad364e35_10.0.22621.1_none_828ac38f82738863.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
+                                        call:
+                                            function: SetRegistryValue
+                                            parameters:
+                                                keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\FeatureFlags
+                                                valueName: TelemetryCallsEnabled
+                                                dataType: REG_DWORD
+                                                data: '0'
+                                                dataOnRevert: "0" # Default value: Missing on Windows 10 Pro (≥ 22H2) | `0` on Windows 11 Pro (≥ 23H2)
+                                                minimumWindowsVersion: Windows11-22H2
+                                                elevateToTrustedInstaller: 'true' # 📂 Unprotected on Windows 10 Pro (≥ 22H2) | 🔒️ Protected on Windows 11 Pro (≥ 23H2)
+                            -
                                 name: Disable outdated SmartScreen settings interface
                                 docs: |- # refactor-with-variables: • SmartScreen Caution
                                     This script disables the SmartScreen settings interface in older Windows versions.
@@ -34416,6 +34904,8 @@ functions:
         parameters:
             - name: serviceName             # The name of the service to disable
             - name: defaultStartupMode      # Allowed values: Boot | System | Automatic | Manual
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
             - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
         docs: |-
@@ -34439,6 +34929,7 @@ functions:
                 parameters:
                     serviceName: '{{ $serviceName }}'
                     defaultStartupMode: '{{ $defaultStartupMode }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                     maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
             -
                 function: Comment
@@ -34450,6 +34941,7 @@ functions:
                 parameters:
                     serviceName: '{{ $serviceName }}_*'
                     defaultStartupMode: '{{ $defaultStartupMode }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                     maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
     -
         name: RunInlineCode
@@ -34618,6 +35110,8 @@ functions:
               optional: true                        # Set to `false` to stop the service immediately without waiting for dependents.
             - name: elevateToTrustedInstaller   # See `RunPowerShellWithOptionalElevation`
               optional: true
+            - name: minimumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
             - name: maximumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
         call:
@@ -34642,6 +35136,7 @@ functions:
                 #   - With `Stop-Service` PowerShell cmdlet throws `CouldNotStopService,Microsoft.PowerShell.Commands.StopServiceCommand` error
                 parameters:
                     elevateToTrustedInstaller: '{{ with $elevateToTrustedInstaller }}true{{ end }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                     maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                     code: |-
                         $serviceQuery = '{{ $serviceName }}'
@@ -35016,6 +35511,8 @@ functions:
             - name: defaultStartupMode      # Allowed values: Automatic | Manual
             - name: ignoreMissingOnRevert   # When set to true, the revert operation will skip any actions for services that cannot be found, instead of failing.
               optional: true
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
             - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
         call:
@@ -35038,6 +35535,7 @@ functions:
                 #           https://github.com/PowerShell/PowerShell/blob/v7.2.0/src/Microsoft.PowerShell.Commands.Management/commands/management/Service.cs#L2966-L2978
                 #           https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.4
                 parameters:
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                     maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                     code: |-
                         $serviceName = '{{ $serviceName }}'
@@ -37230,6 +37728,7 @@ functions:
                             $versionName = '{{ . }}'
                             $buildNumber = switch ($versionName) {
                                 'Windows11-FirstRelease' { '10.0.22000' }
+                                'Windows11-22H2' { '10.0.22621' }
                                 'Windows11-21H2' { '10.0.22000' }
                                 'Windows10-22H2' { '10.0.19045' }
                                 'Windows10-21H2' { '10.0.19044' }
@@ -37241,10 +37740,10 @@ functions:
                                 }
                             }
                             $minVersion = [System.Version]::Parse($buildNumber)
-                            $version = [Environment]::OSVersion.Version
-                            $versionNoPatch = [System.Version]::new($version.Major, $version.Minor, $version.Build)
-                            if ($versionNoPatch -lt $minVersion) {
-                                Write-Output "Skipping: Windows ($versionNoPatch) is below minimum $minVersion ($versionName)"
+                            $ver = [Environment]::OSVersion.Version
+                            $verNoPatch = [System.Version]::new($ver.Major, $ver.Minor, $ver.Build)
+                            if ($verNoPatch -lt $minVersion) {
+                                Write-Output "Skipping: Windows ($verNoPatch) is below minimum $minVersion ($versionName)"
                                 Exit 0
                             }
                         {{ end }}{{ with $maximumWindowsVersion }}
@@ -37260,10 +37759,10 @@ functions:
                                 }
                             }
                             $maxVersion=[System.Version]::Parse($buildNumber)
-                            $version = [Environment]::OSVersion.Version
-                            $versionNoPatch = [System.Version]::new($version.Major, $version.Minor, $version.Build)
-                            if ($versionNoPatch -gt $maxVersion) {
-                                Write-Output "Skipping: Windows ($versionNoPatch) is above maximum $maxVersion ($versionName)"
+                            $ver = [Environment]::OSVersion.Version
+                            $verNoPatch = [System.Version]::new($ver.Major, $ver.Minor, $ver.Build)
+                            if ($verNoPatch -gt $maxVersion) {
+                                Write-Output "Skipping: Windows ($verNoPatch) is above maximum $maxVersion ($versionName)"
                                 Exit 0
                             }
                         {{ end }}{{ with $setupCode }}
@@ -38491,3 +38990,44 @@ functions:
                             Write-Error 'Failed to restore'
                             Exit 1
                         }
+    -
+        name: SetWebThreatDefensePolicyDisabledViaRegistry
+        parameters:
+            - name: valueName
+        docs: |-
+            This function configures **Enhanced Phishing Protection** in **Microsoft Defender SmartScreen** [2].
+            This feature is technically known as `WebThreatDefense` [1] [2] [3].
+            It was introduced in Windows 11 [3] and available only for Windows 11 versions [2].
+
+            The function sets the following registry key paths:
+
+            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WTDS\Components`:
+              This is used to set Group Policy Objects (GPOs) [2].
+            - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components`:
+              This key lacks official documentation.
+              The component responsible for this functionality (`webthreatdefsvc.dll`) reads these configurations for its operation [3].
+              Tests (conducted on Windows 11 version 23H2 and later) show that access to this registry key requires `TrustedInstaller` privileges.
+
+            [1]: https://web.archive.org/web/20240720170645/https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/enhanced-phishing-protection?tabs=intune "Enhanced Phishing Protection in Microsoft Defender SmartScreen - Windows Security | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240720170652/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-webthreatdefense "WebThreatDefense Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+            [3]: https://web.archive.org/web/20240924170830/https://github.com/privacysexy-forks/10_0_25197_1000/blob/40c2bd1b216c06e28578a227b520a1bcf6531406/C/Windows/System32/webthreatdefsvc.dll.strings "10_0_25197_1000/C/Windows/System32/webthreatdefsvc.dll.strings at 40c2bd1b216c06e28578a227b520a1bcf6531406 · privacysexy-forks/10_0_25197_1000 | github.com"
+        call:
+            -
+                function: SetRegistryValue # GPO
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WTDS\Components
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: '0'
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                    minimumWindowsVersion: Windows11-FirstRelease
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: '0'
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since EdgeUpdate ≥ 1.3.187.41
+                    minimumWindowsVersion: Windows11-FirstRelease # No TrustedInstaller is needed on Windows 10, but the functionality is missing so the script won't work.
+                    elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ✅ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
