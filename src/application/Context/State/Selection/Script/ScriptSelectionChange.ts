@@ -1,3 +1,5 @@
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
+
 export type ScriptSelectionStatus = {
   readonly isSelected: true;
   readonly isReverted: boolean;
@@ -7,7 +9,7 @@ export type ScriptSelectionStatus = {
 };
 
 export interface ScriptSelectionChange {
-  readonly scriptId: string;
+  readonly scriptId: ExecutableId;
   readonly newStatus: ScriptSelectionStatus;
 }
 

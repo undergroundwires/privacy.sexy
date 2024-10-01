@@ -1,16 +1,16 @@
-import type { ISanityValidator } from './ISanityValidator';
-import type { ISanityCheckOptions } from './ISanityCheckOptions';
+import type { SanityValidator } from './SanityValidator';
+import type { SanityCheckOptions } from './SanityCheckOptions';
 
 export type FactoryFunction<T> = () => T;
 
-export abstract class FactoryValidator<T> implements ISanityValidator {
+export abstract class FactoryValidator<T> implements SanityValidator {
   private readonly factory: FactoryFunction<T>;
 
   protected constructor(factory: FactoryFunction<T>) {
     this.factory = factory;
   }
 
-  public abstract shouldValidate(options: ISanityCheckOptions): boolean;
+  public abstract shouldValidate(options: SanityCheckOptions): boolean;
 
   public abstract name: string;
 

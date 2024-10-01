@@ -19,7 +19,7 @@
 
 import { constants } from 'crypto';
 import tls from 'tls';
-import { indentText } from '@tests/shared/Text';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 export function randomizeTlsFingerprint() {
   tls.DEFAULT_CIPHERS = getShuffledCiphers().join(':');

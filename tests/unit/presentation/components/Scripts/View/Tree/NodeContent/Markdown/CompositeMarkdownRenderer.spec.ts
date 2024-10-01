@@ -8,7 +8,7 @@ describe('CompositeMarkdownRenderer', () => {
     it('throws error without renderers', () => {
       // arrange
       const expectedError = 'missing renderers';
-      const renderers = [];
+      const renderers = new Array<MarkdownRenderer>();
       const context = new MarkdownRendererTestBuilder()
         .withMarkdownRenderers(renderers);
       // act

@@ -1,8 +1,10 @@
 import type { HierarchyAccess, HierarchyReader } from './Hierarchy/HierarchyAccess';
 import type { TreeNodeStateAccess, TreeNodeStateReader } from './State/StateAccess';
 
+export type TreeNodeId = string;
+
 export interface ReadOnlyTreeNode {
-  readonly id: string;
+  readonly id: TreeNodeId;
   readonly state: TreeNodeStateReader;
   readonly hierarchy: HierarchyReader;
   readonly metadata?: object;

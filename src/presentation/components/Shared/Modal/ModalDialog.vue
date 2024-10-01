@@ -82,7 +82,14 @@ export default defineComponent({
     width: auto;
     font-size: $font-size-absolute-large;
     margin-right: $spacing-absolute-small;
-    align-self: flex-start;
+
+    @mixin keep-visible-above-scrollbar { // Prevents close button from being obscured by scrollbar on small screens.
+      position: absolute;
+      top: 0;
+      right: 0; // Aligns right
+    }
+
+    @include keep-visible-above-scrollbar;
   }
 }
 </style>

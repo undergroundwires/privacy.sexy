@@ -78,17 +78,20 @@ export default defineComponent({
     }
   }
   .docs {
+    color: $color-on-primary;
     background: $color-primary-darkest;
+
     margin-left: $spacing-absolute-small;
     margin-top: $spacing-relative-x-small;
-    color: $color-on-primary;
-    text-transform: none;
     padding: $spacing-absolute-medium;
+
+    text-transform: none;
+    cursor: auto;
+    user-select: text;
+
     &-collapsed {
       display: none;
     }
-    cursor: auto;
-    user-select: text;
   }
 }
 </style>

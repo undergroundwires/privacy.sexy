@@ -116,6 +116,8 @@ export default defineComponent({
   }
   &__section {
     display: flex;
+    flex-wrap: wrap;
+
     @media screen and (max-width: $media-screen-big-width) {
       justify-content: space-around;
       width: 100%;
@@ -124,7 +126,7 @@ export default defineComponent({
         margin-top: $spacing-relative-small;
       }
     }
-    flex-wrap: wrap;
+
     &__item:not(:first-child) {
       &::before {
         content: "|";

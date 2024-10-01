@@ -13,22 +13,9 @@ describe('CircleRating.vue', () => {
       const currentRating = MAX_RATING - 1;
 
       // act
-      const wrapper = shallowMount(CircleRating, {
-        propsData: {
-          rating: currentRating,
-        },
+      const wrapper = mountComponent({
+        rating: currentRating,
       });
-
-      // assert
-      const ratingCircles = wrapper.findAllComponents(RatingCircle);
-      expect(ratingCircles.length).to.equal(expectedMaxRating);
-    });
-    it('renders the correct number of RatingCircle components for default rating', () => {
-      // arrange
-      const expectedMaxRating = MAX_RATING;
-
-      // act
-      const wrapper = shallowMount(CircleRating);
 
       // assert
       const ratingCircles = wrapper.findAllComponents(RatingCircle);
@@ -42,10 +29,8 @@ describe('CircleRating.vue', () => {
       const expectedTotalComponents = 3;
 
       // act
-      const wrapper = shallowMount(CircleRating, {
-        propsData: {
-          rating: expectedTotalComponents,
-        },
+      const wrapper = mountComponent({
+        rating: expectedTotalComponents,
       });
 
       // assert
@@ -87,3 +72,13 @@ describe('CircleRating.vue', () => {
     });
   });
 });
+
+function mountComponent(options: {
+  readonly rating: number,
+}) {
+  return shallowMount(CircleRating, {
+    props: {
+      rating: options.rating,
+    },
+  });
+}

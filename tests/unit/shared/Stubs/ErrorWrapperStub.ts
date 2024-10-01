@@ -1,4 +1,5 @@
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 
 export class ErrorWrapperStub {
   private errorToReturn: Error | undefined;
@@ -60,8 +61,7 @@ function getLimitedStackTrace(
   if (!stack) {
     return 'No stack trace available';
   }
-  return stack
-    .split('\n')
+  return splitTextIntoLines(stack)
     .slice(0, limit + 1)
     .join('\n');
 }

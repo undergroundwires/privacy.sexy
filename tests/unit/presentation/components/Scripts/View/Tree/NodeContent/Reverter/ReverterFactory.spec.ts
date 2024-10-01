@@ -5,15 +5,16 @@ import { CategoryReverter } from '@/presentation/components/Scripts/View/Tree/No
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import { getCategoryNodeId, getScriptNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
+import { createNodeIdForExecutable } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { type NodeMetadata, NodeType } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import type { TreeNodeId } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 
 describe('ReverterFactory', () => {
   describe('getReverter', () => {
-    it('gets CategoryReverter for category node', () => {
+    it(`gets ${CategoryReverter.name} for category node`, () => {
       // arrange
-      const category = new CategoryStub(0).withScriptIds('55');
-      const node = getNodeContentStub(getCategoryNodeId(category), NodeType.Category);
+      const category = new CategoryStub('test-action-category').withScriptIds('55');
+      const node = getNodeContentStub(createNodeIdForExecutable(category), NodeType.Category);
       const collection = new CategoryCollectionStub()
         .withAction(category);
       // act
@@ -21,21 +22,21 @@ describe('ReverterFactory', () => {
       // assert
       expect(result instanceof CategoryReverter).to.equal(true);
     });
-    it('gets ScriptReverter for script node', () => {
+    it(`gets ${ScriptReverter.name} for script node`, () => {
       // arrange
       const script = new ScriptStub('test');
-      const node = getNodeContentStub(getScriptNodeId(script), NodeType.Script);
+      const node = getNodeContentStub(createNodeIdForExecutable(script), NodeType.Script);
       const collection = new CategoryCollectionStub()
-        .withAction(new CategoryStub(0).withScript(script));
+        .withAction(new CategoryStub('test-action-category').withScript(script));
       // act
       const result = getReverter(node, collection);
       // assert
       expect(result instanceof ScriptReverter).to.equal(true);
     });
   });
-  function getNodeContentStub(nodeId: string, type: NodeType): NodeMetadata {
+  function getNodeContentStub(nodeId: TreeNodeId, type: NodeType): NodeMetadata {
     return {
-      id: nodeId,
+      executableId: nodeId,
       text: 'text',
       isReversible: false,
       docs: [],

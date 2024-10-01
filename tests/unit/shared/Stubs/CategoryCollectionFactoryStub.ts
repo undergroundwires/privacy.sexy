@@ -1,6 +1,6 @@
 import type { CategoryCollectionFactory } from '@/application/Parser/CategoryCollectionParser';
-import type { CategoryCollectionInitParameters } from '@/domain/CategoryCollection';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { CategoryCollectionInitParameters } from '@/domain/Collection/CategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { CategoryCollectionStub } from './CategoryCollectionStub';
 
 export function createCategoryCollectionFactorySpy(): {

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { PipeFactory } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/PipeFactory';
 import { PipeStub } from '@tests/unit/shared/Stubs/PipeStub';
 import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import type { Pipe } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/Pipe';
 
 describe('PipeFactory', () => {
   describe('ctor', () => {
@@ -49,7 +50,7 @@ describe('PipeFactory', () => {
       // arrange
       const missingName = 'missingName';
       const expectedError = `Unknown pipe: "${missingName}"`;
-      const pipes = [];
+      const pipes: readonly Pipe[] = [];
       const sut = new PipeFactory(pipes);
       // act
       const act = () => sut.get(missingName);

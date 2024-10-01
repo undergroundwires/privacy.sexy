@@ -68,9 +68,11 @@ export default defineComponent({
   @include horizontal-stack;
   @include apply-icon-color($color-caution);
 }
+
 .description {
+  align-items: center;
+
   @include horizontal-stack;
   @include apply-icon-color($color-success);
-  align-items: center;
 }
 </style>

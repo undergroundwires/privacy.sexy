@@ -16,7 +16,7 @@ describe('ApplicationCode', () => {
   describe('ctor', () => {
     it('empty when selection is empty', () => {
       // arrange
-      const selectedScripts = [];
+      const selectedScripts: readonly SelectedScript[] = [];
       const selection = new ScriptSelectionStub()
         .withSelectedScripts(selectedScripts);
       const definition = new ScriptingDefinitionStub();

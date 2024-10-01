@@ -1,17 +1,18 @@
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { RepositoryEntityId } from '@/application/Repository/RepositoryEntity';
 import type { Script } from '@/domain/Executables/Script/Script';
 
 export class SelectedScriptStub implements SelectedScript {
   public readonly script: Script;
 
-  public readonly id: string;
+  public readonly id: RepositoryEntityId;
 
   public revert: boolean;
 
   constructor(
     script: Script,
   ) {
-    this.id = script.id;
+    this.id = script.executableId;
     this.script = script;
   }
 

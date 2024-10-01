@@ -1,6 +1,6 @@
 import { app, dialog } from 'electron/main';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { UpdateProgressBar } from './UpdateProgressBar';
+import { UpdateProgressBar } from './ProgressBar/UpdateProgressBar';
 import { getAutoUpdater } from './ElectronAutoUpdaterFactory';
 import type { AppUpdater, UpdateInfo } from 'electron-updater';
 import type { ProgressInfo } from 'electron-builder';
@@ -26,11 +26,13 @@ function startHandlingUpdateProgress(autoUpdater: AppUpdater) {
       So the indeterminate progress will continue until download is finished.
     */
     ElectronLogger.debug('@download-progress@\n', progress);
-    progressBar.showProgress(progress);
+    if (progressBar.isOpen) { // May be closed by the user
+      progressBar.showProgress(progress);
+    }
   });
   autoUpdater.on('update-downloaded', async (info: UpdateInfo) => {
     ElectronLogger.info('@update-downloaded@\n', info);
-    progressBar.close();
+    progressBar.closeIfOpen();
     await handleUpdateDownloaded(autoUpdater);
   });
 }

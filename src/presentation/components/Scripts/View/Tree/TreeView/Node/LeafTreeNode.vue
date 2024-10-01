@@ -28,7 +28,7 @@ import { defineComponent, computed, toRef } from 'vue';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import NodeCheckbox from './NodeCheckbox.vue';
 import InteractableNode from './InteractableNode.vue';
-import type { TreeNode } from './TreeNode';
+import type { TreeNode, TreeNodeId } from './TreeNode';
 import type { TreeRoot } from '../TreeRoot/TreeRoot';
 import type { PropType } from 'vue';
 
@@ -39,7 +39,7 @@ export default defineComponent({
   },
   props: {
     nodeId: {
-      type: String,
+      type: String as PropType<TreeNodeId>,
       required: true,
     },
     treeRoot: {

@@ -1,6 +1,6 @@
 import type { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { FactoryValidator, type FactoryFunction } from '../Common/FactoryValidator';
-import type { ISanityCheckOptions } from '../Common/ISanityCheckOptions';
+import type { SanityCheckOptions } from '../Common/SanityCheckOptions';
 
 export class WindowVariablesValidator extends FactoryValidator<WindowVariables> {
   constructor(factory: FactoryFunction<WindowVariables> = () => window) {
@@ -9,7 +9,7 @@ export class WindowVariablesValidator extends FactoryValidator<WindowVariables> 
 
   public override name = 'window variables';
 
-  public override shouldValidate(options: ISanityCheckOptions): boolean {
+  public override shouldValidate(options: SanityCheckOptions): boolean {
     return options.validateWindowVariables;
   }
 }

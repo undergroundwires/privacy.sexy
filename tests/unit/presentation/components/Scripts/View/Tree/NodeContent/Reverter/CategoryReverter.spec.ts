@@ -3,12 +3,12 @@ import { CategoryReverter } from '@/presentation/components/Scripts/View/Tree/No
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import { getCategoryNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { CategorySelectionStub } from '@tests/unit/shared/Stubs/CategorySelectionStub';
 import type { Script } from '@/domain/Executables/Script/Script';
+import { createExecutableIdFromNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 
 describe('CategoryReverter', () => {
   describe('getState', () => {
@@ -122,8 +122,8 @@ describe('CategoryReverter', () => {
     }) => {
       it(description, () => {
         // arrange
-        const category = new CategoryStub(1).withScripts(...allScripts);
-        const categoryNodeId = getCategoryNodeId(category);
+        const category = new CategoryStub('parent-category-id').withScripts(...allScripts);
+        const categoryNodeId = createExecutableIdFromNodeId(category.executableId);
         const collection = new CategoryCollectionStub().withAction(category);
         const categoryReverter = new CategoryReverter(categoryNodeId, collection);
         const selectedScripts = selectScripts(allScripts);
@@ -157,8 +157,8 @@ describe('CategoryReverter', () => {
           new ScriptStub('reversible').withReversibility(true),
           new ScriptStub('reversible2').withReversibility(true),
         ];
-        const category = new CategoryStub(1).withScripts(...allScripts);
-        const nodeId = getCategoryNodeId(category);
+        const category = new CategoryStub('parent-category').withScripts(...allScripts);
+        const nodeId = createExecutableIdFromNodeId(category.executableId);
         const collection = new CategoryCollectionStub().withAction(category);
         const categorySelection = new CategorySelectionStub();
         const categoryReverter = new CategoryReverter(nodeId, collection);
@@ -170,7 +170,7 @@ describe('CategoryReverter', () => {
         );
         // assert
         const actualRevertState = categorySelection.isCategorySelected(
-          category.id,
+          category.executableId,
           expectedRevertState,
         );
         expect(actualRevertState).to.equal(true);

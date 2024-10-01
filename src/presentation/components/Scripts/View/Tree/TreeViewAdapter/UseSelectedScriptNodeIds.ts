@@ -2,20 +2,21 @@ import {
   computed, shallowReadonly,
 } from 'vue';
 import type { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
-import { getScriptNodeId } from './CategoryNodeMetadataConverter';
+import { createNodeIdForExecutable } from './CategoryNodeMetadataConverter';
+import type { TreeNodeId } from '../TreeView/Node/TreeNode';
 
 export function useSelectedScriptNodeIds(
   useSelectionStateHook: ReturnType<typeof useUserSelectionState>,
-  scriptNodeIdParser = getScriptNodeId,
+  convertToNodeId = createNodeIdForExecutable,
 ) {
   const { currentSelection } = useSelectionStateHook;
 
-  const selectedNodeIds = computed<readonly string[]>(() => {
+  const selectedNodeIds = computed<readonly TreeNodeId[]>(() => {
     return currentSelection
       .value
       .scripts
       .selectedScripts
-      .map((selected) => scriptNodeIdParser(selected.script));
+      .map((selected) => convertToNodeId(selected.script));
   });
 
   return {

@@ -50,7 +50,7 @@ describe('RendererApiProvider', () => {
         // act
         const variables = testContext.provideWindowVariables();
         // assert
-        const actualValue = variables[property];
+        const actualValue = variables[property as PropertyKeys<Required<WindowVariables>>];
         expect(actualValue).to.equal(expectedValue);
       });
     });

@@ -11,11 +11,17 @@ export class TreeRootManager implements TreeRoot {
 
   constructor(
     collection: TreeNodeCollection = new TreeNodeInitializerAndUpdater(),
-    createFocusManager: (
-      collection: TreeNodeCollection
-    ) => SingleNodeFocusManager = (nodes) => new SingleNodeCollectionFocusManager(nodes),
+    createFocusManager: FocusManagerFactory = (
+      nodes,
+    ) => new SingleNodeCollectionFocusManager(nodes),
   ) {
     this.collection = collection;
     this.focus = createFocusManager(this.collection);
   }
+}
+
+export interface FocusManagerFactory {
+  (
+    collection: TreeNodeCollection
+  ): SingleNodeFocusManager;
 }

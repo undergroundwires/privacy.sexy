@@ -1,16 +1,15 @@
 import {
   type Ref, shallowReadonly, shallowRef,
 } from 'vue';
-import type { Script } from '@/domain/Executables/Script/Script';
 import type { Category } from '@/domain/Executables/Category/Category';
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { Executable } from '@/domain/Executables/Executable';
 import { type TreeViewFilterEvent, createFilterRemovedEvent, createFilterTriggeredEvent } from '../TreeView/Bindings/TreeInputFilterEvent';
-import { getNodeMetadata } from './TreeNodeMetadataConverter';
-import { getCategoryNodeId, getScriptNodeId } from './CategoryNodeMetadataConverter';
-import type { NodeMetadata } from '../NodeContent/NodeMetadata';
-import type { ReadOnlyTreeNode } from '../TreeView/Node/TreeNode';
+import { createExecutableIdFromNodeId } from './CategoryNodeMetadataConverter';
+import type { ReadOnlyTreeNode, TreeNodeId } from '../TreeView/Node/TreeNode';
 
 type TreeNodeFilterResultPredicate = (
   node: ReadOnlyTreeNode,
@@ -24,7 +23,7 @@ export function useTreeViewFilterEvent() {
   const latestFilterEvent = shallowRef<TreeViewFilterEvent | undefined>(undefined);
 
   const treeNodePredicate: TreeNodeFilterResultPredicate = (node, filterResult) => filterMatches(
-    getNodeMetadata(node),
+    node.id,
     filterResult,
   );
 
@@ -71,15 +70,17 @@ function createFilterEvent(
   );
 }
 
-function filterMatches(node: NodeMetadata, filter: FilterResult): boolean {
-  return containsScript(node, filter.scriptMatches)
-    || containsCategory(node, filter.categoryMatches);
+function filterMatches(nodeId: TreeNodeId, filter: FilterResult): boolean {
+  const executableId = createExecutableIdFromNodeId(nodeId);
+  return containsExecutable(executableId, filter.scriptMatches)
+    || containsExecutable(executableId, filter.categoryMatches);
 }
 
-function containsScript(expected: NodeMetadata, scripts: readonly Script[]) {
-  return scripts.some((existing: Script) => expected.id === getScriptNodeId(existing));
-}
-
-function containsCategory(expected: NodeMetadata, categories: readonly Category[]) {
-  return categories.some((existing: Category) => expected.id === getCategoryNodeId(existing));
+function containsExecutable(
+  expectedId: ExecutableId,
+  executables: readonly Executable[],
+): boolean {
+  return executables.some(
+    (existing: Category) => existing.executableId === expectedId,
+  );
 }

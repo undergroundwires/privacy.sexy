@@ -26,6 +26,7 @@ import { useLeafNodeCheckedStateUpdater } from './UseLeafNodeCheckedStateUpdater
 import { useAutoUpdateParentCheckState } from './UseAutoUpdateParentCheckState';
 import { useAutoUpdateChildrenCheckState } from './UseAutoUpdateChildrenCheckState';
 import { useGradualNodeRendering, type NodeRenderingControl } from './Rendering/UseGradualNodeRendering';
+import { type TreeNodeId } from './Node/TreeNode';
 import type { TreeNodeStateChangedEmittedEvent } from './Bindings/TreeNodeStateChangedEmittedEvent';
 import type { TreeInputNodeData } from './Bindings/TreeInputNodeData';
 import type { TreeViewFilterEvent } from './Bindings/TreeInputFilterEvent';
@@ -45,7 +46,7 @@ export default defineComponent({
       default: () => undefined,
     },
     selectedLeafNodeIds: {
-      type: Array as PropType<ReadonlyArray<string>>,
+      type: Array as PropType<ReadonlyArray<TreeNodeId>>,
       default: () => [],
     },
   },

@@ -69,6 +69,12 @@ definitions:
       - $ref: '#/definitions/CodeScript'
       - $ref: '#/definitions/CallScript'
 
+  RecommendationLevel:
+    oneOf:
+    - type: string
+      enum: [standard, strict]
+    - type: 'null'
+
   ScriptDefinition:
     type: object
     allOf:
@@ -78,8 +84,7 @@ definitions:
       name:
         type: string
       recommend:
-        type: string
-        enum: [standard, strict]
+        $ref: '#/definitions/RecommendationLevel'
 
   CodeScript:
     type: object

@@ -1,5 +1,5 @@
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { getEnumValues } from '@/application/Common/Enum';
 import type { CollectionData } from '@/application/collections/';
 import { OperatingSystem } from '@/domain/OperatingSystem';

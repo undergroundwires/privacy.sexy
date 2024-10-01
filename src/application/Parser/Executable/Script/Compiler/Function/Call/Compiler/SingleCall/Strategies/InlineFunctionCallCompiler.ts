@@ -3,6 +3,7 @@ import type { IExpressionsCompiler } from '@/application/Parser/Executable/Scrip
 import { FunctionBodyType, type ISharedFunction } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunction';
 import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import type { CompiledCode } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import { indentText } from '@/application/Common/Text/IndentText';
 import type { SingleCallCompilerStrategy } from '../SingleCallCompilerStrategy';
 
 export class InlineFunctionCallCompiler implements SingleCallCompilerStrategy {
@@ -22,10 +23,12 @@ export class InlineFunctionCallCompiler implements SingleCallCompilerStrategy {
     if (calledFunction.body.type !== FunctionBodyType.Code) {
       throw new Error([
         'Unexpected function body type.',
-        `\tExpected: "${FunctionBodyType[FunctionBodyType.Code]}"`,
-        `\tActual: "${FunctionBodyType[calledFunction.body.type]}"`,
+        indentText([
+          `Expected: "${FunctionBodyType[FunctionBodyType.Code]}"`,
+          `Actual: "${FunctionBodyType[calledFunction.body.type]}"`,
+        ].join('\n')),
         'Function:',
-        `\t${JSON.stringify(callToFunction)}`,
+        indentText(JSON.stringify(callToFunction)),
       ].join('\n'));
     }
     const { code } = calledFunction.body;

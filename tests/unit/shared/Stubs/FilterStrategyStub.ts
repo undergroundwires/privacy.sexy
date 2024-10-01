@@ -1,6 +1,6 @@
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import type { FilterStrategy } from '@/application/Context/State/Filter/Strategy/FilterStrategy';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { FilterResultStub } from './FilterResultStub';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 

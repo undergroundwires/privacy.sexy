@@ -38,7 +38,7 @@ export class ExpressionStub implements IExpression {
     this.callHistory.push(context);
     if (this.result === undefined /* not empty string */) {
       const { args } = context;
-      return `[expression-stub] args: ${args ? Object.keys(args).map((key) => `${key}: ${args[key]}`).join('", "') : 'none'}`;
+      return `[expression-stub] args: ${args ? Object.entries(args).map((key, value) => `${key}: ${value}`).join('", "') : 'none'}`;
     }
     return this.result;
   }

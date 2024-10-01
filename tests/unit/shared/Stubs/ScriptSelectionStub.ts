@@ -4,6 +4,7 @@ import type { SelectedScript } from '@/application/Context/State/Selection/Scrip
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { EventSourceStub } from './EventSourceStub';
 import { SelectedScriptStub } from './SelectedScriptStub';
@@ -32,9 +33,9 @@ export class ScriptSelectionStub
     return this;
   }
 
-  public isScriptSelected(scriptId: string, revert: boolean): boolean {
+  public isScriptSelected(scriptExecutableId: ExecutableId, revert: boolean): boolean {
     return this.isScriptChanged({
-      scriptId,
+      scriptId: scriptExecutableId,
       newStatus: {
         isSelected: true,
         isReverted: revert,
@@ -42,9 +43,9 @@ export class ScriptSelectionStub
     });
   }
 
-  public isScriptDeselected(scriptId: string): boolean {
+  public isScriptDeselected(scriptExecutableId: ExecutableId): boolean {
     return this.isScriptChanged({
-      scriptId,
+      scriptId: scriptExecutableId,
       newStatus: {
         isSelected: false,
       },

@@ -8,7 +8,7 @@ import { ViteEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/
 
 describe('ViteEnvironmentVariables', () => {
   describe('reads values from import.meta.env', () => {
-    let originalMetaEnv;
+    let originalMetaEnv: ImportMetaEnv;
     beforeEach(() => {
       originalMetaEnv = { ...import.meta.env };
     });
@@ -16,14 +16,15 @@ describe('ViteEnvironmentVariables', () => {
       Object.assign(import.meta.env, originalMetaEnv);
     });
 
-    interface ITestCase<T> {
+    interface EnvironmentVariableTestScenario<T> {
       readonly getActualValue: (sut: IEnvironmentVariables) => T;
       readonly environmentVariable: typeof VITE_ENVIRONMENT_KEYS[
         keyof typeof VITE_ENVIRONMENT_KEYS];
       readonly expected: T;
     }
     const testCases: {
-      readonly [K in PropertyKeys<IEnvironmentVariables>]: ITestCase<string | boolean>;
+      readonly [K in PropertyKeys<IEnvironmentVariables>]:
+      EnvironmentVariableTestScenario<string | boolean>;
     } = {
       name: {
         environmentVariable: VITE_ENVIRONMENT_KEYS.NAME,

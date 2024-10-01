@@ -22,7 +22,8 @@ export function registerAllIpcChannels(
   };
   Object.entries(ipcInstanceCreators).forEach(([name, instanceFactory]) => {
     try {
-      const definition = IpcChannelDefinitions[name];
+      const definitionKey = name as keyof typeof IpcChannelDefinitions;
+      const definition = IpcChannelDefinitions[definitionKey] as IpcChannel<unknown>;
       const instance = instanceFactory();
       registrar(definition, instance);
     } catch (err) {

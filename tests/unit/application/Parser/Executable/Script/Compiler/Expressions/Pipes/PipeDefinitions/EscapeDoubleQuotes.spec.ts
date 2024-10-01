@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { EscapeDoubleQuotes } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/PipeDefinitions/EscapeDoubleQuotes';
 import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
-import { runPipeTests } from './PipeTestRunner';
+import { runPipeTests, type PipeTestScenario } from './PipeTestRunner';
 
 describe('EscapeDoubleQuotes', () => {
   // arrange
@@ -9,23 +9,23 @@ describe('EscapeDoubleQuotes', () => {
   // act
   runPipeTests(sut, [
     ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
-      .map((testCase) => ({
-        name: 'returns as it is when if input is missing',
+      .map((testCase): PipeTestScenario => ({
+        description: `returns empty when if input is missing (${testCase.valueName})`,
         input: testCase.absentValue,
-        expectedOutput: testCase.absentValue,
+        expectedOutput: '',
       })),
     {
-      name: 'using "',
+      description: 'using "',
       input: 'hello "world"',
       expectedOutput: 'hello "^""world"^""',
     },
     {
-      name: 'not using any double quotes',
+      description: 'not using any double quotes',
       input: 'hello world',
       expectedOutput: 'hello world',
     },
     {
-      name: 'consecutive double quotes',
+      description: 'consecutive double quotes',
       input: '""hello world""',
       expectedOutput: '"^"""^""hello world"^"""^""',
     },

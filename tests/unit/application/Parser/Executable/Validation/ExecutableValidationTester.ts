@@ -5,9 +5,9 @@ import { ExecutableValidatorStub } from '@tests/unit/shared/Stubs/ExecutableVali
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import type { FunctionKeys } from '@/TypeHelpers';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import { indentText } from '@tests/shared/Text';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
 import { expectDeepIncludes } from '@tests/shared/Assertions/ExpectDeepIncludes';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 type ValidationTestFunction<TExpectation> = (
   factory: ExecutableValidatorFactory,

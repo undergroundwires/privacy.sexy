@@ -1,3 +1,4 @@
+import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
 import type { CompiledCode } from '../CompiledCode';
 import type { CodeSegmentMerger } from './CodeSegmentMerger';
 
@@ -8,11 +9,9 @@ export class NewlineCodeSegmentMerger implements CodeSegmentMerger {
     }
     return {
       code: joinCodeParts(codeSegments.map((f) => f.code)),
-      revertCode: joinCodeParts(
-        codeSegments
-          .map((f) => f.revertCode)
-          .filter((code): code is string => Boolean(code)),
-      ),
+      revertCode: joinCodeParts(filterEmptyStrings(
+        codeSegments.map((f) => f.revertCode),
+      )),
     };
   }
 }

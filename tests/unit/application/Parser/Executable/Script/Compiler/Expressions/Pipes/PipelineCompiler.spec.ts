@@ -9,20 +9,20 @@ import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTes
 describe('PipelineCompiler', () => {
   describe('compile', () => {
     describe('throws for invalid arguments', () => {
-      interface ITestCase {
+      interface ThrowingPipeScenario {
         readonly name: string;
         readonly act: (test: PipelineTestRunner) => PipelineTestRunner;
         readonly expectedError: string;
       }
-      const testCases: ITestCase[] = [
+      const testScenarios: ThrowingPipeScenario[] = [
         ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
-          .map((testCase) => ({
+          .map((testCase): ThrowingPipeScenario => ({
             name: `"value" is ${testCase.valueName}`,
             act: (test) => test.withValue(testCase.absentValue),
             expectedError: 'missing value',
           })),
         ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
-          .map((testCase) => ({
+          .map((testCase): ThrowingPipeScenario => ({
             name: `"pipeline" is ${testCase.valueName}`,
             act: (test) => test.withPipeline(testCase.absentValue),
             expectedError: 'missing pipeline',
@@ -33,7 +33,7 @@ describe('PipelineCompiler', () => {
           expectedError: 'pipeline does not start with pipe',
         },
       ];
-      for (const testCase of testCases) {
+      for (const testCase of testScenarios) {
         it(testCase.name, () => {
           // act
           const runner = new PipelineTestRunner();

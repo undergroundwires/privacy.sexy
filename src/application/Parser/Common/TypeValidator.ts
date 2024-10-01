@@ -108,7 +108,7 @@ function assertArray(
   valueName: string,
 ): asserts value is Array<unknown> {
   if (!isArray(value)) {
-    throw new Error(`'${valueName}' should be of type 'array', but is of type '${typeof value}'.`);
+    throw new Error(`${valueName} should be of type 'array', but is of type '${typeof value}'.`);
   }
 }
 
@@ -117,7 +117,7 @@ function assertString(
   valueName: string,
 ): asserts value is string {
   if (!isString(value)) {
-    throw new Error(`'${valueName}' should be of type 'string', but is of type '${typeof value}'.`);
+    throw new Error(`${valueName} should be of type 'string', but is of type '${typeof value}'.`);
   }
 }
 

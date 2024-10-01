@@ -33,7 +33,7 @@ describe('TreeNodeHierarchy', () => {
     it('returns `true` without children', () => {
       // arrange
       const hierarchy = new TreeNodeHierarchy();
-      const children = [];
+      const children = new Array<TreeNode>();
       // act
       hierarchy.setChildren(children);
       // assert
@@ -55,7 +55,7 @@ describe('TreeNodeHierarchy', () => {
     it('returns `false` without children', () => {
       // arrange
       const hierarchy = new TreeNodeHierarchy();
-      const children = [];
+      const children = new Array<TreeNode>();
       // act
       hierarchy.setChildren(children);
       // assert

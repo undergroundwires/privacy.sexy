@@ -1,9 +1,10 @@
 import { shallowRef } from 'vue';
-import { useResizeObserver, type LifecycleHookRegistration, type ObservedElementReference } from '@/presentation/components/Shared/Hooks/Resize/UseResizeObserver';
+import { useResizeObserver, type ObservedElementReference } from '@/presentation/components/Shared/Hooks/Resize/UseResizeObserver';
 import { flushPromiseResolutionQueue } from '@tests/unit/shared/PromiseInspection';
 import type { AnimationFrameLimiter } from '@/presentation/components/Shared/Hooks/Resize/UseAnimationFrameLimiter';
 import { ThrottleStub } from '@tests/unit/shared/Stubs/ThrottleStub';
-import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import type { LifecycleHook } from '@/presentation/components/Shared/Hooks/Common/LifecycleHook';
+import { LifecycleHookStub } from '@tests/unit/shared/Stubs/LifecycleHookStub';
 
 describe('UseResizeObserver', () => {
   it('registers observer once mounted', async () => {
@@ -30,18 +31,16 @@ describe('UseResizeObserver', () => {
     resizeObserverStub.disconnect = () => {
       isObserverDisconnected = true;
     };
-    let teardownCallback: (() => void) | undefined;
+    const teardownHook = new LifecycleHookStub();
     // act
     new TestContext()
       .withResizeObserver(resizeObserverStub)
-      .withOnTeardown((callback) => {
-        teardownCallback = callback;
-      })
+      .withOnTeardown(teardownHook.getHook())
       .useResizeObserver();
     await flushPromiseResolutionQueue();
-    expectExists(teardownCallback);
-    teardownCallback();
+    teardownHook.executeAllCallbacks();
     // assert
+    expect(teardownHook.totalRegisteredCallbacks).to.be.greaterThan(0);
     expect(isObserverDisconnected).to.equal(true);
   });
 });
@@ -66,9 +65,12 @@ class TestContext {
 
   private observedElementRef: ObservedElementReference = shallowRef(document.createElement('div'));
 
-  private onSetup: LifecycleHookRegistration = (callback) => { callback(); };
+  private onSetup: LifecycleHook = new LifecycleHookStub()
+    .withInvokeCallbackImmediately(true)
+    .getHook();
 
-  private onTeardown: LifecycleHookRegistration = () => { };
+  private onTeardown: LifecycleHook = new LifecycleHookStub()
+    .getHook();
 
   public withResizeObserver(resizeObserver: ResizeObserver): this {
     this.resizeObserver = resizeObserver;
@@ -80,12 +82,12 @@ class TestContext {
     return this;
   }
 
-  public withOnSetup(onSetup: LifecycleHookRegistration): this {
+  public withOnSetup(onSetup: LifecycleHook): this {
     this.onSetup = onSetup;
     return this;
   }
 
-  public withOnTeardown(onTeardown: LifecycleHookRegistration): this {
+  public withOnTeardown(onTeardown: LifecycleHook): this {
     this.onTeardown = onTeardown;
     return this;
   }

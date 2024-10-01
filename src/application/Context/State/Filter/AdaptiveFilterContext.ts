@@ -1,5 +1,5 @@
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { FilterChange } from './Event/FilterChange';
 import { LinearFilterStrategy } from './Strategy/LinearFilterStrategy';
 import type { FilterResult } from './Result/FilterResult';

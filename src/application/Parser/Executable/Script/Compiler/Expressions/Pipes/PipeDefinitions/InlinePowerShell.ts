@@ -1,6 +1,7 @@
-import type { IPipe } from '../IPipe';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
+import type { Pipe } from '../Pipe';
 
-export class InlinePowerShell implements IPipe {
+export class InlinePowerShell implements Pipe {
   public readonly name: string = 'inlinePowerShell';
 
   public apply(code: string): string {
@@ -8,9 +9,11 @@ export class InlinePowerShell implements IPipe {
       return code;
     }
     const processor = new Array<(data: string) => string>(...[ // for broken ESlint "indent"
+      // Order is important
       inlineComments,
-      mergeLinesWithBacktick,
       mergeHereStrings,
+      mergeLinesWithBacktick,
+      mergeLinesWithBracketCodeBlocks,
       mergeNewLines,
     ]).reduce((a, b) => (data) => b(a(data)));
     const newCode = processor(code);
@@ -89,10 +92,6 @@ function inlineComments(code: string): string {
     */
 }
 
-function getLines(code: string): string[] {
-  return (code?.split(/\r\n|\r|\n/) || []);
-}
-
 /*
   Merges inline here-strings to a single lined string with Windows line terminator (\r\n)
   https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.4#here-strings
@@ -102,18 +101,18 @@ function mergeHereStrings(code: string) {
   return code.replaceAll(regex, (_$, quotes, scope) => {
     const newString = getHereStringHandler(quotes);
     const escaped = scope.replaceAll(quotes, newString.escapedQuotes);
-    const lines = getLines(escaped);
+    const lines = splitTextIntoLines(escaped);
     const inlined = lines.join(newString.separator);
     const quoted = `${newString.quotesAround}${inlined}${newString.quotesAround}`;
     return quoted;
   });
 }
-interface IInlinedHereString {
+interface InlinedHereString {
   readonly quotesAround: string;
   readonly escapedQuotes: string;
   readonly separator: string;
 }
-function getHereStringHandler(quotes: string): IInlinedHereString {
+function getHereStringHandler(quotes: string): InlinedHereString {
   /*
     We handle @' and @" differently.
     Single quotes are interpreted literally and doubles are expandable.
@@ -158,9 +157,33 @@ function mergeLinesWithBacktick(code: string) {
   return code.replaceAll(/ +`\s*(?:\r\n|\r|\n)\s*/g, ' ');
 }
 
+/**
+ * Inlines code blocks in PowerShell scripts while preserving correct syntax.
+ * It removes unnecessary newlines and spaces around brackets,
+ * inlining the code where possible.
+ * This prevents syntax errors like "Unexpected token '}'" when inlining brackets.
+ */
+function mergeLinesWithBracketCodeBlocks(code: string): string {
+  return code
+    // Opening bracket: [whitespace] Opening bracket (newline)
+    .replace(/(?<=.*)\s*{[\r\n][\s\r\n]*/g, ' { ')
+    // Closing bracket: [whitespace] Closing bracket (newline) (continuation keyword)
+    .replace(/\s*}[\r\n][\s\r\n]*(?=elseif|else|catch|finally|until)/g, ' } ')
+    .replace(/(?<=do\s*{.*)[\r\n\s]*}[\r\n][\r\n\s]*(?=while)/g, ' } '); // Do-While
+}
+
 function mergeNewLines(code: string) {
-  return getLines(code)
+  const nonEmptyLines = splitTextIntoLines(code)
     .map((line) => line.trim())
-    .filter((line) => line.length > 0)
-    .join('; ');
+    .filter((line) => line.length > 0);
+
+  return nonEmptyLines
+    .map((line, index) => {
+      const isLastLine = index === nonEmptyLines.length - 1;
+      if (isLastLine) {
+        return line;
+      }
+      return line.endsWith(';') ? line : `${line};`;
+    })
+    .join(' ');
 }

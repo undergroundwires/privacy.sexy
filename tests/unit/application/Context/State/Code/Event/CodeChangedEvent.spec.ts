@@ -5,6 +5,7 @@ import { CodePosition } from '@/application/Context/State/Code/Position/CodePosi
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
 
 describe('CodeChangedEvent', () => {
   describe('ctor', () => {
@@ -19,16 +20,34 @@ describe('CodeChangedEvent', () => {
           [new SelectedScriptStub(new ScriptStub('2')), new CodePosition(0, nonExistingLine2)],
         ]);
         // act
-        let errorText = '';
-        try {
+        const actualErrorMessage = collectExceptionMessage(() => {
           new CodeChangedEventBuilder()
             .withCode(code)
             .withNewScripts(newScripts)
             .build();
-        } catch (error) { errorText = error.message; }
+        });
         // assert
-        expect(errorText).to.include(nonExistingLine1);
-        expect(errorText).to.include(nonExistingLine2);
+        expect(actualErrorMessage).to.include(nonExistingLine1);
+        expect(actualErrorMessage).to.include(nonExistingLine2);
+      });
+      it('invalid line position validation counts empty lines', () => {
+        // arrange
+        const totalEmptyLines = 5;
+        const code = '\n'.repeat(totalEmptyLines);
+        // If empty lines would not be counted, this would result in error
+        const existingLineEnd = totalEmptyLines;
+        const newScripts = new Map<SelectedScript, ICodePosition>([
+          [new SelectedScriptStub(new ScriptStub('1')), new CodePosition(0, existingLineEnd)],
+        ]);
+        // act
+        const act = () => {
+          new CodeChangedEventBuilder()
+            .withCode(code)
+            .withNewScripts(newScripts)
+            .build();
+        };
+        // assert
+        expect(act).to.not.throw();
       });
       describe('does not throw with valid code position', () => {
         // arrange

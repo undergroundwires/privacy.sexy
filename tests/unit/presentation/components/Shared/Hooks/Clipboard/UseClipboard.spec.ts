@@ -30,18 +30,19 @@ describe('useClipboard', () => {
     } = {
       copyText: ['text-arg'],
     };
-    Object.entries(testScenarios).forEach(([functionName, testFunctionArgs]) => {
-      describe(functionName, () => {
+    Object.entries(testScenarios).forEach(([functionNameValue, testFunctionArgs]) => {
+      const functionName = functionNameValue as ClipboardFunction;
+      describe(functionNameValue, () => {
         it('binds the method to the instance', () => {
           // arrange
           const expectedArgs = testFunctionArgs;
           const clipboardStub = new ClipboardStub();
           // act
           const clipboard = useClipboard(clipboardStub);
-          const { [functionName as ClipboardFunction]: testFunction } = clipboard;
+          const { [functionName]: testFunction } = clipboard;
           // assert
           testFunction(...expectedArgs);
-          const call = clipboardStub.callHistory.find((c) => c.methodName === functionName);
+          const call = clipboardStub.callHistory.find((c) => c.methodName === functionNameValue);
           expectExists(call);
           expect(call.args).to.deep.equal(expectedArgs);
         });
@@ -50,14 +51,15 @@ describe('useClipboard', () => {
           const clipboardStub = new ClipboardStub();
           const expectedThisContext = clipboardStub;
           let actualThisContext: typeof expectedThisContext | undefined;
-          // eslint-disable-next-line func-names
-          clipboardStub[functionName] = function () {
+          // eslint-disable-next-line func-names, @typescript-eslint/no-unused-vars
+          clipboardStub[functionName] = function (_text) {
             // eslint-disable-next-line @typescript-eslint/no-this-alias
             actualThisContext = this;
+            return Promise.resolve();
           };
           // act
           const clipboard = useClipboard(clipboardStub);
-          const { [functionName as ClipboardFunction]: testFunction } = clipboard;
+          const { [functionNameValue as ClipboardFunction]: testFunction } = clipboard;
           // assert
           testFunction(...testFunctionArgs);
           expect(expectedThisContext).to.equal(actualThisContext);

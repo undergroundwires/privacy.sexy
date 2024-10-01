@@ -1,7 +1,7 @@
 import type { Script } from '@/domain/Executables/Script/Script';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { scrambledEqual } from '@/application/Common/Array';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import type { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { RecommendationStatusType } from './RecommendationStatusType';
@@ -99,6 +99,6 @@ function areAllSelected(
   if (expectedScripts.length < selectedScriptIds.length) {
     return false;
   }
-  const expectedScriptIds = expectedScripts.map((script) => script.id);
+  const expectedScriptIds = expectedScripts.map((script) => script.executableId);
   return scrambledEqual(selectedScriptIds, expectedScriptIds);
 }

@@ -1,7 +1,8 @@
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { type NodeMetadata, NodeType } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 
 export class NodeMetadataStub implements NodeMetadata {
-  public id = 'stub-id';
+  public executableId: ExecutableId = 'stub-id';
 
   public readonly text: string = 'stub-text';
 
@@ -18,8 +19,8 @@ export class NodeMetadataStub implements NodeMetadata {
     return this;
   }
 
-  public withId(id: string): this {
-    this.id = id;
+  public withId(executableId: ExecutableId): this {
+    this.executableId = executableId;
     return this;
   }
 }

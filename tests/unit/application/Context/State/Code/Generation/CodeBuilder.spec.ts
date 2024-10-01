@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CodeBuilder } from '@/application/Context/State/Code/Generation/CodeBuilder';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 
 describe('CodeBuilder', () => {
   class CodeBuilderConcrete extends CodeBuilder {
@@ -47,10 +48,24 @@ describe('CodeBuilder', () => {
         .appendLine(expected);
       // assert
       const result = sut.toString();
-      const lines = getLines(result);
+      const lines = splitTextIntoLines(result);
       expect(lines[1]).to.equal('str');
     });
-    describe('append multi-line string as multiple lines', () => {
+    describe('append multi-line string correctly', () => {
+      it('appends multi-line string with empty lines preserved', () => {
+        // arrange
+        const sut = new CodeBuilderConcrete();
+        const expectedLines: string[] = ['', 'line1', '', 'line2', '', '', 'line3', '', ''];
+        const multilineInput = expectedLines.join('\n');
+
+        // act
+        sut.appendLine(multilineInput);
+        const actual = sut.toString();
+
+        // assert
+        const actualLines = splitTextIntoLines(actual);
+        expect(actualLines).to.deep.equal(expectedLines);
+      });
       describe('recognizes different line terminators', () => {
         const delimiters = ['\n', '\r\n', '\r'];
         for (const delimiter of delimiters) {
@@ -64,7 +79,7 @@ describe('CodeBuilder', () => {
             sut.appendLine(code);
             // assert
             const result = sut.toString();
-            const lines = getLines(result);
+            const lines = splitTextIntoLines(result);
             expect(lines).to.have.lengthOf(2);
             expect(lines[0]).to.equal(line1);
             expect(lines[1]).to.equal(line2);
@@ -111,7 +126,7 @@ describe('CodeBuilder', () => {
     sut.appendTrailingHyphensCommentLine(totalHyphens);
     // assert
     const result = sut.toString();
-    const lines = getLines(result);
+    const lines = splitTextIntoLines(result);
     expect(lines[0]).to.equal(expected);
   });
   it('appendCommentLine', () => {
@@ -126,7 +141,7 @@ describe('CodeBuilder', () => {
       .appendCommentLine(comment)
       .toString();
     // assert
-    const lines = getLines(result);
+    const lines = splitTextIntoLines(result);
     expect(lines[0]).to.equal(expected);
   });
   it('appendCommentLineWithHyphensAround', () => {
@@ -142,7 +157,7 @@ describe('CodeBuilder', () => {
       .appendCommentLineWithHyphensAround(sectionName, totalHyphens)
       .toString();
     // assert
-    const lines = getLines(result);
+    const lines = splitTextIntoLines(result);
     expect(lines[1]).to.equal(expected);
   });
   describe('currentLine', () => {
@@ -180,7 +195,3 @@ describe('CodeBuilder', () => {
     });
   });
 });
-
-function getLines(text: string): string[] {
-  return text.split(/\r\n|\r|\n/);
-}

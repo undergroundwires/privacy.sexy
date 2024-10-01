@@ -1,33 +1,32 @@
 import type { ScriptData, CodeScriptData, CallScriptData } from '@/application/collections/';
-import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
-import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
-import { CollectionScript } from '@/domain/Executables/Script/CollectionScript';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
-import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
+import { validateCode, type CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { createScriptCode } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { createEnumParser, type EnumParser } from '@/application/Common/Enum';
+import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
+import { createScript, type ScriptFactory } from '@/domain/Executables/Script/ScriptFactory';
+import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { parseDocs, type DocsParser } from '../DocumentationParser';
 import { ExecutableType } from '../Validation/ExecutableType';
 import { createExecutableDataValidator, type ExecutableValidator, type ExecutableValidatorFactory } from '../Validation/ExecutableValidator';
-import { CodeValidator } from './Validation/CodeValidator';
-import { NoDuplicatedLines } from './Validation/Rules/NoDuplicatedLines';
-import type { CategoryCollectionSpecificUtilities } from '../CategoryCollectionSpecificUtilities';
+import type { CategoryCollectionContext } from '../CategoryCollectionContext';
 
 export interface ScriptParser {
   (
     data: ScriptData,
-    collectionUtilities: CategoryCollectionSpecificUtilities,
+    collectionContext: CategoryCollectionContext,
     scriptUtilities?: ScriptParserUtilities,
   ): Script;
 }
 
 export const parseScript: ScriptParser = (
   data,
-  collectionUtilities,
+  collectionContext,
   scriptUtilities = DefaultUtilities,
 ) => {
   const validator = scriptUtilities.createValidator({
@@ -37,10 +36,11 @@ export const parseScript: ScriptParser = (
   validateScript(data, validator);
   try {
     const script = scriptUtilities.createScript({
+      executableId: data.name, // Pseudo-ID for uniqueness until real ID support
       name: data.name,
       code: parseCode(
         data,
-        collectionUtilities,
+        collectionContext,
         scriptUtilities.codeValidator,
         scriptUtilities.createCode,
       ),
@@ -68,30 +68,34 @@ function parseLevel(
 
 function parseCode(
   script: ScriptData,
-  collectionUtilities: CategoryCollectionSpecificUtilities,
-  codeValidator: ICodeValidator,
+  collectionContext: CategoryCollectionContext,
+  codeValidator: CodeValidator,
   createCode: ScriptCodeFactory,
 ): ScriptCode {
-  if (collectionUtilities.compiler.canCompile(script)) {
-    return collectionUtilities.compiler.compile(script);
+  if (collectionContext.compiler.canCompile(script)) {
+    return collectionContext.compiler.compile(script);
   }
   const codeScript = script as CodeScriptData; // Must be inline code if it cannot be compiled
   const code = createCode(codeScript.code, codeScript.revertCode);
-  validateHardcodedCodeWithoutCalls(code, codeValidator, collectionUtilities.syntax);
+  validateHardcodedCodeWithoutCalls(code, codeValidator, collectionContext.language);
   return code;
 }
 
 function validateHardcodedCodeWithoutCalls(
   scriptCode: ScriptCode,
-  validator: ICodeValidator,
-  syntax: ILanguageSyntax,
+  validate: CodeValidator,
+  language: ScriptingLanguage,
 ) {
-  [scriptCode.execute, scriptCode.revert]
-    .filter((code): code is string => Boolean(code))
+  filterEmptyStrings([scriptCode.execute, scriptCode.revert])
     .forEach(
-      (code) => validator.throwIfInvalid(
+      (code) => validate(
         code,
-        [new NoEmptyLines(), new NoDuplicatedLines(syntax)],
+        language,
+        [
+          CodeValidationRule.NoEmptyLines,
+          CodeValidationRule.NoDuplicatedLines,
+          CodeValidationRule.NoTooLongLines,
+        ],
       ),
     );
 }
@@ -102,7 +106,7 @@ function validateScript(
 ): asserts script is NonNullable<ScriptData> {
   validator.assertType((v) => v.assertObject<CallScriptData & CodeScriptData>({
     value: script,
-    valueName: script.name ?? 'script',
+    valueName: script.name ? `Script '${script.name}'` : 'Script',
     allowedProperties: [
       'name', 'recommend', 'code', 'revertCode', 'call', 'docs',
     ],
@@ -125,25 +129,17 @@ function validateScript(
 interface ScriptParserUtilities {
   readonly levelParser: EnumParser<RecommendationLevel>;
   readonly createScript: ScriptFactory;
-  readonly codeValidator: ICodeValidator;
+  readonly codeValidator: CodeValidator;
   readonly wrapError: ErrorWithContextWrapper;
   readonly createValidator: ExecutableValidatorFactory;
   readonly createCode: ScriptCodeFactory;
   readonly parseDocs: DocsParser;
 }
 
-export type ScriptFactory = (
-  ...parameters: ConstructorParameters<typeof CollectionScript>
-) => Script;
-
-const createScript: ScriptFactory = (...parameters) => {
-  return new CollectionScript(...parameters);
-};
-
 const DefaultUtilities: ScriptParserUtilities = {
   levelParser: createEnumParser(RecommendationLevel),
   createScript,
-  codeValidator: CodeValidator.instance,
+  codeValidator: validateCode,
   wrapError: wrapErrorWithAdditionalContext,
   createValidator: createExecutableDataValidator,
   createCode: createScriptCode,

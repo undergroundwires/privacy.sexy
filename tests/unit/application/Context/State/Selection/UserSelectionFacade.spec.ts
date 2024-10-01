@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { UserSelectionFacade } from '@/application/Context/State/Selection/UserSelectionFacade';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import type { ScriptsFactory, CategoriesFactory } from '@/application/Context/State/Selection/UserSelectionFacade';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';

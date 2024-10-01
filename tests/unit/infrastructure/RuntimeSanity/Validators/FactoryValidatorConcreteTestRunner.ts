@@ -1,23 +1,23 @@
 import type { PropertyKeys } from '@/TypeHelpers';
 import type { FactoryFunction, FactoryValidator } from '@/infrastructure/RuntimeSanity/Common/FactoryValidator';
-import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { SanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/SanityCheckOptions';
 import { SanityCheckOptionsStub } from '@tests/unit/shared/Stubs/SanityCheckOptionsStub';
 
-interface ITestOptions<T> {
-  createValidator: (factory?: FactoryFunction<T>) => FactoryValidator<T>;
-  enablingOptionProperty: PropertyKeys<ISanityCheckOptions>;
-  factoryFunctionStub: FactoryFunction<T>;
-  expectedValidatorName: string;
+interface TestOptions<T> {
+  readonly createValidator: (factory?: FactoryFunction<T>) => FactoryValidator<T>;
+  readonly enablingOptionProperty: PropertyKeys<SanityCheckOptions>;
+  readonly factoryFunctionStub: FactoryFunction<T>;
+  readonly expectedValidatorName: string;
 }
 
 export function runFactoryValidatorTests<T>(
-  testOptions: ITestOptions<T>,
+  testOptions: TestOptions<T>,
 ) {
   describe('shouldValidate', () => {
     it('returns true when option is true', () => {
       // arrange
       const expectedValue = true;
-      const options: ISanityCheckOptions = {
+      const options: SanityCheckOptions = {
         ...new SanityCheckOptionsStub(),
         [testOptions.enablingOptionProperty]: true,
       };
@@ -31,7 +31,7 @@ export function runFactoryValidatorTests<T>(
     it('returns false when option is false', () => {
       // arrange
       const expectedValue = false;
-      const options: ISanityCheckOptions = {
+      const options: SanityCheckOptions = {
         ...new SanityCheckOptionsStub(),
         [testOptions.enablingOptionProperty]: false,
       };

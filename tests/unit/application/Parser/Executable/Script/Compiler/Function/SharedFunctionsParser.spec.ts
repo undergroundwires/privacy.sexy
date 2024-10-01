@@ -9,12 +9,8 @@ import { createFunctionDataWithCall, createFunctionDataWithCode, createFunctionD
 import { ParameterDefinitionDataStub } from '@tests/unit/shared/Stubs/ParameterDefinitionDataStub';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
-import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
-import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
-import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
-import { NoDuplicatedLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoDuplicatedLines';
+import type { CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
@@ -27,6 +23,8 @@ import type { IReadOnlyFunctionParameterCollection } from '@/application/Parser/
 import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import type { FunctionParameterParser } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterParser';
 import { createFunctionParameterParserStub } from '@tests/unit/shared/Stubs/FunctionParameterParserStub';
+import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { expectCallsFunctionBody, expectCodeFunctionBody } from './ExpectFunctionBodyType';
 
 describe('SharedFunctionsParser', () => {
@@ -161,22 +159,53 @@ describe('SharedFunctionsParser', () => {
           });
         }
       });
-      it('validates function code as expected when code is defined', () => {
-        // arrange
-        const expectedRules = [NoEmptyLines, NoDuplicatedLines];
-        const functionData = createFunctionDataWithCode()
-          .withCode('expected code to be validated')
-          .withRevertCode('expected revert code to be validated');
-        const validator = new CodeValidatorStub();
-        // act
-        new TestContext()
-          .withFunctions([functionData])
-          .withValidator(validator)
-          .parseFunctions();
-        // assert
-        validator.assertHistory({
-          validatedCodes: [functionData.code, functionData.revertCode],
-          rules: expectedRules,
+      describe('code validation', () => {
+        it('validates function code', () => {
+          // arrange
+          const expectedCode = 'expected code to be validated';
+          const expectedRevertCode = 'expected revert code to be validated';
+          const functionData = createFunctionDataWithCode()
+            .withCode(expectedCode)
+            .withRevertCode(expectedRevertCode);
+          const expectedCodes: readonly string[] = [expectedCode, expectedRevertCode];
+          const validator = new CodeValidatorStub();
+          // act
+          new TestContext()
+            .withFunctions([functionData])
+            .withValidator(validator.get())
+            .parseFunctions();
+          // assert
+          validator.assertValidatedCodes(expectedCodes);
+        });
+        it('applies correct validation rules', () => {
+          // arrange
+          const expectedRules: readonly CodeValidationRule[] = [
+            CodeValidationRule.NoEmptyLines,
+            CodeValidationRule.NoDuplicatedLines,
+          ];
+          const functionData = createFunctionDataWithCode();
+          const validator = new CodeValidatorStub();
+          // act
+          new TestContext()
+            .withFunctions([functionData])
+            .withValidator(validator.get())
+            .parseFunctions();
+          // assert
+          validator.assertValidatedRules(expectedRules);
+        });
+        it('validates for correct scripting language', () => {
+          // arrange
+          const expectedLanguage: ScriptingLanguage = ScriptingLanguage.shellscript;
+          const functionData = createFunctionDataWithCode();
+          const validator = new CodeValidatorStub();
+          // act
+          new TestContext()
+            .withFunctions([functionData])
+            .withValidator(validator.get())
+            .withLanguage(expectedLanguage)
+            .parseFunctions();
+          // assert
+          validator.assertValidatedLanguage(expectedLanguage);
         });
       });
       describe('parameter creation', () => {
@@ -406,9 +435,10 @@ describe('SharedFunctionsParser', () => {
 });
 
 class TestContext {
-  private syntax: ILanguageSyntax = new LanguageSyntaxStub();
+  private language: ScriptingLanguage = ScriptingLanguage.batchfile;
 
-  private codeValidator: ICodeValidator = new CodeValidatorStub();
+  private codeValidator: CodeValidator = new CodeValidatorStub()
+    .get();
 
   private functions: readonly FunctionData[] = [createFunctionDataWithCode()];
 
@@ -421,12 +451,12 @@ class TestContext {
   private parameterCollectionFactory
   : FunctionParameterCollectionFactory = () => new FunctionParameterCollectionStub();
 
-  public withSyntax(syntax: ILanguageSyntax): this {
-    this.syntax = syntax;
+  public withLanguage(language: ScriptingLanguage): this {
+    this.language = language;
     return this;
   }
 
-  public withValidator(codeValidator: ICodeValidator): this {
+  public withValidator(codeValidator: CodeValidator): this {
     this.codeValidator = codeValidator;
     return this;
   }
@@ -461,7 +491,7 @@ class TestContext {
   public parseFunctions(): ReturnType<typeof parseSharedFunctions> {
     return parseSharedFunctions(
       this.functions,
-      this.syntax,
+      this.language,
       {
         codeValidator: this.codeValidator,
         wrapError: this.wrapError,

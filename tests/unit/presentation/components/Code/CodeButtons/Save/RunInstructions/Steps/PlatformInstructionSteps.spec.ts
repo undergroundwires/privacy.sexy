@@ -17,7 +17,8 @@ describe('PlatformInstructionSteps', () => {
     [OperatingSystem.macOS]: MacOsInstructions,
     [OperatingSystem.Linux]: LinuxInstructions,
   };
-  AllSupportedOperatingSystems.forEach((operatingSystem) => {
+  AllSupportedOperatingSystems.forEach((operatingSystemKey) => {
+    const operatingSystem = operatingSystemKey as SupportedOperatingSystem;
     it(`renders the correct component for ${OperatingSystem[operatingSystem]}`, () => {
       // arrange
       const expectedComponent = testScenarios[operatingSystem];
@@ -47,7 +48,9 @@ describe('PlatformInstructionSteps', () => {
 
       // assert
       const componentWrapper = wrapper.findComponent(wrappedComponent);
-      expect(componentWrapper.props('filename')).to.equal(expectedFilename);
+      const propertyValues = componentWrapper.props();
+      const propertyValue = 'filename' in propertyValues ? propertyValues.filename : undefined;
+      expect(propertyValue).to.equal(expectedFilename);
     });
   });
 });
