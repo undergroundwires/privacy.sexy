@@ -39,6 +39,7 @@ See [ci-cd.md](./ci-cd.md) for more information.
 - Markdown: `npm run lint:md`
 - Markdown consistency `npm run lint:md:consistency`
 - Markdown relative URLs: `npm run lint:md:relative-urls`
+- Markdown external URLs: `npm run lint:md:external-urls`
 - JavaScript/TypeScript: `npm run lint:eslint`
 - Yaml: `npm run lint:yaml`
 

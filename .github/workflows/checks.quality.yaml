@@ -11,8 +11,9 @@ jobs:
           - npm run lint:eslint
           - npm run lint:yaml
           - npm run lint:md
-          - npm run lint:md:relative-urls
           - npm run lint:md:consistency
+          - npm run lint:md:relative-urls
+          - npm run lint:md:external-urls
         os: [ macos, ubuntu, windows ]
       fail-fast: false # Still interested to see results from other combinations
     steps:
