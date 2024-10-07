@@ -1,19 +1,22 @@
 import type { ScriptDiagnosticData, ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
-import { PersistentDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/PersistentDirectoryProvider';
-import type { ScriptDirectoryProvider } from '../CodeRunner/Creation/Directory/ScriptDirectoryProvider';
+import type { ApplicationDirectoryProvider } from '@/infrastructure/FileSystem/Directory/ApplicationDirectoryProvider';
+import { PersistentApplicationDirectoryProvider } from '@/infrastructure/FileSystem/Directory/PersistentApplicationDirectoryProvider';
 
 export class ScriptEnvironmentDiagnosticsCollector implements ScriptDiagnosticsCollector {
   constructor(
-    private readonly directoryProvider: ScriptDirectoryProvider = new PersistentDirectoryProvider(),
+    private readonly directoryProvider: ApplicationDirectoryProvider
+    = new PersistentApplicationDirectoryProvider(),
     private readonly environment: RuntimeEnvironment = CurrentEnvironment,
   ) { }
 
   public async collectDiagnosticInformation(): Promise<ScriptDiagnosticData> {
-    const { directoryAbsolutePath } = await this.directoryProvider.provideScriptDirectory();
+    const {
+      directoryAbsolutePath: scriptsDirectory,
+    } = await this.directoryProvider.provideDirectory('script-runs');
     return {
-      scriptsDirectoryAbsolutePath: directoryAbsolutePath,
+      scriptsDirectoryAbsolutePath: scriptsDirectory,
       currentOperatingSystem: this.environment.os,
     };
   }

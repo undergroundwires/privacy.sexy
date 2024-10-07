@@ -7,7 +7,7 @@ import type { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { ReadbackFileWriterStub } from '@tests/unit/shared/Stubs/ReadbackFileWriterStub';
-import { FileReadbackVerificationErrors, FileWriteOperationErrors, type ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import { FileReadbackVerificationErrors, FileWriteOperationErrors, type ReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/ReadbackFileWriter';
 import { ElectronFileDialogOperationsStub } from './ElectronFileDialogOperationsStub';
 import { NodePathOperationsStub } from './NodePathOperationsStub';
 

@@ -1,30 +1,25 @@
 import { describe, it, expect } from 'vitest';
 import type { Logger } from '@/application/Common/Log/Logger';
-import { ExecutionSubdirectory, PersistentDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/PersistentDirectoryProvider';
-import type { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
-import { LocationOpsStub } from '@tests/unit/shared/Stubs/LocationOpsStub';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
-import { OperatingSystemOpsStub } from '@tests/unit/shared/Stubs/OperatingSystemOpsStub';
-import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
-import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import type { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 import { expectTrue } from '@tests/shared/Assertions/ExpectTrue';
+import { FileSystemOperationsStub } from '@tests/unit/shared/Stubs/FileSystemOperationsStub';
+import type { DirectoryCreationErrorType, DirectoryType } from '@/infrastructure/FileSystem/Directory/ApplicationDirectoryProvider';
+import { PersistentApplicationDirectoryProvider, SubdirectoryNames } from '@/infrastructure/FileSystem/Directory/PersistentApplicationDirectoryProvider';
+import type { FileSystemOperations } from '@/infrastructure/FileSystem/FileSystemOperations';
 
-describe('PersistentDirectoryProvider', () => {
+describe('PersistentApplicationDirectoryProvider', () => {
   describe('createDirectory', () => {
     describe('path construction', () => {
       it('bases path on user directory', async () => {
         // arrange
         const expectedBaseDirectory = 'base-directory';
         const pathSegmentSeparator = '/STUB-SEGMENT-SEPARATOR/';
-        const locationOps = new LocationOpsStub()
+        const fileSystemStub = new FileSystemOperationsStub()
+          .withUserDirectoryResult(expectedBaseDirectory)
           .withDefaultSeparator(pathSegmentSeparator);
         const context = new PersistentDirectoryProviderTestSetup()
-          .withSystem(new SystemOperationsStub()
-            .withOperatingSystem(new OperatingSystemOpsStub()
-              .withUserDirectoryResult(expectedBaseDirectory))
-            .withLocation(locationOps));
+          .withFileSystem(fileSystemStub);
 
         // act
         const { success, directoryAbsolutePath } = await context.provideScriptDirectory();
@@ -33,51 +28,66 @@ describe('PersistentDirectoryProvider', () => {
         expectTrue(success);
         const actualBaseDirectory = directoryAbsolutePath.split(pathSegmentSeparator)[0];
         expect(actualBaseDirectory).to.equal(expectedBaseDirectory);
-        const calls = locationOps.callHistory.filter((call) => call.methodName === 'combinePaths');
+        const calls = fileSystemStub.callHistory.filter((call) => call.methodName === 'combinePaths');
         expect(calls.length).to.equal(1);
         const [combinedBaseDirectory] = calls[0].args;
         expect(combinedBaseDirectory).to.equal(expectedBaseDirectory);
       });
-      it('includes execution subdirectory in path', async () => {
-        // arrange
-        const expectedSubdirectory = ExecutionSubdirectory;
-        const pathSegmentSeparator = '/STUB-SEGMENT-SEPARATOR/';
-        const locationOps = new LocationOpsStub().withDefaultSeparator(pathSegmentSeparator);
-        const context = new PersistentDirectoryProviderTestSetup()
-          .withSystem(new SystemOperationsStub()
-            .withLocation(locationOps));
+      describe('includes correct execution subdirectory in path', () => {
+        const testScenarios: readonly {
+          readonly description: string;
+          readonly givenDirectoryType: DirectoryType;
+          readonly expectedSubdirectoryName: string;
+        }[] = Object.entries(SubdirectoryNames).map(([type, name]) => ({
+          description: `returns '${name}' for '${type}'`,
+          givenDirectoryType: type as DirectoryType,
+          expectedSubdirectoryName: name,
+        }));
+        testScenarios.forEach(({
+          description, expectedSubdirectoryName, givenDirectoryType,
+        }) => {
+          it(description, async () => {
+            // arrange
+            const pathSegmentSeparator = '/STUB-SEGMENT-SEPARATOR/';
+            const fileSystemStub = new FileSystemOperationsStub()
+              .withDefaultSeparator(pathSegmentSeparator);
+            const context = new PersistentDirectoryProviderTestSetup()
+              .withFileSystem(fileSystemStub)
+              .withDirectoryType(givenDirectoryType);
 
-        // act
-        const { success, directoryAbsolutePath } = await context.provideScriptDirectory();
+            // act
+            const { success, directoryAbsolutePath } = await context.provideScriptDirectory();
 
-        // assert
-        expectTrue(success);
-        const actualSubdirectory = directoryAbsolutePath
-          .split(pathSegmentSeparator)
-          .pop();
-        expect(actualSubdirectory).to.equal(expectedSubdirectory);
-        const calls = locationOps.callHistory.filter((call) => call.methodName === 'combinePaths');
-        expect(calls.length).to.equal(1);
-        const [,combinedSubdirectory] = calls[0].args;
-        expect(combinedSubdirectory).to.equal(expectedSubdirectory);
+            // assert
+            expectTrue(success);
+            const actualSubdirectory = directoryAbsolutePath
+              .split(pathSegmentSeparator)
+              .pop();
+            expect(actualSubdirectory).to.equal(expectedSubdirectoryName);
+            const calls = fileSystemStub.callHistory.filter((call) => call.methodName === 'combinePaths');
+            expect(calls.length).to.equal(1);
+            const [,combinedSubdirectory] = calls[0].args;
+            expect(combinedSubdirectory).to.equal(expectedSubdirectoryName);
+          });
+        });
       });
       it('forms full path correctly', async () => {
         // arrange
+        const directoryType: DirectoryType = 'script-runs';
         const pathSegmentSeparator = '/';
         const baseDirectory = 'base-directory';
-        const expectedDirectory = [baseDirectory, ExecutionSubdirectory].join(pathSegmentSeparator);
+        const expectedDirectory = [baseDirectory, SubdirectoryNames[directoryType]]
+          .join(pathSegmentSeparator);
+        const fileSystemStub = new FileSystemOperationsStub()
+          .withDefaultSeparator(pathSegmentSeparator)
+          .withUserDirectoryResult(baseDirectory);
         const context = new PersistentDirectoryProviderTestSetup()
-          .withSystem(new SystemOperationsStub()
-            .withLocation(new LocationOpsStub().withDefaultSeparator(pathSegmentSeparator))
-            .withOperatingSystem(
-              new OperatingSystemOpsStub().withUserDirectoryResult(baseDirectory),
-            ));
+          .withFileSystem(fileSystemStub)
+          .withDirectoryType(directoryType);
 
         // act
         const { success, directoryAbsolutePath } = await context.provideScriptDirectory();
-
-        // assert
-        expectTrue(success);
+        expect(success).to.equal(true);
         expect(directoryAbsolutePath).to.equal(expectedDirectory);
       });
     });
@@ -85,16 +95,16 @@ describe('PersistentDirectoryProvider', () => {
       it('creates directory with recursion', async () => {
         // arrange
         const expectedIsRecursive = true;
-        const filesystem = new FileSystemOpsStub();
+        const fileSystemStub = new FileSystemOperationsStub();
         const context = new PersistentDirectoryProviderTestSetup()
-          .withSystem(new SystemOperationsStub().withFileSystem(filesystem));
+          .withFileSystem(fileSystemStub);
 
         // act
         const { success, directoryAbsolutePath } = await context.provideScriptDirectory();
 
         // assert
         expectTrue(success);
-        const calls = filesystem.callHistory.filter((call) => call.methodName === 'createDirectory');
+        const calls = fileSystemStub.callHistory.filter((call) => call.methodName === 'createDirectory');
         expect(calls.length).to.equal(1);
         const [actualPath, actualIsRecursive] = calls[0].args;
         expect(actualPath).to.equal(directoryAbsolutePath);
@@ -104,7 +114,7 @@ describe('PersistentDirectoryProvider', () => {
     describe('error handling', () => {
       const testScenarios: ReadonlyArray<{
         readonly description: string;
-        readonly expectedErrorType: CodeRunErrorType;
+        readonly expectedErrorType: DirectoryCreationErrorType;
         readonly expectedErrorMessage: string;
         buildFaultyContext(
           setup: PersistentDirectoryProviderTestSetup,
@@ -113,40 +123,38 @@ describe('PersistentDirectoryProvider', () => {
       }> = [
         {
           description: 'path combination failure',
-          expectedErrorType: 'DirectoryCreationError',
+          expectedErrorType: 'PathConstructionError',
           expectedErrorMessage: 'Error when combining paths',
           buildFaultyContext: (setup, errorMessage) => {
-            const locationStub = new LocationOpsStub();
-            locationStub.combinePaths = () => {
+            const fileSystemStub = new FileSystemOperationsStub();
+            fileSystemStub.combinePaths = () => {
               throw new Error(errorMessage);
             };
-            return setup.withSystem(new SystemOperationsStub().withLocation(locationStub));
+            return setup.withFileSystem(fileSystemStub);
           },
         },
         {
           description: 'user data retrieval failure',
-          expectedErrorType: 'DirectoryCreationError',
+          expectedErrorType: 'UserDataFolderRetrievalError',
           expectedErrorMessage: 'Error when locating user data directory',
           buildFaultyContext: (setup, errorMessage) => {
-            const operatingSystemStub = new OperatingSystemOpsStub();
-            operatingSystemStub.getUserDataDirectory = () => {
+            const fileSystemStub = new FileSystemOperationsStub();
+            fileSystemStub.getUserDataDirectory = () => {
               throw new Error(errorMessage);
             };
-            return setup.withSystem(
-              new SystemOperationsStub().withOperatingSystem(operatingSystemStub),
-            );
+            return setup.withFileSystem(fileSystemStub);
           },
         },
         {
           description: 'directory creation failure',
-          expectedErrorType: 'DirectoryCreationError',
+          expectedErrorType: 'DirectoryWriteError',
           expectedErrorMessage: 'Error when creating directory',
           buildFaultyContext: (setup, errorMessage) => {
-            const fileSystemStub = new FileSystemOpsStub();
+            const fileSystemStub = new FileSystemOperationsStub();
             fileSystemStub.createDirectory = () => {
               throw new Error(errorMessage);
             };
-            return setup.withSystem(new SystemOperationsStub().withFileSystem(fileSystemStub));
+            return setup.withFileSystem(fileSystemStub);
           },
         },
       ];
@@ -190,12 +198,14 @@ describe('PersistentDirectoryProvider', () => {
 });
 
 class PersistentDirectoryProviderTestSetup {
-  private system: SystemOperations = new SystemOperationsStub();
+  private fileSystem: FileSystemOperations = new FileSystemOperationsStub();
 
   private logger: Logger = new LoggerStub();
 
-  public withSystem(system: SystemOperations): this {
-    this.system = system;
+  private directoryType: DirectoryType = 'script-runs';
+
+  public withFileSystem(fileSystem: FileSystemOperations): this {
+    this.fileSystem = fileSystem;
     return this;
   }
 
@@ -204,8 +214,13 @@ class PersistentDirectoryProviderTestSetup {
     return this;
   }
 
-  public provideScriptDirectory(): ReturnType<PersistentDirectoryProvider['provideScriptDirectory']> {
-    const provider = new PersistentDirectoryProvider(this.system, this.logger);
-    return provider.provideScriptDirectory();
+  public withDirectoryType(directoryType: DirectoryType): this {
+    this.directoryType = directoryType;
+    return this;
+  }
+
+  public provideScriptDirectory(): ReturnType<PersistentApplicationDirectoryProvider['provideDirectory']> {
+    const provider = new PersistentApplicationDirectoryProvider(this.fileSystem, this.logger);
+    return provider.provideDirectory(this.directoryType);
   }
 }

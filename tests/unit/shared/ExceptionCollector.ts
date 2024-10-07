@@ -12,7 +12,19 @@ function collectException(
     error = err;
   }
   if (!error) {
-    throw new Error('action did not throw');
+    throw new Error('Action did not throw');
+  }
+  return error;
+}
+
+export async function collectExceptionAsync(
+  action: () => Promise<unknown>,
+): Promise<Error | undefined> {
+  let error: Error | undefined;
+  try {
+    await action();
+  } catch (err) {
+    error = err;
   }
   return error;
 }

@@ -1,22 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import { ScriptFileCreationOrchestrator } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreationOrchestrator';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
+import { FileSystemOperationsStub } from '@tests/unit/shared/Stubs/FileSystemOperationsStub';
 import type { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
-import type { ScriptDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/ScriptDirectoryProvider';
-import { ScriptDirectoryProviderStub } from '@tests/unit/shared/Stubs/ScriptDirectoryProviderStub';
+import { ApplicationDirectoryProviderStub } from '@tests/unit/shared/Stubs/ApplicationDirectoryProviderStub';
 import type { FilenameGenerator } from '@/infrastructure/CodeRunner/Creation/Filename/FilenameGenerator';
 import { FilenameGeneratorStub } from '@tests/unit/shared/Stubs/FilenameGeneratorStub';
-import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
-import type { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
-import { LocationOpsStub } from '@tests/unit/shared/Stubs/LocationOpsStub';
 import type { ScriptFilenameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { expectTrue } from '@tests/shared/Assertions/ExpectTrue';
 import type { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
-import { FileReadbackVerificationErrors, FileWriteOperationErrors, type ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import { FileReadbackVerificationErrors, FileWriteOperationErrors, type ReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/ReadbackFileWriter';
 import { ReadbackFileWriterStub } from '@tests/unit/shared/Stubs/ReadbackFileWriterStub';
+import type { ApplicationDirectoryProvider, DirectoryCreationErrorType } from '@/infrastructure/FileSystem/Directory/ApplicationDirectoryProvider';
+import type { FileSystemOperations } from '@/infrastructure/FileSystem/FileSystemOperations';
 
 describe('ScriptFileCreationOrchestrator', () => {
   describe('createScriptFile', () => {
@@ -25,15 +23,15 @@ describe('ScriptFileCreationOrchestrator', () => {
         // arrange
         const pathSegmentSeparator = '/PATH-SEGMENT-SEPARATOR/';
         const expectedScriptDirectory = '/expected-script-directory';
-        const filesystem = new FileSystemOpsStub();
+        const fileSystemStub = new FileSystemOperationsStub()
+          .withDefaultSeparator(pathSegmentSeparator);
         const context = new ScriptFileCreatorTestSetup()
-          .withSystem(new SystemOperationsStub()
-            .withLocation(
-              new LocationOpsStub().withDefaultSeparator(pathSegmentSeparator),
-            )
-            .withFileSystem(filesystem))
+          .withFileSystem(fileSystemStub)
           .withDirectoryProvider(
-            new ScriptDirectoryProviderStub().withDirectoryPath(expectedScriptDirectory),
+            new ApplicationDirectoryProviderStub().withDirectoryPath(
+              'script-runs',
+              expectedScriptDirectory,
+            ),
           );
 
         // act
@@ -52,13 +50,12 @@ describe('ScriptFileCreationOrchestrator', () => {
       it('correctly generates filename', async () => {
         // arrange
         const pathSegmentSeparator = '/PATH-SEGMENT-SEPARATOR/';
-        const filesystem = new FileSystemOpsStub();
+        const fileSystemStub = new FileSystemOperationsStub()
+          .withDefaultSeparator(pathSegmentSeparator);
         const expectedFilename = 'expected-script-file-name';
         const context = new ScriptFileCreatorTestSetup()
           .withFilenameGenerator(new FilenameGeneratorStub().withFilename(expectedFilename))
-          .withSystem(new SystemOperationsStub()
-            .withFileSystem(filesystem)
-            .withLocation(new LocationOpsStub().withDefaultSeparator(pathSegmentSeparator)));
+          .withFileSystem(fileSystemStub);
 
         // act
         const { success, scriptFileAbsolutePath } = await context.createScriptFile();
@@ -97,15 +94,13 @@ describe('ScriptFileCreationOrchestrator', () => {
         const expectedPath = 'expected-script-path';
         const filename = 'filename';
         const directoryPath = 'directory-path';
-        const filesystem = new FileSystemOpsStub();
+        const fileSystemStub = new FileSystemOperationsStub()
+          .withJoinResult(expectedPath, directoryPath, filename);
         const context = new ScriptFileCreatorTestSetup()
           .withFilenameGenerator(new FilenameGeneratorStub().withFilename(filename))
-          .withDirectoryProvider(new ScriptDirectoryProviderStub().withDirectoryPath(directoryPath))
-          .withSystem(new SystemOperationsStub()
-            .withFileSystem(filesystem)
-            .withLocation(
-              new LocationOpsStub().withJoinResult(expectedPath, directoryPath, filename),
-            ));
+          .withDirectoryProvider(new ApplicationDirectoryProviderStub()
+            .withDirectoryPath('script-runs', directoryPath))
+          .withFileSystem(fileSystemStub);
 
         // act
         const { success, scriptFileAbsolutePath } = await context.createScriptFile();
@@ -169,11 +164,11 @@ describe('ScriptFileCreationOrchestrator', () => {
           expectedErrorMessage: 'Error when combining paths',
           expectLogs: true,
           buildFaultyContext: (setup, errorMessage) => {
-            const locationStub = new LocationOpsStub();
-            locationStub.combinePaths = () => {
+            const fileSystemStub = new FileSystemOperationsStub();
+            fileSystemStub.combinePaths = () => {
               throw new Error(errorMessage);
             };
-            return setup.withSystem(new SystemOperationsStub().withLocation(locationStub));
+            return setup.withFileSystem(fileSystemStub);
           },
         },
         ...FileWriteOperationErrors.map((writeError): FileCreationFailureTestScenario => ({
@@ -214,23 +209,40 @@ describe('ScriptFileCreationOrchestrator', () => {
             return setup.withFilenameGenerator(filenameGenerator);
           },
         },
-        {
-          description: 'script directory provision failure',
-          expectedErrorType: 'DirectoryCreationError',
-          expectedErrorMessage: 'Error when providing directory',
-          expectLogs: false,
-          buildFaultyContext: (setup, errorMessage, errorType) => {
-            const directoryProvider = new ScriptDirectoryProviderStub();
-            directoryProvider.provideScriptDirectory = () => Promise.resolve({
-              success: false,
-              error: {
-                message: errorMessage,
-                type: errorType,
-              },
-            });
-            return setup.withDirectoryProvider(directoryProvider);
-          },
-        },
+        ...(() => {
+          const directoryErrorScenarios: Record<DirectoryCreationErrorType, {
+            readonly directoryErrorMessage: string;
+          }> = {
+            DirectoryWriteError: {
+              directoryErrorMessage: 'Injected error when writing to directory',
+            },
+            PathConstructionError: {
+              directoryErrorMessage: 'Injected error when constructing path',
+            },
+            UserDataFolderRetrievalError: {
+              directoryErrorMessage: 'Injected error when locating user data folder',
+            },
+          };
+          return Object.entries(directoryErrorScenarios).map(([
+            directoryErrorType, { directoryErrorMessage },
+          ]): FileCreationFailureTestScenario => ({
+            description: `script directory creation failure: ${directoryErrorType}`,
+            expectedErrorType: 'DirectoryCreationError',
+            expectedErrorMessage: `[${directoryErrorType}] ${directoryErrorMessage}`,
+            expectLogs: false,
+            buildFaultyContext: (setup) => {
+              const directoryProvider = new ApplicationDirectoryProviderStub();
+              directoryProvider.provideDirectory = () => Promise.resolve({
+                success: false,
+                error: {
+                  type: directoryErrorType as DirectoryCreationErrorType,
+                  message: directoryErrorMessage,
+                },
+              });
+              return setup.withDirectoryProvider(directoryProvider);
+            },
+          }));
+        })(),
       ];
       testScenarios.forEach(({
         description, expectedErrorType, expectedErrorMessage, buildFaultyContext, expectLogs,
@@ -276,11 +288,11 @@ describe('ScriptFileCreationOrchestrator', () => {
 });
 
 class ScriptFileCreatorTestSetup {
-  private system: SystemOperations = new SystemOperationsStub();
+  private fileSystem: FileSystemOperations = new FileSystemOperationsStub();
 
   private filenameGenerator: FilenameGenerator = new FilenameGeneratorStub();
 
-  private directoryProvider: ScriptDirectoryProvider = new ScriptDirectoryProviderStub();
+  private directoryProvider: ApplicationDirectoryProvider = new ApplicationDirectoryProviderStub();
 
   private logger: Logger = new LoggerStub();
 
@@ -298,7 +310,7 @@ class ScriptFileCreatorTestSetup {
     return this;
   }
 
-  public withDirectoryProvider(directoryProvider: ScriptDirectoryProvider): this {
+  public withDirectoryProvider(directoryProvider: ApplicationDirectoryProvider): this {
     this.directoryProvider = directoryProvider;
     return this;
   }
@@ -308,8 +320,8 @@ class ScriptFileCreatorTestSetup {
     return this;
   }
 
-  public withSystem(system: SystemOperations): this {
-    this.system = system;
+  public withFileSystem(fileSystem: FileSystemOperations): this {
+    this.fileSystem = fileSystem;
     return this;
   }
 
@@ -330,7 +342,7 @@ class ScriptFileCreatorTestSetup {
 
   public createScriptFile(): ReturnType<ScriptFileCreationOrchestrator['createScriptFile']> {
     const creator = new ScriptFileCreationOrchestrator(
-      this.system,
+      this.fileSystem,
       this.filenameGenerator,
       this.directoryProvider,
       this.fileWriter,

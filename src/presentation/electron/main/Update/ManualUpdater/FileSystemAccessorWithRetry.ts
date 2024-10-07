@@ -1,15 +1,21 @@
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 
-export function retryFileSystemAccess(
-  fileOperation: () => Promise<boolean>,
-): Promise<boolean> {
+export interface FileSystemAccessorWithRetry {
+  (
+    fileOperation: () => Promise<boolean>,
+  ): Promise<boolean>;
+}
+
+export const retryFileSystemAccess: FileSystemAccessorWithRetry = (
+  fileOperation,
+) => {
   return retryWithExponentialBackoff(
     fileOperation,
     TOTAL_RETRIES,
     INITIAL_DELAY_MS,
   );
-}
+};
 
 // These values provide a balanced approach for handling transient file system
 // issues without excessive waiting.

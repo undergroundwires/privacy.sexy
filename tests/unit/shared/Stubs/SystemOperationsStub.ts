@@ -1,35 +1,17 @@
 import type {
   CommandOps,
-  FileSystemOps,
-  OperatingSystemOps,
-  LocationOps,
   SystemOperations,
 } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { FileSystemOperations } from '@/infrastructure/FileSystem/FileSystemOperations';
 import { CommandOpsStub } from './CommandOpsStub';
-import { FileSystemOpsStub } from './FileSystemOpsStub';
-import { LocationOpsStub } from './LocationOpsStub';
-import { OperatingSystemOpsStub } from './OperatingSystemOpsStub';
+import { FileSystemOperationsStub } from './FileSystemOperationsStub';
 
 export class SystemOperationsStub implements SystemOperations {
-  public operatingSystem: OperatingSystemOps = new OperatingSystemOpsStub();
-
-  public location: LocationOps = new LocationOpsStub();
-
-  public fileSystem: FileSystemOps = new FileSystemOpsStub();
+  public fileSystem: FileSystemOperations = new FileSystemOperationsStub();
 
   public command: CommandOps = new CommandOpsStub();
 
-  public withOperatingSystem(operatingSystemOps: OperatingSystemOps): this {
-    this.operatingSystem = operatingSystemOps;
-    return this;
-  }
-
-  public withLocation(location: LocationOps): this {
-    this.location = location;
-    return this;
-  }
-
-  public withFileSystem(fileSystem: FileSystemOps): this {
+  public withFileSystem(fileSystem: FileSystemOperations): this {
     this.fileSystem = fileSystem;
     return this;
   }

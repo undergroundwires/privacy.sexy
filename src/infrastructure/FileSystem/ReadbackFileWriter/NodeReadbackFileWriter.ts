@@ -1,22 +1,18 @@
-import { writeFile, access, readFile } from 'node:fs/promises';
-import { constants } from 'node:fs';
 import type { Logger } from '@/application/Common/Log/Logger';
-import { ElectronLogger } from '../Log/ElectronLogger';
+import { ElectronLogger } from '../../Log/ElectronLogger';
+import { NodeElectronFileSystemOperations } from '../NodeElectronFileSystemOperations';
 import type {
   FailedFileWrite, ReadbackFileWriter, FileWriteErrorType,
   FileWriteOutcome, SuccessfulFileWrite,
 } from './ReadbackFileWriter';
+import type { FileSystemOperations } from '../FileSystemOperations';
 
 const FILE_ENCODING: NodeJS.BufferEncoding = 'utf-8';
 
 export class NodeReadbackFileWriter implements ReadbackFileWriter {
   constructor(
     private readonly logger: Logger = ElectronLogger,
-    private readonly fileSystem: FileReadWriteOperations = {
-      writeFile,
-      readFile: (path, encoding) => readFile(path, encoding),
-      access,
-    },
+    private readonly fileSystem: FileSystemOperations = NodeElectronFileSystemOperations,
   ) { }
 
   public async writeAndVerifyFile(
@@ -55,7 +51,9 @@ export class NodeReadbackFileWriter implements ReadbackFileWriter {
     filePath: string,
   ): Promise<FileWriteOutcome> {
     try {
-      await this.fileSystem.access(filePath, constants.F_OK);
+      if (!(await this.fileSystem.isFileAvailable(filePath))) {
+        return this.reportFailure('FileExistenceVerificationFailed', 'File does not exist.');
+      }
       return this.reportSuccess('Verified file existence without reading.');
     } catch (error) {
       return this.reportFailure('FileExistenceVerificationFailed', error);
@@ -106,10 +104,4 @@ export class NodeReadbackFileWriter implements ReadbackFileWriter {
       success: true,
     };
   }
-}
-
-export interface FileReadWriteOperations {
-  readonly writeFile: typeof writeFile;
-  readonly access: typeof access;
-  readFile: (filePath: string, encoding: NodeJS.BufferEncoding) => Promise<string>;
 }

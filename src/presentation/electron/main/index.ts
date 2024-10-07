@@ -97,7 +97,7 @@ if (isDevelopment) {
   }
 }
 
-function loadApplication(window: BrowserWindow) {
+function loadApplication(window: BrowserWindow): void {
   if (RENDERER_URL) { // Populated in a dev server during development
     loadUrlWithNodeWorkaround(window, RENDERER_URL);
   } else {

@@ -7,7 +7,7 @@ import type { ShellCommandOutcome, ShellCommandRunner } from './ShellCommandRunn
 export class LoggingNodeShellCommandRunner implements ShellCommandRunner {
   constructor(
     private readonly logger: Logger = ElectronLogger,
-    private readonly systemOps: SystemOperations = new NodeElectronSystemOperations(),
+    private readonly systemOps: SystemOperations = NodeElectronSystemOperations,
   ) {
   }
 

@@ -5,8 +5,8 @@ import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import {
   FileType, type SaveFileError, type SaveFileErrorType, type SaveFileOutcome,
 } from '@/presentation/common/Dialog';
-import { FileReadbackVerificationErrors, type ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
-import { NodeReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
+import { FileReadbackVerificationErrors, type ReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/ReadbackFileWriter';
+import { NodeReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/NodeReadbackFileWriter';
 import type { ElectronSaveFileDialog } from './ElectronSaveFileDialog';
 
 export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {

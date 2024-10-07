@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { retryFileSystemAccess } from './RetryFileSystemAccess';
+import { retryFileSystemAccess } from './FileSystemAccessorWithRetry';
 
 export async function checkIntegrity(
   filePath: string,

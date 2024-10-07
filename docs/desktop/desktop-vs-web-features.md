@@ -34,8 +34,10 @@ The desktop version ensures secure delivery through cryptographic signatures and
 
 [Security is a top priority](./../../SECURITY.md#update-security-and-integrity) at privacy.sexy.
 
-> **Note for macOS users:** On macOS, the desktop version's auto-update process involves manual steps due to Apple's code signing costs.
+> **Note for macOS users:**
+> On macOS, the desktop version's auto-update process involves manual steps due to Apple's code signing costs.
 > Users get notified about updates but might need to complete the installation manually.
+> Updater stores update installation files temporarily at `$HOME/Library/Application Support/privacy.sexy/updates`.
 > Consider [donating](https://github.com/sponsors/undergroundwires) to help improve this process ❤️.
 
 ### Logging

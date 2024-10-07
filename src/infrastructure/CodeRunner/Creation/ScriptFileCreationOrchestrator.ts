@@ -1,21 +1,22 @@
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import type { Logger } from '@/application/Common/Log/Logger';
 import type { CodeRunError, CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
-import { FileReadbackVerificationErrors, type ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
-import { NodeReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
-import { NodeElectronSystemOperations } from '../System/NodeElectronSystemOperations';
+import { FileReadbackVerificationErrors, type ReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/ReadbackFileWriter';
+import { NodeReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/NodeReadbackFileWriter';
+import { NodeElectronFileSystemOperations } from '@/infrastructure/FileSystem/NodeElectronFileSystemOperations';
+import { PersistentApplicationDirectoryProvider } from '@/infrastructure/FileSystem/Directory/PersistentApplicationDirectoryProvider';
+import type { FileSystemOperations } from '@/infrastructure/FileSystem/FileSystemOperations';
+import type { ApplicationDirectoryProvider } from '@/infrastructure/FileSystem/Directory/ApplicationDirectoryProvider';
 import { TimestampedFilenameGenerator } from './Filename/TimestampedFilenameGenerator';
-import { PersistentDirectoryProvider } from './Directory/PersistentDirectoryProvider';
-import type { SystemOperations } from '../System/SystemOperations';
 import type { FilenameGenerator } from './Filename/FilenameGenerator';
 import type { ScriptFilenameParts, ScriptFileCreator, ScriptFileCreationOutcome } from './ScriptFileCreator';
-import type { ScriptDirectoryProvider } from './Directory/ScriptDirectoryProvider';
 
 export class ScriptFileCreationOrchestrator implements ScriptFileCreator {
   constructor(
-    private readonly system: SystemOperations = new NodeElectronSystemOperations(),
+    private readonly fileSystem: FileSystemOperations = NodeElectronFileSystemOperations,
     private readonly filenameGenerator: FilenameGenerator = new TimestampedFilenameGenerator(),
-    private readonly directoryProvider: ScriptDirectoryProvider = new PersistentDirectoryProvider(),
+    private readonly directoryProvider: ApplicationDirectoryProvider
+    = new PersistentApplicationDirectoryProvider(),
     private readonly fileWriter: ReadbackFileWriter = new NodeReadbackFileWriter(),
     private readonly logger: Logger = ElectronLogger,
   ) { }
@@ -26,9 +27,12 @@ export class ScriptFileCreationOrchestrator implements ScriptFileCreator {
   ): Promise<ScriptFileCreationOutcome> {
     const {
       success: isDirectoryCreated, error: directoryCreationError, directoryAbsolutePath,
-    } = await this.directoryProvider.provideScriptDirectory();
+    } = await this.directoryProvider.provideDirectory('script-runs');
     if (!isDirectoryCreated) {
-      return createFailure(directoryCreationError);
+      return createFailure({
+        type: 'DirectoryCreationError',
+        message: `[${directoryCreationError.type}] ${directoryCreationError.message}`,
+      });
     }
     const {
       success: isFilePathConstructed, error: filePathGenerationError, filePath,
@@ -54,7 +58,7 @@ export class ScriptFileCreationOrchestrator implements ScriptFileCreator {
   ): FilePathConstructionOutcome {
     try {
       const filename = this.filenameGenerator.generateFilename(scriptFilenameParts);
-      const filePath = this.system.location.combinePaths(directoryPath, filename);
+      const filePath = this.fileSystem.combinePaths(directoryPath, filename);
       return { success: true, filePath };
     } catch (error) {
       return {

@@ -5,7 +5,7 @@ import { FileSystemExecutablePermissionSetter } from '@/infrastructure/CodeRunne
 import type { ScriptFileExecutionOutcome } from '@/infrastructure/CodeRunner/Execution/ScriptFileExecutor';
 import type { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { expectTrue } from '@tests/shared/Assertions/ExpectTrue';
-import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
+import { FileSystemOperationsStub } from '@tests/unit/shared/Stubs/FileSystemOperationsStub';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
@@ -15,7 +15,7 @@ describe('FileSystemExecutablePermissionSetter', () => {
     it('sets permissions on the specified file', async () => {
       // arrange
       const expectedFilePath = 'expected-file-path';
-      const fileSystem = new FileSystemOpsStub();
+      const fileSystem = new FileSystemOperationsStub();
       const context = new TestContext()
         .withFilePath(expectedFilePath)
         .withSystemOperations(new SystemOperationsStub().withFileSystem(fileSystem));
@@ -33,7 +33,7 @@ describe('FileSystemExecutablePermissionSetter', () => {
     it('applies the correct permissions mode', async () => {
       // arrange
       const expectedMode = '755';
-      const fileSystem = new FileSystemOpsStub();
+      const fileSystem = new FileSystemOperationsStub();
       const context = new TestContext()
         .withSystemOperations(new SystemOperationsStub().withFileSystem(fileSystem));
 
@@ -49,7 +49,7 @@ describe('FileSystemExecutablePermissionSetter', () => {
 
     it('reports success when permissions are set without errors', async () => {
       // arrange
-      const fileSystem = new FileSystemOpsStub();
+      const fileSystem = new FileSystemOperationsStub();
       fileSystem.setFilePermissions = () => Promise.resolve();
       const context = new TestContext()
         .withSystemOperations(new SystemOperationsStub().withFileSystem(fileSystem));
@@ -67,7 +67,7 @@ describe('FileSystemExecutablePermissionSetter', () => {
         // arrange
         const thrownErrorMessage = 'File system error';
         const expectedErrorMessage = `Error setting script file permission: ${thrownErrorMessage}`;
-        const fileSystem = new FileSystemOpsStub();
+        const fileSystem = new FileSystemOperationsStub();
         fileSystem.setFilePermissions = () => Promise.reject(new Error(thrownErrorMessage));
         const context = new TestContext()
           .withSystemOperations(new SystemOperationsStub().withFileSystem(fileSystem));
@@ -84,7 +84,7 @@ describe('FileSystemExecutablePermissionSetter', () => {
       it('returns expected error type when filesystem throws', async () => {
         // arrange
         const expectedErrorType: CodeRunErrorType = 'FilePermissionChangeError';
-        const fileSystem = new FileSystemOpsStub();
+        const fileSystem = new FileSystemOperationsStub();
         fileSystem.setFilePermissions = () => Promise.reject(new Error('File system error'));
         const context = new TestContext()
           .withSystemOperations(new SystemOperationsStub().withFileSystem(fileSystem));
@@ -103,7 +103,7 @@ describe('FileSystemExecutablePermissionSetter', () => {
         // arrange
         const thrownErrorMessage = 'File system error';
         const logger = new LoggerStub();
-        const fileSystem = new FileSystemOpsStub();
+        const fileSystem = new FileSystemOperationsStub();
         fileSystem.setFilePermissions = () => Promise.reject(new Error(thrownErrorMessage));
         const context = new TestContext()
           .withLogger(logger)

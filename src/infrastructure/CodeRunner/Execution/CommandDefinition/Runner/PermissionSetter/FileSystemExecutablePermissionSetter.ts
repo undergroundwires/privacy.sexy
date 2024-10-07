@@ -7,7 +7,7 @@ import type { ExecutablePermissionSetter } from './ExecutablePermissionSetter';
 
 export class FileSystemExecutablePermissionSetter implements ExecutablePermissionSetter {
   constructor(
-    private readonly system: SystemOperations = new NodeElectronSystemOperations(),
+    private readonly system: SystemOperations = NodeElectronSystemOperations,
     private readonly logger: Logger = ElectronLogger,
   ) { }
 

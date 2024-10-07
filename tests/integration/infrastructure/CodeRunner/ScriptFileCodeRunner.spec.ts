@@ -3,13 +3,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { exec } from 'node:child_process';
 import { describe, it } from 'vitest';
-import type { ScriptDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/ScriptDirectoryProvider';
 import { ScriptFileCreationOrchestrator } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreationOrchestrator';
 import { ScriptFileCodeRunner } from '@/infrastructure/CodeRunner/ScriptFileCodeRunner';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { LinuxTerminalEmulator } from '@/infrastructure/CodeRunner/Execution/CommandDefinition/Commands/LinuxVisibleTerminalCommand';
+import type { ApplicationDirectoryProvider } from '@/infrastructure/FileSystem/Directory/ApplicationDirectoryProvider';
 
 describe('ScriptFileCodeRunner', () => {
   it('executes simple script correctly', async ({ skip }) => {
@@ -79,16 +79,16 @@ function isLinuxTerminalEmulatorSupported(): Promise<boolean> {
   });
 }
 
-function createCodeRunner(directoryProvider: ScriptDirectoryProvider): ScriptFileCodeRunner {
+function createCodeRunner(directoryProvider: ApplicationDirectoryProvider): ScriptFileCodeRunner {
   return new ScriptFileCodeRunner(
     undefined,
     new ScriptFileCreationOrchestrator(undefined, undefined, directoryProvider),
   );
 }
 
-function createTemporaryDirectoryProvider(): ScriptDirectoryProvider {
+function createTemporaryDirectoryProvider(): ApplicationDirectoryProvider {
   return {
-    provideScriptDirectory: async () => {
+    provideDirectory: async () => {
       const temporaryDirectoryPathPrefix = join(tmpdir(), 'privacy-sexy-tests-');
       const temporaryDirectoryFullPath = await mkdtemp(temporaryDirectoryPathPrefix);
       return {

@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import type { ScriptDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/ScriptDirectoryProvider';
 import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { ScriptEnvironmentDiagnosticsCollector } from '@/infrastructure/ScriptDiagnostics/ScriptEnvironmentDiagnosticsCollector';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
-import { ScriptDirectoryProviderStub } from '@tests/unit/shared/Stubs/ScriptDirectoryProviderStub';
+import { ApplicationDirectoryProviderStub } from '@tests/unit/shared/Stubs/ApplicationDirectoryProviderStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import type { ApplicationDirectoryProvider } from '@/infrastructure/FileSystem/Directory/ApplicationDirectoryProvider';
 
 describe('ScriptEnvironmentDiagnosticsCollector', () => {
   it('collects operating system path correctly', async () => {
@@ -26,8 +26,8 @@ describe('ScriptEnvironmentDiagnosticsCollector', () => {
   it('collects path correctly', async () => {
     // arrange
     const expectedScriptsPath = '/expected/scripts/path';
-    const directoryProvider = new ScriptDirectoryProviderStub()
-      .withDirectoryPath(expectedScriptsPath);
+    const directoryProvider = new ApplicationDirectoryProviderStub()
+      .withDirectoryPath('script-runs', expectedScriptsPath);
     const collector = new CollectorBuilder()
       .withScriptDirectoryProvider(directoryProvider)
       .build();
@@ -42,7 +42,7 @@ describe('ScriptEnvironmentDiagnosticsCollector', () => {
 });
 
 class CollectorBuilder {
-  private directoryProvider: ScriptDirectoryProvider = new ScriptDirectoryProviderStub();
+  private directoryProvider: ApplicationDirectoryProvider = new ApplicationDirectoryProviderStub();
 
   private environment: RuntimeEnvironment = new RuntimeEnvironmentStub();
 
@@ -51,7 +51,7 @@ class CollectorBuilder {
     return this;
   }
 
-  public withScriptDirectoryProvider(directoryProvider: ScriptDirectoryProvider): this {
+  public withScriptDirectoryProvider(directoryProvider: ApplicationDirectoryProvider): this {
     this.directoryProvider = directoryProvider;
     return this;
   }

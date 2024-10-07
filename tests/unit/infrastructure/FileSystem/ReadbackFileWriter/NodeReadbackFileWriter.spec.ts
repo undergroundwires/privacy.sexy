@@ -1,13 +1,13 @@
-import { constants } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import type { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import type { FunctionKeys } from '@/TypeHelpers';
 import { sequenceEqual } from '@/application/Common/Array';
-import type { FileWriteErrorType } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import type { FileWriteErrorType } from '@/infrastructure/FileSystem/ReadbackFileWriter/ReadbackFileWriter';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { type FileReadWriteOperations, NodeReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
-import { FileReadWriteOperationsStub } from './FileReadWriteOperationsStub';
+import { NodeReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/NodeReadbackFileWriter';
+import { FileSystemOperationsStub } from '@tests/unit/shared/Stubs/FileSystemOperationsStub';
+import type { FileSystemOperations } from '@/infrastructure/FileSystem/FileSystemOperations';
 
 describe('NodeReadbackFileWriter', () => {
   describe('writeAndVerifyFile', () => {
@@ -26,7 +26,7 @@ describe('NodeReadbackFileWriter', () => {
         it('writes to specified path', async () => {
           // arrange
           const expectedFilePath = 'test.txt';
-          const fileSystemStub = new FileReadWriteOperationsStub();
+          const fileSystemStub = new FileSystemOperationsStub();
           const context = new NodeReadbackFileWriterTestSetup()
             .withFilePath(expectedFilePath)
             .withFileSystem(fileSystemStub);
@@ -43,7 +43,7 @@ describe('NodeReadbackFileWriter', () => {
         it('writes specified contents', async () => {
           // arrange
           const expectedFileContents = 'expected file contents';
-          const fileSystemStub = new FileReadWriteOperationsStub();
+          const fileSystemStub = new FileSystemOperationsStub();
           const context = new NodeReadbackFileWriterTestSetup()
             .withFileSystem(fileSystemStub)
             .withFileContents(expectedFileContents);
@@ -60,7 +60,7 @@ describe('NodeReadbackFileWriter', () => {
         it('uses correct encoding', async () => {
           // arrange
           const expectedEncoding: NodeJS.BufferEncoding = 'utf-8';
-          const fileSystemStub = new FileReadWriteOperationsStub();
+          const fileSystemStub = new FileSystemOperationsStub();
           const context = new NodeReadbackFileWriterTestSetup()
             .withFileSystem(fileSystemStub);
 
@@ -78,7 +78,7 @@ describe('NodeReadbackFileWriter', () => {
         it('checks correct path', async () => {
           // arrange
           const expectedFilePath = 'test-file-path';
-          const fileSystemStub = new FileReadWriteOperationsStub();
+          const fileSystemStub = new FileSystemOperationsStub();
           const context = new NodeReadbackFileWriterTestSetup()
             .withFileSystem(fileSystemStub)
             .withFilePath(expectedFilePath);
@@ -87,33 +87,17 @@ describe('NodeReadbackFileWriter', () => {
           await context.writeAndVerifyFile();
 
           // assert
-          const accessCalls = fileSystemStub.callHistory.filter((c) => c.methodName === 'access');
+          const accessCalls = fileSystemStub.callHistory.filter((c) => c.methodName === 'isFileAvailable');
           expect(accessCalls).to.have.lengthOf(1);
           const [actualFilePath] = accessCalls[0].args;
           expect(actualFilePath).to.equal(expectedFilePath);
-        });
-        it('uses correct mode', async () => {
-          // arrange
-          const expectedMode = constants.F_OK;
-          const fileSystemStub = new FileReadWriteOperationsStub();
-          const context = new NodeReadbackFileWriterTestSetup()
-            .withFileSystem(fileSystemStub);
-
-          // act
-          await context.writeAndVerifyFile();
-
-          // assert
-          const accessCalls = fileSystemStub.callHistory.filter((c) => c.methodName === 'access');
-          expect(accessCalls).to.have.lengthOf(1);
-          const [,actualMode] = accessCalls[0].args;
-          expect(actualMode).to.equal(expectedMode);
         });
       });
       describe('content verification', () => {
         it('reads from correct path', async () => {
           // arrange
           const expectedFilePath = 'expected-file-path.txt';
-          const fileSystemStub = new FileReadWriteOperationsStub();
+          const fileSystemStub = new FileSystemOperationsStub();
           const context = new NodeReadbackFileWriterTestSetup()
             .withFileSystem(fileSystemStub)
             .withFilePath(expectedFilePath);
@@ -130,7 +114,7 @@ describe('NodeReadbackFileWriter', () => {
         it('uses correct encoding', async () => {
           // arrange
           const expectedEncoding: NodeJS.BufferEncoding = 'utf-8';
-          const fileSystemStub = new FileReadWriteOperationsStub();
+          const fileSystemStub = new FileSystemOperationsStub();
           const context = new NodeReadbackFileWriterTestSetup()
             .withFileSystem(fileSystemStub);
 
@@ -146,12 +130,12 @@ describe('NodeReadbackFileWriter', () => {
       });
       it('executes file system operations in correct sequence', async () => {
         // arrange
-        const expectedOrder: ReadonlyArray<FunctionKeys<FileReadWriteOperations>> = [
+        const expectedOrder: ReadonlyArray<FunctionKeys<FileSystemOperations>> = [
           'writeFile',
-          'access',
+          'isFileAvailable',
           'readFile',
         ];
-        const fileSystemStub = new FileReadWriteOperationsStub();
+        const fileSystemStub = new FileSystemOperationsStub();
         const context = new NodeReadbackFileWriterTestSetup()
           .withFileSystem(fileSystemStub);
 
@@ -178,19 +162,30 @@ describe('NodeReadbackFileWriter', () => {
           expectedErrorType: 'WriteOperationFailed',
           expectedErrorMessage: 'Error when writing file',
           buildFaultyContext: (setup, errorMessage) => {
-            const fileSystemStub = new FileReadWriteOperationsStub();
+            const fileSystemStub = new FileSystemOperationsStub();
             fileSystemStub.writeFile = () => Promise.reject(errorMessage);
             return setup
               .withFileSystem(fileSystemStub);
           },
         },
         {
-          description: 'existence verification error',
+          description: 'existence verification throws error',
           expectedErrorType: 'FileExistenceVerificationFailed',
           expectedErrorMessage: 'Access denied',
           buildFaultyContext: (setup, errorMessage) => {
-            const fileSystemStub = new FileReadWriteOperationsStub();
-            fileSystemStub.access = () => Promise.reject(errorMessage);
+            const fileSystemStub = new FileSystemOperationsStub();
+            fileSystemStub.isFileAvailable = () => Promise.reject(errorMessage);
+            return setup
+              .withFileSystem(fileSystemStub);
+          },
+        },
+        {
+          description: 'existence verification returnf alse',
+          expectedErrorType: 'FileExistenceVerificationFailed',
+          expectedErrorMessage: 'File does not exist.',
+          buildFaultyContext: (setup) => {
+            const fileSystemStub = new FileSystemOperationsStub();
+            fileSystemStub.isFileAvailable = () => Promise.resolve(false);
             return setup
               .withFileSystem(fileSystemStub);
           },
@@ -200,7 +195,7 @@ describe('NodeReadbackFileWriter', () => {
           expectedErrorType: 'ReadVerificationFailed',
           expectedErrorMessage: 'Read error',
           buildFaultyContext: (setup, errorMessage) => {
-            const fileSystemStub = new FileReadWriteOperationsStub();
+            const fileSystemStub = new FileSystemOperationsStub();
             fileSystemStub.readFile = () => Promise.reject(errorMessage);
             return setup
               .withFileSystem(fileSystemStub);
@@ -211,7 +206,7 @@ describe('NodeReadbackFileWriter', () => {
           expectedErrorType: 'ContentVerificationFailed',
           expectedErrorMessage: 'The contents of the written file do not match the expected contents.',
           buildFaultyContext: (setup) => {
-            const fileSystemStub = new FileReadWriteOperationsStub();
+            const fileSystemStub = new FileSystemOperationsStub();
             fileSystemStub.readFile = () => Promise.resolve('different contents');
             return setup
               .withFileSystem(fileSystemStub);
@@ -260,7 +255,7 @@ describe('NodeReadbackFileWriter', () => {
 class NodeReadbackFileWriterTestSetup {
   private logger: Logger = new LoggerStub();
 
-  private fileSystem: FileReadWriteOperations = new FileReadWriteOperationsStub();
+  private fileSystem: FileSystemOperations = new FileSystemOperationsStub();
 
   private filePath = '/test/file/path.txt';
 
@@ -271,7 +266,7 @@ class NodeReadbackFileWriterTestSetup {
     return this;
   }
 
-  public withFileSystem(fileSystem: FileReadWriteOperations): this {
+  public withFileSystem(fileSystem: FileSystemOperations): this {
     this.fileSystem = fileSystem;
     return this;
   }

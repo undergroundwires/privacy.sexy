@@ -1,32 +1,37 @@
 import type { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import type { CodeRunError, CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
-import { NodeElectronSystemOperations } from '../../System/NodeElectronSystemOperations';
-import type { SystemOperations } from '../../System/SystemOperations';
-import type { ScriptDirectoryOutcome, ScriptDirectoryProvider } from './ScriptDirectoryProvider';
+import { NodeElectronFileSystemOperations } from '@/infrastructure/FileSystem/NodeElectronFileSystemOperations';
+import type {
+  DirectoryCreationOutcome, ApplicationDirectoryProvider, DirectoryType,
+  DirectoryCreationError, DirectoryCreationErrorType,
+} from './ApplicationDirectoryProvider';
+import type { FileSystemOperations } from '../FileSystemOperations';
 
-export const ExecutionSubdirectory = 'runs';
+export const SubdirectoryNames: Record<DirectoryType, string> = {
+  'script-runs': 'runs',
+  'update-installation-files': 'updates',
+};
 
 /**
- * Provides a dedicated directory for script execution.
+ * Provides persistent directories.
  * Benefits of using a persistent directory:
  * - Antivirus Exclusions: Easier antivirus configuration.
  * - Auditability: Stores script execution history for troubleshooting.
  * - Reliability: Avoids issues with directory clean-ups during execution,
  *   seen in Windows Pro Azure VMs when stored on Windows temporary directory.
  */
-export class PersistentDirectoryProvider implements ScriptDirectoryProvider {
+export class PersistentApplicationDirectoryProvider implements ApplicationDirectoryProvider {
   constructor(
-    private readonly system: SystemOperations = new NodeElectronSystemOperations(),
+    private readonly fileSystem: FileSystemOperations = NodeElectronFileSystemOperations,
     private readonly logger: Logger = ElectronLogger,
   ) { }
 
-  public async provideScriptDirectory(): Promise<ScriptDirectoryOutcome> {
+  public async provideDirectory(type: DirectoryType): Promise<DirectoryCreationOutcome> {
     const {
       success: isPathConstructed,
       error: pathConstructionError,
       directoryPath,
-    } = this.constructScriptDirectoryPath();
+    } = this.constructScriptDirectoryPath(type);
     if (!isPathConstructed) {
       return {
         success: false,
@@ -52,7 +57,7 @@ export class PersistentDirectoryProvider implements ScriptDirectoryProvider {
   private async createDirectory(directoryPath: string): Promise<DirectoryPathCreationOutcome> {
     try {
       this.logger.info(`Attempting to create script directory at path: ${directoryPath}`);
-      await this.system.fileSystem.createDirectory(directoryPath, true);
+      await this.fileSystem.createDirectory(directoryPath, true);
       this.logger.info(`Script directory successfully created at: ${directoryPath}`);
       return {
         success: true,
@@ -60,17 +65,26 @@ export class PersistentDirectoryProvider implements ScriptDirectoryProvider {
     } catch (error) {
       return {
         success: false,
-        error: this.handleException(error, 'DirectoryCreationError'),
+        error: this.handleError(error, 'DirectoryWriteError'),
       };
     }
   }
 
-  private constructScriptDirectoryPath(): DirectoryPathConstructionOutcome {
+  private constructScriptDirectoryPath(type: DirectoryType): DirectoryPathConstructionOutcome {
+    let parentDirectory: string;
     try {
-      const parentDirectory = this.system.operatingSystem.getUserDataDirectory();
-      const scriptDirectory = this.system.location.combinePaths(
+      parentDirectory = this.fileSystem.getUserDataDirectory();
+    } catch (error) {
+      return {
+        success: false,
+        error: this.handleError(error, 'UserDataFolderRetrievalError'),
+      };
+    }
+    try {
+      const subdirectoryName = SubdirectoryNames[type];
+      const scriptDirectory = this.fileSystem.combinePaths(
         parentDirectory,
-        ExecutionSubdirectory,
+        subdirectoryName,
       );
       return {
         success: true,
@@ -79,15 +93,15 @@ export class PersistentDirectoryProvider implements ScriptDirectoryProvider {
     } catch (error) {
       return {
         success: false,
-        error: this.handleException(error, 'DirectoryCreationError'),
+        error: this.handleError(error, 'PathConstructionError'),
       };
     }
   }
 
-  private handleException(
+  private handleError(
     exception: Error,
-    errorType: CodeRunErrorType,
-  ): CodeRunError {
+    errorType: DirectoryCreationErrorType,
+  ): DirectoryCreationError {
     const errorMessage = 'Error during script directory creation';
     this.logger.error(errorType, errorMessage, exception);
     return {
@@ -99,7 +113,7 @@ export class PersistentDirectoryProvider implements ScriptDirectoryProvider {
 
 type DirectoryPathConstructionOutcome = {
   readonly success: false;
-  readonly error: CodeRunError;
+  readonly error: DirectoryCreationError;
   readonly directoryPath?: undefined;
 } | {
   readonly success: true;
@@ -109,7 +123,7 @@ type DirectoryPathConstructionOutcome = {
 
 type DirectoryPathCreationOutcome = {
   readonly success: false;
-  readonly error: CodeRunError;
+  readonly error: DirectoryCreationError;
 } | {
   readonly success: true;
   readonly error?: undefined;

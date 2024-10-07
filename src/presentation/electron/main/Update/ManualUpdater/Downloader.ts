@@ -1,10 +1,8 @@
-import { existsSync, createWriteStream, type WriteStream } from 'node:fs';
-import { unlink, mkdir } from 'node:fs/promises';
-import path from 'node:path';
-import { app } from 'electron/main';
+import { createWriteStream, type WriteStream } from 'node:fs';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { UpdateProgressBar } from '../ProgressBar/UpdateProgressBar';
-import { retryFileSystemAccess } from './RetryFileSystemAccess';
+import { provideUpdateInstallationFilepath, type InstallationFilepathProvider } from './InstallationFiles/InstallationFilepathProvider';
 import type { UpdateInfo } from 'electron-updater';
 import type { ReadableStream } from 'node:stream/web';
 
@@ -18,18 +16,25 @@ export type DownloadUpdateResult = {
   readonly installerPath: string;
 };
 
+interface UpdateDownloadUtilities {
+  readonly logger: Logger;
+  readonly provideInstallationFilePath: InstallationFilepathProvider;
+}
+
 export async function downloadUpdate(
   info: UpdateInfo,
   remoteFileUrl: string,
   progressBar: UpdateProgressBar,
+  utilities: UpdateDownloadUtilities = DefaultUtilities,
 ): Promise<DownloadUpdateResult> {
-  ElectronLogger.info('Starting manual update download.');
+  utilities.logger.info('Starting manual update download.');
   progressBar.showIndeterminateState();
   try {
     const { filePath } = await downloadInstallerFile(
       info.version,
       remoteFileUrl,
       (percentage) => { progressBar.showPercentage(percentage); },
+      utilities,
     );
     return {
       success: true,
@@ -47,35 +52,16 @@ async function downloadInstallerFile(
   version: string,
   remoteFileUrl: string,
   progressHandler: ProgressCallback,
+  utilities: UpdateDownloadUtilities,
 ): Promise<{ readonly filePath: string; }> {
-  const filePath = `${path.dirname(app.getPath('temp'))}/privacy.sexy/${version}-installer.dmg`;
-  if (!await ensureFilePathReady(filePath)) {
-    throw new Error(`Failed to prepare the file path for the installer: ${filePath}`);
-  }
+  const filePath = await utilities.provideInstallationFilePath(version);
   await downloadFileWithProgress(
     remoteFileUrl,
     filePath,
     progressHandler,
+    utilities,
   );
   return { filePath };
-}
-
-async function ensureFilePathReady(filePath: string): Promise<boolean> {
-  return retryFileSystemAccess(async () => {
-    try {
-      const parentFolder = path.dirname(filePath);
-      if (existsSync(filePath)) {
-        ElectronLogger.info(`Existing update file found and will be replaced: ${filePath}`);
-        await unlink(filePath);
-      } else {
-        await mkdir(parentFolder, { recursive: true });
-      }
-      return true;
-    } catch (error) {
-      ElectronLogger.error(`Failed to prepare file path for update: ${filePath}`, error);
-      return false;
-    }
-  });
 }
 
 type ProgressCallback = (progress: number) => void;
@@ -84,21 +70,22 @@ async function downloadFileWithProgress(
   url: string,
   filePath: string,
   progressHandler: ProgressCallback,
+  utilities: UpdateDownloadUtilities,
 ) {
-  // autoUpdater cannot handle DMG files, requiring manual download management for these file types.
-  ElectronLogger.info(`Retrieving update from ${url}.`);
+  utilities.logger.info(`Retrieving update from ${url}.`);
   const response = await fetch(url);
   if (!response.ok) {
     throw Error(`Download failed: Server responded with ${response.status} ${response.statusText}.`);
   }
-  const contentLength = getContentLengthFromResponse(response);
+  const contentLength = getContentLengthFromResponse(response, utilities);
   await withWriteStream(filePath, async (writer) => {
-    ElectronLogger.info(contentLength.isValid
-      ? `Saving file to ${filePath} (Size: ${contentLength.totalLength} bytes).`
-      : `Saving file to ${filePath}.`);
+    utilities.logger.info(contentLength.isValid
+      ? `Saving file to '${filePath}' (Size: ${contentLength.totalLength} bytes).`
+      : `Saving file to '${filePath}'.`);
     await withReadableStream(response, async (reader) => {
-      await streamWithProgress(contentLength, reader, writer, progressHandler);
+      await streamWithProgress(contentLength, reader, writer, progressHandler, utilities);
     });
+    ElectronLogger.info(`Successfully saved the file: '${filePath}'`);
   });
 }
 
@@ -109,16 +96,19 @@ type ResponseContentLength = {
   readonly isValid: false;
 };
 
-function getContentLengthFromResponse(response: Response): ResponseContentLength {
+function getContentLengthFromResponse(
+  response: Response,
+  utilities: UpdateDownloadUtilities,
+): ResponseContentLength {
   const contentLengthString = response.headers.get('content-length');
   const headersInfo = Array.from(response.headers.entries());
   if (!contentLengthString) {
-    ElectronLogger.warn('Missing \'Content-Length\' header in the response.', headersInfo);
+    utilities.logger.warn('Missing \'Content-Length\' header in the response.', headersInfo);
     return { isValid: false };
   }
   const contentLength = Number(contentLengthString);
   if (Number.isNaN(contentLength) || contentLength <= 0) {
-    ElectronLogger.error('Unable to determine download size from server response.', headersInfo);
+    utilities.logger.error('Unable to determine download size from server response.', headersInfo);
     return { isValid: false };
   }
   return { totalLength: contentLength, isValid: true };
@@ -153,6 +143,7 @@ async function streamWithProgress(
   readStream: ReadableStream,
   writeStream: WriteStream,
   progressHandler: ProgressCallback,
+  utilities: UpdateDownloadUtilities,
 ): Promise<void> {
   let receivedLength = 0;
   let logThreshold = 0;
@@ -163,22 +154,23 @@ async function streamWithProgress(
     writeStream.write(Buffer.from(chunk));
     receivedLength += chunk.length;
     notifyProgress(contentLength, receivedLength, progressHandler);
-    const progressLog = logProgress(receivedLength, contentLength, logThreshold);
+    const progressLog = logProgress(receivedLength, contentLength, logThreshold, utilities);
     logThreshold = progressLog.nextLogThreshold;
   }
-  ElectronLogger.info('Update download completed successfully.');
+  utilities.logger.info('Update download completed successfully.');
 }
 
 function logProgress(
   receivedLength: number,
   contentLength: ResponseContentLength,
   logThreshold: number,
+  utilities: UpdateDownloadUtilities,
 ): { readonly nextLogThreshold: number; } {
   const {
     shouldLog, nextLogThreshold,
   } = shouldLogProgress(receivedLength, contentLength, logThreshold);
   if (shouldLog) {
-    ElectronLogger.debug(`Download progress: ${receivedLength} bytes received.`);
+    utilities.logger.debug(`Download progress: ${receivedLength} bytes received.`);
   }
   return { nextLogThreshold };
 }
@@ -220,3 +212,8 @@ function createReader(response: Response): ReadableStream {
   // https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/65542#discussioncomment-6071004
   return response.body as ReadableStream;
 }
+
+const DefaultUtilities: UpdateDownloadUtilities = {
+  logger: ElectronLogger,
+  provideInstallationFilePath: provideUpdateInstallationFilepath,
+};
