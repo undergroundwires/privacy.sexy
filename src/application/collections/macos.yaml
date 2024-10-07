@@ -1604,11 +1604,11 @@ actions:
                         code: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool NO
                         revertCode: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool YES
                     -
-                        name: Disable guest access to file shares over AF
+                        name: Disable guest access to file shares over SMB
                         code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool NO
                         revertCode: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool YES
                     -
-                        name: Disable guest access to file shares over SMB
+                        name: Disable guest access to file shares over AF
                         code: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool NO
                         revertCode: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool YES
             -
