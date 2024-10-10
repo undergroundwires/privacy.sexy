@@ -25,7 +25,8 @@ import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import ace from './ace-importer';
+import { initializeAceEditor } from './Ace/AceCodeEditorFactory';
+import type { SupportedSyntaxLanguage, CodeEditor, CodeEditorStyleHandle } from './CodeEditorFactory';
 
 export default defineComponent({
   components: {
@@ -34,13 +35,7 @@ export default defineComponent({
   directives: {
     NonCollapsing,
   },
-  props: {
-    theme: {
-      type: String,
-      default: undefined,
-    },
-  },
-  setup(props) {
+  setup() {
     const { onStateChange, currentState } = injectKey((keys) => keys.useCollectionState);
     const { projectDetails } = injectKey((keys) => keys.useApplication);
     const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
@@ -48,8 +43,8 @@ export default defineComponent({
     const editorId = 'codeEditor';
     const highlightedRange = ref(0);
 
-    let editor: ace.Ace.Editor | undefined;
-    let currentMarkerId: number | undefined;
+    let editor: CodeEditor | undefined;
+    let currentMarker: CodeEditorStyleHandle | undefined;
 
     onUnmounted(() => {
       destroyEditor();
@@ -63,11 +58,10 @@ export default defineComponent({
 
     function handleNewState(newState: IReadOnlyCategoryCollectionState) {
       destroyEditor();
-      editor = initializeEditor(
-        props.theme,
-        editorId,
-        newState.collection.scripting.language,
-      );
+      editor = initializeAceEditor({
+        editorContainerElementId: editorId,
+        language: getLanguage(newState.collection.scripting.language),
+      });
       const appCode = newState.code;
       updateCode(appCode.current, newState.collection.scripting.language);
       events.unsubscribeAllAndRegister([
@@ -77,7 +71,7 @@ export default defineComponent({
 
     function updateCode(code: string, language: ScriptingLanguage) {
       const innerCode = code || getDefaultCode(language, projectDetails);
-      editor?.setValue(innerCode, 1);
+      editor?.setContent(innerCode);
     }
 
     function handleCodeChange(event: ICodeChangedEvent) {
@@ -91,7 +85,7 @@ export default defineComponent({
     }
 
     function sizeChanged() {
-      editor?.resize();
+      editor?.updateSize();
     }
 
     function destroyEditor() {
@@ -100,11 +94,11 @@ export default defineComponent({
     }
 
     function removeCurrentHighlighting() {
-      if (!currentMarkerId) {
+      if (!currentMarker) {
         return;
       }
-      editor?.session.removeMarker(currentMarkerId);
-      currentMarkerId = undefined;
+      currentMarker?.clearStyle();
+      currentMarker = undefined;
       highlightedRange.value = 0;
     }
 
@@ -117,26 +111,13 @@ export default defineComponent({
       const end = Math.max(
         ...positions.map((position) => position.endLine),
       );
-      scrollToLine(end + 2);
+      editor?.scrollToLine(end + 2);
       highlight(start, end);
     }
 
     function highlight(startRow: number, endRow: number) {
-      const AceRange = ace.require('ace/range').Range;
-      currentMarkerId = editor?.session.addMarker(
-        new AceRange(startRow, 0, endRow, 0),
-        'code-area__highlight',
-        'fullLine',
-      );
+      currentMarker = editor?.applyStyleToLineRange(startRow, endRow, 'code-area__highlight');
       highlightedRange.value = endRow - startRow;
-    }
-
-    function scrollToLine(row: number) {
-      const column = editor?.session.getLine(row).length;
-      if (column === undefined) {
-        return;
-      }
-      editor?.gotoLine(row, column, true);
     }
 
     return {
@@ -147,29 +128,12 @@ export default defineComponent({
   },
 });
 
-function initializeEditor(
-  theme: string | undefined,
-  editorId: string,
-  language: ScriptingLanguage,
-): ace.Ace.Editor {
-  theme = theme || 'github';
-  const editor = ace.edit(editorId);
-  const lang = getLanguage(language);
-  editor.getSession().setMode(`ace/mode/${lang}`);
-  editor.setTheme(`ace/theme/${theme}`);
-  editor.setReadOnly(true);
-  editor.setAutoScrollEditorIntoView(true);
-  editor.setShowPrintMargin(false); // hides vertical line
-  editor.getSession().setUseWrapMode(true); // So code is readable on mobile
-  return editor;
-}
-
-function getLanguage(language: ScriptingLanguage) {
+function getLanguage(language: ScriptingLanguage): SupportedSyntaxLanguage {
   switch (language) {
     case ScriptingLanguage.batchfile: return 'batchfile';
-    case ScriptingLanguage.shellscript: return 'sh';
+    case ScriptingLanguage.shellscript: return 'shellscript';
     default:
-      throw new Error('unknown language');
+      throw new Error(`Unsupported language: ${language}`);
   }
 }
 

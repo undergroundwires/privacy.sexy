@@ -11,7 +11,7 @@
         <TheScriptsView :current-view="currentView" />
       </template>
       <template #second>
-        <TheCodeArea theme="xcode" />
+        <TheCodeArea />
       </template>
     </HorizontalResizeSlider>
   </div>
