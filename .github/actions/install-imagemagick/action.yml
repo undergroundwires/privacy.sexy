@@ -1,0 +1,12 @@
+inputs:
+  project-root:
+    required: false
+    default: '.'
+runs:
+  using: composite
+  steps:
+    -
+      name: Install ImageMagick
+      shell: bash
+      run: ./.github/actions/install-imagemagick/install-imagemagick.sh
+      working-directory: ${{ inputs.project-root }}

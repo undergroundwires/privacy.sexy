@@ -9,16 +9,15 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: [ macos, ubuntu, windows ]
+        os: [macos, ubuntu, windows]
       fail-fast: false # Still interested to see results from other combinations
     steps:
       -
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Install ImageMagick on macOS
-        if: matrix.os == 'macos'
-        run: brew install imagemagick
+        name: Install ImageMagick
+        uses: ./.github/actions/install-imagemagick
       -
         name: Setup node
         uses: ./.github/actions/setup-node

@@ -27,6 +27,9 @@ jobs:
         name: Install dependencies
         uses: ./.github/actions/npm-install-dependencies
       -
+        name: Install ImageMagick # For screenshots
+        uses: ./.github/actions/install-imagemagick
+      -
         name: Configure Ubuntu
         if: contains(matrix.os, 'ubuntu') # macOS runner is missing Docker
         shell: bash
@@ -55,9 +58,6 @@ jobs:
           sudo apt install -y xvfb
           sudo Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
           echo "DISPLAY=:99" >> $GITHUB_ENV
-
-          # Install ImageMagick for screenshots
-          sudo apt install -y imagemagick
 
           # Install xdotool and xprop (from x11-utils) for window title capturing
           sudo apt install -y xdotool x11-utils
