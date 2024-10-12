@@ -31,7 +31,7 @@ jobs:
         uses: ./.github/actions/install-imagemagick
       -
         name: Configure Ubuntu
-        if: contains(matrix.os, 'ubuntu') # macOS runner is missing Docker
+        if: contains(matrix.os, 'ubuntu')
         shell: bash
         run: |-
           sudo apt update
@@ -61,6 +61,18 @@ jobs:
 
           # Install xdotool and xprop (from x11-utils) for window title capturing
           sudo apt install -y xdotool x11-utils
+
+          # Workaround for Electron AppImage apps failing to initialize on Ubuntu 24.04 due to AppArmor restrictions
+          # Disables unprivileged user namespaces restriction to allow Electron apps to run
+          # Reference: https://github.com/electron/electron/issues/42510
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+          # Workaround for Mesa driver issues on Ubuntu 24.04
+          # Installs latest Mesa drivers from Kisak PPA
+          # Reference: https://askubuntu.com/q/1516040
+          sudo add-apt-repository ppa:kisak/kisak-mesa
+          sudo apt update
+          sudo apt upgrade
       -
         name: Test
         shell: bash
