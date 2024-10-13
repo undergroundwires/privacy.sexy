@@ -39,6 +39,15 @@ export function createVueConfig(options?: {
     server: {
       port: 3169,
     },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // The legacy JS API is deprecated and will be removed in Dart Sass 2.0.0.
+          // Vite defaults compiler to 'legacy', see https://vite.dev/config/shared-options#css-preprocessoroptions
+          api: 'modern-compiler',
+        },
+      },
+    },
     test: {
       globals: true,
       environment: 'jsdom',

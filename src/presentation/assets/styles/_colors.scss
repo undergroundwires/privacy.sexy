@@ -6,19 +6,20 @@
         - Darker than default: Shades are named as `color-{name}-dark`, `color-{name}-darker`, or `color-{name}-darkest`.
         - Lighter than default: Tints are named as `color-{name}-light`, `color-{name}-lighter`, or `color-{name}-lightest`.
 */
+@use 'sass:color';
 
 // --- Primary | The color displayed most frequently across screens and components
 $color-primary              : #3a65ab;
-$color-primary-light        : lighten($color-primary, 30%);
-$color-primary-dark         : darken($color-primary, 18%);
-$color-primary-darker       : darken($color-primary, 32%);
-$color-primary-darkest      : darken($color-primary, 44%);
+$color-primary-light        : color.adjust($color-primary, $lightness: 30%);
+$color-primary-dark         : color.adjust($color-primary, $lightness: -18%);
+$color-primary-darker       : color.adjust($color-primary, $lightness: -32%);
+$color-primary-darkest      : color.adjust($color-primary, $lightness: -44%);
 // Text/iconography color that is usable on top of primary color
 $color-on-primary           : #e4f1fe;
 
 // --- Secondary | Accent color, should be applied sparingly to accent select parts of UI
 $color-secondary            : #00D1AD;
-$color-secondary-light      : lighten($color-secondary, 48%);
+$color-secondary-light      : color.adjust($color-secondary, $lightness: 48%);
 // Text/iconography color that is usable on top of secondary color
 $color-on-secondary         : #005051;
 
