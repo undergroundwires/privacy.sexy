@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { VueWrapper, shallowMount } from '@vue/test-utils';
-import CopyableCommand from '@/presentation/components/Code/CodeButtons/Save/RunInstructions/Steps/CopyableCommand.vue';
+import CopyableCommand from '@/presentation/components/Code/CodeButtons/Save/BrowserRunInstructions/Steps/CopyableCommand.vue';
 import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import type { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';

@@ -6,7 +6,7 @@
       @click="saveCode"
     />
     <ModalDialog v-model="areInstructionsVisible">
-      <RunInstructions :filename="filename" />
+      <BrowserRunInstructions :filename="filename" />
     </ModalDialog>
   </div>
 </template>
@@ -23,12 +23,12 @@ import { ScriptFilename } from '@/application/CodeRunner/ScriptFilename';
 import { FileType } from '@/presentation/common/Dialog';
 import IconButton from '../IconButton.vue';
 import { createScriptErrorDialog } from '../ScriptErrorDialog';
-import RunInstructions from './RunInstructions/RunInstructions.vue';
+import BrowserRunInstructions from './BrowserRunInstructions/BrowserRunInstructions.vue';
 
 export default defineComponent({
   components: {
     IconButton,
-    RunInstructions,
+    BrowserRunInstructions,
     ModalDialog,
   },
   setup() {
@@ -55,7 +55,12 @@ export default defineComponent({
         }, scriptDiagnosticsCollector)));
         return;
       }
-      areInstructionsVisible.value = true;
+      if (!isRunningAsDesktopApplication) {
+        areInstructionsVisible.value = true;
+      }
+      // On desktop, it would be better to to prompt the user with a system
+      // dialog offering options after saving, such as:
+      // • Open Containing Folder • "Open File" in default text editor • Close
     }
 
     return {

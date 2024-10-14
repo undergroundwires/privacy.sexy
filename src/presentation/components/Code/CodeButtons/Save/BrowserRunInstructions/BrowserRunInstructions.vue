@@ -47,6 +47,8 @@ export default defineComponent({
     },
   },
   setup() {
+    ensureBrowserEnvironment();
+
     const { currentState } = injectKey((keys) => keys.useCollectionState);
 
     const { projectDetails } = injectKey((keys) => keys.useApplication);
@@ -70,6 +72,13 @@ export default defineComponent({
     };
   },
 });
+
+function ensureBrowserEnvironment(): void {
+  const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
+  if (isRunningAsDesktopApplication) {
+    throw new Error('Not applicable in desktop environments');
+  }
+}
 </script>
 
 <style scoped lang="scss">
