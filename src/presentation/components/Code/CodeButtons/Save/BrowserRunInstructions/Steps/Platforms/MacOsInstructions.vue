@@ -13,9 +13,28 @@
       </InfoTooltipInline>
     </InstructionStep>
     <InstructionStep>
-      Open terminal.
+      Open your terminal.
       <InfoTooltipInline>
-        Type Terminal into Spotlight or open it from the Applications -> Utilities folder.
+        <p>There are two easy ways to open the default terminal on your Mac:</p>
+        <ol>
+          <li>
+            Using macOS search (<strong>Spotlight</strong>):
+            <ul>
+              <li>Press <kbd>Cmd</kbd> + <kbd>Space</kbd> to open <strong>Spotlight</strong>.</li>
+              <li>
+                Type <strong>Terminal</strong> and press <kbd>Enter</kbd> or <kbd>Return</kbd>.
+              </li>
+            </ul>
+          </li>
+          <li>
+            Using <strong>Finder</strong>:
+            <ul>
+              <li>Open <strong>Finder</strong>.</li>
+              <li>Go to <strong>Applications</strong> → <strong>Utilities</strong>.</li>
+              <li>Double-click on <strong>Terminal</strong>.</li>
+            </ul>
+          </li>
+        </ol>
       </InfoTooltipInline>
     </InstructionStep>
     <InstructionStep>
@@ -27,19 +46,22 @@
           <CopyableCommand>cd ~/Downloads</CopyableCommand>
           <template #info>
             <p>
-              Press on <code>enter/return</code> key after running the command.
+              Press on <kbd>Enter</kbd> or <kbd>Return</kbd> key after running the command.
             </p>
             <p>
-              If the file is not downloaded on Downloads folder,
-              change <code>Downloads</code> to path where the file is downloaded.
+              If you didn't save the file in your <strong>Downloads</strong> folder:
             </p>
+            <ol>
+              <li>Locate where you saved the file.</li>
+              <li>In the command, replace <code>Downloads</code> with the correct folder path.</li>
+            </ol>
             <p>
               This command means:
-              <ul>
-                <li><code>cd</code> will change the current folder.</li>
-                <li><code>~</code> is the user home directory.</li>
-              </ul>
             </p>
+            <ul>
+              <li><code>cd</code> will change the current folder.</li>
+              <li><code>~</code> is the user home directory.</li>
+            </ul>
           </template>
         </InfoTooltipWrapper>
       </p>
@@ -53,7 +75,7 @@
           <CopyableCommand>chmod +x {{ filename }}</CopyableCommand>
           <template #info>
             <p>
-              Press on <code>enter/return</code> key after running the command.
+              Press on <kbd>Enter</kbd> or <kbd>Return</kbd> key after running the command.
             </p>
             <p>
               It will make the file executable.
@@ -83,10 +105,10 @@
           still registered, so keep typing.
         </p>
         <p>
-          Press on <code>enter/return</code> key after typing your password.
+          Press the <kbd>Enter</kbd> or <kbd>Return</kbd> key after typing your password.
         </p>
         <p>
-          Administrator privileges are required to configure OS.
+          Administrator privileges are required for configurations.
         </p>
       </InfoTooltipInline>
     </InstructionStep>

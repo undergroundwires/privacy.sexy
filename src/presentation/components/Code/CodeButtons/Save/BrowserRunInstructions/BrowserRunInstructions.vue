@@ -6,7 +6,7 @@
     <article>
       <h3>1. The Easy Alternative</h3>
       <p>
-        Run your script without any manual steps by
+        Run your script securely without any manual steps by
         <a :href="downloadUrl">downloading desktop version</a> of {{ appName }} on the
         {{ osName }} system you wish to configure, and then click on the Run button. This is
         recommended for most users.

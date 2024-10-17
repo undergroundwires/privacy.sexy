@@ -36,7 +36,7 @@
       </InfoTooltipInline>
     </InstructionStep>
     <InstructionStep>
-      If your antivirus (e.g., Defender) alerts you, address the warning.
+      If your antivirus (e.g., <strong>Defender</strong>) alerts you, address the warning.
       <InfoTooltipInline>
         <!--
           Tests (15/01/2023):
@@ -52,7 +52,7 @@
           Don't worry; privacy.sexy is secure, transparent, and open-source.
         </p>
         <p>
-          To handle false warnings in Microsoft Defender:
+          To handle false warnings in <strong>Defender</strong>:
         </p>
         <ol>
           <li>
@@ -103,21 +103,22 @@
       </InfoTooltipInline>
     </InstructionStep>
     <InstructionStep>
-      If prompted, confirm SmartScreen warnings.
+      If prompted, confirm <strong>SmartScreen</strong> warnings.
       <InfoTooltipInline>
         <p>
-          Windows SmartScreen might display a cautionary message.
+          <strong>Defender SmartScreen</strong> may display a cautionary message.
         </p>
         <p>
           This happens since privacy.sexy scripts are not recognized
           by Microsoft's certification process.
         </p>
         <p>
-          <ol>
-            <li>Select <strong>More info</strong>.</li>
-            <li>Select <strong>Run anyway</strong>.</li>
-          </ol>
+          If you see the warning, bypass it by following these steps:
         </p>
+        <ol>
+          <li>Select <strong>More info</strong>.</li>
+          <li>Select <strong>Run anyway</strong>.</li>
+        </ol>
       </InfoTooltipInline>
     </InstructionStep>
     <InstructionStep>
