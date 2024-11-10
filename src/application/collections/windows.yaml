@@ -6013,56 +6013,6 @@ actions:
                 category: Disable Windows Update data collection
                 children:
                     -
-                        category: Disable automatic driver updates by Windows Update
-                        children:
-                            -
-                                name: Disable device metadata retrieval (breaks auto updates)
-                                recommend: strict
-                                docs:
-                                    - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
-                                    - https://web.archive.org/web/20240314125819/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#preventdevicemetadatafromnetwork
-                                call:
-                                    -
-                                        function: SetRegistryValue
-                                        parameters:
-                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata
-                                            valueName: PreventDeviceMetadataFromNetwork
-                                            dataType: REG_DWORD
-                                            data: '1'
-                                            dataOnRevert: '0' # Default value: `0` on Windows 10 Pro (≥ 22H2) | `0` on Windows 11 Pro (≥ 22H3)
-                                    -
-                                        function: SetRegistryValue
-                                        parameters:
-                                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata
-                                            valueName: PreventDeviceMetadataFromNetwork
-                                            dataType: REG_DWORD
-                                            data: "1"
-                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                            -
-                                name: Disable inclusion of drivers with Windows updates
-                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsUpdate::ExcludeWUDriversInQualityUpdate
-                                recommend: strict
-                                call:
-                                    function: SetRegistryValue
-                                    parameters:
-                                        keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
-                                        valueName: ExcludeWUDriversInQualityUpdate
-                                        dataType: REG_DWORD
-                                        data: "1"
-                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-                            -
-                                name: Disable Windows Update device driver search
-                                docs: https://www.stigviewer.com/stig/windows_7/2018-02-12/finding/V-21965
-                                recommend: strict
-                                call:
-                                    function: SetRegistryValue
-                                    parameters:
-                                        keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching
-                                        valueName: SearchOrderConfig
-                                        dataType: REG_DWORD
-                                        data: '1'
-                                        dataOnRevert: '1' # Default value: `1` on Windows 10 Pro (≥ 22H2) | `1` on Windows 11 Pro (≥ 22H3)
-                    -
                         category: Disable obtaining updates from other PCs on the Internet (delivery optimization)
                         docs: |-
                             Windows Delivery Optimization is a feature introduced by Microsoft to facilitate a more efficient downloading process for Windows
@@ -27129,6 +27079,617 @@ actions:
 
                     [1]: https://web.archive.org/web/20230905120220/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-faq "Delivery Optimization Frequently Asked Questions - Windows Deployment | Microsoft Learn"
                 children:
+                    -
+                        category: Disable Windows Update automatic driver updates
+                        docs: |-
+                            This category prevents Windows Update from automatically downloading and installing device drivers.
+
+                            A device driver is essential software that enables Windows to communicate with your computer's hardware components [1].
+                            For example:
+
+                            - Graphics cards need drivers to display images properly
+                            - Printers need drivers to print documents
+                            - Mice and keyboards need drivers to function correctly
+
+                            By default, Windows downloads two types of updates for your devices automatically [1]:
+
+                            - **Device drivers:** Software that enables communication between Windows and hardware [1]
+                            - **Device information:** High-resolution icons, product details, and manufacturer information [1]
+
+                            This category enhances your privacy by:
+
+                            - Blocking Windows from automatically sending your hardware information to Microsoft [3] [4]
+                            - Stopping automatic connections to third-party driver servers [3] [5]
+                            - Giving you control over which drivers are installed and when
+                            - Reducing data collection during driver installations
+
+                            These settings are officially recommended for:
+
+                            - Privacy protection by Microsoft [4]
+                            - Security compliance by the Defense Information Systems Agency (DISA) [3] [5]
+
+                            It may enhance system stability by:
+
+                            - Preventing installation of outdated drivers from Windows database [2]
+                            - Avoiding conflicts between manual drivers and Windows Update [2]
+                            - Maintaining consistent hardware performance for testing and benchmarks [6]
+                            - Reducing unexpected system changes
+
+                            Additionally, this category may improve performance by:
+
+                            - Reducing resource usage by eliminating hardware and network activity from automatic driver downloads.
+                            - Maintaining optimized drivers from your device manufacturer for the best performance.
+
+                            > **Caution**:
+                            > After using scripts from this category, you may need to manually install and update device drivers.
+
+                            [1]: https://web.archive.org/web/20241106124712/https://support.microsoft.com/en-us/windows/automatically-get-recommended-drivers-and-updates-for-your-hardware-0549a8d9-4842-8acb-75fa-a6faadb62507 "Automatically get recommended drivers and updates for your hardware - Microsoft Support | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20241108202548/https://www.msi.com/faq/faq-8665 "MSI Global - The Leading Brand in High-end Gaming & Professional Creation | www.msi.com"
+                            [3]: https://web.archive.org/web/20241106124008/https://www.stigviewer.com/stig/windows_server_2012_domain_controller/2014-01-07/finding/V-21964 "Device metadata retrieval from the Internet must be prevented. | www.stigviewer.com"
+                            [4]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#4-device-metadata-retrieval "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                            [5]: https://web.archive.org/web/20241110104819/https://www.stigviewer.com/stig/microsoft_windows_server_20122012_r2_domain_controller/2021-03-05/finding/V-226168 "Windows must be prevented from using Windows Update to search for drivers. | www.stigviewer.com"
+                            [6]: https://web.archive.org/web/20241108210848/https://djdallmann.github.io/GamingPCSetup/CONTENT/DOCS/POSTINSTALL/ "Post Installation Steps | GamingPCSetup | djdallmann.github.io"
+                        children:
+                            -
+                                name: Disable Windows Update hardware information collection
+                                recommend: strict # Recommended by Microsoft for privacy
+                                docs: |-
+                                    This script stops Windows from downloading device information and updates from the internet automatically.
+
+                                    When you connect a new device to your computer [1] [2], Windows typically downloads:
+
+                                    - **Device drivers:**
+                                      Software enabling Windows to communicate with your hardware [2]
+                                    - **Device metadata** (or **device information**) [2] [3] [4]:
+                                      High-resolution icons, product details, and manufacturer information [2]
+
+                                    By default, Windows automatically searches and downloads this information [1] to help you:
+
+                                    - Identify and distinguish between connected devices [2]
+                                    - Keep device drivers up-to-date [2]
+                                    - View detailed device information like product names and model numbers [2]
+
+                                    This feature sends your system information to Microsoft and downloads data from device manufacturers [5]. [5].
+                                    Disabling this feature prevents sensitive information from being sent and stops uncontrolled system updates [5].
+
+                                    After disabling this feature:
+
+                                    - Windows stops retrieving device metadata from the internet  [3] [4] [5]
+                                    - Windows no longer downloads custom apps, device drivers, or icons from device manufacturers automatically [2]
+
+                                    This script improves your privacy by:
+
+                                    - Preventing Windows from sending your system information to Microsoft
+                                    - Stopping automatic downloads of device metadata and drivers
+                                    - Reducing network communication with Microsoft services
+
+                                    This script is recommended for your privacy by Microsoft [3] and Defense Information Systems Agency (DISA) [5] to improve your privacy.
+
+                                    This script may also improve system performance by:
+
+                                    - Reducing background network activity
+                                    - Preventing automatic downloads
+                                    - Stopping unnecessary system processes
+
+                                    > **Caution**: After running this script, you may need to manually download and install device drivers when connecting new hardware.
+
+                                    ### Technical Details
+
+                                    This script configures following registry keys:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata!PreventDeviceMetadataFromNetwork` to configure GPO [3] [4] [5] [6] [9]
+                                    - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata!PreventDeviceMetadataFromNetwork` to configure local setting [1] [6] [7]
+                                    - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata!DeviceMetadataServiceURL` to remove metadata remote URL [6] [7]
+                                    - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-DeviceSetupManager/Admin!Enabled` to disable related failure logs [6]
+
+                                    It also removes Windows component related to it called `DeviceMetadataRetrievalClient.dll` [7] [8].
+                                    The functionality is managed by `%SYSTEMROOT%\System32\DeviceMetadataRetrievalClient.dll` [7] [8].
+
+                                    The following registry keys are sometimes suggested online but do not affect device metadata downloads:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings!PreventDeviceMetadataFromNetwork`
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings!PreventDeviceMetadataAndThirdPartyDriverDownload`
+
+                                    [1]: https://archive.ph/2024.11.06-124338/https://www.tenforums.com/tutorials/15989-turn-off-device-driver-automatic-installation-windows-10-a.html "Turn On or Off Device Driver Automatic Installation in Windows 10 | Tutorials | archive.ph"
+                                    [2]: https://web.archive.org/web/20241106124712/https://support.microsoft.com/en-us/windows/automatically-get-recommended-drivers-and-updates-for-your-hardware-0549a8d9-4842-8acb-75fa-a6faadb62507 "Automatically get recommended drivers and updates for your hardware - Microsoft Support | support.microsoft.com"
+                                    [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#4-device-metadata-retrieval "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20240314125819/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#preventdevicemetadatafromnetwork
+                                    [5]: https://web.archive.org/web/20241106124008/https://www.stigviewer.com/stig/windows_server_2012_domain_controller/2014-01-07/finding/V-21964 "Device metadata retrieval from the Internet must be prevented. | www.stigviewer.com"
+                                    [6]: https://web.archive.org/web/20241106124123/https://www.borncity.com/blog/2016/12/24/windows-update-fhrt-zu-metadata-staging-failed-fehler/#comment-165702 "Windows Update führt zu \"Metadata staging failed\"-FehlerBorns IT- und Windows-Blog | www.borncity.com"
+                                    [7]: https://web.archive.org/web/20241106124503/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_microsoft-windows-d..dataretrievalclient_31bf3856ad364e35_10.0.22621.1_none_262152b796fed4ab.manifest "nickel-x64/WinSxS/Manifests/amd64_microsoft-windows-d..dataretrievalclient_31bf3856ad364e35_10.0.22621.1_none_262152b796fed4ab.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
+                                    [8]: https://web.archive.org/web/20241106124510/https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/System32/DeviceMetadataRetrievalClient.dll.strings "10_0_22622_601/C/Windows/System32/DeviceMetadataRetrievalClient.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 | github.com"
+                                call:
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata
+                                            valueName: PreventDeviceMetadataFromNetwork
+                                            dataType: REG_DWORD
+                                            data: '1'
+                                            dataOnRevert: '0' # Default value: `0` on Windows 10 Pro (≥ 22H2) | `0` on Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata
+                                            valueName: PreventDeviceMetadataFromNetwork
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-DeviceSetupManager/Admin
+                                            valueName: Enabled
+                                            dataType: REG_DWORD
+                                            data: "0"
+                                            dataOnRevert: '1' # Default value: `1` on Windows 10 Pro (≥ 22H2) | `1` on Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata
+                                            valueName: DeviceMetadataServiceURL
+                                            dataType: REG_SZ
+                                            data: "http://127.0.0.1" # Loopback IP (explicit local failure)
+                                            dataOnRevert: 'https://go.microsoft.com/fwlink/?LinkID=2257403&clcid=0x409'
+                                            # Default value on Windows 10 Pro (≥ 22H2): https://go.microsoft.com/fwlink/?LinkID=2257403&clcid=0x409
+                                            # Default value on Windows 11 Pro (≥ 24H2): https://go.microsoft.com/fwlink/?LinkID=2257403&clcid=0x409
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\System32\DeviceMetadataRetrievalClient.dll'
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 Pro (≥ 22H2) | 🔒️ Protected on Windows 11 Pro (≥ 24H2)
+                            -
+                                name: Disable Windows Update driver downloads
+                                recommend: strict
+                                docs: |-
+                                    This script prevents Windows Update from automatically downloading and installing device driver updates.
+
+                                    By default, Windows Update includes driver updates alongside regular system updates [1] [2] [3].
+                                    With this script, driver updates will no longer be included in Windows updates [1] [2] [3] [4] [5].
+
+                                    This script improves your privacy by:
+
+                                    - Blocking automatic connections to third-party driver servers
+                                    - Reducing data collection during driver installations
+                                    - Allowing you to control which drivers are updated and when
+
+                                    Windows Update may replace your manually installed drivers with older versions from its database [6].
+                                    This script prevents this problem [6].
+
+                                    This script blocks driver updates specifically during **quality updates** [1] [2] [3].
+                                    Quality updates are monthly operating system updates that include security, critical, and driver updates [7].
+
+                                    This script does not block [1]:
+
+                                    - Drivers included within security updates
+                                    - Drivers installed/updated manually [5]
+                                    - Drivers needed for feature updates [1]
+                                    - Drivers that come with Windows [1]
+
+                                    The following updates will still work normally:
+
+                                    - Windows Update when needed
+                                    - Device manufacturer websites
+                                    - Device Manager
+
+                                    > **Caution**: Consider regularly checking for and install driver updates to maintain device security and performance.
+
+                                    ### Technical Details
+
+                                    This script modifies Windows Registry settings:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!ExcludeWUDriversInQualityUpdate` (GPO) [1] [2] [3] [4] [5] [6]
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!ExcludeWUDriversInQualityUpdate` (User settings) [5]
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState!ExcludeWUDrivers` [4]
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\ExcludeWUDriversInQualityUpdate!value` [1] [5]
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Update!ExcludeWUDriversInQualityUpdate` [5]
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update!ExcludeWUDriversInQualityUpdate` [5]
+                                    - `HKLM\SOFTWARE\Microsoft\Windows\WindowsUpdate!ExcludeWUDriversInQualityUpdate` [8]
+
+                                    [1]: https://web.archive.org/web/20231206151045/https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb#exclude-drivers-from-quality-updates "Configure Windows Update for Business | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20241108202747/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsUpdate::ExcludeWUDriversInQualityUpdate "Do not include drivers with Windows Updates | admx.help"
+                                    [3]: https://web.archive.org/web/20230708165017/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update#excludewudriversinqualityupdate "Update Policy CSP - Windows Client Management | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20240928021148/https://www.elevenforum.com/t/enable-or-disable-include-drivers-with-windows-updates-in-windows-11.2232/ "Enable or Disable Include Drivers with Windows Updates in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                    [5]: https://web.archive.org/web/20241002213203/https://www.tenforums.com/tutorials/48277-enable-disable-driver-updates-windows-update-windows-10-a.html "Enable or Disable Driver Updates in Windows Update in Windows 10 | Tutorials | www.tenforums.com"
+                                    [6]: https://web.archive.org/web/20241108202548/https://www.msi.com/faq/faq-8665 "MSI Global - The Leading Brand in High-end Gaming & Professional Creation | www.msi.com"
+                                    [7]: https://web.archive.org/web/20231214085615/https://learn.microsoft.com/en-us/windows/deployment/update/waas-manage-updates-wufb "Windows Update for Business - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [8]: https://web.archive.org/web/20241108202711/https://woshub.com/how-to-turn-off-automatic-driver-updates-in-windows-10/ "How to Disable Automatic Driver Updates on Windows 10/11? | Windows OS Hub | woshub.com"
+                                call:
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate
+                                            valueName: ExcludeWUDriversInQualityUpdate
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings
+                                            valueName: ExcludeWUDriversInQualityUpdate
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            deleteOnRevert: 'true' # `0` by default on Windows 10 Pro (≥ 22H2)  | Missing by default on Windows 11 Pro (≥ 23H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState
+                                            valueName: ExcludeWUDrivers
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\ExcludeWUDriversInQualityUpdate
+                                            valueName: value
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            dataOnRevert: '1' # Default value: `0` on Windows 10 Pro (≥ 22H2) | `0` on Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Update
+                                            valueName: ExcludeWUDriversInQualityUpdate
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update
+                                            valueName: ExcludeWUDriversInQualityUpdate
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\WindowsUpdate
+                                            valueName: ExcludeWUDriversInQualityUpdate
+                                            dataType: REG_DWORD
+                                            data: "1"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                name: Disable Windows Update driver search
+                                recommend: strict # Recommended by DISA
+                                docs: |-
+                                    This script prevents Windows Update from automatically finding and installing device drivers.
+
+                                    By default, Windows Update searches for device drivers when new hardware is connected [1].
+                                    This search aims to find the best drivers, even with limited network access [1].
+
+                                    While automatic driver installation is convenient, it can cause system  stability issues:
+
+                                    - Windows may install drivers incompatible with your hardware [2]
+                                    - You lose control over the driver versions you prefer to use [2]
+
+                                    This script blocks Windows Update from searching for drivers [1] [2] [3].
+                                    This gives you more control over driver installations [1] [2].
+
+                                    This script enhances privacy by blocking automatic sharing of hardware information with Microsoft.
+                                    Without this script, Windows may send system information to Microsoft and other vendors, and download unplanned updates [3].
+                                    This script stops your system information from being shared and blocks unwanted updates [3].
+                                    The Defense Information Systems Agency (DISA) recommends this script for security [3].
+
+                                    This script may also improve system performance by stopping background driver searches.
+
+                                    > **Caution**: After using this script, manual driver download and installation will be required for new hardware.
+
+                                    ### Technical Details
+
+                                    The script modifies these registry settings:
+
+                                    - `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching!SearchOrderConfig` [2] [4]
+                                      - Sets the value to `0` to block driver updates [2] [4]
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching!SearchOrderConfig` [1] [3]
+                                      - Sets the value to `2` to stop Windows Update driver searches [1]
+
+                                    [1]: https://web.archive.org/web/20241108204353/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DeviceSoftwareSetup::DriverSearchPlaces_SearchOrderConfiguration "Specify search order for device driver source locations | admx.help"
+                                    [2]: https://web.archive.org/web/20241108204345/https://www.ghacks.net/2015/07/21/how-to-disable-driver-updates-from-windows-update/ "How to disable driver updates from Windows Update - gHacks Tech News | www.ghacks.net"
+                                    [3]: https://web.archive.org/web/20241108204454/https://www.stigviewer.com/stig/windows_7/2015-09-02/finding/V-21965 "Device driver searches using Windows Update must be prevented. | www.stigviewer.com"
+                                    [4]: https://web.archive.org/web/20241108204440/https://github.com/undergroundwires/privacy.sexy/issues/444 "[Bug]: Disable Windows Update device driver search reg value is wrong · Issue #444 · undergroundwires/privacy.sexy | github.com"
+                                call:
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching
+                                            valueName: SearchOrderConfig
+                                            dataType: REG_DWORD
+                                            data: '0'
+                                            dataOnRevert: '1' # Default value: `1` on Windows 10 Pro (≥ 22H2) | `1` on Windows 11 Pro (≥ 23H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching
+                                            valueName: SearchOrderConfig
+                                            dataType: REG_DWORD
+                                            data: '2'
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                            # - # Excluded: Insignificant privacy impact, hides consent prompt
+                            #     name: Disable Windows Update driver prompts
+                            #     recommend: strict # Recommended by DISA
+                            #     docs: |-
+                            #         This script prevents Windows from asking users about searching for device drivers through Windows Update.
+
+                            #         By default, when you connect a new device, Windows asks to search Windows Update for drivers [1] [2].
+                            #         This search sends your system information to Microsoft and downloads files from their servers [3].
+
+                            #         This script prevents users from being prompted to search Windows Update for device drivers [3].
+                            #         After running this script, the user will not be prompted to search Windows Update [1] [2].
+
+                            #         This script enhances your privacy by:
+
+                            #         - Preventing system information from being shared with Microsoft [3]
+                            #         - Blocking unauthorized driver updates
+                            #         - Maintaining control over which drivers are installed
+
+                            #         Defense Information Systems Agency (DISA) recommends this privacy enhancement for your security  [3].
+
+                            #         This script only works when Windows Update driver searching is already turned off [1] [2].
+
+                            #         > **Caution**: You will need to manually download and install drivers for new devices.
+
+                            #         ### Technical Details
+
+                            #         This script sets the following registry key:
+
+                            #         - `HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching!DontPromptForWindowsUpdate` [1] [2] [3]
+
+                            #         Note: Some sources suggest using
+                            #         `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching!DontPromptForWindowsUpdate`,
+                            #         but this setting is undocumented, and its effectiveness is unverified.
+
+                            #         [1]: https://web.archive.org/web/20241110120610/https://www.windows-security.org/7deb90edb6595b5d534f6db6a0a0a763/turn-off-windows-update-device-driver-search-prompt "Turn off Windows Update device driver search prompt | Windows security encyclopedia | www.windows-security.org"
+                            #         [2]: https://web.archive.org/web/20241110120619/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DeviceSoftwareSetup::DriverSearchPlaces_DontPromptForWindowsUpdate_1 "Turn off Windows Update device driver search prompt | admx.help"
+                            #         [3]: https://web.archive.org/web/20241110120558/https://www.stigviewer.com/stig/windows_8/2013-02-15/finding/V-15703 "Users must not be prompted to search Windows Update for device drivers. | www.stigviewer.com"
+                            #     call:
+                            #         function: SetRegistryValue
+                            #         parameters:
+                            #             keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching
+                            #             valueName: DontPromptForWindowsUpdate
+                            #             dataType: REG_DWORD
+                            #             data: '1'
+                            #             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                            -
+                                name: Disable Windows Update driver installation wizard
+                                recommend: strict
+                                docs: |-
+                                    This script disables automatic and manual driver updates through Windows Update.
+
+                                    The Windows Update driver wizard is also called **Hardware Update Wizard** or **Update Driver Software Wizard** [1].
+                                    This tool automatically installs and updates device drivers during Windows Updates or when new hardware is connected [1].
+                                    This script disables these automatic driver updates via Windows Update [2].
+
+                                    While automatic updates are convenient, they may install unwanted or outdated drivers, impacting system stability and privacy.
+
+                                    By disabling this feature, you gain more control over driver installations [3].
+                                    This is especially important for graphics drivers (e.g., AMD, NVIDIA), input device drivers (e.g., mouse, keyboard),
+                                    and other hardware-specific software [3].
+                                    Windows Updates can also roll out driver updates, which may create system stability issues [2].
+
+                                    This script enhances your privacy by:
+
+                                    - Preventing automatic downloads of potentially unwanted driver-related software [2]
+                                    - Stopping Windows from silently changing your hardware configurations
+                                    - Giving you control over what software connects to your hardware
+
+                                    It also enhances system stability by:
+
+                                    - Preventing Windows from installing older driver versions [2]
+                                    - Avoiding conflicts between manually installed drivers and Windows Update
+                                    - Maintaining consistent hardware performance for testing and benchmarks [3]
+
+                                    > **Caution**: After running this script, consider installing and updating device drivers manually
+                                    > to receive security and functionality updates.
+
+                                    ### Technical Details
+
+                                    The `newdev.dll` system file manages the driver search functionality through Windows Update [4].
+
+                                    This script modifies registry keys:
+
+                                    - `HKLM\Software\Policies\Microsoft\Windows\DriverSearching!DriverUpdateWizardWuSearchEnabled` [3]
+                                    - `HKLM\Software\Microsoft\Windows\CurrentVersion\DriverSearching!DriverUpdateWizardWuSearchEnabled` [4]
+                                    - `HKLM\Software\Microsoft\Windows\DriverSearching!DriverUpdateWizardWuSearchEnabled` [2]
+
+                                    [1]: https://web.archive.org/web/20241108211338/https://learn.microsoft.com/en-us/windows-hardware/drivers/install/updating-driver-files "Updating Driver Files - Windows drivers | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20241108210850/https://www.thewindowsclub.com/windows-keeps-installing-old-intel-graphics-driver "Windows keeps installing old Intel Graphics Driver | www.thewindowsclub.com"
+                                    [3]: https://web.archive.org/web/20241108210848/https://djdallmann.github.io/GamingPCSetup/CONTENT/DOCS/POSTINSTALL/ "Post Installation Steps | GamingPCSetup | djdallmann.github.io"
+                                    [4]: https://archive.today/2024.11.08-211401/https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/SysWOW64/newdev.dll.strings "10_0_22622_601/C/Windows/SysWOW64/newdev.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 | github.com"
+                                call:
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\Software\Policies\Microsoft\Windows\DriverSearching
+                                            valueName: DriverUpdateWizardWuSearchEnabled
+                                            dataType: REG_DWORD
+                                            data: '0'
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\Software\Microsoft\Windows\CurrentVersion\DriverSearching
+                                            valueName: DriverUpdateWizardWuSearchEnabled
+                                            dataType: REG_DWORD
+                                            data: '0'
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\Software\Microsoft\Windows\DriverSearching
+                                            valueName: DriverUpdateWizardWuSearchEnabled
+                                            dataType: REG_DWORD
+                                            data: '0'
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                            -
+                                name: Disable Windows Update fallback driver search
+                                recommend: strict # Recommended by DISA
+                                docs: |-
+                                    This script prevents Windows from searching Windows Update for device drivers when local drivers are not found.
+
+                                    By default, Windows automatically searches Windows Update for device drivers [1] [2] [3].
+                                    Windows searches for drivers in the following order:
+
+                                    - Local installation [1]
+                                    - Removable media (USB drives, CD-ROMs) [1]
+                                    - Windows Update [1]
+
+                                    Running this script removes Windows Update from the driver search locations [1] [2].
+                                    It also removes the Windows Update option from the driver installation wizard dialog [4].
+                                    After running this script, Windows Update will not be searched for drivers when a new device is installed [2] [3].
+
+                                    This script enhances your privacy by:
+                                        
+                                    - Preventing automatic connections to Microsoft servers for driver updates
+                                    - Stopping the transmission of system information to hardware vendors [5]
+                                    - Lowering the risk of sensitive data leaving your device
+
+                                    This script configuration is recommended by the Defense Information Systems Agency (DISA), 
+                                    a U.S. Department of Defense agency that provides IT security guidelines [5].
+
+                                    This script may also improve system performance by:
+
+                                    - Eliminating network requests during device installation
+                                    - Reducing background processes related to driver updates
+                                    - Speeding up the driver installation process
+
+                                    > **Caution**:
+                                    > You may need to download drivers manually from manufacturer websites since Windows Update will no longer provide them automatically.
+
+                                    ### Technical Details
+
+                                    This script sets the following registry key:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\DriverSearching!DontSearchWindowsUpdate` [1] [2] [3] [4] [5]
+
+                                    [1]: https://web.archive.org/web/20241110104726/https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Cyber-Security/SiSyPHuS/AP3d/Workpackage3d_Analysis_Device_Setup_Manager.pdf?__blob=publicationFile&v=2 "Device Setup Manager | Federal Office for Information Security | www.bsi.bund.de"
+                                    [2]: https://web.archive.org/web/20241110103948/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-icm#driversearchplaces_dontsearchwindowsupdate "ADMX_ICM Policy CSP | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20241110104804/https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.InternetCommunicationManagement::DriverSearchPlaces_DontSearchWindowsUpdate "Turn off Windows Update device driver searching | admx.help"
+                                    [4]: https://web.archive.org/web/20241110104830/https://ckrull.wordpress.com/2011/09/19/the-funny-windows-update-button-on-the-printer-drivers-page/ "The funny Windows Update button on the Printer Drivers page | The Wonders Never Cease | ckrull.wordpress.com"
+                                    [5]: https://web.archive.org/web/20241110104819/https://www.stigviewer.com/stig/microsoft_windows_server_20122012_r2_domain_controller/2021-03-05/finding/V-226168 "Windows must be prevented from using Windows Update to search for drivers. | www.stigviewer.com"
+                                call:
+                                    function: SetRegistryValue
+                                    parameters:
+                                        keyPath: HKLM\Software\Policies\Microsoft\Windows\DriverSearching
+                                        valueName: DontSearchWindowsUpdate
+                                        dataType: REG_DWORD
+                                        data: '1'
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                            # - # Excluded: Doing too much
+                            #     name: Disable Windows driver installations and updates
+                            #     recommend: strict
+                            #     docs: |-
+                            #         This script prevents Windows from installing or updating any device drivers.
+
+                            #         This script has a significant impact:
+
+                            #         - It blocks all driver installations and updates.
+                            #           Once enabled, you cannot install new drivers or update existing ones [1].
+                            #         - It affects both Windows Update and third-party driver installers [1] [2] [3] [4].
+                            #         - It may forbid the installation of removable or other devices [4].
+                            #         - It disables manual installations, not only automatic.
+                            #           After running this script, attempting to install drivers may result in an error
+                            #           message indicating driver installation is not allowed [2] [3] [4] [5].
+
+                            #         This script improves your privacy by:
+
+                            #         - Blocks unwanted drivers that may collect system information
+                            #         - Prevents automatic driver updates that may send system data
+                            #         - Prevents installation/update process that may collect user data
+                            #         - Gives you full control over driver installation
+
+                            #         It also improves system performance by:
+
+                            #         - Reducing background processes related to driver updates
+                            #         - Preventing unexpected system changes from automatic driver installations
+
+                            #         However, using this script may cause issues when:
+
+                            #         - Connecting new hardware devices [4]
+                            #         - Installing important updates for existing drivers [5]
+                            #         - Using device management software
+
+                            #         > **Important**: To install drivers for new hardware devices, you must temporarily disable this setting.
+
+                            #         ### Technical Details
+
+                            #         The script modifies a Windows Group Policy setting by adding the following
+                            #         registry key:
+
+                            #         - `HKLM\SYSTEM\CurrentControlSet\Services\DeviceInstall\Parameters!DeviceInstallDisabled` [1] [2] [3] [4] [5]
+
+                            #         Note: Some sources recommend an alternative registry key
+                            #         `HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceInstall\Settings!DeviceInstallDisabled`
+                            #         , but testing indicates it is ineffective.
+
+                            #         [1]: https://web.archive.org/web/20241110115318/https://www.alibabacloud.com/help/en/smc/user-guide/solutions-to-issues-detected-in-windows-images#f9109534eby5l "Solutions to issues detected in Windows images - Server Migration Center - Alibaba Cloud Documentation Center | www.alibabacloud.com"
+                            #         [2]: https://web.archive.org/web/20241110113408/https://community.checkpoint.com/t5/Remote-Access-VPN/BSOD-when-installing-CheckPoint-VPN/m-p/158842/highlight/true#M7818 "Solved: Re: BSOD when installing CheckPoint VPN - Check Point CheckMates | community.checkpoint.com"
+                            #         [3]: https://archive.ph/2024.11.10-115451/https://portal.nutanix.com/page/documents/kbs/details?targetId=kA00e0000009CfjCAE "VirtIO installation may fail if the prevention of devices installation is configured or Device Install service disabled | portal.nutanix.com"
+                            #         [4]: https://archive.ph/2024.11.10-115417/https://support.lucidlink.com/hc/en-us/articles/31125507067149-Installing-or-upgrading-LucidLink-on-Windows-fails "Installing or upgrading LucidLink on Windows fails – New LucidLink | support.lucidlink.com"
+                            #         [5]: https://web.archive.org/web/20241110115625/https://wickedpc.org/2022/11/07/windows-10-one-of-the-installers-for-this-device-cannot-perform-the-installation-at-this-time/ "Windows 10 – One of the installers for this device cannot perform the installation at this time | wickedpc.org"
+                            #     call:
+                            #         function: SetRegistryValue
+                            #         parameters:
+                            #             keyPath: HKLM\SYSTEM\CurrentControlSet\Services\DeviceInstall\Parameters
+                            #             valueName: DeviceInstallDisabled
+                            #             dataType: REG_DWORD
+                            #             data: '1'
+                            #             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                            -
+                                name: Disable Windows Update driver download server
+                                recommend: strict
+                                docs: |- # Recommended by DISA
+                                    This script blocks Windows from automatically downloading device drivers through Windows Update.
+
+                                    By default, Windows uses Windows Update to search for driver updates [1].
+                                    This script redirects driver searches from Microsoft's servers to your managed server [1].
+                                    This prevents Windows from using Windows Update (WU) for driver searches [1] [2].
+
+                                    This script enhances privacy by:
+
+                                    - Preventing automatic driver data collection by Microsoft
+                                    - Keeping your system's hardware information within your organization [3]
+                                    - Reducing unexpected system changes from automatic driver installations [3]
+
+                                    The script is recommended by the Defense Information Systems Agency (DISA) as a security measure [3].
+
+                                    Other benefits include:
+
+                                    - Improves system stability by blocking unexpected driver updates [3]
+                                    - Reduces system slowdown from background update checks
+                                    - Gives you more control over which drivers are installed
+
+                                    Some devices may not work at their best until you install the appropriate drivers.
+                                    After enabling this script, you will need to either:
+
+                                    - Set up an internal update server
+                                    - Manually download and install drivers for your hardware
+
+                                    > **Caution**: You may need to manually download and install device drivers when necessary.
+
+                                    ### Technical Details
+
+                                    This script sets the following registry value:
+                                    
+                                    - `HKLM\Software\Policies\Microsoft\Windows\DriverSearching!DriverServerSelection` [1] [2] [3]
+
+                                    [1]: https://web.archive.org/web/20241110104726/https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Cyber-Security/SiSyPHuS/AP3d/Workpackage3d_Analysis_Device_Setup_Manager.pdf?__blob=publicationFile&v=2 "Device Setup Manager | Federal Office for Information Security | www.bsi.bund.de"
+                                    [2]: https://web.archive.org/web/20241110115612/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DeviceSoftwareSetup::DriverSearchPlaces_SearchServerConfiguration "Specify the search server for device driver updates | admx.help"
+                                    [3]: https://web.archive.org/web/20241110120008/https://www.stigviewer.com/stig/microsoft_windows_server_20122012_r2_domain_controller/2021-10-18/finding/V-226156 "Device driver updates must only search managed servers, not Windows Update. | www.stigviewer.com"
+                                call:
+                                    function: SetRegistryValue
+                                    parameters:
+                                        keyPath: HKLM\Software\Policies\Microsoft\Windows\DriverSearching
+                                        valueName: DriverServerSelection
+                                        dataType: REG_DWORD
+                                        data: '1'
+                                        # Options (data values):
+                                        #   0: Search Windows Update
+                                        #   1: Search Managed Server
+                                        #   2: Search Managed Server, then Windows Update
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
                     -
                         name: Disable Automatic Updates (AU) feature
                         docs: |-
