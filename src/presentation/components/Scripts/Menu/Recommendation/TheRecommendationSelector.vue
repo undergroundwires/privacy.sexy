@@ -81,6 +81,22 @@
         />
       </template>
     </TooltipWrapper>
+
+    <!-- Load from file -->
+    <TooltipWrapper>
+      <MenuOptionListItem
+        label="Import"
+        :enabled="true"
+        @click="loadFromFile"
+      />
+      <template #tooltip>
+        <RecommendationDocumentation
+          :privacy-rating="0"
+          description="Restores a previously saved script selection from a JSON file."
+          recommendation="..."
+        />
+      </template>
+    </TooltipWrapper>
   </MenuOptionList>
 </template>
 
@@ -96,6 +112,10 @@ import MenuOptionListItem from '../MenuOptionListItem.vue';
 import { setCurrentRecommendationStatus, getCurrentRecommendationStatus } from './RecommendationStatusHandler';
 import { RecommendationStatusType } from './RecommendationStatusType';
 import RecommendationDocumentation from './RecommendationDocumentation.vue';
+
+interface SavedSelection {
+  selectedScripts: string[];
+}
 
 export default defineComponent({
   components: {
@@ -134,10 +154,64 @@ export default defineComponent({
       });
     }
 
+    async function loadFromFile() {
+      try {
+        // Use file input to load the JSON file
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+
+        // Create a promise to handle the file selection
+        const file = await new Promise<File>((resolve, reject) => {
+          input.onchange = (event) => {
+            const { files } = (event.target as HTMLInputElement);
+            if (files && files.length > 0) {
+              resolve(files[0]);
+            } else {
+              reject(new Error('No file selected'));
+            }
+          };
+          input.click();
+        });
+
+        // Read the file content
+        const content = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsText(file);
+        });
+
+        const savedSelection = JSON.parse(content) as SavedSelection;
+
+        // Update the current selection state
+        modifyCurrentSelection((selection) => {
+          // First deselect all scripts
+          selection.scripts.deselectAll();
+
+          // Then select all scripts from the saved selection
+          savedSelection.selectedScripts.forEach((scriptId) => {
+            selection.scripts.processChanges({
+              changes: [{
+                scriptId,
+                newStatus: {
+                  isSelected: true,
+                  isReverted: false,
+                },
+              }],
+            });
+          });
+        });
+      } catch (error) {
+        console.error('Failed to load selection:', error);
+      }
+    }
+
     return {
       RecommendationStatusType,
       currentRecommendationStatusType,
       selectRecommendationStatusType,
+      loadFromFile,
     };
   },
 });
