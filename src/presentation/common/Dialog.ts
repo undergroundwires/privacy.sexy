@@ -6,6 +6,7 @@ export interface Dialog {
 export enum FileType {
   BatchFile,
   ShellScript,
+  Json,
 }
 
 export type SaveFileOutcome = SuccessfulSaveFile | FailedSaveFile;
