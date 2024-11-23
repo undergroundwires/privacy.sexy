@@ -1,7 +1,7 @@
 <template>
   <IconButton
     text="Save Selection"
-    icon-name="content-save"
+    icon-name="floppy-disk-gear"
     @click="saveSelection"
   />
 </template>
@@ -11,6 +11,13 @@ import { defineComponent } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { FileType } from '@/presentation/common/Dialog';
 import IconButton from '../IconButton.vue';
+import { createScriptErrorDialog } from '../ScriptErrorDialog';
+
+interface SelectionConfig {
+  version: string;
+  timestamp: string;
+  selectedScripts: string[];
+}
 
 export default defineComponent({
   components: {
@@ -20,25 +27,28 @@ export default defineComponent({
     const { currentSelection } = injectKey((keys) => keys.useUserSelectionState);
     const { dialog } = injectKey((keys) => keys.useDialog);
     const { projectDetails } = injectKey((keys) => keys.useApplication);
+    const { scriptDiagnosticsCollector } = injectKey((keys) => keys.useScriptDiagnosticsCollector);
 
     async function saveSelection() {
-      // Create a config object with the current selection state
-      const config = {
-        version: projectDetails.version,
-        selectedScripts: currentSelection.value.scripts.selectedScripts.map((script) => script.id),
+      const config: SelectionConfig = {
+        version: projectDetails.version.toString(),
         timestamp: new Date().toISOString(),
+        selectedScripts: currentSelection.value.scripts.selectedScripts.map((script) => script.id),
       };
 
-      const configJson = JSON.stringify(config, null, 2);
-
       const { success, error } = await dialog.saveFile(
-        configJson,
+        JSON.stringify(config, null, 2),
         'privacy-selection.json',
         FileType.Json,
       );
 
-      if (!success && error) {
-        console.error('Failed to save selection:', error);
+      if (!success) {
+        dialog.showError(...(await createScriptErrorDialog({
+          errorContext: 'save',
+          errorType: error.type,
+          errorMessage: error.message,
+          isFileReadbackError: error.type === 'FileReadbackVerificationError',
+        }, scriptDiagnosticsCollector)));
       }
     }
 
