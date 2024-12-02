@@ -44,7 +44,7 @@ body:
         - On macOS: Open "Apple menu (top left corner)" > "About This Mac".
         - On Linux: Open terminal > type: lsb_release -a > copy paste the result.
       placeholder: >-
-        For example: "Windows 11 Pro 22H3"
+        For example: "Windows 11 Pro 23H2"
     validations:
       required: false
   -

@@ -510,7 +510,7 @@ actions:
                                 code: rm -rfv ~/Library/Caches/Metadata/Safari/History
                             -
                                 name: Clear search term history embedded in Safari preferences
-                                docs: https://krypted.com/tag/recentsearchstrings/
+                                docs: https://web.archive.org/web/20241001141605/https://krypted.com/mac-os-x/clearing-recent-searches-in-safari-4/
                                 code: defaults write ~/Library/Preferences/com.apple.Safari RecentSearchStrings '( )'
                             -
                                 name: Clear Safari cookies
