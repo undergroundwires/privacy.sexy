@@ -10230,13 +10230,15 @@ actions:
                                             Authorities like The Center for Internet Security (CIS) [1]
                                             recommend this script for enhanced security.
 
-                                            This script configures the `BlockThirdPartyCookies` Edge policy [1] [2].
-                                            Running this script does not require a browser restart for the changes to take effect [1].
-
                                             > **Caution**:
                                             > - This will display the message "Your browser is managed by your organization" on the settings page.
                                             > - This locks settings and prevents them from being changed on the settings page.
                                             > - Some websites may not function properly without third-party cookies.
+
+                                            ### Technical Details
+
+                                            This script configures the `BlockThirdPartyCookies` Edge policy [1] [2].
+                                            Running this script does not require a browser restart for the changes to take effect [1].
 
                                             [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#blockthirdpartycookies "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240625064922/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Edge_Benchmark_v1_0_0.pdf "CIS Microsoft Edge Benchmark v1.0.0 | paper.bobylive.com"
@@ -10244,7 +10246,7 @@ actions:
                                             function: SetEdgePolicyViaRegistry
                                             parameters:
                                                 valueName: BlockThirdPartyCookies # Edge ≥ 77
-                                                dwordData: '0'
+                                                dwordData: '1'
                                     -
                                         name: Enable Do Not Track requests
                                         recommend: standard # refactor-with-variables: • Chromium Policy Caution
@@ -10260,12 +10262,14 @@ actions:
                                             Additionally, Microsoft endorses this script as it helps create a cleaner browser interface by reducing
                                             unsolicited suggestions [2] and improves privacy by better controlling data connections [3].
 
-                                            This script configures the `ConfigureDoNotTrack` Edge policy [1] [2].
-                                            Running this script does not require a browser restart for the changes to take effect [1].
-
                                             > **Caution**:
                                             > - This will display the message "Your browser is managed by your organization" on the settings page.
                                             > - This locks settings and prevents them from being changed on the settings page.
+
+                                            ### Technical Details
+
+                                            This script configures the `ConfigureDoNotTrack` Edge policy [1] [2].
+                                            Running this script does not require a browser restart for the changes to take effect [1].
 
                                             [1]: https://web.archive.org/web/20240517212443/https://learn.microsoft.com/en-us/deployedge/microsoft-edge-policies#configuredonottrack "Microsoft Edge Browser Policy Documentation | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240618221222/https://learn.microsoft.com/en-us/mem/intune/industry/education/tutorial-school-deployment/common-config-settings-catalog-edge
@@ -10274,7 +10278,7 @@ actions:
                                             function: SetEdgePolicyViaRegistry
                                             parameters:
                                                 valueName: ConfigureDoNotTrack # Edge ≥ 77
-                                                dwordData: '0'
+                                                dwordData: '1'
                             -
                                 name: Disable Edge search and site suggestions
                                 recommend: strict
@@ -27707,7 +27711,7 @@ actions:
                             It is recommended to regularly check for and install updates manually to maintain system security.
 
                             > **Caution:**
-                            > Disabling Automatic Updates may leave the system unprotected against known vulnerabilities. 
+                            > Disabling Automatic Updates may leave the system unprotected against known vulnerabilities.
                             > Consider manually checking and installing updates to ensure security.
 
                             ### Technical Details
