@@ -478,7 +478,7 @@ actions:
                             -
                                 function: ClearRegistryValues
                                 parameters:
-                                    keyPath: HKCU\Software\Microsoft\Windows\v
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\WordWheelQuery
                             -
                                 function: ClearRegistryValues
                                 parameters:
@@ -27693,32 +27693,45 @@ actions:
                     -
                         name: Disable Automatic Updates (AU) feature
                         docs: |-
-                            This script deactivates the Automatic Updates feature in Windows. By disabling Automatic Updates,
-                            you gain control over when your system is updated, which may be preferable in specific
-                            privacy-sensitive environments.
+                            This script disables the Automatic Updates feature on Windows.
 
-                            The script changes a specific setting in your computer's registry, with a key called `NoAutoUpdate`, which has
-                            two possible states [1] [2]:
+                            Automatic Updates downloads and installs updates without requiring explicit user permission [1] [2].
+                            When enabled, it automatically checks for updates from the Windows Update website whenever you are online [2].
+                            By default, Automatic Updates is enabled [1] [3].
+
+                            Disabling Automatic Updates provides users control over when and how updates are installed.
+                            This enhances privacy by minimizing automatic data transfers to Microsoft servers.
+
+                            However, disabling Automatic Updates prevents the system from automatically receiving important security patches or feature updates.
+                            This may increase your system's vulnerability to security threats if updates are not installed manually.
+                            It is recommended to regularly check for and install updates manually to maintain system security.
+
+                            > **Caution:**
+                            > Disabling Automatic Updates may leave the system unprotected against known vulnerabilities. 
+                            > Consider manually checking and installing updates to ensure security.
+
+                            ### Technical Details
+
+                            This script modifies the `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU!NoAutoUpdate` registry value [3] [4].
+
+                            The `NoAutoUpdate` setting accepts these values [4] [5]:
 
                             - `0`: Automatic Updates are enabled.
                             - `1`: Automatic Updates are disabled.
+                            
+                            By default, Windows enables Automatic Updates by setting `NoAutoUpdate` to `0` [3].
+                            This script disables Automatic Updates by setting `NoAutoUpdate` to `1` [3] [4] [5].
 
-                            By default, Windows comes with Automatic Updates enabled, meaning the `NoAutoUpdate` is set to `0` [3].
-
-                            Running this script will set `NoAutoUpdate` to `1`, turning off Automatic Updates [1] [2] [3].
-                            In doing so, you prevent your computer from automatically receiving updates, which is a feature
-                            that could be considered intrusive or unwanted in some privacy-conscious settings.
-
-                            It configure your computer to not automatically download and install updates without your explicit permission.
-
-                            [1]: https://web.archive.org/web/20230807165936/https://learn.microsoft.com/de-de/security-updates/windowsupdateservices/18127499 "Configure Automatic Updates in a Non–Active Directory Environment | Microsoft Learn"
-                            [2]: https://web.archive.org/web/20221001051250/https://support.microsoft.com/en-us/topic/incorrect-automatic-updates-notification-is-received-even-though-au-options-are-disabled-in-windows-8-1-and-windows-server-2012-r2-18b4b73a-3910-9408-809c-7eaad0e1fbc7 "Incorrect Automatic Updates notification is received even though AU options are disabled in Windows 8.1 and Windows Server 2012 R2 - Microsoft Support"
+                            [1]: https://web.archive.org/web/20241202085516/https://support.microsoft.com/en-us/windows/windows-update-faq-8a903416-6f45-0718-f5c7-375e92dddeb2 "Windows Update: FAQ - Microsoft Support | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20241202090433/https://learn.microsoft.com/en-us/troubleshoot/windows-client/installing-updates-features-roles/keep-windows-up-to-date#automatic-updates-feature "How to keep Windows up to date - Windows Client | Microsoft Learn | learn.microsoft.com"
                             [3]: https://web.archive.org/web/20230711172555/https://learn.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configuring-automatic-updates-by-editing-the-registry "Manage additional Windows Update settings - Windows Deployment | Microsoft Learn"
+                            [4]: https://web.archive.org/web/20230807165936/https://learn.microsoft.com/de-de/security-updates/windowsupdateservices/18127499 "Configure Automatic Updates in a Non–Active Directory Environment | Microsoft Learn"
+                            [5]: https://web.archive.org/web/20221001051250/https://support.microsoft.com/en-us/topic/incorrect-automatic-updates-notification-is-received-even-though-au-options-are-disabled-in-windows-8-1-and-windows-server-2012-r2-18b4b73a-3910-9408-809c-7eaad0e1fbc7 "Incorrect Automatic Updates notification is received even though AU options are disabled in Windows 8.1 and Windows Server 2012 R2 - Microsoft Support"
                         call:
                             function: SetRegistryValue
                             parameters:
                                 keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU
-                                valueName: Enabled
+                                valueName: NoAutoUpdate
                                 dataType: REG_DWORD
                                 data: "1"
                                 dataOnRevert: "0" # Default value: `0` on Windows 10 Pro (≥ 21H2) | `0` on Windows 11 Pro (≥ 21H2)
