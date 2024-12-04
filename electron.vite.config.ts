@@ -3,7 +3,7 @@ import { mergeConfig, type UserConfig } from 'vite';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import { getAliases, getClientEnvironmentVariables } from './vite-config-helper';
 import { createVueConfig } from './vite.config';
-import distDirs from './dist-dirs.json' assert { type: 'json' };
+import distDirs from './dist-dirs.json' with { type: 'json' };
 
 const MAIN_ENTRY_FILE = resolvePathFromProjectRoot('src/presentation/electron/main/index.ts');
 const PRELOAD_ENTRY_FILE = resolvePathFromProjectRoot('src/presentation/electron/preload/index.ts');

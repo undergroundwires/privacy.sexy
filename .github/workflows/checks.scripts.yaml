@@ -55,6 +55,7 @@ jobs:
         uses: ./.github/actions/npm-install-dependencies
       -
         name: Run install-deps
+        shell: bash # Required for correct argument passing (--)
         run: ${{ matrix.install-command }}
 
   configure-vscode:
@@ -74,10 +75,8 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+        name: Setup node
+        uses: ./.github/actions/setup-python
       -
         name: Install VSCode
         run: ${{ matrix.os.install-vscode-command }}

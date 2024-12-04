@@ -6,7 +6,12 @@ runs:
   using: composite
   steps:
     -
-      name: Run `npm ci` with retries
+      name: Update Browserslist DB
       shell: bash
+      run: npx update-browserslist-db@latest
+      working-directory: ${{ inputs.working-directory }}
+    -
+      name: Run `npm ci` with retries
+      shell: bash # Required for correct argument passing (--)
       run: npm run install-deps -- --ci
       working-directory: ${{ inputs.working-directory }}

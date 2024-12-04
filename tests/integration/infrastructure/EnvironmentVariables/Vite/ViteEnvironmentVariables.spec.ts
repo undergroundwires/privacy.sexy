@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import packageJson from '@/../package.json' assert { type: 'json' };
+import packageJson from '@/../package.json' with { type: 'json' };
 import type { PropertyKeys } from '@/TypeHelpers';
 import type { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import { ViteEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/Vite/ViteEnvironmentVariables';

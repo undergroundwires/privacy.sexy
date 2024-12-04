@@ -1,8 +1,8 @@
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { VITE_USER_DEFINED_ENVIRONMENT_KEYS } from './src/infrastructure/EnvironmentVariables/Vite/ViteEnvironmentKeys';
-import tsconfigJson from './tsconfig.json' assert { type: 'json' };
-import packageJson from './package.json' assert { type: 'json' };
+import tsconfigJson from './tsconfig.json' with { type: 'json' };
+import packageJson from './package.json' with { type: 'json' };
 
 type ViteAliasDefinitions = Record<string, string>;
 

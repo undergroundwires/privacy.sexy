@@ -30,9 +30,11 @@ jobs:
         uses: ./.github/actions/npm-install-dependencies
       -
         name: Build web
+        shell: bash # Required for correct argument passing (--)
         run: npm run build -- --mode ${{ matrix.mode }}
       -
         name: Verify web build artifacts
+        shell: bash # Required for correct argument passing (--)
         run: npm run check:verify-build-artifacts -- --web
 
   build-desktop:
@@ -58,15 +60,19 @@ jobs:
         uses: ./.github/actions/npm-install-dependencies
       -
         name: Prebuild desktop
+        shell: bash # Required for correct argument passing (--)
         run: npm run electron:prebuild -- --mode ${{ matrix.mode }}
       -
         name: Verify unbundled desktop build artifacts
+        shell: bash # Required for correct argument passing (--)
         run: npm run check:verify-build-artifacts -- --electron-unbundled
       -
         name: Build (bundle and package) desktop application
+        shell: bash # Required for correct argument passing (--)
         run: npm run electron:build -- --publish never
       -
         name: Verify bundled desktop build artifacts
+        shell: bash # Required for correct argument passing (--)
         run: npm run check:verify-build-artifacts -- --electron-bundled
 
   build-docker:

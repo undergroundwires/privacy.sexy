@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress';
 import ViteConfig from './vite.config';
-import cypressDirs from './cypress-dirs.json' assert { type: 'json' };
+import cypressDirs from './cypress-dirs.json' with { type: 'json' };
 
 export default defineConfig({
   fixturesFolder: `${cypressDirs.base}/fixtures`,

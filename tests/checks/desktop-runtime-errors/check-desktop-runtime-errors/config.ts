@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import distDirs from '@/../dist-dirs.json' assert { type: 'json' };
+import distDirs from '@/../dist-dirs.json' with { type: 'json' };
 
 export const DESKTOP_BUILD_COMMAND = [
   'npm run electron:prebuild',

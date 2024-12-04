@@ -4,7 +4,7 @@ import { defineConfig, type UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import legacy from '@vitejs/plugin-legacy';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
-import distDirs from './dist-dirs.json' assert { type: 'json' };
+import distDirs from './dist-dirs.json' with { type: 'json' };
 import { getAliases, getClientEnvironmentVariables, getSelfDirectoryAbsolutePath } from './vite-config-helper';
 
 const WEB_DIRECTORY = resolve(getSelfDirectoryAbsolutePath(), 'src/presentation');

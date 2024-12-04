@@ -98,6 +98,7 @@ jobs:
       -
         name: "App: Verify web build artifacts"
         run: npm run check:verify-build-artifacts -- --web
+        shell: bash # Required for correct argument passing (--)
         working-directory: app
       -
         name: "App: Deploy to S3"
