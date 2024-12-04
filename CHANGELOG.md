@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.13.7 (2024-12-04)
+
+* win: categorize disabling Defender components | [aee24cd](https://github.com/undergroundwires/privacy.sexy/commit/aee24cdaa1370040a62186a0cd3462331949a1de)
+* win: add disabling Defender core service #385 | [db090f3](https://github.com/undergroundwires/privacy.sexy/commit/db090f369632087285f53c253da24a9a235aa4c8)
+* Add validation for max line length in compiler | [dc5c873](https://github.com/undergroundwires/privacy.sexy/commit/dc5c87376b9d9796e21a137e5cd7b07f78a67180)
+* win: enable PowerShell as TI runs #128 #412 #421 | [6b8f6aa](https://github.com/undergroundwires/privacy.sexy/commit/6b8f6aae81f02da04b6d739213d996f6d95e5bfe)
+* win: add missing system apps #279 #316 #343 | [98e8dc0](https://github.com/undergroundwires/privacy.sexy/commit/98e8dc0a6704b1fb49417d9f3e6bf3a1583eee86)
+* Improve compiler output for line validation | [8b6067f](https://github.com/undergroundwires/privacy.sexy/commit/8b6067f83f1bc828f0e81ae18eb819e894c511a3)
+* win: add CLSID/COM object removal #412 | [a05a600](https://github.com/undergroundwires/privacy.sexy/commit/a05a60007167f4638979b93f39b27288f781c5ef)
+* Bump to TypeScript 5.5 and enable `noImplicitAny` | [e17744f](https://github.com/undergroundwires/privacy.sexy/commit/e17744faf081a013f38936573a076cf957a3afe6)
+* win: add disabling Phishing Protection #385 | [a536c69](https://github.com/undergroundwires/privacy.sexy/commit/a536c6970f3117a93c17652a8937a9a7290bacbf)
+* Add external URL linting for markdown files | [4e06d54](https://github.com/undergroundwires/privacy.sexy/commit/4e06d543b3d04acd573aea17c01cb5974fb5e375)
+* Fix file retention after updates on macOS #417 | [2f31bc7](https://github.com/undergroundwires/privacy.sexy/commit/2f31bc7b06d9d7a9962f207bb82c99209d3f79e8)
+* Hide code highlight and cursor until interaction | [74378f7](https://github.com/undergroundwires/privacy.sexy/commit/74378f74bfcc0428597efeda4f113e462fe90090)
+* Fix CI/CD fail by installing ImageMagick on runner | [69e7e0a](https://github.com/undergroundwires/privacy.sexy/commit/69e7e0adf1e5b46618c5ab8031b13812c36273e8)
+* Fix CI/CD runtime checks failing on Ubuntu 24.04 | [3f56166](https://github.com/undergroundwires/privacy.sexy/commit/3f56166655576b908fe13bc9db4c7a6f55c93c87)
+* Update Saas and Vite to fix deprecation warnings | [eb8812b](https://github.com/undergroundwires/privacy.sexy/commit/eb8812b26e2fa5bd7f9c8fcc5597d9a86a9adb61)
+* Fix browser instructions appearing on desktop | [9e8bad0](https://github.com/undergroundwires/privacy.sexy/commit/9e8bad00840d3c948fe531817c8f539b468f3431)
+* Fix HTML semantics in script run instructions | [5db8c6b](https://github.com/undergroundwires/privacy.sexy/commit/5db8c6b59144af91e72333be461039e066f9b2ae)
+* win: fix Defender service #128 #385 #393 #402 #426 | [0900492](https://github.com/undergroundwires/privacy.sexy/commit/0900492ccba8788471886a5b473a7c744dbfb991)
+* win: fix and improve driver update control #444 | [68d30a2](https://github.com/undergroundwires/privacy.sexy/commit/68d30a2e6b14c7784d4237f8feb4073f5be6b409)
+* win: fix incorrect registry paths #446 | [c3f8c09](https://github.com/undergroundwires/privacy.sexy/commit/c3f8c09614cd742230bb57402b22e3267883632e)
+* win: fix incorrect Edge privacy configs #455 | [b8530d0](https://github.com/undergroundwires/privacy.sexy/commit/b8530d0c669fd008490897cd47b9cbcc1f33a25b)
+* win, mac: fix typos and dead URLs | [5155f93](https://github.com/undergroundwires/privacy.sexy/commit/5155f9363d7bc6182151d9df587bdb2a95287f96)
+* Bump dependencies to latest | [2f8aaf4](https://github.com/undergroundwires/privacy.sexy/commit/2f8aaf42eab14f5c42369ca31cfbccc208b5ba70)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.13.6...0.13.7)
+
 ## 0.13.6 (2024-08-13)
 
 * win: improve service disabling as TrustedInstaller | [5d365f6](https://github.com/undergroundwires/privacy.sexy/commit/5d365f65fa0e34925b16b2eac2af53c31e34e99a)
