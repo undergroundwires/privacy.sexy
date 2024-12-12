@@ -5,6 +5,7 @@ import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { main } from './check-desktop-runtime-errors/main';
 import { COMMAND_LINE_FLAGS, CommandLineFlag } from './check-desktop-runtime-errors/cli-args';
 import { APP_EXECUTION_DURATION_IN_SECONDS } from './check-desktop-runtime-errors/config';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 describe('desktop runtime error checks', () => {
   const { waitForExitCode } = useInterceptedProcessExitOrCompletion(beforeAll, afterAll);
@@ -77,10 +78,9 @@ function setCommandLineFlagsFromEnvironmentVariables() {
     [CommandLineFlag.ForceRebuild]: 'BUILD',
     [CommandLineFlag.TakeScreenshot]: 'SCREENSHOT',
   };
-  Object.entries(flagEnvironmentVariableKeyMappings)
+  getUnsafeTypedEntries(flagEnvironmentVariableKeyMappings)
     .forEach(([flag, environmentVariableKey]) => {
-      const flagValue = Number.parseInt(flag, 10) as CommandLineFlag;
-      const flagDefinition = COMMAND_LINE_FLAGS[flagValue];
+      const flagDefinition = COMMAND_LINE_FLAGS[flag];
       if (process.env[environmentVariableKey] !== undefined) {
         process.argv = [
           ...process.argv,

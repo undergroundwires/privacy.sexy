@@ -13,9 +13,7 @@ export function createSecureFacade<T>(
   originalObject: T,
   accessibleMembers: KeyTypeCombinations<T>,
 ): T {
-  const facade: Partial<T> = {};
-
-  accessibleMembers.forEach((key: keyof T) => {
+  return accessibleMembers.reduce((facade: Partial<T>, key: keyof T) => {
     const member = originalObject[key];
     if (isFunction(member)) {
       facade[key] = ((...args: unknown[]) => {
@@ -24,9 +22,8 @@ export function createSecureFacade<T>(
     } else {
       facade[key] = member;
     }
-  });
-
-  return facade as T;
+    return facade;
+  }, {}) as T;
 }
 
 type PrependTuple<H, T extends readonly unknown[]> = H extends unknown ? T extends unknown ?
@@ -39,4 +36,8 @@ type AllKeyCombinations<T, U = T, N extends number = 15> = T extends unknown ?
     0: [], 1: AllKeyCombinations<X, X, RecursionDepthControl[N]>
   }[[X] extends [never] ? 0 : 1] : never> :
   never;
-type KeyTypeCombinations<T> = AllKeyCombinations<keyof T>;
+/**
+ * Enforces that all keys of type T are included at compile time.
+ * This prevents accidentally omitting required keys when creating facades.
+ */
+type KeyTypeCombinations<T> = Array<keyof T> & AllKeyCombinations<keyof T>;

@@ -5,6 +5,7 @@ import { ShellScriptSyntax } from '@/application/Application/Loader/Collections/
 import { BatchFileSyntax } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/Analyzers/Syntax/BatchFileSyntax';
 import type { LanguageSyntax } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
 import type { Constructible } from '@/TypeHelpers';
+import { getEnumValues } from '@/application/Common/Enum';
 
 describe('SyntaxFactory', () => {
   describe('createSyntax', () => {
@@ -18,19 +19,18 @@ describe('SyntaxFactory', () => {
       expect(act).to.throw(expectedErrorMessage);
     });
     describe('creates syntax for supported languages', () => {
-      const languageTestScenarios: Record<ScriptLanguage, Constructible<LanguageSyntax>> = {
+      const expectedInstances: Record<ScriptLanguage, Constructible<LanguageSyntax>> = {
         [ScriptLanguage.batchfile]: BatchFileSyntax,
         [ScriptLanguage.shellscript]: ShellScriptSyntax,
       };
-      Object.entries(languageTestScenarios).forEach(([key, value]) => {
-        // arrange
-        const scriptingLanguage = Number(key) as ScriptLanguage;
-        const expectedType = value;
-        it(`gets correct type for "${ScriptLanguage[scriptingLanguage]}" language`, () => {
+      getEnumValues(ScriptLanguage).forEach((language) => {
+        it(`gets correct type for "${ScriptLanguage[language]}" language`, () => {
+          // arrange
+          const expectedInstance = expectedInstances[language];
           // act
-          const syntax = createSyntax(scriptingLanguage);
+          const syntax = createSyntax(language);
           // assert
-          expect(syntax).to.be.instanceOf(expectedType);
+          expect(syntax).to.be.instanceOf(expectedInstance);
         });
       });
     });

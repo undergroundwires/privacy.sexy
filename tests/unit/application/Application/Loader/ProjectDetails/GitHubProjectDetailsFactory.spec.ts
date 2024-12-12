@@ -20,10 +20,10 @@ describe('GitHubProjectDetailsFactory', () => {
       ) => ProjectDetailsParameters;
       readonly getActualValue: (sut: ProjectDetails) => string;
     }
-    const propertyTestScenarios: {
-      readonly [K in PropertyKeys<ProjectDetails>]:
-      readonly PropertyTestScenario[];
-    } = {
+    const propertyTestScenarios: Record<
+    PropertyKeys<ProjectDetails>,
+    readonly PropertyTestScenario[]
+    > = {
       name: [{
         expectedValue: 'expected-app-name',
         prepareParams: (params, expected) => params

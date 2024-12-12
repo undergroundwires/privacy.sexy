@@ -1,4 +1,4 @@
-import type { CallbackType, ThrottleFunction } from '@/application/Common/Timing/Throttle';
+import type { CallbackType, ThrottleFunction, ThrottleOptions } from '@/application/Common/Timing/Throttle';
 
 export class ThrottleStub {
   public readonly throttleInitializationCallArgs: Array<Parameters<ThrottleFunction>> = [];
@@ -7,15 +7,26 @@ export class ThrottleStub {
 
   private executeImmediately: boolean = false;
 
-  public func = (callback: CallbackType, waitInMs: number): ReturnType<ThrottleFunction> => {
-    this.throttleInitializationCallArgs.push([callback, waitInMs]);
-    return (...args: readonly unknown[]) => {
-      this.throttledFunctionCallArgs.push([...args]);
-      if (this.executeImmediately) {
-        callback(...args);
-      }
+  public get func(): ThrottleFunction {
+    return <TCallbackArgs extends unknown[]>(
+      callback: CallbackType<TCallbackArgs>,
+      waitInMs: number,
+      options?: Partial<ThrottleOptions>,
+    ): CallbackType<TCallbackArgs> => {
+      this.throttleInitializationCallArgs.push([
+        callback as CallbackType<unknown[]>,
+        waitInMs,
+        options,
+      ]);
+      const throttledFn = (...callbackArgs: TCallbackArgs): void => {
+        this.throttledFunctionCallArgs.push([...callbackArgs]);
+        if (this.executeImmediately) {
+          callback(...callbackArgs);
+        }
+      };
+      return throttledFn;
     };
-  };
+  }
 
   public withImmediateExecution(executeImmediately: boolean): this {
     this.executeImmediately = executeImmediately;

@@ -2,7 +2,7 @@ import { ContextIsolatedElectronDetector } from '@/infrastructure/RuntimeEnviron
 import type { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import {
-  type PropertyKeys, isBoolean, isFunction, isNumber, isPlainObject,
+  type PropertyKeys, getUnsafeTypedEntries, isBoolean, isFunction, isNumber, isPlainObject,
 } from '@/TypeHelpers';
 import type { WindowVariables } from './WindowVariables';
 
@@ -36,9 +36,9 @@ function* testEveryProperty(variables: Partial<WindowVariables>): Iterable<strin
     scriptDiagnosticsCollector: testScriptDiagnosticsCollector(variables),
   };
 
-  for (const [propertyName, testResult] of Object.entries(tests)) {
+  for (const [propertyName, testResult] of getUnsafeTypedEntries(tests)) {
     if (!testResult) {
-      const propertyValue = variables[propertyName as keyof WindowVariables];
+      const propertyValue = variables[propertyName];
       yield `Unexpected ${propertyName} (${typeof propertyValue})`;
     }
   }

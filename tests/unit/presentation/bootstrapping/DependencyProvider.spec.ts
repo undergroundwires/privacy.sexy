@@ -7,7 +7,7 @@ import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFact
 import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { itIsTransientFactory } from '@tests/unit/shared/TestCases/TransientFactoryTests';
 import { executeInComponentSetupContext } from '@tests/shared/Vue/ExecuteInComponentSetupContext';
-import type { PropertyKeys } from '@/TypeHelpers';
+import { getUnsafeTypedEntries, type PropertyKeys } from '@/TypeHelpers';
 
 type InjectionKeyType = PropertyKeys<typeof InjectionKeys>;
 type DependencyInjectionTestFunction = (injectionKey: symbol) => void;
@@ -28,8 +28,7 @@ describe('DependencyProvider', () => {
       useScriptDiagnosticsCollector: createTransientTests(),
       useAutoUnsubscribedEventListener: createTransientTests(),
     };
-    Object.entries(testCases).forEach(([key, runTests]) => {
-      const injectionKey = key as InjectionKeyType;
+    getUnsafeTypedEntries(testCases).forEach(([injectionKey, runTests]) => {
       const registeredKey = InjectionKeys[injectionKey].key;
       describe(`Key: "${registeredKey.toString()}"`, () => {
         runTests(registeredKey);

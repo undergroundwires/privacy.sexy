@@ -1,5 +1,6 @@
 import { PlatformTimer } from '@/application/Common/Timing/PlatformTimer';
 import type { Timer } from '@/application/Common/Timing/Timer';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 export type AnimationFunction = (element: Element) => Promise<void>;
 
@@ -98,8 +99,8 @@ function setTransitionPropertiesToElementDimensions(
   elementStyle: ElementStyleMutator,
   elementDimensions: TransitionStyleRecords,
 ): void {
-  Object.entries(elementDimensions).forEach(([key, value]) => {
-    elementStyle.changeStyle(key as AnimatedStyleProperty, value);
+  getUnsafeTypedEntries(elementDimensions).forEach(([key, value]) => {
+    elementStyle.changeStyle(key, value);
   });
 }
 
@@ -175,8 +176,8 @@ function restoreOriginalStyles(
   element: HTMLElement,
   originalStyles: MutatedStyleProperties,
 ): void {
-  Object.entries(originalStyles).forEach(([key, value]) => {
-    element.style[key as MutatedStyleProperty] = value;
+  getUnsafeTypedEntries(originalStyles).forEach(([key, value]) => {
+    element.style[key] = value;
   });
 }
 

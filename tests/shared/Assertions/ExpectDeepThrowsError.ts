@@ -32,8 +32,7 @@ function removeUndefinedProperties(obj: object | undefined): object | undefined 
   if (!obj) {
     return obj;
   }
-  return Object.keys(obj).reduce((acc, key) => {
-    const value = obj[key as keyof (typeof obj)];
+  return Object.entries(obj).reduce((acc, [key, value]) => {
     switch (typeof value) {
       case 'object': {
         const cleanValue = removeUndefinedProperties(value); // recurse

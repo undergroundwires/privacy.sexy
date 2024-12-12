@@ -82,7 +82,10 @@ describe('ScriptCompilerFactory', () => {
           const expectedRevertCode = 'expected-revert-code';
           let actualCode: string | undefined;
           let actualRevertCode: string | undefined;
-          const scriptCodeFactory = (code: string, revertCode: string) => {
+          const scriptCodeFactory: ScriptCodeFactory = (
+            code: string,
+            revertCode?: string,
+          ) => {
             actualCode = code;
             actualRevertCode = revertCode;
             return new ScriptCodeStub();

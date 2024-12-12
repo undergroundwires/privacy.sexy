@@ -59,7 +59,8 @@ describe('DependencyBootstrapper', () => {
     it('provides correct inject function to dependency provider', async () => {
       // arrange
       const { mockApp } = createMocks();
-      const expectedInjector = new VueDependencyInjectionApiStub().inject;
+      const expectedInjector: Injector = new VueDependencyInjectionApiStub()
+        .inject;
       let actualInjector: Injector | undefined;
       const sut = new DependencyBootstrapperBuilder()
         .withInjector(expectedInjector)

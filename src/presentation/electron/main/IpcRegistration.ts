@@ -7,6 +7,7 @@ import { ScriptEnvironmentDiagnosticsCollector } from '@/infrastructure/ScriptDi
 import type { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { registerIpcChannel } from '../shared/IpcBridging/IpcProxy';
 import { type ChannelDefinitionKey, IpcChannelDefinitions } from '../shared/IpcBridging/IpcChannelDefinitions';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 export function registerAllIpcChannels(
   registrar: IpcChannelRegistrar = registerIpcChannel,
@@ -20,14 +21,13 @@ export function registerAllIpcChannels(
     Dialog: () => createDialog(),
     ScriptDiagnosticsCollector: () => createScriptDiagnosticsCollector(),
   };
-  Object.entries(ipcInstanceCreators).forEach(([name, instanceFactory]) => {
+  getUnsafeTypedEntries(ipcInstanceCreators).forEach(([definitionKey, instanceFactory]) => {
     try {
-      const definitionKey = name as keyof typeof IpcChannelDefinitions;
       const definition = IpcChannelDefinitions[definitionKey] as IpcChannel<unknown>;
       const instance = instanceFactory();
       registrar(definition, instance);
     } catch (err) {
-      throw new AggregateError([err], `main: Failed to register IPC channel "${name}":\n${err.message}`);
+      throw new AggregateError([err], `main: Failed to register IPC channel "${definitionKey}":\n${err.message}`);
     }
   });
 }

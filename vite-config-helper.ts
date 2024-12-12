@@ -44,10 +44,10 @@ export function getClientEnvironmentVariables(): ViteGlobalVariableReplacementDe
 
 function getPathAliasesFromTsConfig(): ViteAliasDefinitions {
   const { paths } = tsconfigJson.compilerOptions;
-  return Object.keys(paths).reduce((aliases, pathName: keyof typeof paths) => {
-    const pathFolder = paths[pathName][0];
+  return Object.entries(paths).reduce((aliases, [pathKey, pathValues]) => {
+    const pathFolder = pathValues[0];
     const aliasFolder = pathFolder.substring(0, pathFolder.length - 1); // trim * from end
-    const aliasName = pathName.substring(0, pathName.length - 2); // trim /* from end
+    const aliasName = pathKey.substring(0, pathKey.length - 2); // trim /* from end
     const aliasPath = resolve(getSelfDirectoryAbsolutePath(), aliasFolder);
     aliases[aliasName] = aliasPath;
     return aliases;

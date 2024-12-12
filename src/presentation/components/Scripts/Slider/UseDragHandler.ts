@@ -2,8 +2,8 @@ import {
   onUnmounted, ref, shallowReadonly, watch,
 } from 'vue';
 import { throttle } from '@/application/Common/Timing/Throttle';
+import type { LifecycleHook } from '@/presentation/components/Shared/Hooks/Common/LifecycleHook';
 import type { Ref } from 'vue';
-import type { LifecycleHook } from '../../Shared/Hooks/Common/LifecycleHook';
 
 const ThrottleInMs = 15;
 
@@ -18,7 +18,7 @@ export function useDragHandler(
 
   let initialPointerX: number | undefined;
 
-  const onDrag = throttler((event: PointerEvent) => {
+  const onDrag = throttler((event: PointerEvent): void => {
     if (initialPointerX === undefined) {
       throw new Error('Resize action started without an initial X coordinate.');
     }
@@ -64,28 +64,34 @@ export function useDragHandler(
   };
 }
 
+export type DocumentEventKey = keyof DocumentEventMap;
+
+export type DocumentEventHandler<TEvent extends DocumentEventKey> = (
+  event: DocumentEventMap[TEvent],
+) => void;
+
 export interface DragDomModifier {
-  addEventListenerToDocument(
-    type: keyof DocumentEventMap,
-    handler: EventListener,
+  addEventListenerToDocument<TEvent extends DocumentEventKey>(
+    type: TEvent,
+    handler: DocumentEventHandler<TEvent>
   ): void;
-  removeEventListenerFromDocument(
-    type: keyof DocumentEventMap,
-    handler: EventListener,
+  removeEventListenerFromDocument<TEvent extends DocumentEventKey>(
+    type: TEvent,
+    handler: DocumentEventHandler<TEvent>,
   ): void;
 }
 
 class GlobalDocumentDragDomModifier implements DragDomModifier {
-  public addEventListenerToDocument(
-    type: keyof DocumentEventMap,
-    listener: EventListener,
+  public addEventListenerToDocument<TEvent extends DocumentEventKey>(
+    type: TEvent,
+    listener: DocumentEventHandler<TEvent>,
   ): void {
     document.addEventListener(type, listener);
   }
 
-  public removeEventListenerFromDocument(
-    type: keyof DocumentEventMap,
-    listener: EventListener,
+  public removeEventListenerFromDocument<TEvent extends DocumentEventKey>(
+    type: TEvent,
+    listener: DocumentEventHandler<TEvent>,
   ): void {
     document.removeEventListener(type, listener);
   }

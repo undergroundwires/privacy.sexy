@@ -2,8 +2,7 @@ import { describe, it, expect } from 'vitest';
 import type { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
 import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
-
-type Constructible<T = object> = new (...args: unknown[]) => T;
+import type { Constructible } from '@/TypeHelpers';
 
 export class ScriptingLanguageFactoryTestRunner<T> {
   private expectedLanguageTypes = new Map<ScriptLanguage, Constructible<T>>();

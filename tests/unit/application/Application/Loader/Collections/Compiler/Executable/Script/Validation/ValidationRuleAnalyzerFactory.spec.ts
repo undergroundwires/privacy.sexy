@@ -38,7 +38,7 @@ describe('ValidationRuleAnalyzerFactory', () => {
       // act
       const actualAnalyzers = context.create();
       // assert
-      expect(actualAnalyzers).to.have.lengthOf(Object.entries(expectedAnalyzersForRules).length);
+      expect(actualAnalyzers).to.have.lengthOf(Object.keys(expectedAnalyzersForRules).length);
       const expectedAnalyzers = Object.values(expectedAnalyzersForRules);
       expect(actualAnalyzers).to.deep.equal(expectedAnalyzers);
     });

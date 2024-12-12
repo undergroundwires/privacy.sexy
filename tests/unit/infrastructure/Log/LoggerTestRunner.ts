@@ -1,5 +1,6 @@
 import { it } from 'vitest';
 import type { Logger } from '@/application/Common/Log/Logger';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 export function itEachLoggingMethod(
   handler: (
@@ -16,10 +17,10 @@ export function itEachLoggingMethod(
     error: ['with error object', new Error('error')],
   };
 
-  Object.entries(testScenarios)
+  getUnsafeTypedEntries(testScenarios)
     .forEach(([functionKey, testParameters]) => {
       it(functionKey, () => {
-        handler(functionKey as keyof Logger, testParameters);
+        handler(functionKey, testParameters);
       });
     });
 }

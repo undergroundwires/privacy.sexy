@@ -7,6 +7,7 @@ import { FileSystemOperationsStub } from '@tests/unit/shared/Stubs/FileSystemOpe
 import type { DirectoryCreationErrorType, DirectoryType } from '@/infrastructure/FileSystem/Directory/ApplicationDirectoryProvider';
 import { PersistentApplicationDirectoryProvider, SubdirectoryNames } from '@/infrastructure/FileSystem/Directory/PersistentApplicationDirectoryProvider';
 import type { FileSystemOperations } from '@/infrastructure/FileSystem/FileSystemOperations';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 describe('PersistentApplicationDirectoryProvider', () => {
   describe('createDirectory', () => {
@@ -38,9 +39,9 @@ describe('PersistentApplicationDirectoryProvider', () => {
           readonly description: string;
           readonly givenDirectoryType: DirectoryType;
           readonly expectedSubdirectoryName: string;
-        }[] = Object.entries(SubdirectoryNames).map(([type, name]) => ({
+        }[] = getUnsafeTypedEntries(SubdirectoryNames).map(([type, name]) => ({
           description: `returns '${name}' for '${type}'`,
-          givenDirectoryType: type as DirectoryType,
+          givenDirectoryType: type,
           expectedSubdirectoryName: name,
         }));
         testScenarios.forEach(({

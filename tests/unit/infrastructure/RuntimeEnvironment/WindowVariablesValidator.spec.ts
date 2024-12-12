@@ -5,7 +5,7 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { WindowVariablesStub } from '@tests/unit/shared/Stubs/WindowVariablesStub';
 import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
-import type { PropertyKeys } from '@/TypeHelpers';
+import { getUnsafeTypedEntries, type PropertyKeys } from '@/TypeHelpers';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
 import { ScriptDiagnosticsCollectorStub } from '@tests/unit/shared/Stubs/ScriptDiagnosticsCollectorStub';
@@ -167,18 +167,18 @@ describe('WindowVariablesValidator', () => {
         dialog: getInvalidObjectValueTestCases(),
         scriptDiagnosticsCollector: getInvalidObjectValueTestCases(),
       };
-      Object.entries(testScenarios).forEach(([propertyKey, validValueScenarios]) => {
-        describe(propertyKey, () => {
+      getUnsafeTypedEntries(testScenarios).forEach(([windowVariable, validValueScenarios]) => {
+        describe(windowVariable, () => {
           validValueScenarios.forEach(({ description, invalidValue }) => {
             it(description, () => {
               // arrange
               const expectedErrorMessage = getExpectedError({
-                name: propertyKey as keyof WindowVariables,
+                name: windowVariable,
                 value: invalidValue,
               });
               const input: WindowVariables = {
                 ...new WindowVariablesStub(),
-                [propertyKey]: invalidValue,
+                [windowVariable]: invalidValue,
               };
               const context = new ValidateWindowVariablesTestSetup()
                 .withWindowVariables(input);

@@ -2,6 +2,7 @@ import { describe } from 'vitest';
 import type { CodeLine, InvalidCodeLine } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
 import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { analyzeTooLongLines } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/Analyzers/AnalyzeTooLongLines';
+import { getEnumValues } from '@/application/Common/Enum';
 import { createCodeLines } from './CreateCodeLines';
 import { expectInvalidCodeLines, expectSameInvalidCodeLines } from './ExpectSameInvalidCodeLines';
 
@@ -165,14 +166,15 @@ function createScriptLanguageScenarios(): readonly ScriptLanguageScenario[] {
     [ScriptLanguage.batchfile]: 8191,
     [ScriptLanguage.shellscript]: 1048576,
   };
-  return Object.entries(maxLengths).map(([language, length]): ScriptLanguageScenario => {
-    const languageValue = Number.parseInt(language, 10) as ScriptLanguage;
-    return {
-      description: `${ScriptLanguage[languageValue]} (max: ${length})`,
-      language: languageValue,
-      maxLength: length,
-    };
-  });
+  return getEnumValues(ScriptLanguage)
+    .map((language): ScriptLanguageScenario => {
+      const maxLength = maxLengths[language];
+      return {
+        description: `${ScriptLanguage[language]} (max: ${maxLength})`,
+        language,
+        maxLength,
+      };
+    });
 }
 
 class TestContext {

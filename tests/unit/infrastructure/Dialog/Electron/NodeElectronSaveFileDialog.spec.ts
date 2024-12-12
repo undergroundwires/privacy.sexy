@@ -10,6 +10,7 @@ import { ReadbackFileWriterStub } from '@tests/unit/shared/Stubs/ReadbackFileWri
 import { FileReadbackVerificationErrors, FileWriteOperationErrors, type ReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/ReadbackFileWriter';
 import { ElectronFileDialogOperationsStub } from './ElectronFileDialogOperationsStub';
 import { NodePathOperationsStub } from './NodePathOperationsStub';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 describe('NodeElectronSaveFileDialog', () => {
   describe('dialog options', () => {
@@ -88,8 +89,7 @@ describe('NodeElectronSaveFileDialog', () => {
           },
         ],
       };
-      Object.entries(testScenarios).forEach(([fileTypeKey, expectedFilters]) => {
-        const fileType = Number(fileTypeKey) as FileType;
+      getUnsafeTypedEntries(testScenarios).forEach(([fileType, expectedFilters]) => {
         it(`applies correct filters for ${FileType[fileType]}`, async () => {
           // arrange
           const electronMock = new ElectronFileDialogOperationsStub();

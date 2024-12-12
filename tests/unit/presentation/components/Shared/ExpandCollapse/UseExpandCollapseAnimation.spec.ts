@@ -7,6 +7,7 @@ import { TimerStub } from '@tests/unit/shared/Stubs/TimerStub';
 import { watchPromiseState, flushPromiseResolutionQueue } from '@tests/unit/shared/PromiseInspection';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { indentText } from '@/application/Common/Text/IndentText';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 describe('UseExpandCollapseAnimation', () => {
   describe('useExpandCollapseAnimation', () => {
@@ -66,8 +67,8 @@ function runSharedTestsForAnimation(
       display: 'inline-block',
     };
     const element = document.createElement('div');
-    Object.entries(expectedStyleValues).forEach(([key, value]) => {
-      element.style[key as keyof MutatedStyleProperties] = value;
+    getUnsafeTypedEntries(expectedStyleValues).forEach(([key, value]) => {
+      element.style[key] = value;
     });
     const timer = new TimerStub();
     const hookResult = useExpandCollapseAnimation(timer);
@@ -77,11 +78,10 @@ function runSharedTestsForAnimation(
     timer.tickNext(TRANSITION_DURATION_MILLISECONDS);
     await promise;
     // assert
-    Object.entries(expectedStyleValues).forEach(([key, expectedStyleValue]) => {
-      const styleProperty = key as keyof MutatedStyleProperties;
+    getUnsafeTypedEntries(expectedStyleValues).forEach(([styleProperty, expectedStyleValue]) => {
       const actualStyleValue = element.style[styleProperty];
       expect(actualStyleValue).to.equal(expectedStyleValue, formatAssertionMessage([
-        `Style key: ${key}`,
+        `Style key: ${styleProperty}`,
         `Expected style value: ${expectedStyleValue}`,
         `Actual style value: ${actualStyleValue}`,
         `Initial style value: ${expectedStyleValues}`,

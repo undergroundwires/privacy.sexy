@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TimerStub } from '@tests/unit/shared/Stubs/TimerStub';
-import { throttle, type ThrottleFunction, type ThrottleOptions } from '@/application/Common/Timing/Throttle';
+import { throttle, type CallbackType, type ThrottleOptions } from '@/application/Common/Timing/Throttle';
 import type { Timer } from '@/application/Common/Timing/Timer';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
@@ -61,7 +61,7 @@ describe('throttle', () => {
     let lastArgs: readonly number[] | null = null;
     const callback = (...args: readonly number[]) => { lastArgs = args; };
     const waitInMs = 500;
-    const throttleFunc = new TestContext()
+    const throttleFunc = new TestContext<number[]>()
       .withWaitInMs(waitInMs)
       .withTimer(timer)
       .withCallback(callback)
@@ -79,12 +79,12 @@ describe('throttle', () => {
   });
   it('executes the trailing callback with final arguments', () => {
     // arrange
-    const expectedArguments = [1, 2, 3];
+    const expectedArguments = [7, 8, 9];
     const timer = new TimerStub();
     let lastArgs: readonly number[] | null = null;
     const callback = (...args: readonly number[]) => { lastArgs = args; };
     const waitInMs = 500;
-    const throttleFunc = new TestContext()
+    const throttleFunc = new TestContext<number[]>()
       .withWaitInMs(waitInMs)
       .withTimer(timer)
       .withCallback(callback)
@@ -92,10 +92,11 @@ describe('throttle', () => {
 
     // act
     throttleFunc(1, 2, 3);
-    timer.tickNext(100);
+    timer.tickNext(waitInMs / 2);
     throttleFunc(4, 5, 6);
-    timer.tickNext(100);
-    throttleFunc(lastArgs);
+    timer.tickNext(waitInMs / 2);
+    throttleFunc(...expectedArguments);
+    timer.tickNext(waitInMs); // Wait for throttle period created by last call
 
     // assert
     expect(lastArgs).to.deep.equal(expectedArguments);
@@ -207,7 +208,7 @@ describe('throttle', () => {
         totalRuns++;
         calledArgs.push(message);
       };
-      const throttleFunc = new TestContext()
+      const throttleFunc = new TestContext<string[]>()
         .withTimer(timer)
         .withCallback(callback)
         .withWaitInMs(waitInMs)
@@ -256,7 +257,7 @@ describe('throttle', () => {
         actualLastArg = arg;
       };
       const waitInMs = 300;
-      const throttleFunc = new TestContext()
+      const throttleFunc = new TestContext<string[]>()
         .withTimer(timer)
         .withWaitInMs(waitInMs)
         .withCallback(callback)
@@ -275,16 +276,14 @@ describe('throttle', () => {
   });
 });
 
-type CallbackType = Parameters<ThrottleFunction>[0];
-
-class TestContext {
+class TestContext<TCallbackArgs extends unknown[]> {
   private options: Partial<ThrottleOptions> | undefined = {
     timer: new TimerStub(),
   };
 
   private waitInMs: number = 500;
 
-  private callback: CallbackType = () => { /* NO OP */ };
+  private callback: CallbackType<TCallbackArgs> = () => { /* NO OP */ };
 
   public withTimer(timer: Timer): this {
     return this.withOptions({
@@ -298,7 +297,7 @@ class TestContext {
     return this;
   }
 
-  public withCallback(callback: CallbackType): this {
+  public withCallback(callback: CallbackType<TCallbackArgs>): this {
     this.callback = callback;
     return this;
   }
@@ -315,7 +314,7 @@ class TestContext {
     return this;
   }
 
-  public throttle(): ReturnType<ThrottleFunction> {
+  public throttle(): ReturnType<typeof throttle<TCallbackArgs>> {
     return throttle(
       this.callback,
       this.waitInMs,

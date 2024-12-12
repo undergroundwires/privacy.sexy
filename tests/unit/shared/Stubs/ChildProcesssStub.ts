@@ -1,11 +1,17 @@
 import { type ChildProcess } from 'node:child_process';
 
+type EventListenerCallback = (...args: unknown[]) => void;
+
 export class ChildProcessStub implements Partial<ChildProcess> {
-  private readonly eventListeners: Record<string, ((...args: unknown[]) => void)[]> = {};
+  private readonly eventListeners: Record<string, EventListenerCallback[]> = {};
 
   private autoEmitExit = true;
 
-  public on(event: string, listener: (...args: never[]) => void): ChildProcess {
+  public on(
+    event: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    listener: (...args: any[]) => void,
+  ): ChildProcess {
     if (!this.eventListeners[event]) {
       this.eventListeners[event] = [];
     }

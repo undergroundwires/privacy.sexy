@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import type { SanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/SanityCheckOptions';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
-import { isBoolean } from '@/TypeHelpers';
+import { getUnsafeTypedKeys, isBoolean } from '@/TypeHelpers';
 
 describe('SanityChecks', () => {
   describe('validateRuntimeSanity', () => {
@@ -26,33 +26,36 @@ function generateTestOptions(): SanityCheckOptions[] {
     validateEnvironmentVariables: true,
     validateWindowVariables: true,
   };
-  return generateBooleanPermutations(defaultOptions);
+  return generateBooleanPermutations(
+    defaultOptions,
+  ).map((options) => options as SanityCheckOptions);
 }
 
-function generateBooleanPermutations<T>(object: T | undefined): T[] {
-  if (!object) {
+export function generateBooleanPermutations(
+  obj: object | undefined,
+): object[] {
+  if (!obj) {
     return [];
   }
 
-  const keys = Object.keys(object) as (keyof T)[];
+  const keys = getUnsafeTypedKeys(obj);
 
   if (keys.length === 0) {
-    return [object];
+    return [obj];
   }
-
   const currentKey = keys[0];
-  const currentValue = object[currentKey];
+  const currentValue = obj[currentKey];
 
   if (!isBoolean(currentValue)) {
     return generateBooleanPermutations({
-      ...object,
+      ...obj,
       [currentKey]: currentValue,
     });
   }
 
   const remainingKeys = Object.fromEntries(
-    keys.slice(1).map((key) => [key, object[key]]),
-  ) as unknown as T | undefined;
+    keys.slice(1).map((key) => [key, obj[key]]),
+  );
 
   const subPermutations = generateBooleanPermutations(remainingKeys);
 

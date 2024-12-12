@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { ref, type Ref } from 'vue';
-import { useDragHandler, type DragDomModifier } from '@/presentation/components/Scripts/Slider/UseDragHandler';
+import {
+  useDragHandler, type DragDomModifier,
+  type DocumentEventKey,
+} from '@/presentation/components/Scripts/Slider/UseDragHandler';
 import { ThrottleStub } from '@tests/unit/shared/Stubs/ThrottleStub';
 import { type ThrottleFunction } from '@/application/Common/Timing/Throttle';
 import type { ConstructorArguments } from '@/TypeHelpers';
@@ -276,13 +279,13 @@ function createMockPointerEvent(...args: ConstructorArguments<typeof PointerEven
 }
 
 function createDragDomModifierMock(): DragDomModifier & {
-  simulateEvent(type: keyof DocumentEventMap, event: Event): void;
-  readonly events: Map<keyof DocumentEventMap, EventListener>;
+  simulateEvent(type: DocumentEventKey, event: Event): void;
+  readonly events: Map<DocumentEventKey, EventListener>;
 } {
-  const events = new Map<keyof DocumentEventMap, EventListener>();
+  const events = new Map<DocumentEventKey, EventListener>();
   return {
     addEventListenerToDocument: (type, handler) => {
-      events.set(type, handler);
+      events.set(type, handler as EventListener);
     },
     removeEventListenerFromDocument: (type) => {
       events.delete(type);

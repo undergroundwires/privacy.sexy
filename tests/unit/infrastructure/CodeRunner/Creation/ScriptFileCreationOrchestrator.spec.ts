@@ -15,6 +15,7 @@ import { FileReadbackVerificationErrors, FileWriteOperationErrors, type Readback
 import { ReadbackFileWriterStub } from '@tests/unit/shared/Stubs/ReadbackFileWriterStub';
 import type { ApplicationDirectoryProvider, DirectoryCreationErrorType } from '@/infrastructure/FileSystem/Directory/ApplicationDirectoryProvider';
 import type { FileSystemOperations } from '@/infrastructure/FileSystem/FileSystemOperations';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 describe('ScriptFileCreationOrchestrator', () => {
   describe('createScriptFile', () => {
@@ -223,7 +224,7 @@ describe('ScriptFileCreationOrchestrator', () => {
               directoryErrorMessage: 'Injected error when locating user data folder',
             },
           };
-          return Object.entries(directoryErrorScenarios).map(([
+          return getUnsafeTypedEntries(directoryErrorScenarios).map(([
             directoryErrorType, { directoryErrorMessage },
           ]): FileCreationFailureTestScenario => ({
             description: `script directory creation failure: ${directoryErrorType}`,
@@ -235,7 +236,7 @@ describe('ScriptFileCreationOrchestrator', () => {
               directoryProvider.provideDirectory = () => Promise.resolve({
                 success: false,
                 error: {
-                  type: directoryErrorType as DirectoryCreationErrorType,
+                  type: directoryErrorType,
                   message: directoryErrorMessage,
                 },
               });

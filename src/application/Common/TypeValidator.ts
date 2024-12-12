@@ -94,9 +94,9 @@ function assertAllowedProperties(
   valueName: string,
   allowedProperties: readonly string[],
 ): void {
-  const properties = Object.keys(value).map((p) => p as string);
-  const disallowedProperties = properties.filter(
-    (prop) => !allowedProperties.map((p) => p as string).includes(prop),
+  const allProperties = Object.keys(value);
+  const disallowedProperties = allProperties.filter(
+    (prop) => !allowedProperties.includes(prop),
   );
   if (disallowedProperties.length > 0) {
     throw new Error(`'${valueName}' has disallowed properties: ${disallowedProperties.join(', ')}.`);

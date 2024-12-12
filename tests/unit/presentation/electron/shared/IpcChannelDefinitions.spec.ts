@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { type ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
 import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
+import { getUnsafeTypedEntries } from '@/TypeHelpers';
 
 describe('IpcChannelDefinitions', () => {
   it('defines IPC channels correctly', () => {
@@ -21,11 +22,11 @@ describe('IpcChannelDefinitions', () => {
         expectedAccessibleMembers: ['collectDiagnosticInformation'],
       },
     };
-    Object.entries(testScenarios).forEach((
+    getUnsafeTypedEntries(testScenarios).forEach((
       [definitionKey, { expectedNamespace, expectedAccessibleMembers }],
     ) => {
       describe(`channel: "${definitionKey}"`, () => {
-        const ipcChannelUnderTest = IpcChannelDefinitions[definitionKey as ChannelDefinitionKey];
+        const ipcChannelUnderTest = IpcChannelDefinitions[definitionKey];
         it('has expected namespace', () => {
           // act
           const actualNamespace = ipcChannelUnderTest.namespace;

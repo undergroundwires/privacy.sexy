@@ -2,7 +2,9 @@
 import { PlatformTimer } from './PlatformTimer';
 import type { Timer, TimeoutType } from './Timer';
 
-export type CallbackType = (..._: readonly unknown[]) => void;
+export type CallbackType<TCallbackArgs extends unknown[]> = (
+  ..._: TCallbackArgs
+) => void;
 
 export interface ThrottleOptions {
   /** Skip the immediate execution of the callback on the first invoke */
@@ -16,34 +18,34 @@ const DefaultOptions: ThrottleOptions = {
 };
 
 export interface ThrottleFunction {
-  (
-    callback: CallbackType,
+  <TCallbackArgs extends unknown[]>(
+    callback: CallbackType<TCallbackArgs>,
     waitInMs: number,
     options?: Partial<ThrottleOptions>,
-  ): CallbackType;
+  ): CallbackType<TCallbackArgs>;
 }
 
-export const throttle: ThrottleFunction = (
-  callback: CallbackType,
+export const throttle: ThrottleFunction = <TCallbackArgs extends unknown[]>(
+  callback: CallbackType<TCallbackArgs>,
   waitInMs: number,
   options: Partial<ThrottleOptions> = DefaultOptions,
-): CallbackType => {
+): CallbackType<TCallbackArgs> => {
   const defaultedOptions: ThrottleOptions = {
     ...DefaultOptions,
     ...options,
   };
   const throttler = new Throttler(waitInMs, callback, defaultedOptions);
-  return (...args: unknown[]) => throttler.invoke(...args);
+  return (...args: TCallbackArgs) => throttler.invoke(...args);
 };
 
-class Throttler {
+class Throttler<TCallbackArgs extends unknown[]> {
   private lastExecutionTime: number | null = null;
 
   private executionScheduler: DelayedCallbackScheduler;
 
   constructor(
     private readonly waitInMs: number,
-    private readonly callback: CallbackType,
+    private readonly callback: CallbackType<TCallbackArgs>,
     private readonly options: ThrottleOptions,
   ) {
     if (!waitInMs) { throw new Error('missing delay'); }
@@ -51,7 +53,7 @@ class Throttler {
     this.executionScheduler = new DelayedCallbackScheduler(options.timer);
   }
 
-  public invoke(...args: unknown[]): void {
+  public invoke(...args: TCallbackArgs): void {
     switch (true) {
       case this.isLeadingCallWithinThrottlePeriod(): {
         if (this.options.excludeLeadingCall) {
@@ -92,7 +94,7 @@ class Throttler {
     return this.executionScheduler.getNext() !== null;
   }
 
-  private scheduleNext(args: unknown[]): void {
+  private scheduleNext(args: TCallbackArgs): void {
     if (this.executionScheduler.getNext()) {
       throw new Error('An execution is already scheduled.');
     }
@@ -102,7 +104,7 @@ class Throttler {
     );
   }
 
-  private updateNextScheduled(args: unknown[]): void {
+  private updateNextScheduled(args: TCallbackArgs): void {
     const nextScheduled = this.executionScheduler.getNext();
     if (!nextScheduled) {
       throw new Error('A non-existent scheduled execution cannot be updated.');
@@ -114,7 +116,7 @@ class Throttler {
     );
   }
 
-  private executeNow(args: unknown[]): void {
+  private executeNow(args: TCallbackArgs): void {
     this.callback(...args);
     this.lastExecutionTime = this.dateNow();
   }

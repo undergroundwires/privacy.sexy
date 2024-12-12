@@ -40,14 +40,14 @@ export interface TargetEventListener {
   startListening<TEvent extends keyof HTMLElementEventMap>(
     eventTargetSource: EventTargetOrRef,
     eventType: TEvent,
-    eventHandler: (event: HTMLElementEventMap[TEvent]) => void,
+    eventHandler: TypedEventHandler<TEvent>,
   ): void;
 }
 
 function startListeningRef<TEvent extends keyof HTMLElementEventMap>(
   eventTargetRef: Readonly<Ref<EventTarget | undefined>>,
   eventType: TEvent,
-  eventHandler: (event: HTMLElementEventMap[TEvent]) => void,
+  eventHandler: TypedEventHandler<TEvent>,
   onTeardown: LifecycleHook,
 ): void {
   const eventListenerManager = new EventListenerManager();
@@ -78,9 +78,14 @@ class EventListenerManager {
   public addListener<TEvent extends keyof HTMLElementEventMap>(
     eventTarget: EventTarget,
     eventType: TEvent,
-    eventHandler: (event: HTMLElementEventMap[TEvent]) => void,
+    eventHandler: TypedEventHandler<TEvent>,
   ) {
-    eventTarget.addEventListener(eventType, eventHandler);
-    this.removeListener = () => eventTarget.removeEventListener(eventType, eventHandler);
+    const listener = eventHandler as EventListener;
+    eventTarget.addEventListener(eventType, listener);
+    this.removeListener = () => eventTarget.removeEventListener(eventType, listener);
   }
 }
+
+type TypedEventHandler<
+  TEvent extends (keyof HTMLElementEventMap),
+> = ((event: HTMLElementEventMap[TEvent]) => void);
