@@ -19,7 +19,7 @@ export class TreeNodeHierarchy implements HierarchyAccess {
     return this.children.length > 0;
   }
 
-  public children: readonly TreeNode[];
+  public children: readonly TreeNode[] = [];
 
   public setChildren(children: readonly TreeNode[]): void {
     this.children = children;

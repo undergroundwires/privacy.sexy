@@ -247,15 +247,15 @@ describe('ApplicationContext', () => {
 class ObservableApplicationContextFactory {
   private static DefaultOs = OperatingSystem.Windows;
 
-  public app: IApplication;
+  public app: IApplication = new ApplicationStub()
+    .withCollection(
+      new CategoryCollectionStub()
+        .withOs(ObservableApplicationContextFactory.DefaultOs),
+    );
 
   public firedEvents = new Array<IApplicationContextChangedEvent>();
 
   private initialOs = ObservableApplicationContextFactory.DefaultOs;
-
-  public constructor() {
-    this.withAppContainingCollections(ObservableApplicationContextFactory.DefaultOs);
-  }
 
   public withAppContainingCollections(
     ...oses: OperatingSystem[]

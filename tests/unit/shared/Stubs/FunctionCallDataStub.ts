@@ -1,7 +1,7 @@
 import type { FunctionCallData, FunctionCallParametersData } from '@/application/collections/';
 
 export class FunctionCallDataStub implements FunctionCallData {
-  public function = 'callDatStubCalleeFunction';
+  public function = `[${FunctionCallDataStub.name}]callee-function`;
 
   public parameters: { [index: string]: string } = { testParameter: 'testArgument' };
 

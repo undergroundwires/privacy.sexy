@@ -5,7 +5,7 @@ import type {
 import { FunctionCallDataStub } from './FunctionCallDataStub';
 
 export function createFunctionDataWithCode(): FunctionDataStub {
-  const instance = new FunctionDataStub()
+  const instance = createFunctionDataWithoutCallOrCode()
     .withCode('stub-code')
     .withRevertCode('stub-revert-code');
   return instance;
@@ -14,7 +14,7 @@ export function createFunctionDataWithCode(): FunctionDataStub {
 export function createFunctionDataWithCall(
   call?: FunctionCallsData,
 ): FunctionDataStub {
-  let instance = new FunctionDataStub();
+  let instance = createFunctionDataWithoutCallOrCode();
   if (call) {
     instance = instance.withCall(call);
   } else {
@@ -24,7 +24,10 @@ export function createFunctionDataWithCall(
 }
 
 export function createFunctionDataWithoutCallOrCode(): FunctionDataStub {
-  return new FunctionDataStub();
+  return new FunctionDataStub()
+    .withCall(undefined)
+    .withCode(undefined as unknown as string)
+    .withRevertCode(undefined);
 }
 
 interface FunctionDataBuilder<T> {
@@ -45,9 +48,9 @@ interface CallFunctionDataBuilder extends FunctionDataBuilder<CallFunctionDataBu
 
 class FunctionDataStub
 implements CodeFunctionDataBuilder, CallFunctionDataBuilder, CallFunctionData, CodeFunctionData {
-  public name = 'functionDataStub';
+  public name = `[${FunctionDataStub.name}]name`;
 
-  public code: string;
+  public code: string = `[${FunctionDataStub.name}]code`;
 
   public revertCode?: string;
 
@@ -74,7 +77,7 @@ implements CodeFunctionDataBuilder, CallFunctionDataBuilder, CallFunctionData, C
     return this;
   }
 
-  public withRevertCode(revertCode: string) {
+  public withRevertCode(revertCode: string | undefined) {
     this.revertCode = revertCode;
     return this;
   }

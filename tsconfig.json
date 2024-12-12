@@ -9,6 +9,7 @@
     "moduleResolution": "Bundler",
     "strictNullChecks": true,
     "noImplicitAny": true,
+    "strictPropertyInitialization": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,

@@ -1,7 +1,7 @@
 import type { ParameterDefinitionData } from '@/application/collections/';
 
 export class ParameterDefinitionDataStub implements ParameterDefinitionData {
-  public name: string;
+  public name: string = `[${ParameterDefinitionDataStub.name}]name`;
 
   public optional?: boolean;
 

@@ -14,6 +14,7 @@ export class SelectedScriptStub implements SelectedScript {
   ) {
     this.id = script.executableId;
     this.script = script;
+    this.revert = script.canRevert();
   }
 
   public withRevert(revert: boolean): this {

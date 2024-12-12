@@ -5,7 +5,7 @@ import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationL
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 
 export function createScriptDataWithCode(): ScriptDataStub & CodeScriptData {
-  return new ScriptDataStub()
+  return createScriptDataWithoutCallOrCodes()
     .withCode('stub-code')
     .withRevertCode('stub-revert-code');
 }
@@ -13,7 +13,7 @@ export function createScriptDataWithCode(): ScriptDataStub & CodeScriptData {
 export function createScriptDataWithCall(
   call?: FunctionCallData,
 ): ScriptDataStub & CallScriptData {
-  let instance = new ScriptDataStub();
+  let instance = createScriptDataWithoutCallOrCodes();
   if (call) {
     instance = instance.withCall(call);
   } else {
@@ -23,13 +23,16 @@ export function createScriptDataWithCall(
 }
 
 export function createScriptDataWithoutCallOrCodes(): ScriptDataStub {
-  return new ScriptDataStub();
+  return new ScriptDataStub()
+    .withCall(undefined)
+    .withCode(undefined as unknown as string)
+    .withRevertCode(undefined);
 }
 
 class ScriptDataStub implements CallScriptData, CodeScriptData {
-  public name = 'valid-name';
+  public name: string = `[${ScriptDataStub.name}]name`;
 
-  public code: string;
+  public code: string = `[${ScriptDataStub.name}]code`;
 
   public revertCode: string | undefined = undefined;
 

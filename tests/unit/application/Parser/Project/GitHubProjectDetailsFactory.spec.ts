@@ -1,100 +1,103 @@
 import { describe, it, expect } from 'vitest';
-import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import { VersionStub } from '@tests/unit/shared/Stubs/VersionStub';
-import { Version } from '@/domain/Version';
 import type { PropertyKeys } from '@/TypeHelpers';
 import { type SupportedOperatingSystem, AllSupportedOperatingSystems } from '@tests/shared/TestCases/SupportedOperatingSystems';
+import type { ProjectDetailsParameters } from '@/application/Parser/Project/ProjectDetailsFactory';
+import { createGitHubProjectDetails } from '@/application/Parser/Project/GitHubProjectDetailsFactory';
+import { ProjectDetailsParametersStub } from '@tests/unit/shared/Stubs/ProjectDetailsParametersStub';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 
-describe('GitHubProjectDetails', () => {
+describe('GitHubProjectDetailsFactory', () => {
   describe('retrieval of property values', () => {
     interface PropertyTestScenario {
       readonly description?: string;
       readonly expectedValue: string;
-      readonly buildWithExpectedValue: (
-        builder: ProjectDetailsBuilder,
+      readonly prepareParams: (
+        params: ProjectDetailsParametersStub,
         expected: string,
-      ) => ProjectDetailsBuilder;
-      readonly getActualValue: (sut: GitHubProjectDetails) => string;
+      ) => ProjectDetailsParameters;
+      readonly getActualValue: (sut: ProjectDetails) => string;
     }
     const propertyTestScenarios: {
-      readonly [K in PropertyKeys<GitHubProjectDetails>]: readonly PropertyTestScenario[];
+      readonly [K in PropertyKeys<ProjectDetails>]:
+      readonly PropertyTestScenario[];
     } = {
       name: [{
         expectedValue: 'expected-app-name',
-        buildWithExpectedValue: (builder, expected) => builder
+        prepareParams: (params, expected) => params
           .withName(expected),
         getActualValue: (sut) => sut.name,
       }],
       version: [{
         expectedValue: '0.11.3',
-        buildWithExpectedValue: (builder, expected) => builder
+        prepareParams: (params, expected) => params
           .withVersion(new VersionStub(expected)),
         getActualValue: (sut) => sut.version.toString(),
       }],
       slogan: [{
         expectedValue: 'expected-slogan',
-        buildWithExpectedValue: (builder, expected) => builder
+        prepareParams: (params, expected) => params
           .withSlogan(expected),
         getActualValue: (sut) => sut.slogan,
       }],
       repositoryUrl: [{
         description: 'without `.git` suffix',
         expectedValue: 'expected-repository-url',
-        buildWithExpectedValue: (builder, expected) => builder
+        prepareParams: (builder, expected) => builder
           .withRepositoryUrl(expected),
         getActualValue: (sut) => sut.repositoryUrl,
       }, {
         description: 'with `.git` suffix',
         expectedValue: 'expected-repository-url',
-        buildWithExpectedValue: (builder, expected) => builder
+        prepareParams: (builder, expected) => builder
           .withRepositoryUrl(expected),
         getActualValue: (sut) => sut.repositoryUrl,
       }],
       repositoryWebUrl: [{
         description: 'without `.git` suffix',
         expectedValue: 'expected-repository-url',
-        buildWithExpectedValue: (builder, expected) => builder
+        prepareParams: (params, expected) => params
           .withRepositoryUrl(expected),
         getActualValue: (sut) => sut.repositoryWebUrl,
       }, {
         description: 'with `.git` suffix',
         expectedValue: 'expected-repository-url',
-        buildWithExpectedValue: (builder, expected) => builder
+        prepareParams: (params, expected) => params
           .withRepositoryUrl(`${expected}.git`),
         getActualValue: (sut) => sut.repositoryWebUrl,
       }],
       homepage: [{
         expectedValue: 'expected-homepage',
-        buildWithExpectedValue: (builder, expected) => builder
+        prepareParams: (params, expected) => params
           .withHomepage(expected),
         getActualValue: (sut) => sut.homepage,
       }],
       feedbackUrl: [{
         description: 'without `.git` suffix',
         expectedValue: 'https://github.com/undergroundwires/privacy.sexy/issues',
-        buildWithExpectedValue: (builder) => builder
+        prepareParams: (params) => params
           .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy'),
         getActualValue: (sut) => sut.feedbackUrl,
       }, {
         description: 'with `.git` suffix',
         expectedValue: 'https://github.com/undergroundwires/privacy.sexy/issues',
-        buildWithExpectedValue: (builder) => builder
+        prepareParams: (params) => params
           .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy.git'),
         getActualValue: (sut) => sut.feedbackUrl,
       }],
       releaseUrl: [{
         description: 'without `.git` suffix',
         expectedValue: 'https://github.com/undergroundwires/privacy.sexy/releases/tag/0.7.2',
-        buildWithExpectedValue: (builder) => builder
+        prepareParams: (params) => params
           .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy')
           .withVersion(new VersionStub('0.7.2')),
         getActualValue: (sut) => sut.releaseUrl,
       }, {
         description: 'with `.git` suffix',
         expectedValue: 'https://github.com/undergroundwires/privacy.sexy/releases/tag/0.7.2',
-        buildWithExpectedValue: (builder) => builder
+        prepareParams: (params) => params
           .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy.git')
           .withVersion(new VersionStub('0.7.2')),
         getActualValue: (sut) => sut.releaseUrl,
@@ -102,14 +105,17 @@ describe('GitHubProjectDetails', () => {
     };
     Object.entries(propertyTestScenarios).forEach(([propertyName, testList]) => {
       testList.forEach(({
-        description, buildWithExpectedValue, expectedValue, getActualValue,
+        description, prepareParams, expectedValue, getActualValue,
       }) => {
         it(`${propertyName}${description ? ` (${description})` : ''}`, () => {
           // arrange
-          const builder = new ProjectDetailsBuilder();
-          const sut = buildWithExpectedValue(builder, expectedValue).build();
+          const params = prepareParams(
+            new ProjectDetailsParametersStub(),
+            expectedValue,
+          );
 
           // act
+          const sut = create(() => params);
           const actual = getActualValue(sut);
 
           // assert
@@ -144,10 +150,9 @@ describe('GitHubProjectDetails', () => {
       it(`should return the expected download URL for ${OperatingSystem[operatingSystem]}`, () => {
         // arrange
         const { expected, version, repositoryUrl } = testScenarios[operatingSystem];
-        const sut = new ProjectDetailsBuilder()
+        const sut = create((params) => params
           .withVersion(new VersionStub(version))
-          .withRepositoryUrl(repositoryUrl)
-          .build();
+          .withRepositoryUrl(repositoryUrl));
         // act
         const actual = sut.getDownloadUrl(operatingSystem);
         // assert
@@ -156,8 +161,7 @@ describe('GitHubProjectDetails', () => {
     });
     describe('should throw an error when provided with an invalid operating system', () => {
       // arrange
-      const sut = new ProjectDetailsBuilder()
-        .build();
+      const sut = create();
       // act
       const act = (os: OperatingSystem) => sut.getDownloadUrl(os);
       // assert
@@ -168,49 +172,11 @@ describe('GitHubProjectDetails', () => {
   });
 });
 
-class ProjectDetailsBuilder {
-  private name = 'default-name';
-
-  private version: Version = new VersionStub();
-
-  private repositoryUrl = 'default-repository-url';
-
-  private homepage = 'default-homepage';
-
-  private slogan = 'default-slogan';
-
-  public withName(name: string): this {
-    this.name = name;
-    return this;
-  }
-
-  public withVersion(version: VersionStub): this {
-    this.version = version;
-    return this;
-  }
-
-  public withSlogan(slogan: string): this {
-    this.slogan = slogan;
-    return this;
-  }
-
-  public withRepositoryUrl(repositoryUrl: string): this {
-    this.repositoryUrl = repositoryUrl;
-    return this;
-  }
-
-  public withHomepage(homepage: string): this {
-    this.homepage = homepage;
-    return this;
-  }
-
-  public build(): GitHubProjectDetails {
-    return new GitHubProjectDetails(
-      this.name,
-      this.version,
-      this.slogan,
-      this.repositoryUrl,
-      this.homepage,
-    );
-  }
+function create(
+  prepareParams?: (params: ProjectDetailsParametersStub) => ProjectDetailsParameters,
+) {
+  const params: ProjectDetailsParameters = prepareParams
+    ? prepareParams(new ProjectDetailsParametersStub())
+    : new ProjectDetailsParametersStub();
+  return createGitHubProjectDetails(params);
 }

@@ -14,7 +14,9 @@ export class ApplicationContext implements IApplicationContext {
 
   public collection: ICategoryCollection;
 
-  public currentOs: OperatingSystem;
+  public get currentOs(): OperatingSystem {
+    return this.collection.os;
+  }
 
   public get state(): ICategoryCollectionState {
     return this.getState(this.collection.os);
@@ -26,7 +28,7 @@ export class ApplicationContext implements IApplicationContext {
     public readonly app: IApplication,
     initialContext: OperatingSystem,
   ) {
-    this.setContext(initialContext);
+    this.collection = this.getCollection(initialContext);
     this.states = initializeStates(app);
   }
 
@@ -38,14 +40,13 @@ export class ApplicationContext implements IApplicationContext {
       newState: this.getState(os),
       oldState: this.getState(this.currentOs),
     };
-    this.setContext(os);
+    this.collection = this.getCollection(os);
     this.contextChanged.notify(event);
   }
 
-  private setContext(os: OperatingSystem): void {
+  private getCollection(os: OperatingSystem): ICategoryCollection {
     validateOperatingSystem(os, this.app);
-    this.collection = this.app.getCollection(os);
-    this.currentOs = os;
+    return this.app.getCollection(os);
   }
 
   private getState(os: OperatingSystem): ICategoryCollectionState {

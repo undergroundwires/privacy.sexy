@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { parseProjectDetails, type ProjectDetailsFactory } from '@/application/Parser/ProjectDetailsParser';
+import { parseProjectDetails } from '@/application/Parser/Project/ProjectDetailsParser';
 import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
 import type { PropertyKeys } from '@/TypeHelpers';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
-import { Version } from '@/domain/Version';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
+import type { ProjectDetailsParameters, ProjectDetailsFactory } from '@/application/Parser/Project/ProjectDetailsFactory';
 
 describe('ProjectDetailsParser', () => {
   describe('parseProjectDetails', () => {
@@ -20,7 +21,7 @@ describe('ProjectDetailsParser', () => {
       it('without metadata', () => {
         // arrange
         const metadataFactory = undefined;
-        const projectDetailsFactory = new ProjectDetailsFactoryStub().getStub();
+        const projectDetailsFactory = createProjectDetailsFactoryStub();
         // act
         const act = () => parseProjectDetails(metadataFactory, projectDetailsFactory);
         // expectS
@@ -40,35 +41,35 @@ describe('ProjectDetailsParser', () => {
       interface MetadataTestScenario {
         readonly setMetadata: (appMetadataStub: AppMetadataStub, value: string) => AppMetadataStub;
         readonly expectedValue: string;
-        readonly getActualValue: (projectDetailsFactory: ProjectDetailsFactoryStub) => string;
+        readonly getActualValue: (projectDetails: ProjectDetails) => string;
       }
       const testScenarios: {
-        [K in PropertyKeys<ProjectDetailsFactoryStub>]: MetadataTestScenario
+        [K in PropertyKeys<ProjectDetailsParameters>]: MetadataTestScenario
       } = {
         name: {
           setMetadata: (metadata, value) => metadata.witName(value),
           expectedValue: 'expected-app-name',
-          getActualValue: (projectDetailsFactory) => projectDetailsFactory.name,
+          getActualValue: (projectDetails) => projectDetails.name,
         },
         version: {
           setMetadata: (metadata, value) => metadata.withVersion(value),
           expectedValue: '0.11.3',
-          getActualValue: (projectDetailsFactory) => projectDetailsFactory.version.toString(),
+          getActualValue: (projectDetails) => projectDetails.version.toString(),
         },
         slogan: {
           setMetadata: (metadata, value) => metadata.withSlogan(value),
           expectedValue: 'expected-slogan',
-          getActualValue: (projectDetailsFactory) => projectDetailsFactory.slogan,
+          getActualValue: (projectDetails) => projectDetails.slogan,
         },
         repositoryUrl: {
           setMetadata: (metadata, value) => metadata.withRepositoryUrl(value),
           expectedValue: 'https://expected-repository.url',
-          getActualValue: (projectDetailsFactory) => projectDetailsFactory.repositoryUrl,
+          getActualValue: (projectDetails) => projectDetails.repositoryUrl,
         },
         homepage: {
           setMetadata: (metadata, value) => metadata.withHomepageUrl(value),
           expectedValue: 'https://expected.sexy',
-          getActualValue: (projectDetailsFactory) => projectDetailsFactory.homepage,
+          getActualValue: (projectDetails) => projectDetails.homepage,
         },
       };
       Object.entries(testScenarios).forEach(([propertyName, {
@@ -77,11 +78,11 @@ describe('ProjectDetailsParser', () => {
         it(propertyName, () => {
           // act
           const metadata = setMetadata(new AppMetadataStub(), expectedValue);
-          const projectDetailsFactoryStub = new ProjectDetailsFactoryStub();
+          const projectDetailsFactoryStub = createProjectDetailsFactoryStub();
           // act
-          parseProjectDetails(metadata, projectDetailsFactoryStub.getStub());
+          const projectDetails = parseProjectDetails(metadata, projectDetailsFactoryStub);
           // assert
-          const actual = getActualValue(projectDetailsFactoryStub);
+          const actual = getActualValue(projectDetails);
           expect(actual).to.be.equal(expectedValue);
         });
       });
@@ -89,25 +90,14 @@ describe('ProjectDetailsParser', () => {
   });
 });
 
-class ProjectDetailsFactoryStub {
-  public name: string;
-
-  public version: Version;
-
-  public slogan: string;
-
-  public repositoryUrl: string;
-
-  public homepage: string;
-
-  public getStub(): ProjectDetailsFactory {
-    return (name, version, slogan, repositoryUrl, homepage) => {
-      this.name = name;
-      this.version = version;
-      this.slogan = slogan;
-      this.repositoryUrl = repositoryUrl;
-      this.homepage = homepage;
-      return new ProjectDetailsStub();
-    };
-  }
+function createProjectDetailsFactoryStub(): ProjectDetailsFactory {
+  return (params) => {
+    const details = new ProjectDetailsStub()
+      .withName(params.name)
+      .withVersion(params.version)
+      .withSlogan(params.slogan)
+      .withRepositoryUrl(params.repositoryUrl)
+      .withHomepageUrl(params.homepage);
+    return details;
+  };
 }

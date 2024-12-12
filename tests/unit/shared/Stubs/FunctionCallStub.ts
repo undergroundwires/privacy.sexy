@@ -2,7 +2,7 @@ import type { FunctionCall } from '@/application/Parser/Executable/Script/Compil
 import { FunctionCallArgumentCollectionStub } from './FunctionCallArgumentCollectionStub';
 
 export class FunctionCallStub implements FunctionCall {
-  public functionName = 'functionCallStub';
+  public functionName = `[${FunctionCallStub.name}]name`;
 
   public args = new FunctionCallArgumentCollectionStub();
 

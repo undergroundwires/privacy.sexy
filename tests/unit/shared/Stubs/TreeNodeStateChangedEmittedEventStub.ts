@@ -3,13 +3,14 @@ import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/
 import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 import type { ReadOnlyTreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { TreeNodeStateDescriptorStub } from './TreeNodeStateDescriptorStub';
+import { TreeNodeStub } from './TreeNodeStub';
 
 export class TreeNodeStateChangedEmittedEventStub implements TreeNodeStateChangedEmittedEvent {
-  public node: ReadOnlyTreeNode;
+  public node: ReadOnlyTreeNode = new TreeNodeStub();
 
-  public oldState?: TreeNodeStateDescriptor;
+  public oldState?: TreeNodeStateDescriptor = new TreeNodeStateDescriptorStub();
 
-  public newState: TreeNodeStateDescriptor;
+  public newState: TreeNodeStateDescriptor = new TreeNodeStateDescriptorStub();
 
   public withNode(node: ReadOnlyTreeNode): this {
     this.node = node;

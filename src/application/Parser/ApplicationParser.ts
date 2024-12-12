@@ -3,7 +3,7 @@ import type { IApplication } from '@/domain/IApplication';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';
-import { parseProjectDetails, type ProjectDetailsParser } from '@/application/Parser/ProjectDetailsParser';
+import { parseProjectDetails, type ProjectDetailsParser } from '@/application/Parser/Project/ProjectDetailsParser';
 import { Application } from '@/domain/Application';
 import { parseCategoryCollection, type CategoryCollectionParser } from './CategoryCollectionParser';
 import { createTypeValidator, type TypeValidator } from './Common/TypeValidator';

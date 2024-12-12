@@ -1,9 +1,9 @@
 import { shell } from 'electron';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
 import { Version } from '@/domain/Version';
-import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
+import { parseProjectDetails } from '@/application/Parser/Project/ProjectDetailsParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { createGitHubProjectDetails } from '@/application/Parser/Project/GitHubProjectDetailsFactory';
 import { UpdateProgressBar } from '../ProgressBar/UpdateProgressBar';
 import {
   promptForManualUpdate, promptInstallerOpenError,
@@ -157,13 +157,13 @@ interface UpdateUrls {
 
 function getRemoteUpdateUrls(targetVersion: string): UpdateUrls {
   const existingProject = parseProjectDetails();
-  const targetProject = new GitHubProjectDetails(
-    existingProject.name,
-    new Version(targetVersion),
-    existingProject.slogan,
-    existingProject.repositoryUrl,
-    existingProject.homepage,
-  );
+  const targetProject = createGitHubProjectDetails({
+    name: existingProject.name,
+    version: new Version(targetVersion),
+    slogan: existingProject.slogan,
+    repositoryUrl: existingProject.repositoryUrl,
+    homepage: existingProject.homepage,
+  });
   return {
     releaseUrl: targetProject.releaseUrl,
     downloadUrl: targetProject.getDownloadUrl(OperatingSystem.macOS),

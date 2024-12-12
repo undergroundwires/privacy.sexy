@@ -1,6 +1,7 @@
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
 import type { TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
 import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import { TreeNodeStateDescriptorStub } from './TreeNodeStateDescriptorStub';
 
 export class TreeNodeStateTransactionStub implements TreeNodeStateTransaction {
   public withExpansionState(isExpanded: boolean): TreeNodeStateTransaction {
@@ -28,5 +29,5 @@ export class TreeNodeStateTransactionStub implements TreeNodeStateTransaction {
     return this;
   }
 
-  public updatedState: Partial<TreeNodeStateDescriptor>;
+  public updatedState: Partial<TreeNodeStateDescriptor> = new TreeNodeStateDescriptorStub();
 }

@@ -31,6 +31,11 @@ export class ProjectDetailsStub implements ProjectDetails {
     return this;
   }
 
+  public withSlogan(slogan: string): this {
+    this.slogan = slogan;
+    return this;
+  }
+
   public withRepositoryUrl(repositoryUrl: string): this {
     this.repositoryUrl = repositoryUrl;
     return this;

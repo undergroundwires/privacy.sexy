@@ -8,6 +8,8 @@ import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTest
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 describe('UserScriptGenerator', () => {
   describe('scriptingDefinition', () => {
@@ -158,21 +160,25 @@ describe('UserScriptGenerator', () => {
       const definition = new ScriptingDefinitionStub()
         .withStartCode('First line\nSecond line');
       describe('single script', () => {
-        const testCases = [
+        const testCases: readonly {
+          readonly description: string;
+          readonly scriptCode: string;
+          readonly codeLines: number;
+        }[] = [
           {
-            name: 'single-lined',
+            description: 'single-lined',
             scriptCode: 'only line',
             codeLines: 1,
           },
           {
-            name: 'multi-lined',
+            description: 'multi-lined',
             scriptCode: 'first line\nsecond line',
             codeLines: 2,
           },
         ];
         const sut = new UserScriptGenerator();
         for (const testCase of testCases) {
-          it(testCase.name, () => {
+          it(testCase.description, () => {
             const expectedStartLine = totalStartCodeLines
               + 1 // empty line code begin
               + 1; // code begin
@@ -200,32 +206,54 @@ describe('UserScriptGenerator', () => {
         const selectedScripts = [
           new ScriptStub('1').withCode('only line'),
           new ScriptStub('2').withCode('first line\nsecond line'),
-        ].map((s) => s.toSelectedScript());
-        const expectedFirstScriptStart = totalStartCodeLines
+        ]
+          .map((s) => s.toSelectedScript())
+          .map((s) => s.withRevert(false));
+        const expectedScript1Start = totalStartCodeLines
           + 1 // empty line code begin
           + 1; // code begin
-        const expectedFirstScriptEnd = expectedFirstScriptStart
+        const expectedScript1End = expectedScript1Start
           + totalFunctionNameLines
           + 1; // total code lines
-        const expectedSecondScriptStart = expectedFirstScriptEnd
+        const expectedScript2Start = expectedScript1End
           + 1 // code end hyphens
           + 1 // new line
           + 1; // code begin
-        const expectedSecondScriptEnd = expectedSecondScriptStart
+        const expectedScript2End = expectedScript2Start
           + totalFunctionNameLines
           + 2; // total lines of second script
         // act
         const actual = sut.buildCode(selectedScripts, definition);
         // assert
-        const firstPosition = actual.scriptPositions.get(selectedScripts[0]);
-        const secondPosition = actual.scriptPositions.get(selectedScripts[1]);
+        const actualPosition1 = actual.scriptPositions.get(selectedScripts[0]);
+        const actualPosition2 = actual.scriptPositions.get(selectedScripts[1]);
+        const assertionContext: readonly string[] = [
+          'Given scripts:',
+          indentText(JSON.stringify(selectedScripts)),
+          'Generated code:',
+          indentText(actual.code),
+          'Actual script positions:',
+          indentText(JSON.stringify(Array.from(actual.scriptPositions.values()))),
+        ];
         expect(actual.scriptPositions.size).to.equal(2);
-        expectExists(firstPosition);
-        expect(expectedFirstScriptStart).to.equal(firstPosition.startLine, 'Unexpected start line position (first script)');
-        expect(expectedFirstScriptEnd).to.equal(firstPosition.endLine, 'Unexpected end line position (first script)');
-        expectExists(secondPosition);
-        expect(expectedSecondScriptStart).to.equal(secondPosition.startLine, 'Unexpected start line position (second script)');
-        expect(expectedSecondScriptEnd).to.equal(secondPosition.endLine, 'Unexpected end line position (second script)');
+        expectExists(actualPosition1);
+        expect(expectedScript1Start).to.equal(actualPosition1.startLine, formatAssertionMessage([
+          'Unexpected start line position (first script)',
+          ...assertionContext,
+        ]));
+        expect(expectedScript1End).to.equal(actualPosition1.endLine, formatAssertionMessage([
+          'Unexpected end line position (first script)',
+          ...assertionContext,
+        ]));
+        expectExists(actualPosition2);
+        expect(expectedScript2Start).to.equal(actualPosition2.startLine, formatAssertionMessage([
+          'Unexpected start line position (second script)',
+          ...assertionContext,
+        ]));
+        expect(expectedScript2End).to.equal(actualPosition2.endLine, formatAssertionMessage([
+          'Unexpected end line position (second script)',
+          ...assertionContext,
+        ]));
       });
     });
   });

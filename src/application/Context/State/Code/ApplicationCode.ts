@@ -12,27 +12,51 @@ import type { IApplicationCode } from './IApplicationCode';
 export class ApplicationCode implements IApplicationCode {
   public readonly changed = new EventSource<ICodeChangedEvent>();
 
-  public current: string;
+  private state: CodeGenerationResult;
 
-  private scriptPositions = new Map<SelectedScript, CodePosition>();
+  public get current(): string {
+    return this.state.code;
+  }
+
+  private get scriptPositions(): Map<SelectedScript, CodePosition> {
+    return this.state.scriptPositions;
+  }
 
   constructor(
     selection: ReadonlyScriptSelection,
     private readonly scriptingDefinition: IScriptingDefinition,
     private readonly generator: IUserScriptGenerator = new UserScriptGenerator(),
   ) {
-    this.setCode(selection.selectedScripts);
-    selection.changed.on((scripts) => {
-      this.setCode(scripts);
+    this.state = this.generateCode(selection.selectedScripts);
+    selection.changed.on((newScripts) => {
+      const oldScripts = Array.from(this.scriptPositions.keys());
+      this.state = this.generateCode(newScripts);
+      this.notifyCodeChange(oldScripts, this.state);
     });
   }
 
-  private setCode(scripts: ReadonlyArray<SelectedScript>): void {
-    const oldScripts = Array.from(this.scriptPositions.keys());
+  private generateCode(scripts: readonly SelectedScript[]): CodeGenerationResult {
     const code = this.generator.buildCode(scripts, this.scriptingDefinition);
-    this.current = code.code;
-    this.scriptPositions = code.scriptPositions;
-    const event = new CodeChangedEvent(code.code, oldScripts, code.scriptPositions);
+    return {
+      code: code.code,
+      scriptPositions: code.scriptPositions,
+    };
+  }
+
+  private notifyCodeChange(
+    oldScripts: readonly SelectedScript[],
+    newCode: CodeGenerationResult,
+  ): void {
+    const event = new CodeChangedEvent(
+      newCode.code,
+      oldScripts,
+      newCode.scriptPositions,
+    );
     this.changed.notify(event);
   }
+}
+
+interface CodeGenerationResult {
+  readonly code: string;
+  readonly scriptPositions: Map<SelectedScript, CodePosition>;
 }

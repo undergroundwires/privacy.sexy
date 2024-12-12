@@ -4,7 +4,7 @@ export class EnumParserStub<T> implements EnumParser<T> {
   private readonly scenarios = new Array<{
     inputName: string, inputValue: string, outputValue: T }>();
 
-  private defaultValue: T;
+  private defaultValue: T | null = null;
 
   public setup(inputName: string, inputValue: string, outputValue: T): this {
     this.scenarios.push({ inputName, inputValue, outputValue });
@@ -23,7 +23,7 @@ export class EnumParserStub<T> implements EnumParser<T> {
     if (scenario) {
       return scenario.outputValue;
     }
-    if (this.defaultValue !== undefined) {
+    if (this.defaultValue !== null) {
       return this.defaultValue;
     }
     throw new Error(`Don't know now what to return from ${EnumParserStub.name}, forgot to set-up?`);

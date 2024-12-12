@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
-import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
+import { parseProjectDetails } from '@/application/Parser/Project/ProjectDetailsParser';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';

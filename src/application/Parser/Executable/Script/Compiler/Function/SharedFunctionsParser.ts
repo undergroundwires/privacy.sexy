@@ -126,11 +126,12 @@ function parseParameterWithContextualError(
 }
 
 function hasCode(data: FunctionData): data is CodeFunctionData {
-  return (data as CodeInstruction).code !== undefined;
+  const { code } = (data as CodeInstruction);
+  return !isNullOrUndefined(code) && code !== '';
 }
 
 function hasCall(data: FunctionData): data is CallFunctionData {
-  return (data as CallInstruction).call !== undefined;
+  return !isNullOrUndefined((data as CallInstruction).call);
 }
 
 function ensureValidFunctions(functions: readonly FunctionData[]) {
