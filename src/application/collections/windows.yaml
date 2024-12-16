@@ -9,6 +9,11 @@ scripting:
     startCode: |-
         @echo off
         :: {{ $homepage }} — v{{ $version }} — {{ $date }}
+        :: Ensure PowerShell is available
+        where PowerShell >nul 2>&1 || (
+            echo PowerShell is not available. Please install or enable PowerShell.
+            pause & exit 1
+        )
         :: Ensure admin privileges
         fltmc >nul 2>&1 || (
             echo Administrator privileges are required.
