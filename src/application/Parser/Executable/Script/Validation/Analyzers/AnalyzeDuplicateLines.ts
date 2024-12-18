@@ -1,6 +1,7 @@
 import type { LanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
 import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { createSyntax, type SyntaxFactory } from './Syntax/SyntaxFactory';
+import { isCommentLine, type CommentLineChecker } from './Common/CommentLineChecker';
 import type { CodeLine, CodeValidationAnalyzer, InvalidCodeLine } from './CodeValidationAnalyzer';
 
 export type DuplicateLinesAnalyzer = CodeValidationAnalyzer & {
@@ -8,6 +9,7 @@ export type DuplicateLinesAnalyzer = CodeValidationAnalyzer & {
     ...args: [
       ...Parameters<CodeValidationAnalyzer>,
       syntaxFactory?: SyntaxFactory,
+      commentLineChecker?: CommentLineChecker,
     ]
   ): ReturnType<CodeValidationAnalyzer>;
 };
@@ -16,12 +18,13 @@ export const analyzeDuplicateLines: DuplicateLinesAnalyzer = (
   lines: readonly CodeLine[],
   language: ScriptingLanguage,
   syntaxFactory: SyntaxFactory = createSyntax,
+  commentLineChecker: CommentLineChecker = isCommentLine,
 ) => {
   const syntax = syntaxFactory(language);
   return lines
     .map((line): CodeLineWithDuplicateOccurrences => ({
       lineNumber: line.lineNumber,
-      shouldBeIgnoredInAnalysis: shouldIgnoreLine(line.text, syntax),
+      shouldBeIgnoredInAnalysis: shouldIgnoreLine(line.text, syntax, commentLineChecker),
       duplicateLineNumbers: lines
         .filter((other) => other.text === line.text)
         .map((duplicatedLine) => duplicatedLine.lineNumber),
@@ -43,15 +46,13 @@ function isNonIgnorableDuplicateLine(line: CodeLineWithDuplicateOccurrences): bo
   return !line.shouldBeIgnoredInAnalysis && line.duplicateLineNumbers.length > 1;
 }
 
-function shouldIgnoreLine(codeLine: string, syntax: LanguageSyntax): boolean {
-  return isCommentLine(codeLine, syntax)
+function shouldIgnoreLine(
+  codeLine: string,
+  syntax: LanguageSyntax,
+  commentLineChecker: CommentLineChecker,
+): boolean {
+  return commentLineChecker(codeLine, syntax)
     || isLineComposedEntirelyOfCommonCodeParts(codeLine, syntax);
-}
-
-function isCommentLine(codeLine: string, syntax: LanguageSyntax): boolean {
-  return syntax.commentDelimiters.some(
-    (delimiter) => codeLine.startsWith(delimiter),
-  );
 }
 
 function isLineComposedEntirelyOfCommonCodeParts(

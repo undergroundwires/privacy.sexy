@@ -6,6 +6,7 @@ import { analyzeTooLongLines } from '@/application/Parser/Executable/Script/Vali
 import { createValidationAnalyzers } from '@/application/Parser/Executable/Script/Validation/ValidationRuleAnalyzerFactory';
 import type { CodeValidationAnalyzer } from '@/application/Parser/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { analyzeCommentOnlyCode } from '@/application/Parser/Executable/Script/Validation/Analyzers/AnalyzeCommentOnlyCode';
 
 describe('ValidationRuleAnalyzerFactory', () => {
   describe('createValidationAnalyzers', () => {
@@ -27,6 +28,7 @@ describe('ValidationRuleAnalyzerFactory', () => {
         [CodeValidationRule.NoEmptyLines]: analyzeEmptyLines,
         [CodeValidationRule.NoDuplicatedLines]: analyzeDuplicateLines,
         [CodeValidationRule.NoTooLongLines]: analyzeTooLongLines,
+        [CodeValidationRule.NoCommentOnlyLines]: analyzeCommentOnlyCode,
       };
       const givenRules: CodeValidationRule[] = Object
         .keys(expectedAnalyzersForRules)

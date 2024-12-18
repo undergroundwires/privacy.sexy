@@ -95,6 +95,7 @@ function validateHardcodedCodeWithoutCalls(
           CodeValidationRule.NoEmptyLines,
           CodeValidationRule.NoDuplicatedLines,
           CodeValidationRule.NoTooLongLines,
+          CodeValidationRule.NoCommentOnlyLines,
         ],
       ),
     );

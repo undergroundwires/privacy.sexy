@@ -234,6 +234,7 @@ describe('ScriptCompilerFactory', () => {
             CodeValidationRule.NoEmptyLines,
             CodeValidationRule.NoTooLongLines,
             // Allow duplicated lines to enable calling same function multiple times
+            CodeValidationRule.NoCommentOnlyLines,
           ];
           const scriptData = createScriptDataWithCall();
           const validator = new CodeValidatorStub();

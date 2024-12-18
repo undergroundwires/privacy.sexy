@@ -1,10 +1,13 @@
-import { describe } from 'vitest';
-import { analyzeDuplicateLines } from '@/application/Parser/Executable/Script/Validation/Analyzers/AnalyzeDuplicateLines';
+import { describe, it } from 'vitest';
+import { analyzeDuplicateLines, type DuplicateLinesAnalyzer } from '@/application/Parser/Executable/Script/Validation/Analyzers/AnalyzeDuplicateLines';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import type { CodeLine, InvalidCodeLine } from '@/application/Parser/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import type { SyntaxFactory } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/SyntaxFactory';
 import { SyntaxFactoryStub } from '@tests/unit/shared/Stubs/SyntaxFactoryStub';
+import type { CommentLineChecker } from '@/application/Parser/Executable/Script/Validation/Analyzers/Common/CommentLineChecker';
+import { CommentLineCheckerStub } from '@tests/unit/shared/Stubs/CommentLineCheckerStub';
+import type { LanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
 import { createCodeLines } from './CreateCodeLines';
 import { expectSameInvalidCodeLines } from './ExpectSameInvalidCodeLines';
 
@@ -116,34 +119,45 @@ describe('AnalyzeDuplicateLines', () => {
         });
       });
       describe('comment handling', () => {
-        it('ignores lines starting with comment delimiters', () => {
+        it('uses correct syntax for comment checking', () => {
           // arrange
+          const expectedSyntax = new LanguageSyntaxStub();
+          const syntaxFactory: SyntaxFactory = () => {
+            return expectedSyntax;
+          };
+          let actualSyntax: LanguageSyntax | undefined;
+          const commentChecker: CommentLineChecker = (_, syntax) => {
+            actualSyntax = syntax;
+            return false;
+          };
+          const context = new TestContext()
+            .withCommentLineChecker(commentChecker)
+            .withSyntaxFactory((syntaxFactory))
+            .withLines(['single test line']);
+          // act
+          context.analyze();
+          // assert
+          expect(actualSyntax).to.equal(expectedSyntax);
+        });
+        it('ignores comment lines', () => {
+          // arrange
+          const commentLine = 'duplicate-comment-line';
           const expected = createExpectedDuplicateLineErrors([3, 5]);
           const syntax = new LanguageSyntaxStub()
             .withCommentDelimiters('#', '//');
+          const commentChecker = new CommentLineCheckerStub()
+            .withPredeterminedResult({
+              givenLine: commentLine,
+              givenSyntax: syntax,
+              result: true,
+            }).get();
           const context = new TestContext()
             .withLines([
-              /* 1 */ '#abc', /* 2 */ '#abc', /* 3 */ 'abc', /* 4 */ 'unique',
-              /* 5 */ 'abc', /* 6 */ '//abc', /* 7 */ '//abc', /* 8 */ '//unique',
-              /* 9 */ '#unique',
+              /* 1 */ commentLine, /* 2 */ commentLine, /* 3 */ 'abc', /* 4 */ 'unique',
+              /* 5 */ 'abc', /* 6 */ commentLine,
             ])
-            .withSyntaxFactory(() => syntax);
-          // act
-          const actual = context.analyze();
-          // assert
-          expectSameInvalidCodeLines(actual, expected);
-        });
-        it('detects duplicates when comments are not at line start', () => {
-          // arrange
-          const expected = createExpectedDuplicateLineErrors([1, 2], [3, 4]);
-          const syntax = new LanguageSyntaxStub()
-            .withCommentDelimiters('#');
-          const context = new TestContext()
-            .withLines([
-              /* 1 */ 'test #comment', /* 2 */ 'test #comment', /* 3 */ 'test2 # comment',
-              /* 4 */ 'test2 # comment',
-            ])
-            .withSyntaxFactory(() => syntax);
+            .withSyntaxFactory(() => syntax)
+            .withCommentLineChecker(commentChecker);
           // act
           const actual = context.analyze();
           // assert
@@ -171,6 +185,8 @@ export class TestContext {
 
   private syntaxFactory: SyntaxFactory = new SyntaxFactoryStub().get();
 
+  private commentLineChecker: CommentLineChecker = new CommentLineCheckerStub().get();
+
   public withLines(lines: readonly string[]): this {
     this.codeLines = createCodeLines(lines);
     return this;
@@ -186,11 +202,17 @@ export class TestContext {
     return this;
   }
 
-  public analyze() {
+  public withCommentLineChecker(commentLineChecker: CommentLineChecker): this {
+    this.commentLineChecker = commentLineChecker;
+    return this;
+  }
+
+  public analyze(): ReturnType<DuplicateLinesAnalyzer> {
     return analyzeDuplicateLines(
       this.codeLines,
       this.language,
       this.syntaxFactory,
+      this.commentLineChecker,
     );
   }
 }

@@ -2,6 +2,7 @@ import { CodeValidationRule } from './CodeValidationRule';
 import { analyzeDuplicateLines } from './Analyzers/AnalyzeDuplicateLines';
 import { analyzeEmptyLines } from './Analyzers/AnalyzeEmptyLines';
 import { analyzeTooLongLines } from './Analyzers/AnalyzeTooLongLines';
+import { analyzeCommentOnlyCode } from './Analyzers/AnalyzeCommentOnlyCode';
 import type { CodeValidationAnalyzer } from './Analyzers/CodeValidationAnalyzer';
 
 export interface ValidationRuleAnalyzerFactory {
@@ -26,6 +27,8 @@ function createValidationRule(rule: CodeValidationRule): CodeValidationAnalyzer 
       return analyzeDuplicateLines;
     case CodeValidationRule.NoTooLongLines:
       return analyzeTooLongLines;
+    case CodeValidationRule.NoCommentOnlyLines:
+      return analyzeCommentOnlyCode;
     default:
       throw new Error(`Unknown rule: ${rule}`);
   }

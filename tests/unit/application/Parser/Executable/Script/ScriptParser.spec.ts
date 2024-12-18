@@ -389,6 +389,7 @@ describe('ScriptParser', () => {
             CodeValidationRule.NoEmptyLines,
             CodeValidationRule.NoDuplicatedLines,
             CodeValidationRule.NoTooLongLines,
+            CodeValidationRule.NoCommentOnlyLines,
           ];
           const validator = new CodeValidatorStub();
           // act

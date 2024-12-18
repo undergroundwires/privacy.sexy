@@ -80,7 +80,7 @@ class FunctionCallScriptCompiler implements ScriptCompiler {
       }
       const calls = parseFunctionCalls(script.call);
       const compiledCode = this.utilities.callCompiler.compileFunctionCalls(calls, this.functions);
-      validateCompiledCode(
+      validateFinalCompiledCode(
         compiledCode,
         this.language,
         this.utilities.codeValidator,
@@ -95,7 +95,7 @@ class FunctionCallScriptCompiler implements ScriptCompiler {
   }
 }
 
-function validateCompiledCode(
+function validateFinalCompiledCode(
   compiledCode: CompiledCode,
   language: ScriptingLanguage,
   validate: CodeValidator,
@@ -109,6 +109,7 @@ function validateCompiledCode(
           CodeValidationRule.NoEmptyLines,
           CodeValidationRule.NoTooLongLines,
           // Allow duplicated lines to enable calling same function multiple times
+          CodeValidationRule.NoCommentOnlyLines,
         ],
       ),
     );

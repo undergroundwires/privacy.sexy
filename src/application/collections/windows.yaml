@@ -40136,7 +40136,9 @@ functions:
                         Remove the registry key "{{ $keyPath }}"
                         {{ with $codeComment }}({{ . }}){{ end }}
                     revertCodeComment: >-
-                        Recreate the registry key "{{ $keyPath }}"
+                        {{ with $recreateOnRevert }}
+                            Recreate the registry key "{{ $keyPath }}"
+                        {{ end }}
             -
                 # Marked: refactor-with-variables
                 #   - Replacing SID is same as `CreateRegistryKey`
