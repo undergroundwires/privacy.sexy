@@ -2,6 +2,7 @@
   <div v-if="hasCode" class="container">
     <CodeRunButton class="code-button" />
     <CodeSaveButton class="code-button" />
+    <SaveSelectionButton class="code-button" />
     <CodeCopyButton class="code-button" />
   </div>
 </template>
@@ -14,12 +15,14 @@ import { injectKey } from '@/presentation/injectionSymbols';
 import CodeRunButton from './CodeRunButton.vue';
 import CodeCopyButton from './CodeCopyButton.vue';
 import CodeSaveButton from './Save/CodeSaveButton.vue';
+import SaveSelectionButton from './Save/SaveSelectionButton.vue';
 
 export default defineComponent({
   components: {
     CodeRunButton,
     CodeCopyButton,
     CodeSaveButton,
+    SaveSelectionButton,
   },
   setup() {
     const { currentCode } = injectKey((keys) => keys.useCurrentCode);
