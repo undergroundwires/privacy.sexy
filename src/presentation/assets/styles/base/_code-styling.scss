@@ -2,7 +2,6 @@
 @use "@/presentation/assets/styles/mixins" as *;
 @use "@/presentation/assets/styles/vite-path" as *;
 @use "@/presentation/assets/styles/typography" as *;
-@use 'sass:math';
 
 @mixin code-block() {
   pre {
@@ -26,13 +25,12 @@
   $color-background,
   $code-block-padding,
 ) {
-  $font-size-code: $font-size-relative-smaller; // Keep relative size to scale right with different text sizes around.
+  $font-size-code-in-percentage: $font-size-relative-smaller; // Keep relative size to scale right with different text sizes around.
   $border-radius: 2px; // Subtle rounding still maintaining sharp design.
 
   @include base-code {
     font-family: $font-family-monospace;
-    border-radius: $border-radius;
-    font-size: $font-size-code;
+    font-size: $font-size-code-in-percentage;
     color: $color-on-primary;
   }
 
@@ -40,12 +38,17 @@
     background: $color-background;
     word-break: break-all; // Enables inline code to wrap with the text, even for long single words (like registry paths), thus preventing overflow.
 
-    $font-size-code-in-decimal: math.div($font-size-code, 100%); // Converts percentage (e.g., 85%) to decimal (e.g., 0.85) for calculations.
-    $font-size-code-in-em: calc(1em * #{$font-size-code-in-decimal});
-    $vertical-padding: calc((1em - #{$font-size-code-in-em}) / 2);
-    $horizontal-padding: calc(#{$font-size-code-in-em} * 0.4);
-    padding: $vertical-padding $horizontal-padding;
+    $padding-x-max      : 8px;
+    $padding-x-desired  : 0.4em;
+    $padding-y-max      : 4px;
+    $padding-y-desired  : calculate-min-vertical-empty-space($font-size-code-in-percentage);
+    $padding-y-desired  : calc(calculate-min-vertical-empty-space($font-size-code-in-percentage) / 2);
+    $padding-y: min($padding-y-desired, $padding-y-max);
+    $padding-x: min($padding-x-desired, $padding-x-max);
+    padding: #{$padding-y} #{$padding-x};
+    display: inline-block; // Required for centering, otherwise contents align towards bottom with Y padding, causing overflows
   }
+
 
   @include code-block {
     background: $color-background;
@@ -53,4 +56,39 @@
     overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
     padding: $code-block-padding;
   }
+}
+
+@function convert-percentage-to-decimal-ratio($current-relative-font-size) {
+  @return calc($current-relative-font-size / 100%);
+}
+
+
+@function calculate-inline-parent-min-line-height(
+  $inline-child-relative-font-size-in-decimal,
+) {
+  $parent-line-height: calc(
+    1lh /* self height, height = 1 lh for inline element*/
+    /
+    #{$inline-child-relative-font-size-in-decimal} /* minimum possible font size of parent */
+  );
+  $parent-min-height: round(down, #{$parent-line-height}, 1px);
+  @return $parent-min-height;
+}
+
+@function calculate-vertical-empty-space($parent-min-line-height) {
+  $available-space: calc(
+    #{$parent-min-line-height} /* Parent should be able to show single line of text text */
+    -
+    1lh, /* self height, height = 1 lh for inline element*/
+  );
+  @return max(#{$available-space}, 0px); // Return 0px if there's no available space
+}
+
+@function calculate-min-vertical-empty-space(
+  $inline-element-relative-font-size-in-percentage,
+) {
+  $self-font-size-relative-in-decimal: convert-percentage-to-decimal-ratio($inline-element-relative-font-size-in-percentage);
+  $parent-minimum-height: calculate-inline-parent-min-line-height($self-font-size-relative-in-decimal);
+  $total-empty-space-y: calculate-vertical-empty-space($parent-minimum-height);
+  @return $total-empty-space-y;
 }
