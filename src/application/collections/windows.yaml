@@ -15642,8 +15642,8 @@ actions:
                                         parameters:
                                             # 0 = 'Disabled' (default), 1 = 'Enabled', 2 = 'AuditMode'
                                             property: DisableCoreServiceECSIntegration  # Status:   Get-MpPreference | Select-Object -Property DisableCoreServiceECSIntegration
-                                            value: "$False"     # Set:      Set-MpPreference -Force -DisableCoreServiceECSIntegration $False
-                                            default: "$True"    # Default:  0 (Disabled) | Remove-MpPreference -Force -DisableCoreServiceECSIntegration | Set-MpPreference -DisableCoreServiceECSIntegration "$True"
+                                            value: "$True"     # Set:      Set-MpPreference -Force -DisableCoreServiceECSIntegration $True
+                                            default: "$False"    # Default:  0 (Disabled) | Remove-MpPreference -Force -DisableCoreServiceECSIntegration | Set-MpPreference -DisableCoreServiceECSIntegration "$False"
                                     -
                                         function: SetRegistryValue
                                         parameters:
