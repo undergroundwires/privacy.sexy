@@ -16,6 +16,7 @@ export const IconNames = [
   'left-right',
   'file-arrow-down',
   'floppy-disk',
+  'floppy-disk-gear',
   'play',
   'lightbulb',
   'square-check',
