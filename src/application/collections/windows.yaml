@@ -7684,17 +7684,56 @@ actions:
                     -
                         name: Disable "Language" setting synchronization
                         recommend: standard
-                        docs:
-                            - https://winaero.com/turn-on-off-sync-settings-windows-10/
-                            - https://www.thewindowsclub.com/how-to-configure-windows-10-sync-settings-using-registry-editor
-                            - https://tuxicoman.jesuislibre.net/blog/wp-content/uploads/Windows10_Telemetrie_1709.pdf # from guide on confidentiality and privacy with Windows 10 distributed to the French police, previous version of guide: https://www.pmenier.net/dotclear/docext/win10/.Windows10-Presentation.pdf
+                        docs: |-
+                            This script disables the synchronization of language preferences and dictionary settings
+                            across Windows devices using a Microsoft account.
+
+                            By default, Windows syncs the following language-related data:
+
+                            - Language profiles [1]
+                            - Windows Display language [1] [2]
+                            - Custom dictionary [1] [2]
+
+                            Microsoft calls this data **language preferences and dictionary** [3].
+                            Windows 11 includes this in its **Windows Backup** feature [3].
+
+                            Disabling this synchronization prevents Windows from:
+
+                            - Collecting your typing and handwriting patterns [4]
+                            - Storing your language preferences in Microsoft servers [1]
+                            - Creating a cloud-based user dictionary [1] [2]
+
+                            This improves your privacy by storing language patterns and preferences only on your device, not in the cloud.
+                            This setting is recommended by organizations focused on privacy, including the French Ministry of the Interior [5].
+
+                            This may also improve system performance by:
+
+                            - Reducing background network activity
+                            - Decreasing cloud storage usage
+                            - Minimizing synchronization processes
+
+                            > **Caution:**
+                            > After disabling this feature, your language preferences and custom dictionary will not sync between your Windows devices.
+                            > You will need to set up these preferences separately on each device.
+
+                            ### Technical Details
+                            
+                            The script disables language synchronization by setting this Windows Registry value to `0`:
+                            `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language!Enabled` [2] [5] [6].
+
+                            [1]: https://web.archive.org/web/20241221115131/https://learn.microsoft.com/en-us/entra/identity/devices/enterprise-state-roaming-windows-settings-reference "Windows roaming settings reference - Microsoft Entra ID | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240718090201/https://www.tenforums.com/tutorials/4077-turn-off-sync-settings-microsoft-account-windows-10-a.html "Turn On or Off Sync Settings for Microsoft Account in Windows 10 | Tutorials | www.tenforums.com"
+                            [3]: https://support.microsoft.com/en-us/topic/your-microsoft-account-your-data-your-choices-7efd7da0-9683-45f3-9e32-9e9dc90b8ebb#ID0EJBBBBDBBF-button "Your Microsoft account, your data, your choices - Microsoft Support | support.microsoft.com"
+                            [4]: https://web.archive.org/web/20241221115023/https://www.windowsphoneinfo.com/threads/windows-10-inking-typing-personalization-toggle-ui-to-off-cmd.258461/ "Windows 10 - Inking & Typing personalization toggle UI to off cmd | www.windowsphoneinfo.com"
+                            [5]: https://web.archive.org/web/20240121230959/https://tuxicoman.jesuislibre.net/blog/wp-content/uploads/Windows10_Telemetrie_1709.pdf "Windows 10 - 1709 (RS3) - Télémétrie | tuxicoman.jesuislibre.net"
+                            [6]: https://web.archive.org/web/20241221115712/https://www.thewindowsclub.com/how-to-configure-windows-10-sync-settings-using-registry-editor "Configure Sync Settings using Registry Editor in Windows 11 | www.thewindowsclub.com"
                         call:
                             function: SetRegistryValue
                             parameters:
                                 keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language
                                 valueName: Enabled
                                 dataType: REG_DWORD
-                                data: "1"
+                                data: "0"
                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
     -
         category: Configure programs
