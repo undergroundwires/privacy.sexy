@@ -9,71 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: "Infrastructure: Checkout"
-        uses: actions/checkout@v4
-        with:
-          path: aws
-          repository: undergroundwires/aws-static-site-with-cd
-      -
-        name: "Infrastructure: Create AWS user profile & session name"
-        run: >-
-          bash "scripts/configure/create-user-profile.sh" \
-            --profile user \
-            --access-key-id ${{secrets.AWS_DEPLOYMENT_USER_ACCESS_KEY_ID}} \
-            --secret-access-key ${{secrets.AWS_DEPLOYMENT_USER_SECRET_ACCESS_KEY}} \
-            --region us-east-1 \
-          && \
-            echo "SESSION_NAME=${{github.actor}}-${{github.event_name}}-$(echo ${{github.sha}} | cut -c1-8)" >> $GITHUB_ENV
-        working-directory: aws
-      -
-        name: "Infrastructure: Deploy IAM stack"
-        run: >-
-          bash "scripts/deploy/deploy-stack.sh" \
-            --template-file stacks/iam-stack.yaml \
-            --stack-name privacysexy-iam-stack \
-            --capabilities CAPABILITY_IAM \
-            --parameter-overrides "WebStackName=privacysexy-web-stack DnsStackName=privacysexy-dns-stack \
-                                   CertificateStackName=privacysexy-cert-stack RootDomainName=privacy.sexy" \
-            --region us-east-1 --role-arn ${{secrets.AWS_IAM_STACK_DEPLOYMENT_ROLE_ARN}} \
-            --profile user --session ${{ env.SESSION_NAME }}
-        working-directory: aws
-      -
-        name: "Infrastructure: Deploy DNS stack"
-        run: >-
-          bash "scripts/deploy/deploy-stack.sh" \
-            --template-file stacks/dns-stack.yaml \
-            --stack-name privacysexy-dns-stack \
-            --parameter-overrides "RootDomainName=privacy.sexy" \
-            --region us-east-1 \
-            --role-arn ${{secrets.AWS_DNS_STACK_DEPLOYMENT_ROLE_ARN}} \
-            --profile user --session ${{ env.SESSION_NAME }}
-        working-directory: aws
-      -
-        name: "Infrastructure: Deploy certificate stack"
-        run: >-
-          bash "scripts/deploy/deploy-stack.sh" \
-            --template-file stacks/certificate-stack.yaml \
-            --stack-name privacysexy-cert-stack \
-            --capabilities CAPABILITY_IAM \
-            --parameter-overrides "IamStackName=privacysexy-iam-stack RootDomainName=privacy.sexy DnsStackName=privacysexy-dns-stack" \
-            --region us-east-1 \
-            --role-arn ${{secrets.AWS_CERTIFICATE_STACK_DEPLOYMENT_ROLE_ARN}} \
-            --profile user --session ${{ env.SESSION_NAME }}
-        working-directory: aws
-      -
-        name: "Infrastructure: Deploy web stack"
-        run: >-
-          bash "scripts/deploy/deploy-stack.sh" \
-            --template-file stacks/web-stack.yaml \
-            --stack-name privacysexy-web-stack \
-            --parameter-overrides "CertificateStackName=privacysexy-cert-stack DnsStackName=privacysexy-dns-stack \
-                                   RootDomainName=privacy.sexy UseDeepLinks=true" \
-            --capabilities CAPABILITY_IAM \
-            --region us-east-1 \
-            --role-arn ${{secrets.AWS_WEB_STACK_DEPLOYMENT_ROLE_ARN}} \
-            --profile user --session ${{ env.SESSION_NAME }}
-        working-directory: aws
-      -
         name: "App: Checkout"
         uses: actions/checkout@v4
         with:
@@ -101,27 +36,32 @@ jobs:
         shell: bash # Required for correct argument passing (--)
         working-directory: app
       -
-        name: "App: Deploy to S3"
-        shell: bash
+        name: "Infrastructure: Checkout"
+        uses: actions/checkout@v4
+        with:
+          path: aws
+          repository: undergroundwires/aws-static-site-with-cd
+      -
+        name: "Infrastructure: Deploy website"
         run: |-
           declare web_output_dir
           if ! web_output_dir=$(cd app && node scripts/print-dist-dir.js --web); then
             echo 'Error: Could not determine distribution directory.'
             exit 1
           fi
-          bash "aws/scripts/deploy/deploy-to-s3.sh" \
-            --folder "${web_output_dir}" \
-            --web-stack-name privacysexy-web-stack --web-stack-s3-name-output-name S3BucketName \
-            --storage-class ONEZONE_IA \
-            --role-arn ${{secrets.AWS_S3_SITE_DEPLOYMENT_ROLE_ARN}} \
-            --region us-east-1 \
-            --profile user --session ${{ env.SESSION_NAME }}
-      -
-        name: "App: Invalidate CloudFront cache"
-        run: >-
-          bash "aws/scripts/deploy/invalidate-cloudfront-cache.sh" \
-            --paths "/*" \
-            --web-stack-name privacysexy-web-stack --web-stack-cloudfront-arn-output-name CloudFrontDistributionArn \
-            --role-arn ${{secrets.AWS_CLOUDFRONT_SITE_DEPLOYMENT_ROLE_ARN}} \
-            --region us-east-1 \
-            --profile user --session ${{ env.SESSION_NAME }}
+          bash "aws/scripts/deploy.sh" \
+            --access-key-id           '${{ secrets.AWS_DEPLOYMENT_USER_ACCESS_KEY_ID }}' \
+            --secret-access-key       '${{ secrets.AWS_DEPLOYMENT_USER_SECRET_ACCESS_KEY }}' \
+            --region                  'us-east-1' \
+            --root-domain             'privacy.sexy' \
+            --resource-prefix         'privacysexy' \
+            --site-dist-dir           "$web_output_dir" \
+            --session-name            "${{ github.actor }}-${{ github.event_name }}-$(echo '${{ github.sha }}' | cut -c1-8)" \
+            --role-arn-iam            '${{ secrets.AWS_IAM_STACK_DEPLOYMENT_ROLE_ARN }}' \
+            --role-arn-dns            '${{ secrets.AWS_DNS_STACK_DEPLOYMENT_ROLE_ARN }}' \
+            --role-arn-cert           '${{ secrets.AWS_CERTIFICATE_STACK_DEPLOYMENT_ROLE_ARN }}' \
+            --role-arn-web            '${{ secrets.AWS_WEB_STACK_DEPLOYMENT_ROLE_ARN }}' \
+            --role-arn-cf-lambda-sync '${{ secrets.AWS_CLOUDFRONT_LAMBDA_SYNC_ROLE_ARN }}' \
+            --role-arn-cf-invalidate  '${{ secrets.AWS_CLOUDFRONT_SITE_DEPLOYMENT_ROLE_ARN }}' \
+            --role-arn-s3-upload      '${{ secrets.AWS_S3_SITE_DEPLOYMENT_ROLE_ARN }}' \
+            --use-deep-links          'true'
