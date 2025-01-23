@@ -1097,6 +1097,81 @@ actions:
                             function: ResetServicePermissions
                             parameters:
                                 serviceId: SystemPolicySysAdminFiles
+            -
+                name: Remove Guest User # Apple capitalizes "guest user" as "Guest User"
+                recommend: strict
+                docs: |-
+                    This script removes the built-in Guest User account from macOS to prevent unauthorized access.
+
+                    The Guest User feature lets anyone access your Mac without requiring a password or user account [1].
+                    Guest users cannot log in remotely and have limited access to system settings [1].
+                    Guests have limited privileges and cannot change system settings or access encrypted disks (when FileVault is enabled) [1].
+                    Any files created by a Guest User are stored in a temporary folder, which is deleted when the guest logs out [1].
+                    Despite these limitations, the Guest account poses privacy and security risks.
+
+                    Removing the Guest User improves your privacy and security by:
+
+                    - Preventing unauthorized physical access to your Mac [2]
+                    - Eliminating a potential entry point for attackers
+                    - Restricting system access to only authenticated users [2] [3]
+
+                    The U.S. Department of Defense recommends disabling guest access as part of their security guidelines [2] [3]
+                    This aligns with the principle that only authorized individuals should have access to system components [3].
+
+                    Removing the Guest User eliminates temporary files and configurations, freeing up disk space.
+
+                    However, consider these benefits of keeping Guest User before removing it:
+
+                    - Lets others temporarily use your Mac without accessing your personal data [4]
+                    - Helps locate your Mac if lost through the **Find My** app when someone uses Safari as guest [1]
+                    - Creates an isolated environment where some guest activity is automatically deleted upon logout [1] [4]
+                    - Useful for organizations needing to provide temporary access [4]
+
+                    **Note:**
+                    This script only removes the Guest User account.
+                    For complete guest access removal (including sharing features), use additional related scripts.
+
+                    > **Caution:**
+                    > - Removing the Guest User removes the ability to let others use the device without exposing personal data
+                    > - This disables the ability to locate your Mac through **Find My** when someone uses Safari as guest
+
+                    ### Technical Details
+
+                    This script:
+
+                    - Uses `sysadminctl` with `-deleteUser Guest` to disable the guest account [2]
+                      `sysadminctl` is a macOS tool that controls user accounts [2].
+                    - Runs `fdesetup remove -user Guest` to remove Guest from the FileVault Boot Menu [5] [6] [7].
+                      `fdesetup` is a tool to manage FileVault and its users [8].
+                      `remove -user` option removes enabled user from FileVault [8].
+                    - Executes `dscl . delete /Users/Guest` to delete the Guest User directory [9].
+                      `dscl` is Directory Service command line utility built-in on macOS [9].
+
+                    [1]: https://archive.ph/2025.01.12-195712/https://support.apple.com/guide/mac-help/aside/glos8c20ac45/15.0/mac/15.0 "Guest user - Apple Support | support.apple.com"
+                    [2]: https://web.archive.org/web/20241125024856/https://ss64.com/mac/sysadminctl.html "bg Man Page - macOS - SS64.com | ss64.com"
+                    [3]: https://web.archive.org/web/20241125172444/https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230823 "The macOS system must enforce access restrictions. | www.stigviewer.com"
+                    [4]: https://web.archive.org/web/20241008165805/https://www.hexnode.com/mobile-device-management/help/script-to-enable-guest-user-on-mac/ "Script to enable Guest User on Mac | www.hexnode.com"
+                    [5]: https://archive.ph/2025.01.12-200100/https://gist.github.com/justinpawela/8a924f36f86bac2b563bf6832eefff25?permalink_comment_id=1893323%23gistcomment-1893323 "Comment | Disable macOS Guest user account script | gist.github.com"
+                    [6]: https://web.archive.org/web/20240301155136/https://www.techradar.com/how-to/macos-1013-high-sierra-problems-how-to-fix-them "macOS 10.13 High Sierra problems: how to fix them | TechRadar | www.techradar.com"
+                    [7]: https://archive.ph/2025.01.12-224816/https://stevenesser.com/posts/macos-cheatsheet/ "MacOS Cheatsheet | stevenesser.com"
+                    [8]: https://web.archive.org/web/20241125030134/https://www.manpagez.com/man/8/fdesetup/ "man page fdesetup section 8 | www.manpagez.com"
+                    [9]: https://web.archive.org/web/20250112224606/https://ss64.com/mac/dscl.html "dscl Man Page - macOS - SS64.com | ss64.com"
+                call:
+                    -
+                        function: RunIfCommandExists
+                        parameters:
+                            command: sysadminctl
+                            code: sudo sysadminctl -deleteUser Guest
+                    -
+                        function: RunIfCommandExists
+                        parameters:
+                            command: fdesetup
+                            code: sudo fdesetup remove -user Guest
+                    -
+                        function: RunIfCommandExists
+                        parameters:
+                            command: dscl
+                            code: sudo dscl . delete /Users/Guest
     -
         category: Configure programs
         children:
@@ -1595,22 +1670,298 @@ actions:
                         revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver 'askForPasswordDelay'
             -
                 category: Disable guest accounts
-                docs:
-                    - https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230823
-                    - https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81615
+                docs: |-
+                    These scripts control guest access on macOS to protect your system's security and privacy.
+                    
+                    Guest access lets anyone use your Mac without a password or account [1].
+                    This convenience creates security and privacy risks by allowing unauthorized system access [2] [3] [4].
+
+                    Guest users have limited privileges:
+
+                    - Access without authentication [1] [2]
+                    - Cannot modify system settings [1]
+                    - Cannot access encrypted disks when **FileVault** is enabled [1] [2]
+                    - Files are automatically deleted upon logout [1] [2]
+                    - Can use basic applications like Safari [1] [2]
+
+                    Guest access serves specific purposes:
+
+                    - Providing temporary access on shared devices [1] [2]
+                    - Enabling lost device location through the **Find My** app [1]
+                    - Allowing basic internet access without exposing personal data [1]
+
+                    Leaving guest access enabled creates these risks:
+
+                    - Unauthorized access to shared resources [3]
+                    - System reconnaissance opportunities [3]
+                    - Potential security vulnerabilities [3]
+                    - Access to network-shared files and folders [3]
+                    
+                    Restricting or disabling guest access reduces the risk of unauthorized logins and secures system resources from misuse [4].
+                    Security organizations, including the Defense Information Systems Agency (DISA), recommend restricting guest access [3] [4].
+
+                    Disabling guest access features may also improve system performance by:
+
+                    - Reducing network scanning for guest access
+                    - Decreasing authentication overhead
+                    - Minimizing unnecessary network traffic
+
+                    However, in some environments, a guest account can be beneficial or necessary.
+                    For example, providing temporary access on shared devices can help separate casual users from sensitive data.
+                    Enabling guests may also assist with the **Find My** app if your Mac is lost [3].
+
+                    > **Caution:** Disabling guest access features may impact legitimate use cases like
+                    > device recovery through **Find My** app and temporary access for trusted users.
+
+                    [1]: https://archive.ph/2025.01.12-195712/https://support.apple.com/guide/mac-help/aside/glos8c20ac45/15.0/mac/15.0 "Guest user - Apple Support | support.apple.com"
+                    [2]: https://web.archive.org/web/20241008165805/https://www.hexnode.com/mobile-device-management/help/script-to-enable-guest-user-on-mac/ "Script to enable Guest User on Mac | www.hexnode.com"
+                    [3]: https://web.archive.org/web/20241125172444/https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230823 "The macOS system must enforce access restrictions. | www.stigviewer.com"
+                    [4]: https://web.archive.org/web/20241125065056/https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81615 "The macOS system must not have a guest account. | www.stigviewer.com"
                 children:
                     -
-                        name: Disable guest sign-in from login screen
-                        code: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool NO
-                        revertCode: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool YES
+                        name: Disable guest account login
+                        recommend: strict # Disabled by default, but if user enabled it manually, there may be a need.
+                        docs: |-
+                            This script disables the macOS guest account login to enhance system security by blocking unauthorized access.
+                            
+                            A guest account lets anyone use your Mac temporarily without a password or account [1].
+                            By default, macOS disables guest login but allows limited guest access to sharing services [1] [2].
+                            When enabled, guest users:
+
+                            - Do not need a password to log in [1] [2] [3] [4]
+                            - Cannot modify system or user settings [3] [4]
+                            - Cannot access encrypted disks if FileVault is enabled [3] [4]
+                            - Have their files and activities automatically deleted upon logout [1] [3] [4]
+
+                            Although guest users cannot modify system settings or remotely access the system [1], the limited restrictions
+                            on guest access can still pose security risks [1] [2] [5].
+                            Attackers can use guest access to collect system information and potentially gain higher-level system privileges [1] [2].
+
+                            This script disables the guest account feature on macOS [5].
+                            It prevents anyone from accessing the system without a password [1] [2] [3] [4] [6].
+                            By restricting guest access, it reduces the chance of basic reconnaissance and potential privilege escalation [1] [2] [5] [7].
+
+                            The following security organizations recommend disabling guest access [1] [5] [7] [8]:
+
+                            - **Center for Internet Security (CIS)** [1]:
+                              A non-profit organization that develops globally recognized security benchmarks and best practices
+                            - **National Institute of Standards and Technology (NIST)** [8]:
+                              A U.S. government agency that develops cybersecurity standards and guidelines
+                            - **Defense Information Systems Agency (DISA)** [5] [7]:
+                              A U.S. Department of Defense combat support agency that provides cybersecurity guidance for military systems
+
+                            Disabling guest login blocks unauthenticated users from accessing the system and strengthens security controls [7].
+
+                            However, there are specific use cases where guest access may be beneficial:
+
+                            - Providing temporary access on shared devices [3]
+                            - Allowing internet access [4] while preventing access to private data [3]
+                            - Enabling the **Find My** app feature [4], which helps locate lost devices when someone uses
+                            Safari as a guest [3] [4]
+
+                            In some situations, having a guest account may be useful for temporary access, public kiosks, or assisting with
+                            **Find My**, which relies on guest network usage if your device is lost [3] [4].
+                            If you need those functions, consider keeping guest login enabled.
+
+                            For multi-user or kiosk scenarios (like libraries, schools, or reception computers), you may want to carefully
+                            configure a limited account instead of relying on the guest session.
+                            This approach helps maintain necessary restrictions while still permitting safe usage by multiple people.
+
+                            > **Caution:**
+                            > Disabling guest access prevents temporary users from accessing your Mac without a user account.
+                            > This may impact **Find My** app and other temporary-access scenarios.
+
+                            ### Technical Details
+
+                            The script:
+
+                            - Modifies `/Library/Preferences/com.apple.loginwindow!GuestEnabled` [1] [2] [3] [6] [8].
+                            - Executes the `sysadminctl` command with `-guestAccount off`.
+                              `sysadminctl` is a tool used to administer system user accounts [9].
+                              `-guestAccount Off` option disables the guest account [9].
+
+                            This script does not modify `/Library/Preferences/com.apple.loginwindow!Hide500Users` because this setting would
+                            affect both guest accounts and other system accounts [10] [11].
+
+                            **Note:** After running this script, the **Users & Groups** section in **System Preferences** may not
+                            correctly display the guest account status on older macOS versions [6].
+
+                            [1]: https://web.archive.org/web/20250123200241/https://www.tenable.com/audits/items/CIS_Apple_macOS_11_v1.1.0_L1.audit:153219403c9d852b574cc5ef59902392 "6.1.3 Disable guest account login | Tenable® | www.tenable.com"
+                            [2]: https://archive.ph/2025.01.12-201010/https://www.scaprepo.com/view.jsp?id=CCE-50057-9 "SecPod SCAP Repo, a repository of SCAP Content (CVE, CCE, CPE, CWE, OVAL and XCCDF) | www.scaprepo.com"
+                            [3]: https://web.archive.org/web/20241008165805/https://www.hexnode.com/mobile-device-management/help/script-to-enable-guest-user-on-mac/ "Script to enable Guest User on Mac | www.hexnode.com"
+                            [4]: https://archive.ph/2025.01.12-195712/https://support.apple.com/guide/mac-help/aside/glos8c20ac45/15.0/mac/15.0 "Guest user - Apple Support | support.apple.com"
+                            [5]: https://web.archive.org/web/20241125172444/https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230823 "The macOS system must enforce access restrictions. | www.stigviewer.com"
+                            [6]: https://archive.ph/2025.01.12-200100/https://gist.github.com/justinpawela/8a924f36f86bac2b563bf6832eefff25?permalink_comment_id=1893323%23gistcomment-1893323 "Comment | Disable macOS Guest user account script | gist.github.com"
+                            [7]: https://web.archive.org/web/20241125065056/https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81615 "The macOS system must not have a guest account. | www.stigviewer.com"
+                            [8]: https://web.archive.org/web/20240928201604/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-179.pdf "NIST Special Publication 800-179 (December 2016) | nvlpubs.nist.gov"
+                            [9]: https://web.archive.org/web/20241125024856/https://ss64.com/mac/sysadminctl.html "bg Man Page - macOS - SS64.com | ss64.com"
+                            [10]: https://web.archive.org/web/20200418000246/https://stackoverflow.com/questions/17543231/hidden-accounts-on-osx#answer-17552759 "macos - Hidden accounts on OSX - Stack Overflow | stackoverflow.com"
+                            [11]: https://archive.ph/2025.01.12-204235/https://github.com/privacysexy-forks/atomic-red-team/blob/master/atomics/T1564.002/T1564.002.md "atomic-red-team/atomics/T1564.002/T1564.002.md at master · privacysexy-forks/atomic-red-team · GitHub | github.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: sudo defaults write '/Library/Preferences/com.apple.loginwindow' 'GuestEnabled' -bool NO
+                                    revertCode: |- # Does not exist by default since macOS Sonoma 14.5
+                                        sudo defaults delete '/Library/Preferences/com.apple.loginwindow' 'GuestEnabled'
+                            -
+                                function: RunIfCommandExists
+                                parameters:
+                                    command: sysadminctl
+                                    code: sudo sysadminctl -guestAccount off
+                                    # Do not set `on` revert as this is not the default OS state.
                     -
-                        name: Disable guest access to file shares over AF
-                        code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool NO
-                        revertCode: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool YES
+                        name: Disable guest file sharing over SMB
+                        recommend: strict
+                        docs: |-
+                            This script prevents anonymous (guest) users from accessing files shared over the SMB protocol.
+
+                            By default, macOS allows guest users to access shared folders without authentication [1] [2].
+
+                            macOS allows users to share entire systems or specific folders with others on a network [3].
+                            This script impacts only SMB sharing [4], meaning that it has no impact on other file sharing alternatives.
+                            SMB (Server Message Block) is a network system that allows computers to share files [4] [5] [6].
+                            It is commonly used to share files between Mac and Windows computers [7].
+
+                            The Guest User feature in macOS lets people temporarily access a Mac without creating standard user accounts [8].
+                            Additionally, Guest User accounts on macOS:
+
+                            - Do not require a password to log in [8]
+                            - Are restricted from changing system settings [8]
+                            - Cannot access the Mac remotely [8]
+                            - Automatically delete all files when logging out [8]
+                            - Can only use Safari when FileVault encryption is enabled [8]
+                            - Enable Mac location through **Find My** app if lost [8]
+
+                            Disabling SMB guest sharing blocks unauthorized access to shared folders.
+                            This improves your security and privacy by preventing unauthorized users from:
+
+                            - Accessing your shared files and folders [4] [9]
+                            - Performing network reconnaissance [4]
+                            - Potentially exploiting system vulnerabilities for privilege escalation [4]
+
+                            This security measure is recommended by major security organizations:
+
+                            - NIST (National Institute of Standards and Technology) - The official US government cybersecurity standards agency [9]
+                            - Center for Internet Security (CIS) - A leading nonprofit organization that creates security guidelines used worldwide [4]
+
+                            This script may also provide a performance benefit by reducing overhead for guest connections.
+
+                            > **Caution:**
+                            > After using this script, you must manually add user accounts for anyone who needs to access your shared files [3].
+
+                            ### Technical Details
+
+                            The script:
+
+                            - Configures the system preference for guest access
+                              (`/Library/Preferences/SystemConfiguration/com.apple.smb.server!AllowGuestAccess`) [4] [9]
+                            - Disables SMB guest access using the `sysadminctl` with `-smbGuestAccess off` option [10]
+                              `sysadminctl` is a tool used to administer system user accounts [10].
+
+                            [1]: https://web.archive.org/web/20250123200241/https://www.tenable.com/audits/items/CIS_Apple_macOS_11_v1.1.0_L1.audit:153219403c9d852b574cc5ef59902392 "6.1.3 Disable guest account login | Tenable® | www.tenable.com"
+                            [2]: https://archive.ph/2025.01.12-201010/https://www.scaprepo.com/view.jsp?id=CCE-50057-9 "SecPod SCAP Repo, a repository of SCAP Content (CVE, CCE, CPE, CWE, OVAL and XCCDF) | www.scaprepo.com"
+                            [3]: https://web.archive.org/web/20240728041621/https://support.apple.com/en-gb/guide/mac-help/mh17131/mac "Set up file sharing on Mac | support.apple.com"
+                            [4]: https://web.archive.org/web/20250113201942/https://www.scaprepo.com/control.jsp?command=relation&relationId=CCE-50149-4 "SecPod SCAP Repo, a repository of SCAP Content (CVE, CCE, CPE, CWE, OVAL and XCCDF) | scaprepo.com"
+                            [5]: https://web.archive.org/web/20241125012504/https://learn.microsoft.com/en-gb/windows/win32/fileio/microsoft-smb-protocol-and-cifs-protocol-overview "Microsoft SMB Protocol and CIFS Protocol Overview | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20241226114905/https://learn.microsoft.com/en-us/windows-server/storage/file-server/file-server-smb-overview "Overview of file sharing using the SMB 3 protocol in Windows Server | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20250113191313/https://www.apple.com/server/docs/File_Services_TB_v10.4.pdf "File Services | High-performance workgroup and Internet file sharingfor Mac, Windows, and Linux clients. | www.apple.com"
+                            [8]: https://archive.ph/2025.01.12-195712/https://support.apple.com/guide/mac-help/aside/glos8c20ac45/15.0/mac/15.0 "Guest user - Apple Support | support.apple.com"
+                            [9]: https://web.archive.org/web/20240928201604/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-179.pdf "NIST Special Publication 800-179 (December 2016) | nvlpubs.nist.gov"
+                            [10]: https://web.archive.org/web/20241125024856/https://ss64.com/mac/sysadminctl.html "bg Man Page - macOS - SS64.com | ss64.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: sudo defaults write '/Library/Preferences/SystemConfiguration/com.apple.smb.server' 'AllowGuestAccess' -bool NO
+                                    revertCode: |- # Does not exist by default since macOS Sonoma 14.5
+                                        sudo defaults delete '/Library/Preferences/SystemConfiguration/com.apple.smb.server' 'AllowGuestAccess'
+                            -
+                                function: RunIfCommandExists
+                                parameters:
+                                    command: sysadminctl
+                                    code: sudo sysadminctl -smbGuestAccess off
+                                    revertCode: sudo sysadminctl -smbGuestAccess on
                     -
-                        name: Disable guest access to file shares over SMB
-                        code: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool NO
-                        revertCode: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool YES
+                        name: Disable guest file sharing over AFP
+                        recommend: strict
+                        docs: |-
+                            This script prevents anonymous users from accessing shared files through the Apple Filing Protocol (AFP).
+
+                            AFP (Apple Filing Protocol) is a file-sharing protocol designed for Macs to facilitate network file sharing [1].
+
+                            By default, macOS enables guest access to sharing services [2] [3].
+                            It allows you to share files and folders with others on your network [4].
+                            This configuration allows anyone to access specific shared folders without requiring permission [5] [6].
+
+                            This script improves your privacy by preventing unauthorized users from accessing your shared files through AFP sharing.
+                            It also protects your Mac from potential attacks where malicious users can store data in your system [5] or
+                            gain increased system access through guest sharing vulnerabilities [7].
+
+                            Guest access introduces multiple security risks:
+
+                            - Unauthorized users may access shared files [7]
+                            - Attackers may fill your hard drive by writing excessive data to guest-accessible folders,
+                              potentially causing system crashes [5]
+                            - The system may be vulnerable to reconnaissance and privilege escalation attacks [7]
+
+                            This script exclusively affects AFP file sharing [7] and does not impact:
+
+                            - File sharing through other protocols [1] [8]
+                            - Local guest user account functionality [9]
+                            - The **Find My app**'s ability to locate your Mac [9]
+                            - FileVault encryption [9]
+
+                            This security measure is recommended by:
+
+                            - The U.S. National Institute of Standards and Technology (NIST) [8]
+                            - The Center for Internet Security (CIS), that provides best practices for securing IT systems [7]
+
+                            After running this script, configure access via System Settings to share files with specific users.
+
+                            > **Caution:** After running this script, users on your network will require explicit permission to access files shared from your Mac.
+
+                            ### Technical Details
+
+                            The script:
+
+                            - Disables guest access in AFP server preferences:
+                              `/Library/Preferences/com.apple.AppleFileServer!guestAccess` [5] [6] [7] [8] [10].
+                            - Disables AFP guest access using the `sysadminctl` utility with the `-afpGuestAccess off` option [11]
+                              `sysadminctl` is a tool used to administer system user accounts [11].
+                            - Restarts the file sharing service (`AppleFileServer`) to apply changes [5] [10]
+
+                            [1]: https://web.archive.org/web/20250113191313/https://www.apple.com/server/docs/File_Services_TB_v10.4.pdf "File Services | High-performance workgroup and Internet file sharingfor Mac, Windows, and Linux clients. | www.apple.com"
+                            [2]: https://web.archive.org/web/20250123200241/https://www.tenable.com/audits/items/CIS_Apple_macOS_11_v1.1.0_L1.audit:153219403c9d852b574cc5ef59902392 "6.1.3 Disable guest account login | Tenable® | www.tenable.com"
+                            [3]: https://archive.ph/2025.01.12-201010/https://www.scaprepo.com/view.jsp?id=CCE-50057-9 "SecPod SCAP Repo, a repository of SCAP Content (CVE, CCE, CPE, CWE, OVAL and XCCDF) | www.scaprepo.com"
+                            [4]: https://web.archive.org/web/20240728041621/https://support.apple.com/en-gb/guide/mac-help/mh17131/mac "Set up file sharing on Mac | support.apple.com"
+                            [5]: https://web.archive.org/web/20240421151410/https://events.ccc.de/congress/2004/fahrplan/files/95-macosx-insecurity-paper.pdf "Practical Mac OS X Insecurity Security Concepts, Problems, and Exploits on Your Mac | cdn2.qualys.com/docs/release-notes | events.ccc.de"
+                            [6]: https://web.archive.org/web/20071102090442/http://www.princeton.edu:80/~psg/unix/osx/osxsecurity.html "OS X Security | www.princeton.edu"
+                            [7]: https://web.archive.org/web/20250113201942/https://www.scaprepo.com/control.jsp?command=relation&relationId=CCE-50149-4 "SecPod SCAP Repo, a repository of SCAP Content (CVE, CCE, CPE, CWE, OVAL and XCCDF) | scaprepo.com"
+                            [8]: https://web.archive.org/web/20240928201604/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-179.pdf "NIST Special Publication 800-179 (December 2016) | nvlpubs.nist.gov"
+                            [9]: https://archive.ph/2025.01.12-195712/https://support.apple.com/guide/mac-help/aside/glos8c20ac45/15.0/mac/15.0 "Guest user - Apple Support | support.apple.com"
+                            [10]: https://web.archive.org/web/20250123203912/https://cdn2.qualys.com/docs/release-notes/qualys-api-rti.pdf "Qualys API Release Notes | cdn2.qualys.com"
+                            [11]: https://web.archive.org/web/20241125024856/https://ss64.com/mac/sysadminctl.html "bg Man Page - macOS - SS64.com | ss64.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: sudo defaults write '/Library/Preferences/com.apple.AppleFileServer' 'guestAccess' -bool NO
+                                    revertCode: |- # Does not exist by default since macOS Sonoma 14.5
+                                        sudo defaults delete '/Library/Preferences/com.apple.AppleFileServer' 'guestAccess'
+                            -
+                                function: RunIfCommandExists
+                                parameters:
+                                    command: sysadminctl
+                                    code: sudo sysadminctl -afpGuestAccess off
+                                    revertCode: sudo sysadminctl -afpGuestAccess on
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    # Service needs restart to apply changes in both enable/disable cases
+                                    # sudo required to kill a process that's not owned by the user
+                                    code: sudo killall -HUP AppleFileServer
+                                    revertCode: sudo killall -HUP AppleFileServer
             -
                 category: Disable unauthorized connections
                 children:
