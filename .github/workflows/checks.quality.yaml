@@ -15,7 +15,7 @@ jobs:
           - npm run lint:md:relative-urls
           - npm run lint:md:external-urls
         os: [ macos, ubuntu, windows ]
-      fail-fast: false # Still interested to see results from other combinations
+      fail-fast: false # Still interested to see results from other commands
     steps:
       -
         name: Checkout

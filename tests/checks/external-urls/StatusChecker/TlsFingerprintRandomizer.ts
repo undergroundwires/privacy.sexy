@@ -11,7 +11,7 @@
  * implementation of Node.js.
  *
  * For more detailed information, visit:
- * - https://archive.today/2024.03.13-102042/https://httptoolkit.com/blog/tls-fingerprinting-node-js/
+ * - https://archive.ph/2024.03.13-102042/https://httptoolkit.com/blog/tls-fingerprinting-node-js/
  * - https://check.ja3.zone/ (To check your tool's or browser's fingerprint)
  * - https://github.com/lwthiker/curl-impersonate (A solution for curl)
  * - https://github.com/depicts/got-tls (Cipher manipulation support for Node.js)
@@ -49,7 +49,7 @@ export function getTlsContextInfo(): string {
  * matching known fingerprints that could identify the client as a Node.js application.
  *
  * For more details, refer to:
- * - https://archive.today/2024.03.13-102234/https://getsetfetch.org/blog/tls-fingerprint.html
+ * - https://archive.ph/2024.03.13-102234/https://getsetfetch.org/blog/tls-fingerprint.html
  */
 export function getShuffledCiphers(): readonly string[] {
   const nodeOrderedCipherList = constants.defaultCoreCipherList.split(':');

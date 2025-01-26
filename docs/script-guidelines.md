@@ -37,7 +37,7 @@ Key attributes of a good script:
 
 - Use credible and reputable sources for references.
 - Use archived links by using [archive.org](https://archive.org) or [archive.ph](https://archive.ph).
-  - Format archive.today links fully, for example: `https://archive.ph/YYYYMMDDhhmmss/https://privacy.sexy`.
+  - Format archive.today/archive.ph links fully, for example: `https://archive.ph/YYYYMMDDhhmmss/https://privacy.sexy`.
 - Explain the default behavior if the script is not executed.
 
 ## Shared functions

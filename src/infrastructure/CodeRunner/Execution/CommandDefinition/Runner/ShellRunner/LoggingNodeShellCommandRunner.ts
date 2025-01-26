@@ -15,7 +15,7 @@ export class LoggingNodeShellCommandRunner implements ShellCommandRunner {
     this.logger.info(`Executing command: ${command}`);
     return new Promise((resolve) => {
       this.systemOps.command.exec(command)
-        // https://archive.today/2024.01.19-004011/https://nodejs.org/api/child_process.html#child_process_event_exit
+        // https://archive.ph/2024.01.19-004011/https://nodejs.org/api/child_process.html#child_process_event_exit
         .on('exit', (
           code, // The exit code if the child exited on its own.
           signal, // The signal by which the child process was terminated.

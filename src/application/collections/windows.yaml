@@ -27545,7 +27545,7 @@ actions:
                                     [1]: https://web.archive.org/web/20241108211338/https://learn.microsoft.com/en-us/windows-hardware/drivers/install/updating-driver-files "Updating Driver Files - Windows drivers | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20241108210850/https://www.thewindowsclub.com/windows-keeps-installing-old-intel-graphics-driver "Windows keeps installing old Intel Graphics Driver | www.thewindowsclub.com"
                                     [3]: https://web.archive.org/web/20241108210848/https://djdallmann.github.io/GamingPCSetup/CONTENT/DOCS/POSTINSTALL/ "Post Installation Steps | GamingPCSetup | djdallmann.github.io"
-                                    [4]: https://archive.today/2024.11.08-211401/https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/SysWOW64/newdev.dll.strings "10_0_22622_601/C/Windows/SysWOW64/newdev.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 | github.com"
+                                    [4]: https://archive.ph/2024.11.08-211401/https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/SysWOW64/newdev.dll.strings "10_0_22622_601/C/Windows/SysWOW64/newdev.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · privacysexy-forks/10_0_22622_601 | github.com"
                                 call:
                                     -
                                         function: SetRegistryValue
