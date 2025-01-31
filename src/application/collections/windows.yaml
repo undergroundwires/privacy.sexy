@@ -2039,7 +2039,7 @@ actions:
                                         parameters:
                                             serviceName: wuauserv
                                             waitUntilStopped: 'true'
-                                            serviceRestartStateFile: '%APPDATA%\privacy.sexy-wuauserv' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                                            createStateFile: 'true'
                                     -
                                         function: ClearDirectoryContents
                                         parameters:
@@ -2048,7 +2048,7 @@ actions:
                                         function: StartService
                                         parameters:
                                             serviceName: wuauserv
-                                            serviceRestartStateFile: '%APPDATA%\privacy.sexy-wuauserv' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                                            useStateFile: 'true'
                             -
                                 name: Clear Common Language Runtime system logs
                                 recommend: standard
@@ -2125,7 +2125,7 @@ actions:
                                 parameters:
                                     serviceName: DiagTrack
                                     waitUntilStopped: 'true'
-                                    serviceRestartStateFile: '%APPDATA%\privacy.sexy-DiagTrack' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                                    createStateFile: 'true'
                             -
                                 function: DeleteFiles
                                 parameters:
@@ -2140,7 +2140,7 @@ actions:
                                 function: StartService
                                 parameters:
                                     serviceName: DiagTrack
-                                    serviceRestartStateFile: '%APPDATA%\privacy.sexy-DiagTrack' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                                    useStateFile: 'true'
                     -
                         name: Clear event logs in Event Viewer application
                         docs: https://serverfault.com/questions/407838/do-windows-events-from-the-windows-event-log-have-sensitive-information
@@ -2332,7 +2332,7 @@ actions:
                         parameters:
                             serviceName: DPS
                             waitUntilStopped: 'true'
-                            serviceRestartStateFile: '%APPDATA%\privacy.sexy-DPS' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                            createStateFile: 'true'
                     -
                         function: DeleteFiles
                         parameters:
@@ -2342,7 +2342,7 @@ actions:
                         function: StartService
                         parameters:
                             serviceName: DPS
-                            serviceRestartStateFile: '%APPDATA%\privacy.sexy-DPS' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                            useStateFile: 'true'
             -
                 name: Clear previous Windows installations
                 call:   
@@ -39321,7 +39321,7 @@ functions:
         name: StopService
         parameters:
             - name: serviceName
-            - name: serviceRestartStateFile     # This file is created only if the service is successfully stopped.
+            - name: createStateFile             # This file is created only if the service is successfully stopped.
               optional: true
             - name: waitUntilStopped            # Makes the script wait until the service is stopped
               optional: true
@@ -39331,7 +39331,7 @@ functions:
                 parameters:
                     codeComment: >-
                         Stop service: {{ $serviceName }}
-                        {{ with $serviceRestartStateFile }}(with state flag){{ end }}
+                        {{ with $createStateFile }}(with state file){{ end }}
                         {{ with $waitUntilStopped }}(wait until stopped){{ end }}
             -
                 function: RunPowerShell
@@ -39339,6 +39339,7 @@ functions:
                     # Marked: refactor-with-variables
                     #   - Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
                     #   - Creating the marker file is same as in script `CreatePlaceholderFile`
+                    #   - Get-StateFilePath is same: State file naming must be inconsistent with `StartService`
                     code: |-
                         $serviceName = '{{ $serviceName }}'
                         Write-Host "Stopping service: `"$serviceName`"."
@@ -39361,35 +39362,56 @@ functions:
                             throw "Failed to stop the service `"$serviceName`": $_"
                         }
                         Write-Host "Successfully stopped the service: `"$serviceName`"."
-                        {{ with $serviceRestartStateFile }}
-                            $stateFilePath = '{{ . }}'
-                            $expandedStateFilePath = [System.Environment]::ExpandEnvironmentVariables($stateFilePath)
-                            if (Test-Path -Path $expandedStateFilePath) {
-                                Write-Host "Skipping creating a service state file, it already exists: `"$expandedStateFilePath`"."
-                            } else {
-                                # Ensure the directory exists
-                                $parentDirectory = [System.IO.Path]::GetDirectoryName($expandedStateFilePath)
+                        {{ with $createStateFile }}
+                            function Get-StateFilePath($BaseName, $Suffix) {
+                                $escapedBaseName = $BaseName.Split([IO.Path]::GetInvalidFileNameChars()) -Join '_'
+                                $uniqueFilename = $escapedBaseName, $Suffix -Join '-'
+                                $path = [IO.Path]::Combine( `
+                                    $env:APPDATA,           `
+                                    'privacy.sexy',         `
+                                    'state',                `
+                                    $uniqueFilename         `
+                                )
+                                return $path
+                            }
+                            function Get-UniqueStateFilePath($BaseName) {
+                                $suffix = New-Guid
+                                $path = Get-StateFilePath -BaseName $BaseName -Suffix $suffix
+                                if (Test-Path -Path $path) {
+                                    Write-Verbose "Path collision detected at: '$path'. Generating new path..."
+                                    return Get-UniqueStateFilePath $serviceName
+                                }
+                                return $path
+                            }
+                            function New-EmptyFile($Path) {
+                                $parentDirectory = [System.IO.Path]::GetDirectoryName($Path)
                                 if (-not (Test-Path $parentDirectory -PathType Container)) {
                                     try {
                                         New-Item -ItemType Directory -Path $parentDirectory -Force -ErrorAction Stop | Out-Null
                                     }  catch {
-                                        Write-Warning "Failed to create parent directory of service state file `"$parentDirectory`": $_"
+                                        Write-Warning "Failed to create parent directory of file `"$parentDirectory`": $_"
                                     }
                                 }
-                                # Create the state file
                                 try {
-                                    New-Item -ItemType File -Path $expandedStateFilePath -Force -ErrorAction Stop | Out-Null
-                                    Write-Host 'The service will be started again.'
+                                    New-Item -ItemType File -Path $Path -Force -ErrorAction Stop | Out-Null
+                                    return $true
                                 } catch {
-                                    Write-Warning "Failed to create service state file `"$expandedStateFilePath`": $_"
+                                    Write-Warning "Failed to create file `"$Path`": $_"
+                                    return $false
                                 }
+                            }
+                            $path = Get-UniqueStateFilePath $serviceName
+                            if (New-EmptyFile $path) {
+                                Write-Host 'Service will restart automatically.'
+                            } else {
+                                Write-Warning 'Manual restart required - please restart your computer.'
                             }
                         {{ end }}
     -
         name: StartService
         parameters:
             - name: serviceName
-            - name: serviceRestartStateFile     # Used for "check and delete": Starts the service only if file exists, always deletes the file.
+            - name: useStateFile    # Used for "check and delete": Starts the service only if file exists, always deletes the file.
               optional: true
         call:
             -
@@ -39397,27 +39419,42 @@ functions:
                 parameters:
                     codeComment: >-
                         Start service: {{ $serviceName }}
-                        {{ with $serviceRestartStateFile }}(with state flag){{ end }}
+                        {{ with $useStateFile }}(if state requires){{ end }}
             -
                 function: RunPowerShell
                 parameters:
                     # Marked: refactor-with-variables
                     #   - Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
                     #   - Removing the marker file is same as in script `CreatePlaceholderFile`
+                    #   - Get-StateFilePath is same: State file naming must be inconsistent with `StopService`
                     code: |-
                         $serviceName = '{{ $serviceName }}'
-                        {{ with $serviceRestartStateFile }}
-                            $stateFilePath = '{{ . }}'
-                            $expandedStateFilePath = [System.Environment]::ExpandEnvironmentVariables($stateFilePath)
-                            if (-not (Test-Path -Path $expandedStateFilePath)) {
-                                Write-Host "Skipping starting the service: It was not running before."
-                            } else {
+                        {{ with $useStateFile }}
+                           function Get-StateFilePath($BaseName, $Suffix) {
+                                $escapedBaseName = $BaseName.Split([IO.Path]::GetInvalidFileNameChars()) -Join '_'
+                                $uniqueFilename = $escapedBaseName, $Suffix -Join '-'
+                                $path = [IO.Path]::Combine( `
+                                    $env:APPDATA,           `
+                                    'privacy.sexy',         `
+                                    'state',                `
+                                    $uniqueFilename         `
+                                )
+                                return $path
+                            }
+                            $fileGlob = Get-StateFilePath -BaseName $serviceName -Suffix '*'
+                            $files = Get-ChildItem -Path "$fileGlob"
+                            if ($files.Count -gt 0) {
+                                $firstFilePath = $files[0].FullName
                                 try {
-                                    Remove-Item -Path $expandedStateFilePath -Force -ErrorAction Stop
+                                    Remove-Item -Path $firstFilePath -Force -ErrorAction Stop
                                     Write-Host 'The service is expected to be started.'
                                 } catch {
-                                    Write-Warning "Failed to delete the service state file `"$expandedStateFilePath`": $_"
+                                    Write-Warning "Failed to delete the service state file `"$firstFilePath`": $_"
                                 }
+                            }
+                            if ($files.Count -ne 1) { # Not the last file requiring restart
+                                Write-Host 'Skipping starting the service: It was not running before.'
+                                exit 0
                             }
                         {{ end }}
                         $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
