@@ -191,68 +191,7 @@ describe('ExpressionsCompiler', () => {
         );
       });
     });
-    describe('throws when expressions are invalid', () => {
-      describe('throws when expected argument is not provided but used in code', () => {
-        // arrange
-        const testCases = [
-          {
-            name: 'empty parameters',
-            expressions: [
-              new ExpressionStub().withParameterNames(['parameter'], false),
-            ],
-            args: new FunctionCallArgumentCollectionStub(),
-            expectedError: 'parameter value(s) not provided for: "parameter" but used in code',
-          },
-          {
-            name: 'unnecessary parameter is provided',
-            expressions: [
-              new ExpressionStub().withParameterNames(['parameter'], false),
-            ],
-            args: new FunctionCallArgumentCollectionStub()
-              .withArgument('unnecessaryParameter', 'unnecessaryValue'),
-            expectedError: 'parameter value(s) not provided for: "parameter" but used in code',
-          },
-          {
-            name: 'multiple values are not provided',
-            expressions: [
-              new ExpressionStub().withParameterNames(['parameter1'], false),
-              new ExpressionStub().withParameterNames(['parameter2', 'parameter3'], false),
-            ],
-            args: new FunctionCallArgumentCollectionStub(),
-            expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2", "parameter3" but used in code',
-          },
-          {
-            name: 'some values are provided',
-            expressions: [
-              new ExpressionStub().withParameterNames(['parameter1'], false),
-              new ExpressionStub().withParameterNames(['parameter2', 'parameter3'], false),
-            ],
-            args: new FunctionCallArgumentCollectionStub()
-              .withArgument('parameter2', 'value'),
-            expectedError: 'parameter value(s) not provided for: "parameter1", "parameter3" but used in code',
-          },
-          {
-            name: 'parameter names are not repeated in error message',
-            expressions: [
-              new ExpressionStub().withParameterNames(['parameter1', 'parameter1', 'parameter2', 'parameter2'], false),
-            ],
-            args: new FunctionCallArgumentCollectionStub(),
-            expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2" but used in code',
-          },
-        ];
-        for (const testCase of testCases) {
-          it(testCase.name, () => {
-            const code = 'non-important-code';
-            const expressionParserMock = new ExpressionParserStub()
-              .withResult(code, testCase.expressions);
-            const sut = new SystemUnderTest(expressionParserMock);
-            // act
-            const act = () => sut.compileExpressions(code, testCase.args);
-            // assert
-            expect(act).to.throw(testCase.expectedError);
-          });
-        }
-      });
+    describe('validation', () => {
       describe('throws when expression positions are unexpected', () => {
         // arrange
         const code = 'c'.repeat(30);

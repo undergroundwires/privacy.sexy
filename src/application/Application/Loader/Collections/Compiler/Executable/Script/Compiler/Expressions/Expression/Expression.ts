@@ -5,6 +5,7 @@ import { ExpressionPosition } from '@/application/Application/Loader/Collections
 import type { IReadOnlyFunctionCallArgumentCollection } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import type { IReadOnlyFunctionParameterCollection } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 import type { IExpression } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/Expression/IExpression';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 export type ExpressionEvaluator = (context: IExpressionEvaluationContext) => string;
 
@@ -43,12 +44,17 @@ function validateThatAllRequiredParametersAreSatisfied(
     .all
     .filter((parameter) => !parameter.isOptional)
     .map((parameter) => parameter.name);
+    // .filter((name, index, array) => array.indexOf(name) === index); // Remove duplicates
   const missingParameterNames = requiredParameterNames
     .filter((parameterName) => !args.hasArgument(parameterName));
   if (missingParameterNames.length) {
-    throw new Error(
-      `argument values are provided for required parameters: "${missingParameterNames.join('", "')}"`,
-    );
+    throw new Error([
+      'Some parameters are used in code, but their values are not provided.',
+      `Used parameters missing values (${missingParameterNames.length}):`,
+      ...missingParameterNames
+        .map((parameterName, index) => `${index + 1}. ${parameterName}`)
+        .map((item) => indentText(item)),
+    ].join('\n'));
   }
 }
 

@@ -58,7 +58,7 @@ function compileExpressions(
   code: string,
   context: IExpressionEvaluationContext,
 ) {
-  ensureValidExpressions(expressions, code, context);
+  ensureValidExpressions(expressions, code);
   let compiledCode = '';
   const outerExpressions = expressions.filter(
     (expression) => expressions
@@ -88,28 +88,11 @@ function compileExpressions(
   return compiledCode;
 }
 
-function extractRequiredParameterNames(
-  expressions: readonly IExpression[],
-): string[] {
-  return expressions
-    .map((e) => e.parameters.all
-      .filter((p) => !p.isOptional)
-      .map((p) => p.name))
-    .filter(Boolean) // Remove empty or undefined
-    .flat()
-    .filter((name, index, array) => array.indexOf(name) === index); // Remove duplicates
-}
-
-function printList(list: readonly string[]): string {
-  return `"${list.join('", "')}"`;
-}
-
 function ensureValidExpressions(
   expressions: readonly IExpression[],
   code: string,
-  context: IExpressionEvaluationContext,
 ) {
-  ensureParamsUsedInCodeHasArgsProvided(expressions, context.args);
+  // Validating argument values is done by each expression themselves
   ensureExpressionsDoesNotExtendCodeLength(expressions, code);
   ensureNoExpressionsAtSamePosition(expressions);
   ensureNoInvalidIntersections(expressions);
@@ -134,21 +117,6 @@ function ensureNoExpressionsAtSamePosition(expressions: readonly IExpression[]) 
   );
   if (instructionsAtSamePosition.length > 0) {
     throw new Error(`Instructions at same position:\n${JSON.stringify(instructionsAtSamePosition)}`);
-  }
-}
-
-function ensureParamsUsedInCodeHasArgsProvided(
-  expressions: readonly IExpression[],
-  providedArgs: IReadOnlyFunctionCallArgumentCollection,
-): void {
-  const usedParameterNames = extractRequiredParameterNames(expressions);
-  if (!usedParameterNames.length) {
-    return;
-  }
-  const notProvidedParameters = usedParameterNames
-    .filter((parameterName) => !providedArgs.hasArgument(parameterName));
-  if (notProvidedParameters.length) {
-    throw new Error(`parameter value(s) not provided for: ${printList(notProvidedParameters)} but used in code`);
   }
 }
 

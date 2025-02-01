@@ -13,6 +13,8 @@ import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTest
 import type { IExpressionEvaluationContext } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 describe('Expression', () => {
   describe('ctor', () => {
@@ -58,42 +60,141 @@ describe('Expression', () => {
     });
   });
   describe('evaluate', () => {
-    describe('throws with invalid arguments', () => {
-      const testCases: readonly {
-        name: string,
-        context: IExpressionEvaluationContext,
-        expectedError: string,
-        sutBuilder?: (builder: ExpressionBuilder) => ExpressionBuilder,
-      }[] = [
-        {
-          name: 'throws when some of the required args are not provided',
-          sutBuilder: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b', 'c'], false),
-          context: new ExpressionEvaluationContextStub()
-            .withArgs(new FunctionCallArgumentCollectionStub().withArgument('b', 'provided')),
-          expectedError: 'argument values are provided for required parameters: "a", "c"',
-        },
-        {
-          name: 'throws when none of the required args are not provided',
-          sutBuilder: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b'], false),
-          context: new ExpressionEvaluationContextStub()
-            .withArgs(new FunctionCallArgumentCollectionStub().withArgument('c', 'unrelated')),
-          expectedError: 'argument values are provided for required parameters: "a", "b"',
-        },
-      ];
-      for (const testCase of testCases) {
-        it(testCase.name, () => {
-          // arrange
-          const sutBuilder = new ExpressionBuilder();
-          if (testCase.sutBuilder) {
-            testCase.sutBuilder(sutBuilder);
+    describe('validation', () => {
+      describe('throws when argument value is missing for required parameters', () => {
+        const testScenarios: readonly {
+          readonly name: string;
+          readonly context: IExpressionEvaluationContext;
+          readonly sutBuilder?: (builder: ExpressionBuilder) => ExpressionBuilder;
+          readonly assert: {
+            readonly expectedErrorParts: readonly string[];
+            readonly notExpectedErrorParts?: readonly string[];
           }
-          const sut = sutBuilder.build();
-          // act
-          const act = () => sut.evaluate(testCase.context);
-          // assert
-          expect(act).to.throw(testCase.expectedError);
+        }[] = [
+          {
+            name: 'when single required arg is not provided',
+            sutBuilder: (i: ExpressionBuilder) => i.withParameterNames([
+              'parameterA',
+            ], false),
+            context: new ExpressionEvaluationContextStub()
+              .withArgs(new FunctionCallArgumentCollectionStub()),
+            assert: {
+              expectedErrorParts: ['parameterA'],
+            },
+          },
+          {
+            name: 'when some of the required args are not provided',
+            sutBuilder: (i: ExpressionBuilder) => i.withParameterNames([
+              'parameterA', 'parameterB', 'parameterC',
+            ], false),
+            context: new ExpressionEvaluationContextStub()
+              .withArgs(
+                new FunctionCallArgumentCollectionStub()
+                  .withArgument('parameterB', 'provided'),
+              ),
+            assert: {
+              expectedErrorParts: ['parameterA', 'parameterC'],
+              notExpectedErrorParts: ['parameterB'],
+            },
+          },
+          {
+            name: 'when none of the required args are not provided',
+            sutBuilder: (i: ExpressionBuilder) => i.withParameterNames([
+              'parameterA', 'parameterB', 'parameterC',
+            ], false),
+            context: new ExpressionEvaluationContextStub()
+              .withArgs(new FunctionCallArgumentCollectionStub()),
+            assert: {
+              expectedErrorParts: ['parameterA', 'parameterB', 'parameterC'],
+            },
+          },
+          {
+            name: 'when none of the required args are not provided',
+            sutBuilder: (i: ExpressionBuilder) => i.withParameterNames([
+              'parameterA', 'parameterB',
+            ], false),
+            context: new ExpressionEvaluationContextStub()
+              .withArgs(new FunctionCallArgumentCollectionStub()),
+            assert: {
+              expectedErrorParts: ['parameterA', 'parameterB'],
+            },
+          },
+        ];
+        testScenarios.forEach((test) => {
+          it(test.name, () => {
+            // arrange
+            const commonExpectedErrorMessagePart = 'Used parameters missing values';
+            const sutBuilder = new ExpressionBuilder();
+            if (test.sutBuilder) {
+              test.sutBuilder(sutBuilder);
+            }
+            const sut = sutBuilder.build();
+            // act
+            const act = () => sut.evaluate(test.context);
+            // assert
+            const actualErrorMessage = collectExceptionMessage(act);
+            const allExpectedErrorParts = [
+              commonExpectedErrorMessagePart,
+              ...test.assert.expectedErrorParts,
+            ];
+            allExpectedErrorParts.forEach((part) => {
+              expect(actualErrorMessage).to.include(part, formatAssertionMessage([
+                'Error message contains unexpected content',
+                `Expected NOT to find: "${part}"`,
+                'Actual error message:',
+                indentText(actualErrorMessage),
+              ]));
+            });
+            test.assert.notExpectedErrorParts?.forEach((part) => {
+              expect(actualErrorMessage).to.not.include(part, formatAssertionMessage([
+                'Error message contains unexpected content',
+                `Expected NOT to find: "${part}"`,
+                'Actual error message:',
+                indentText(actualErrorMessage),
+              ]));
+            });
+          });
         });
-      }
+      });
+      it('deduplicates repeated parameter names in errors', () => {
+        // arrange
+        const parameterName = 'expectedParameterName';
+        const sut = new ExpressionBuilder()
+          .withParameterName(parameterName, false)
+          .withParameterName(parameterName, false)
+          .withParameterName(parameterName, false)
+          .build();
+        const context = new ExpressionEvaluationContextStub()
+          .withArgs(new FunctionCallArgumentCollectionStub());
+        // act
+        const act = () => sut.evaluate(context);
+        // assert
+        const actualErrorMessage = collectExceptionMessage(act);
+        const totalOccurrences = (actualErrorMessage.match(new RegExp(parameterName, 'g')) || []).length;
+        expect(totalOccurrences).to.equal(1, formatAssertionMessage([
+          'Parameter name should appear exactly once in error message',
+          `Found occurrences: ${totalOccurrences}`,
+          `Parameter name: "${parameterName}"`,
+          'Error message:',
+          indentText(actualErrorMessage),
+        ]));
+      });
+      it('accepts missing optional parameters', () => {
+        // arrange
+        const parameterName = 'optionalParameterName';
+        const sut = new ExpressionBuilder()
+          .withParameterName(parameterName, true)
+          .build();
+        const context = new ExpressionEvaluationContextStub()
+          .withArgs(new FunctionCallArgumentCollectionStub());
+        // act
+        const act = () => sut.evaluate(context);
+        // assert
+        expect(act).to.not.throw(formatAssertionMessage([
+          'Optional parameters should not cause validation errors when no argument value is provided',
+          `Parameter name: "${parameterName}"`,
+        ]));
+      });
     });
     it('returns result from evaluator', () => {
       // arrange
