@@ -1497,6 +1497,132 @@ actions:
                     defaults write com.apple.AdLib allowIdentifierForAdvertising -bool true
                     defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool true
                     sudo defaults delete com.apple.AdLib forceLimitAdTracking
+            -
+                name: Disable date and time in screenshot filenames
+                recommend: strict # Minimal privacy benefit, may be inconvenient
+                docs: |-
+                    This script disables including date and time in screenshot filenames on macOS.
+
+                    On macOS, you can take screenshots using:
+
+                    - **Shift ⇧ + Command ⌘ + 3** to capture whole screen [1]
+                    - **Shift ⇧ + Command ⌘ + 4** to capture a portion of the screen [1]
+                    - **Shift ⇧ + Command ⌘ + 4 + space bar** to capture a window or menu [1]
+                    - **Shift ⇧ + Command ⌘ + 5** to open Screenshot app (on macOS Mojave 10.14 or newer) [1]
+
+                    On macOS Mojave 10.14 or newer, you can use the **Screenshot** app to set a timer or choose save locations [1].
+                    However, this app does not allow filename configurations, which this script configures automatically.
+
+                    By default, screenshots save to your desktop with the name `Screenshot [date] at [time].png`.
+                    For example, testing on macOS Sequoia 15.3 (with English language and 24-hour time settings) confirms screenshots
+                    are named exactly: `Screenshot 2025-02-01 at 14.54.39.png`.
+                    However, there can be other variations:
+
+                    - Other system configurations may show AM/PM in time [2].
+                    - The word `Screenshot` may vary:
+                        - It can appear as `Screen Shot` [1] [3]
+                        - It can appear in system language (e.g., `Captura de pantalla` in Spanish) [4]
+
+                    The timestamp feature lets you sort screenshots by when they were taken.
+                    However, screenshot filenames with timestamps raise several privacy concerns:
+
+                    - **System Language & Region:**
+                        Your system language and regional characters in filenames can reveal your location and language preferences [4].
+                        This reveals your likely location and preferred language.
+                        This information makes you vulnerable to targeted phishing attempts, social engineering, or user profiling.
+                        Attackers could use this cultural context to craft more convincing phishing attempts or customize malware delivery
+                        methods based on your region.
+                    - **Time Format:**
+                        The format of timestamps (12 or 24-hour) reveals your timezone and regional settings [2].
+                        This exposes your timezone and regional settings, providing another data point that could be used for user profiling or
+                        targeted attacks.
+                    - **Usage Patterns:**
+                        Timestamps create a detailed log of when you use your computer, revealing your daily routines and active hours.
+                        This shows when you use your computer, revealing your daily schedule and work hours.
+                        In forensic analysis or investigations, these timestamps provide evidence of when specific content was viewed or actions were taken.
+                        For example, a series of screenshots with timestamps shows when you accessed websites, viewed documents, or used applications.
+                        This chronological trail is especially sensitive for screenshots containing personal, financial, or work-related information, as
+                        it creates a record of your activities that could compromise privacy or serve as digital evidence.
+                    - **Persistent Timestamps:**
+                        Even when sharing screenshots through services that remove metadata, the timestamp in the filename remains, revealing when the screenshot was taken.
+                        When sharing screenshots through cloud storage (like Dropbox, Google Drive), social media platforms (like Twitter, Facebook),
+                        or messaging apps (like WhatsApp, Telegram) that may strip EXIF metadata for privacy, the timestamp in the filename still
+                        reveals when the screenshot was taken since filename remains unchanged during upload.
+                        This makes all the above privacy risks persist when sharing files across any platform.
+
+                    After running this script, screenshots will only include a simple name without date and time.
+                    When you take multiple screenshots, they are numbered sequentially (1, 2, 3...) [3] [5].
+
+                    Examples (tested on macOS Sequoia 15.3):
+
+                    - `Screenshot.png`
+                    - `Screenshot 1.png`
+                    - `Screenshot 2.png`
+                    - ...
+
+                    File naming behavior:
+
+                    - The system automatically adds numbers to filenames to prevent duplicates [3] [5].
+                        For example, as you take multiple screenshots in sequence, they are automatically numbered as
+                        `Screenshot 1.png`, `Screenshot 2.png`, `Screenshot 3.png`, and so on to ensure each file has a unique name.
+                    - When a numbered file is deleted (e.g., `Screenshot 1.png`), the next screenshot uses
+                        the first available number rather than continuing the sequence
+                        (tested since macOS Sequoia 15.3).
+
+                    This change protects your privacy better, but you should know these limitations:
+
+                    - This script has no effect on the file creation date, which still reveals the date and time the screenshot was taken.
+                        It only affects the filenames.
+                    - These settings only work with macOS's built-in screenshot tool, not third-party screenshot apps.
+                    - You will need to rename files manually to keep them organized without timestamps.
+
+                    > **Caution:**
+                    > After running this script, you will lose the ability to easily sort screenshots by capture time.
+                    > Consider creating folders or adding descriptive names to organize screenshots since you can no longer sort them by capture time.
+
+                    ### Technical Details
+
+                    This script sets the system setting `com.apple.screencapture!include-date` to `false` (`0`) [2] [3] [4] [5] [6].
+                    By default, this setting is not configured [5] [6].
+
+                    The script restarts `SystemUIServer` (a system process) to apply changes [2] [3] [4] [6].
+                    This process:
+
+                    - Manages user interface elements in the menu bar and GUI [7] [8]
+                    - Runs continuously as a background process [7] [8]
+                    - Controls the Apple Menu Bar [8], Notifications [7], Control Center [7],
+                        Spotlight Search [7], Status Icons [7], and Accessibility [7]
+                    - Is owned by the logged-in user (not root) [8]
+                    - Automatically restarts if crashed or force quit [8]
+
+                    The script restarts `SystemUIServer` to ensure compatibility across all macOS versions,
+                    though testing shows this step isn't required on macOS Sequoia 15.3.
+                    Restarting `SystemUIServer` is a safe, routine operation that will not disrupt your work.
+                    It will not close any applications, lose any unsaved work, or affect your open windows.
+                    It simply refreshes the menu bar interface to apply the new screenshot settings.
+
+                    [1]: https://web.archive.org/web/20250201125948/https://support.apple.com/en-us/102646 "Take a screenshot on Mac - Apple Support | support.apple.com"
+                    [2]: https://web.archive.org/web/20250201131350/https://dys2hbvla0n8j.cloudfront.net/posts/nihptzqdnu-how-to-remove-timestamp-on-screenshots-in-macos "How to remove timestamp on screenshots in MacOS - Today I Learned | dys2hbvla0n8j.cloudfront.net"
+                    [3]: https://web.archive.org/web/20250201125037/https://www.idownloadblog.com/2015/04/15/how-to-remove-date-time-screenshots-mac/ "How to remove date and time from screenshot file names on Mac | www.idownloadblog.com"
+                    [4]: https://web.archive.org/web/20250201132721/https://platzi.com/tutoriales/1039-terminal-2016/92-toma-el-control-de-tus-capturas-de-pantalla-con-la-terminal/ "Toma el control de tus capturas de pantalla con la Terminal | platzi.com"
+                    [5]: https://web.archive.org/web/20250201125002/https://macos-defaults.com/screenshots/include-date.html "Include date | Screenshots | macOS defaults | macos-defaults.com"
+                    [6]: https://web.archive.org/web/20250201125012/https://yama-mac.com/en/change_the_screenshot_save_location_and_file_format/ "3 ways to change the destination of Mac screenshots | Mac Cheat Sheet | yama-mac.com"
+                    [7]: https://web.archive.org/web/20250201132826/https://iboysoft.com/wiki/systemuiserver.html "SystemUIServer: What It Is & Why It Takes High CPU | iboysoft.com"
+                    [8]: https://web.archive.org/web/20160313164204/http://guides.macrumors.com/SystemUIServer "SystemUIServer - Mac Guides | web.archive.org"
+                call:
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            code: defaults write 'com.apple.screencapture' 'include-date' -bool false
+                            revertCode: |-
+                                defaults delete 'com.apple.screencapture' 'include-date'
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            # Service needs restart to apply changes in both enable/disable cases
+                            # sudo required to kill a process that's not owned by the user
+                            code: killall SystemUIServer
+                            revertCode: killall SystemUIServer
     -
         category: Security improvements
         children:
