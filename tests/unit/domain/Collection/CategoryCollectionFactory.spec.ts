@@ -1,16 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import type { Category } from '@/domain/Executables/Category/Category';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadata';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { getEnumValues } from '@/application/Common/Enum';
-import { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import { createCategoryCollection } from '@/domain/Collection/CategoryCollectionFactory';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 
-describe('CategoryCollection', () => {
+describe('CategoryCollectionFactory', () => {
   describe('getScriptsByLevel', () => {
     it('filters out scripts without levels', () => {
       // arrange
@@ -136,16 +137,16 @@ describe('CategoryCollection', () => {
       expect(sut.os).to.deep.equal(expected);
     });
   });
-  describe('scriptingDefinition', () => {
-    it('sets scriptingDefinition as expected', () => {
+  describe('scriptMetadata', () => {
+    it('sets scriptMetadata as expected', () => {
       // arrange
-      const expected = getValidScriptingDefinition();
+      const expected = getValidScriptMetadata();
       // act
       const sut = new TestContext()
-        .withScripting(expected)
+        .withScriptMetadata(expected)
         .construct();
       // assert
-      expect(sut.scripting).to.deep.equal(expected);
+      expect(sut.scriptMetadata).to.deep.equal(expected);
     });
   });
   describe('getCategory', () => {
@@ -205,10 +206,10 @@ describe('CategoryCollection', () => {
   });
 });
 
-function getValidScriptingDefinition(): IScriptingDefinition {
+function getValidScriptMetadata(): ScriptMetadata {
   return {
     fileExtension: '.bat',
-    language: ScriptingLanguage.batchfile,
+    language: ScriptLanguage.batchfile,
     startCode: 'start',
     endCode: 'end',
   };
@@ -221,7 +222,7 @@ class TestContext {
     new CategoryStub(`[${TestContext.name}]-action-1`).withMandatoryScripts(),
   ];
 
-  private scriptingDefinition: IScriptingDefinition = getValidScriptingDefinition();
+  private scriptMetadata: ScriptMetadata = getValidScriptMetadata();
 
   public withOs(os: OperatingSystem): this {
     this.os = os;
@@ -233,16 +234,16 @@ class TestContext {
     return this;
   }
 
-  public withScripting(scriptingDefinition: IScriptingDefinition): this {
-    this.scriptingDefinition = scriptingDefinition;
+  public withScriptMetadata(scriptMetadata: ScriptMetadata): this {
+    this.scriptMetadata = scriptMetadata;
     return this;
   }
 
   public construct(): CategoryCollection {
-    return new CategoryCollection({
+    return createCategoryCollection({
       os: this.os,
       actions: this.actions,
-      scripting: this.scriptingDefinition,
+      scriptMetadata: this.scriptMetadata,
     });
   }
 }

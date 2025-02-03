@@ -3,10 +3,10 @@ import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 import { CategoryCollectionState } from '@/application/Context/State/CategoryCollectionState';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import { ScriptMetadataStub } from '@tests/unit/shared/Stubs/ScriptMetadataStub';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { ApplicationCodeStub } from '@tests/unit/shared/Stubs/ApplicationCodeStub';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { ScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadata';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import type { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
@@ -16,14 +16,14 @@ import { FilterContextStub } from '@tests/unit/shared/Stubs/FilterContextStub';
 
 describe('CategoryCollectionState', () => {
   describe('code', () => {
-    it('uses the correct scripting definition', () => {
+    it('uses the correct script metadata', () => {
       // arrange
-      const expectedScripting = new ScriptingDefinitionStub();
+      const expected = new ScriptMetadataStub();
       const collection = new CategoryCollectionStub()
-        .withScripting(expectedScripting);
-      let actualScripting: IScriptingDefinition | undefined;
-      const codeFactoryMock: CodeFactory = (_, scripting) => {
-        actualScripting = scripting;
+        .withScriptMetadata(expected);
+      let actual: ScriptMetadata | undefined;
+      const codeFactoryMock: CodeFactory = (_, scriptMetadata) => {
+        actual = scriptMetadata;
         return new ApplicationCodeStub();
       };
       // act
@@ -32,8 +32,8 @@ describe('CategoryCollectionState', () => {
         .withCodeFactory(codeFactoryMock)
         .build();
       // assert
-      expectExists(actualScripting);
-      expect(actualScripting).to.equal(expectedScripting);
+      expectExists(actual);
+      expect(actual).to.equal(expected);
     });
     it('initializes with the expected script selection', () => {
       // arrange
@@ -91,7 +91,7 @@ describe('CategoryCollectionState', () => {
     it('initializes with the provided collection', () => {
       // arrange
       const expectedCollection = new CategoryCollectionStub();
-      let actualCollection: ICategoryCollection | undefined;
+      let actualCollection: CategoryCollection | undefined;
       const selectionFactoryMock: SelectionFactory = (collection) => {
         actualCollection = collection;
         return new UserSelectionStub();
@@ -110,7 +110,7 @@ describe('CategoryCollectionState', () => {
     it('initializes with the provided collection for filtering', () => {
       // arrange
       const expectedCollection = new CategoryCollectionStub();
-      let actualCollection: ICategoryCollection | undefined;
+      let actualCollection: CategoryCollection | undefined;
       const filterFactoryMock: FilterFactory = (collection) => {
         actualCollection = collection;
         return new FilterContextStub();
@@ -128,7 +128,7 @@ describe('CategoryCollectionState', () => {
 });
 
 class CategoryCollectionStateBuilder {
-  private collection: ICategoryCollection = new CategoryCollectionStub();
+  private collection: CategoryCollection = new CategoryCollectionStub();
 
   private codeFactory: CodeFactory = () => new ApplicationCodeStub();
 
@@ -136,7 +136,7 @@ class CategoryCollectionStateBuilder {
 
   private filterFactory: FilterFactory = () => new FilterContextStub();
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }

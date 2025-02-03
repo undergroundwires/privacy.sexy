@@ -5,7 +5,7 @@ declare module '@/application/collections/*' {
 
   export interface CollectionData {
     readonly os: string;
-    readonly scripting: ScriptingDefinitionData;
+    readonly scripting: ScriptMetadataData;
     readonly actions: ReadonlyArray<CategoryData>;
     readonly functions?: ReadonlyArray<FunctionData>;
   }
@@ -71,7 +71,7 @@ declare module '@/application/collections/*' {
 
   export type ScriptData = CodeScriptData | CallScriptData;
 
-  export interface ScriptingDefinitionData {
+  export interface ScriptMetadataData {
     readonly language: string;
     readonly startCode: string;
     readonly endCode: string;

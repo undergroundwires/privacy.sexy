@@ -1,4 +1,4 @@
-import type { IApplication } from '@/domain/IApplication';
+import type { Application } from '@/domain/Application/Application';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 export async function dumpNames(): Promise<string> {
@@ -8,7 +8,7 @@ export async function dumpNames(): Promise<string> {
   return output;
 }
 
-function collectNames(application: IApplication): string[] {
+function collectNames(application: Application): string[] {
   const { collections } = application;
 
   const allNames = [

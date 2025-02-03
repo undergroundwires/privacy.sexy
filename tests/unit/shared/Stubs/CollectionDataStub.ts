@@ -1,8 +1,8 @@
 import type {
-  CategoryData, ScriptData, CollectionData, ScriptingDefinitionData, FunctionData,
+  CategoryData, ScriptData, CollectionData, ScriptMetadataData, FunctionData,
 } from '@/application/collections/';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { createScriptDataWithCode } from './ScriptDataStub';
 
 export class CollectionDataStub implements CollectionData {
@@ -10,7 +10,7 @@ export class CollectionDataStub implements CollectionData {
 
   public actions: readonly CategoryData[] = [getCategoryStub()];
 
-  public scripting: ScriptingDefinitionData = getTestDefinitionStub();
+  public scripting: ScriptMetadataData = getTestDefinitionStub();
 
   public functions?: ReadonlyArray<FunctionData>;
 
@@ -24,8 +24,8 @@ export class CollectionDataStub implements CollectionData {
     return this;
   }
 
-  public withScripting(scripting: ScriptingDefinitionData): this {
-    this.scripting = scripting;
+  public withScriptMetadata(scriptMetadata: ScriptMetadataData): this {
+    this.scripting = scriptMetadata;
     return this;
   }
 
@@ -45,9 +45,9 @@ export function getCategoryStub(scriptPrefix = 'testScript'): CategoryData {
   };
 }
 
-function getTestDefinitionStub(): ScriptingDefinitionData {
+function getTestDefinitionStub(): ScriptMetadataData {
   return {
-    language: ScriptingLanguage[ScriptingLanguage.batchfile],
+    language: ScriptLanguage[ScriptLanguage.batchfile],
     startCode: 'start',
     endCode: 'end',
   };

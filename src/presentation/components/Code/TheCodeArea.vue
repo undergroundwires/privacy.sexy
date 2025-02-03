@@ -19,7 +19,7 @@ import {
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import type { Script } from '@/domain/Executables/Script/Script';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
@@ -60,23 +60,23 @@ export default defineComponent({
       destroyEditor();
       editor = initializeAceEditor({
         editorContainerElementId: editorId,
-        language: getLanguage(newState.collection.scripting.language),
+        language: getLanguage(newState.collection.scriptMetadata.language),
       });
       const appCode = newState.code;
-      updateCode(appCode.current, newState.collection.scripting.language);
+      updateCode(appCode.current, newState.collection.scriptMetadata.language);
       events.unsubscribeAllAndRegister([
         appCode.changed.on((code) => handleCodeChange(code)),
       ]);
     }
 
-    function updateCode(code: string, language: ScriptingLanguage) {
+    function updateCode(code: string, language: ScriptLanguage) {
       const innerCode = code || getDefaultCode(language, projectDetails);
       editor?.setContent(innerCode);
     }
 
     function handleCodeChange(event: ICodeChangedEvent) {
       removeCurrentHighlighting();
-      updateCode(event.code, currentState.value.collection.scripting.language);
+      updateCode(event.code, currentState.value.collection.scriptMetadata.language);
       if (event.addedScripts?.length > 0) {
         reactToChanges(event, event.addedScripts);
       } else if (event.changedScripts?.length > 0) {
@@ -128,16 +128,16 @@ export default defineComponent({
   },
 });
 
-function getLanguage(language: ScriptingLanguage): SupportedSyntaxLanguage {
+function getLanguage(language: ScriptLanguage): SupportedSyntaxLanguage {
   switch (language) {
-    case ScriptingLanguage.batchfile: return 'batchfile';
-    case ScriptingLanguage.shellscript: return 'shellscript';
+    case ScriptLanguage.batchfile: return 'batchfile';
+    case ScriptLanguage.shellscript: return 'shellscript';
     default:
       throw new Error(`Unsupported language: ${language}`);
   }
 }
 
-function getDefaultCode(language: ScriptingLanguage, project: ProjectDetails): string {
+function getDefaultCode(language: ScriptLanguage, project: ProjectDetails): string {
   return new CodeBuilderFactory()
     .create(language)
     .appendCommentLine(`${project.name} — ${project.slogan}`)

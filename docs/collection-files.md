@@ -25,7 +25,7 @@ Related documentation:
   - ❗ A [Collection](#collection) must consist of at least one category.
 - `functions: [` ***[`Function`](#function)*** `, ... ]`
   - Optional for code reuse.
-- `scripting:` ***[`ScriptingDefinition`](#scriptingdefinition)*** **(required)**
+- `scripting:` ***[`ScriptMetadata`](#scriptmetadata)*** **(required)**
   - Sets the scripting language for all inline code used within the collection.
 
 ### Executables
@@ -159,14 +159,14 @@ Specifies a function call. It may require providing argument values to its param
   - 💡 Set it to `true` if you will use its argument value conditionally;
     - Or else set it to `false` for verbosity or do not define it as default value is `false` anyway.
 
-### `ScriptingDefinition`
+### `ScriptMetadata`
 
 Sets global scripting properties for a [Collection](#collection).
 
-#### `ScriptingDefinition` syntax
+#### `ScriptMetadata` syntax
 
 - `language:` *`string`* **(required)**
-  - 📖 See [`ScriptingLanguage.ts`](./../src/domain/ScriptingLanguage.ts) enumeration for allowed values.
+  - 📖 See [`ScriptLanguage.ts`](./../src/domain/ScriptMetadata/ScriptLanguage.ts) enumeration for allowed values.
 - `startCode:` *`string`* **(required)**
   - Prepends the given code to the generated script file.
   - 💡 You can use global variables such as `$homepage`, `$version`, `$date` via [parameter substitution](./templating.md#parameter-substitution) code syntax such as `Welcome to {{ $homepage }}!`.

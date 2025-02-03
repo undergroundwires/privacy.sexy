@@ -1,4 +1,4 @@
-import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { isCommentLine, type CommentLineChecker } from './Common/CommentLineChecker';
 import { createSyntax, type SyntaxFactory } from './Syntax/SyntaxFactory';
 import type { CodeLine, CodeValidationAnalyzer, InvalidCodeLine } from './CodeValidationAnalyzer';
@@ -15,7 +15,7 @@ export type CommentOnlyCodeAnalyzer = CodeValidationAnalyzer & {
 
 export const analyzeCommentOnlyCode: CommentOnlyCodeAnalyzer = (
   lines: readonly CodeLine[],
-  language: ScriptingLanguage,
+  language: ScriptLanguage,
   syntaxFactory: SyntaxFactory = createSyntax,
   commentLineChecker: CommentLineChecker = isCommentLine,
 ) => {

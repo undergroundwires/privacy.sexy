@@ -3,7 +3,7 @@ import type { IExpressionsCompiler } from '@/application/Parser/Executable/Scrip
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { substituteCode } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
+import { substituteCode } from '@/application/Parser/ScriptMetadata/CodeSubstituter';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import type { FunctionCallArgumentFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import { FunctionCallArgumentFactoryStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentFactoryStub';

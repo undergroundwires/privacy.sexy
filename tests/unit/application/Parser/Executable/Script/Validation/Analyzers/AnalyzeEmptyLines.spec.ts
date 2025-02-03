@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { analyzeEmptyLines } from '@/application/Parser/Executable/Script/Validation/Analyzers/AnalyzeEmptyLines';
 import type { CodeLine, InvalidCodeLine } from '@/application/Parser/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { createCodeLines } from './CreateCodeLines';
 import { expectSameInvalidCodeLines } from './ExpectSameInvalidCodeLines';
 
@@ -94,14 +94,14 @@ describe('AnalyzeEmptyLines', () => {
 export class TestContext {
   private codeLines: readonly CodeLine[] = createCodeLines(['test-code-line']);
 
-  private language = ScriptingLanguage.batchfile;
+  private language = ScriptLanguage.batchfile;
 
   public withLines(lines: readonly string[]): this {
     this.codeLines = createCodeLines(lines);
     return this;
   }
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }

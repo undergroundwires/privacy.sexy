@@ -1,5 +1,5 @@
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { ScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadata';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import type { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { CodeChangedEvent } from './Event/CodeChangedEvent';
@@ -24,7 +24,7 @@ export class ApplicationCode implements IApplicationCode {
 
   constructor(
     selection: ReadonlyScriptSelection,
-    private readonly scriptingDefinition: IScriptingDefinition,
+    private readonly scriptMetadata: ScriptMetadata,
     private readonly generator: IUserScriptGenerator = new UserScriptGenerator(),
   ) {
     this.state = this.generateCode(selection.selectedScripts);
@@ -36,7 +36,7 @@ export class ApplicationCode implements IApplicationCode {
   }
 
   private generateCode(scripts: readonly SelectedScript[]): CodeGenerationResult {
-    const code = this.generator.buildCode(scripts, this.scriptingDefinition);
+    const code = this.generator.buildCode(scripts, this.scriptMetadata);
     return {
       code: code.code,
       scriptPositions: code.scriptPositions,

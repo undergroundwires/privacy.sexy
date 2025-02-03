@@ -1,4 +1,4 @@
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { type NodeMetadata, NodeType } from '../NodeMetadata';
 import { ScriptReverter } from './ScriptReverter';
 import { CategoryReverter } from './CategoryReverter';
@@ -6,7 +6,7 @@ import type { Reverter } from './Reverter';
 
 export function getReverter(
   node: NodeMetadata,
-  collection: ICategoryCollection,
+  collection: CategoryCollection,
 ): Reverter {
   switch (node.type) {
     case NodeType.Category:

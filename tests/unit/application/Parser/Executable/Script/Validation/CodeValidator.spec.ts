@@ -4,7 +4,7 @@ import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTest
 import { indentText } from '@/application/Common/Text/IndentText';
 import type { CodeLine, InvalidCodeLine } from '@/application/Parser/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
 import { validateCode } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import type { ValidationRuleAnalyzerFactory } from '@/application/Parser/Executable/Script/Validation/ValidationRuleAnalyzerFactory';
 
@@ -91,7 +91,7 @@ describe('validateCode', () => {
   });
   it('analyzes lines for correct language', () => {
     // arrange
-    const expectedLanguage = ScriptingLanguage.batchfile;
+    const expectedLanguage = ScriptLanguage.batchfile;
     const analyzers = [
       new CodeValidationAnalyzerStub(),
       new CodeValidationAnalyzerStub(),
@@ -192,7 +192,7 @@ function constructExpectedValidationErrorMessage(
 class TestContext {
   private code = `[${TestContext.name}] code`;
 
-  private language: ScriptingLanguage = ScriptingLanguage.batchfile;
+  private language: ScriptLanguage = ScriptLanguage.batchfile;
 
   private rules: readonly CodeValidationRule[] = [CodeValidationRule.NoDuplicatedLines];
 

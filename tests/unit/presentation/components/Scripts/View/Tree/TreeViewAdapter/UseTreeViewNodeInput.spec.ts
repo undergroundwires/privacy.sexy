@@ -7,7 +7,7 @@ import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCo
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { convertToNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/TreeNodeMetadataConverter';
@@ -148,12 +148,12 @@ function mockConverter() {
 
 interface ParseSingleScenario {
   readonly givenId: ExecutableId;
-  readonly givenCollection: ICategoryCollection;
+  readonly givenCollection: CategoryCollection;
   readonly parseResult: NodeMetadata[];
 }
 
 interface ParseAllScenario {
-  readonly givenCollection: ICategoryCollection;
+  readonly givenCollection: CategoryCollection;
   readonly parseResult: NodeMetadata[];
 }
 

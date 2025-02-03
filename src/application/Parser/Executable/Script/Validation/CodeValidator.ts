@@ -1,5 +1,5 @@
 import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
-import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { createValidationAnalyzers, type ValidationRuleAnalyzerFactory } from './ValidationRuleAnalyzerFactory';
 import type { CodeLine, InvalidCodeLine } from './Analyzers/CodeValidationAnalyzer';
 import type { CodeValidationRule } from './CodeValidationRule';
@@ -7,7 +7,7 @@ import type { CodeValidationRule } from './CodeValidationRule';
 export interface CodeValidator {
   (
     code: string,
-    language: ScriptingLanguage,
+    language: ScriptLanguage,
     rules: readonly CodeValidationRule[],
     analyzerFactory?: ValidationRuleAnalyzerFactory,
   ): void;

@@ -9,7 +9,7 @@ import type { Script } from '@/domain/Executables/Script/Script';
 import { createEnumParser, type EnumParser } from '@/application/Common/Enum';
 import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
 import { createScript, type ScriptFactory } from '@/domain/Executables/Script/ScriptFactory';
-import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { parseDocs, type DocsParser } from '../DocumentationParser';
 import { ExecutableType } from '../Validation/ExecutableType';
@@ -84,7 +84,7 @@ function parseCode(
 function validateHardcodedCodeWithoutCalls(
   scriptCode: ScriptCode,
   validate: CodeValidator,
-  language: ScriptingLanguage,
+  language: ScriptLanguage,
 ) {
   filterEmptyStrings([scriptCode.execute, scriptCode.revert])
     .forEach(

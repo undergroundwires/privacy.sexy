@@ -2,7 +2,7 @@ import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryReposito
 import type { Script } from '@/domain/Executables/Script/Script';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import type { ReadonlyRepository, Repository } from '@/application/Repository/Repository';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { batchedDebounce } from '@/application/Common/Timing/BatchedDebounce';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { UserSelectedScript } from './UserSelectedScript';
@@ -22,7 +22,7 @@ export class DebouncedScriptSelection implements ScriptSelection {
   public readonly processChanges: ScriptSelection['processChanges'];
 
   constructor(
-    private readonly collection: ICategoryCollection,
+    private readonly collection: CategoryCollection,
     selectedScripts: ReadonlyArray<SelectedScript>,
     debounce: DebounceFunction = batchedDebounce,
   ) {

@@ -1,5 +1,5 @@
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { CategorySelectionChange, CategorySelectionChangeCommand } from './CategorySelectionChange';
 import type { CategorySelection } from './CategorySelection';
 import type { ScriptSelection } from '../Script/ScriptSelection';
@@ -8,7 +8,7 @@ import type { ScriptSelectionChange } from '../Script/ScriptSelectionChange';
 export class ScriptToCategorySelectionMapper implements CategorySelection {
   constructor(
     private readonly scriptSelection: ScriptSelection,
-    private readonly collection: ICategoryCollection,
+    private readonly collection: CategoryCollection,
   ) {
 
   }

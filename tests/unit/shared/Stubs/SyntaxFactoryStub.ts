@@ -1,10 +1,10 @@
 import type { LanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { SyntaxFactory } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/SyntaxFactory';
 import { LanguageSyntaxStub } from './LanguageSyntaxStub';
 
 interface PredeterminedSyntax {
-  readonly givenLanguage: ScriptingLanguage;
+  readonly givenLanguage: ScriptLanguage;
   readonly predeterminedSyntax: LanguageSyntax;
 }
 
@@ -23,7 +23,7 @@ export class SyntaxFactoryStub {
         return new LanguageSyntaxStub();
       }
       if (results.length > 1) {
-        throw new Error(`Logical error: More than single predetermined results for ${ScriptingLanguage[language]}`);
+        throw new Error(`Logical error: More than single predetermined results for ${ScriptLanguage[language]}`);
       }
       return results[0].predeterminedSyntax;
     };

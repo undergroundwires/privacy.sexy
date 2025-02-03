@@ -90,7 +90,7 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import { setCurrentRecommendationStatus, getCurrentRecommendationStatus } from './RecommendationStatusHandler';
@@ -110,7 +110,7 @@ export default defineComponent({
     } = injectKey((keys) => keys.useUserSelectionState);
     const { currentState } = injectKey((keys) => keys.useCollectionState);
 
-    const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
+    const currentCollection = computed<CategoryCollection>(() => currentState.value.collection);
 
     const currentRecommendationStatusType = computed<RecommendationStatusType>({
       get: () => getCurrentRecommendationStatus({

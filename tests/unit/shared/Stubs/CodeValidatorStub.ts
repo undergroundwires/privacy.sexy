@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
 import type { CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
@@ -26,7 +26,7 @@ export class CodeValidatorStub {
   }
 
   public assertValidatedLanguage(
-    language: ScriptingLanguage,
+    language: ScriptLanguage,
   ) {
     expectExpectedLanguage(this, language);
   }
@@ -73,14 +73,14 @@ function expectExpectedRules(
 
 function expectExpectedLanguage(
   validator: CodeValidatorStub,
-  expectedLanguage: ScriptingLanguage,
+  expectedLanguage: ScriptLanguage,
 ): void {
   for (const call of validator.callHistory) {
     const [,language] = call;
     expect(language).to.equal(expectedLanguage, formatAssertionMessage([
       'Mismatch in scripting language',
-      `Expected: ${ScriptingLanguage[expectedLanguage]}`,
-      `Actual: ${ScriptingLanguage[language]}`,
+      `Expected: ${ScriptLanguage[expectedLanguage]}`,
+      `Actual: ${ScriptLanguage[language]}`,
     ]));
   }
 }

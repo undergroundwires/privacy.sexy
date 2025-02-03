@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import { parseCategoryCollection, type CategoryCollectionFactory } from '@/application/Parser/CategoryCollectionParser';
+import { parseCategoryCollection } from '@/application/Parser/CategoryCollectionParser';
 import { type CategoryParser } from '@/application/Parser/Executable/CategoryParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
@@ -8,18 +8,19 @@ import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub'
 import { getCategoryStub, CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
 import { CategoryCollectionContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionContextStub';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
-import type { CollectionData, ScriptingDefinitionData, FunctionData } from '@/application/collections/';
+import type { CollectionData, ScriptMetadataData, FunctionData } from '@/application/collections/';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import type { NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
 import type { EnumParser } from '@/application/Common/Enum';
-import type { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
-import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
+import type { ScriptMetadataParser } from '@/application/Parser/ScriptMetadata/ScriptMetadataParser';
+import { ScriptMetadataStub } from '@tests/unit/shared/Stubs/ScriptMetadataStub';
 import type { CategoryCollectionContextFactory } from '@/application/Parser/Executable/CategoryCollectionContext';
-import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';
+import { ScriptMetadataDataStub } from '@tests/unit/shared/Stubs/ScriptMetadataDataStub';
 import { CategoryParserStub } from '@tests/unit/shared/Stubs/CategoryParserStub';
 import { createCategoryCollectionFactorySpy } from '@tests/unit/shared/Stubs/CategoryCollectionFactoryStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
+import type { CategoryCollectionFactory } from '@/domain/Collection/CategoryCollectionFactory';
 
 describe('CategoryCollectionParser', () => {
   describe('parseCategoryCollection', () => {
@@ -130,19 +131,19 @@ describe('CategoryCollectionParser', () => {
           });
           it('creates with correct language', () => {
             // arrange
-            const expectedLanguage = ScriptingLanguage.batchfile;
-            const scriptingDefinitionParser: ScriptingDefinitionParser = () => {
-              return new ScriptingDefinitionStub()
+            const expectedLanguage = ScriptLanguage.batchfile;
+            const scriptMetadataParser: ScriptMetadataParser = () => {
+              return new ScriptMetadataStub()
                 .withLanguage(expectedLanguage);
             };
-            let actualLanguage: ScriptingLanguage | undefined;
+            let actualLanguage: ScriptLanguage | undefined;
             const contextFactory: CategoryCollectionContextFactory = (_, language) => {
               actualLanguage = language;
               return new CategoryCollectionContextStub();
             };
             const context = new TestContext()
               .withCollectionContextFactory(contextFactory)
-              .withScriptDefinitionParser(scriptingDefinitionParser);
+              .withScriptDefinitionParser(scriptMetadataParser);
             // act
             context.parseCategoryCollection();
             // assert
@@ -151,39 +152,39 @@ describe('CategoryCollectionParser', () => {
         });
       });
     });
-    describe('scripting definition', () => {
+    describe('script metadata', () => {
       it('parses correctly', () => {
         // arrange
         const {
           categoryCollectionFactorySpy,
           getInitParameters,
         } = createCategoryCollectionFactorySpy();
-        const expected = new ScriptingDefinitionStub();
-        const scriptingDefinitionParser: ScriptingDefinitionParser = () => {
+        const expected = new ScriptMetadataStub();
+        const scriptMetadataParser: ScriptMetadataParser = () => {
           return expected;
         };
         const context = new TestContext()
           .withCategoryCollectionFactory(categoryCollectionFactorySpy)
-          .withScriptDefinitionParser(scriptingDefinitionParser);
+          .withScriptDefinitionParser(scriptMetadataParser);
         // act
         const actualCategoryCollection = context.parseCategoryCollection();
         // assert
-        const actualScripting = getInitParameters(actualCategoryCollection)?.scripting;
-        expect(expected).to.equal(actualScripting);
+        const actual = getInitParameters(actualCategoryCollection)?.scriptMetadata;
+        expect(expected).to.equal(actual);
       });
       it('parses expected data', () => {
         // arrange
-        const expectedData = new ScriptingDefinitionDataStub();
+        const expectedData = new ScriptMetadataDataStub();
         const collection = new CollectionDataStub()
-          .withScripting(expectedData);
-        let actualData: ScriptingDefinitionData | undefined;
-        const scriptingDefinitionParser
-        : ScriptingDefinitionParser = (data: ScriptingDefinitionData) => {
+          .withScriptMetadata(expectedData);
+        let actualData: ScriptMetadataData | undefined;
+        const scriptMetadataParser
+        : ScriptMetadataParser = (data: ScriptMetadataData) => {
           actualData = data;
-          return new ScriptingDefinitionStub();
+          return new ScriptMetadataStub();
         };
         const context = new TestContext()
-          .withScriptDefinitionParser(scriptingDefinitionParser)
+          .withScriptDefinitionParser(scriptMetadataParser)
           .withData(collection);
         // act
         context.parseCategoryCollection();
@@ -194,14 +195,14 @@ describe('CategoryCollectionParser', () => {
         // arrange
         const expectedProjectDetails = new ProjectDetailsStub();
         let actualDetails: ProjectDetails | undefined;
-        const scriptingDefinitionParser
-        : ScriptingDefinitionParser = (_, details: ProjectDetails) => {
+        const scriptMetadataParser
+        : ScriptMetadataParser = (_, details: ProjectDetails) => {
           actualDetails = details;
-          return new ScriptingDefinitionStub();
+          return new ScriptMetadataStub();
         };
         const context = new TestContext()
           .withProjectDetails(expectedProjectDetails)
-          .withScriptDefinitionParser(scriptingDefinitionParser);
+          .withScriptDefinitionParser(scriptMetadataParser);
         // act
         context.parseCategoryCollection();
         // assert
@@ -251,7 +252,7 @@ class TestContext {
       return new CategoryCollectionContextStub();
     };
 
-  private scriptDefinitionParser: ScriptingDefinitionParser = () => new ScriptingDefinitionStub();
+  private scriptDefinitionParser: ScriptMetadataParser = () => new ScriptMetadataStub();
 
   private categoryParser: CategoryParser = new CategoryParserStub().get();
 
@@ -283,7 +284,7 @@ class TestContext {
     return this;
   }
 
-  public withScriptDefinitionParser(scriptDefinitionParser: ScriptingDefinitionParser): this {
+  public withScriptDefinitionParser(scriptDefinitionParser: ScriptMetadataParser): this {
     this.scriptDefinitionParser = scriptDefinitionParser;
     return this;
   }
@@ -307,7 +308,7 @@ class TestContext {
       {
         osParser: this.osParser,
         validator: this.validator,
-        parseScriptingDefinition: this.scriptDefinitionParser,
+        parseScriptMetadata: this.scriptDefinitionParser,
         createContext: this.collectionContextFactory,
         parseCategory: this.categoryParser,
         createCategoryCollection: this.categoryCollectionFactory,

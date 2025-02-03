@@ -36,7 +36,7 @@ export default defineComponent({
       if (!codeRunner) { throw new Error('missing code runner'); }
       const { success, error } = await codeRunner.runCode(
         currentContext.state.code.current,
-        currentContext.state.collection.scripting.fileExtension,
+        currentContext.state.collection.scriptMetadata.fileExtension,
       );
       if (!success) {
         await handleCodeRunFailure(error);

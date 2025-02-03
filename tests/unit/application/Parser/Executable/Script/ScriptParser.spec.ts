@@ -28,7 +28,7 @@ import type { CategoryCollectionContext } from '@/application/Parser/Executable/
 import type { ObjectAssertion } from '@/application/Parser/Common/TypeValidator';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import type { ScriptFactory } from '@/domain/Executables/Script/ScriptFactory';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { itAsserts, itValidatesType, itValidatesName } from '../Validation/ExecutableValidationTester';
 import { generateDataValidationTestScenarios } from '../Validation/DataValidationTestScenarioGenerator';
@@ -400,7 +400,7 @@ describe('ScriptParser', () => {
           validator.assertValidatedRules(expectedRules);
         });
         it('validates with correct language', () => {
-          const expectedLanguage: ScriptingLanguage = ScriptingLanguage.batchfile;
+          const expectedLanguage: ScriptLanguage = ScriptLanguage.batchfile;
           const validator = new CodeValidatorStub();
           const collectionContext = new CategoryCollectionContextStub()
             .withLanguage(expectedLanguage);

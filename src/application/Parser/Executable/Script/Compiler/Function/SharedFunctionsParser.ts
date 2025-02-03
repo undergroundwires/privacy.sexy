@@ -6,7 +6,7 @@ import { validateCode, type CodeValidator } from '@/application/Parser/Executabl
 import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
-import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
@@ -21,14 +21,14 @@ import type { ISharedFunction } from './ISharedFunction';
 export interface SharedFunctionsParser {
   (
     functions: readonly FunctionData[],
-    language: ScriptingLanguage,
+    language: ScriptLanguage,
     utilities?: SharedFunctionsParsingUtilities,
   ): ISharedFunctionCollection;
 }
 
 export const parseSharedFunctions: SharedFunctionsParser = (
   functions: readonly FunctionData[],
-  language: ScriptingLanguage,
+  language: ScriptLanguage,
   utilities = DefaultUtilities,
 ) => {
   const collection = new SharedFunctionCollection();
@@ -62,7 +62,7 @@ interface SharedFunctionsParsingUtilities {
 
 function parseFunction(
   data: FunctionData,
-  language: ScriptingLanguage,
+  language: ScriptLanguage,
   utilities: SharedFunctionsParsingUtilities,
 ): ISharedFunction {
   const { name } = data;
@@ -78,7 +78,7 @@ function parseFunction(
 
 function validateNonEmptyCode(
   data: CodeFunctionData,
-  language: ScriptingLanguage,
+  language: ScriptLanguage,
   validate: CodeValidator,
 ): void {
   filterEmptyStrings([data.code, data.revertCode])

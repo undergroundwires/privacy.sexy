@@ -17,8 +17,8 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { type IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
+import { type ScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadata';
 import { ScriptFilename } from '@/application/CodeRunner/ScriptFilename';
 import { FileType } from '@/presentation/common/Dialog';
 import IconButton from '../IconButton.vue';
@@ -38,13 +38,15 @@ export default defineComponent({
     const { scriptDiagnosticsCollector } = injectKey((keys) => keys.useScriptDiagnosticsCollector);
 
     const areInstructionsVisible = ref(false);
-    const filename = computed<string>(() => buildFilename(currentState.value.collection.scripting));
+    const filename = computed<string>(
+      () => buildFilename(currentState.value.collection.scriptMetadata),
+    );
 
     async function saveCode() {
       const { success, error } = await dialog.saveFile(
         currentState.value.code.current,
         filename.value,
-        getType(currentState.value.collection.scripting.language),
+        getType(currentState.value.collection.scriptMetadata.language),
       );
       if (!success) {
         dialog.showError(...(await createScriptErrorDialog({
@@ -72,20 +74,20 @@ export default defineComponent({
   },
 });
 
-function getType(language: ScriptingLanguage) {
+function getType(language: ScriptLanguage) {
   switch (language) {
-    case ScriptingLanguage.batchfile:
+    case ScriptLanguage.batchfile:
       return FileType.BatchFile;
-    case ScriptingLanguage.shellscript:
+    case ScriptLanguage.shellscript:
       return FileType.ShellScript;
     default:
       throw new Error('unknown file type');
   }
 }
 
-function buildFilename(scripting: IScriptingDefinition) {
-  if (scripting.fileExtension) {
-    return `${ScriptFilename}.${scripting.fileExtension}`;
+function buildFilename(scriptMetadata: ScriptMetadata) {
+  if (scriptMetadata.fileExtension) {
+    return `${ScriptFilename}.${scriptMetadata.fileExtension}`;
   }
   return ScriptFilename;
 }

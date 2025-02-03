@@ -1,16 +1,16 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { ScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadata';
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { ScriptStub } from './ScriptStub';
-import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
+import { ScriptMetadataStub } from './ScriptMetadataStub';
 import { CategoryStub } from './CategoryStub';
 
-export class CategoryCollectionStub implements ICategoryCollection {
-  public scripting: IScriptingDefinition = new ScriptingDefinitionStub();
+export class CategoryCollectionStub implements CategoryCollection {
+  public scriptMetadata: ScriptMetadata = new ScriptMetadataStub();
 
   public os = OperatingSystem.Linux;
 
@@ -46,8 +46,8 @@ export class CategoryCollectionStub implements ICategoryCollection {
     return this;
   }
 
-  public withScripting(scripting: IScriptingDefinition): this {
-    this.scripting = scripting;
+  public withScriptMetadata(scripting: ScriptMetadata): this {
+    this.scriptMetadata = scripting;
     return this;
   }
 

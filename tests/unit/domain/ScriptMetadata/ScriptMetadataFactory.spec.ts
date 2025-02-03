@@ -1,20 +1,21 @@
 import { describe, it, expect } from 'vitest';
-import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { getEnumValues } from '@/application/Common/Enum';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import type { ScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadata';
+import { createScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadataFactory';
 
-describe('ScriptingDefinition', () => {
+describe('ScriptMetadataFactory', () => {
   describe('language', () => {
     describe('sets as expected', () => {
       // arrange
-      const expectedValues = getEnumValues(ScriptingLanguage);
+      const expectedValues = getEnumValues(ScriptLanguage);
       expectedValues.forEach((expected) => {
-        it(ScriptingLanguage[expected], () => {
+        it(ScriptLanguage[expected], () => {
           // act
           const sut = new ScriptingDefinitionBuilder()
             .withLanguage(expected)
-            .build();
+            .create();
           // assert
           expect(sut.language).to.equal(expected);
         });
@@ -22,12 +23,12 @@ describe('ScriptingDefinition', () => {
     });
     it('throws if unknown', () => {
       // arrange
-      const unknownValue: ScriptingLanguage = 666 as never;
+      const unknownValue: ScriptLanguage = 666 as never;
       const errorMessage = `unsupported language: ${unknownValue}`;
       // act
       const act = () => new ScriptingDefinitionBuilder()
         .withLanguage(unknownValue)
-        .build();
+        .create();
       // assert
       expect(act).to.throw(errorMessage);
     });
@@ -35,18 +36,18 @@ describe('ScriptingDefinition', () => {
   describe('fileExtension', () => {
     describe('returns expected for each language', () => {
       // arrange
-      const testCases = new Map<ScriptingLanguage, string>([
-        [ScriptingLanguage.batchfile, 'bat'],
-        [ScriptingLanguage.shellscript, 'sh'],
+      const testCases = new Map<ScriptLanguage, string>([
+        [ScriptLanguage.batchfile, 'bat'],
+        [ScriptLanguage.shellscript, 'sh'],
       ]);
       for (const test of testCases.entries()) {
         const language = test[0];
         const expectedExtension = test[1];
-        it(`${ScriptingLanguage[language]} has ${expectedExtension}`, () => {
+        it(`${ScriptLanguage[language]} has ${expectedExtension}`, () => {
           // act
           const sut = new ScriptingDefinitionBuilder()
             .withLanguage(language)
-            .build();
+            .create();
           // assert
           expect(sut.fileExtension, expectedExtension);
         });
@@ -60,7 +61,7 @@ describe('ScriptingDefinition', () => {
       // act
       const sut = new ScriptingDefinitionBuilder()
         .withStartCode(expected)
-        .build();
+        .create();
       // assert
       expect(sut.startCode).to.equal(expected);
     });
@@ -71,7 +72,7 @@ describe('ScriptingDefinition', () => {
         // act
         const act = () => new ScriptingDefinitionBuilder()
           .withStartCode(absentValue)
-          .build();
+          .create();
         // assert
         expect(act).to.throw(expectedError);
       }, { excludeNull: true, excludeUndefined: true });
@@ -84,7 +85,7 @@ describe('ScriptingDefinition', () => {
       // act
       const sut = new ScriptingDefinitionBuilder()
         .withEndCode(expected)
-        .build();
+        .create();
       // assert
       expect(sut.endCode).to.equal(expected);
     });
@@ -95,7 +96,7 @@ describe('ScriptingDefinition', () => {
         // act
         const act = () => new ScriptingDefinitionBuilder()
           .withEndCode(absentValue)
-          .build();
+          .create();
         // assert
         expect(act).to.throw(expectedError);
       }, { excludeNull: true, excludeUndefined: true });
@@ -104,13 +105,13 @@ describe('ScriptingDefinition', () => {
 });
 
 class ScriptingDefinitionBuilder {
-  private language = ScriptingLanguage.shellscript;
+  private language = ScriptLanguage.shellscript;
 
   private startCode = `# [${ScriptingDefinitionBuilder.name}]: start-code`;
 
   private endCode = `# [${ScriptingDefinitionBuilder.name}]: end-code`;
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }
@@ -125,7 +126,11 @@ class ScriptingDefinitionBuilder {
     return this;
   }
 
-  public build(): ScriptingDefinition {
-    return new ScriptingDefinition(this.language, this.startCode, this.endCode);
+  public create(): ScriptMetadata {
+    return createScriptMetadata({
+      language: this.language,
+      startCode: this.startCode,
+      endCode: this.endCode,
+    });
   }
 }

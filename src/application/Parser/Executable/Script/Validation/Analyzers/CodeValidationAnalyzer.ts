@@ -1,9 +1,9 @@
-import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 
 export interface CodeValidationAnalyzer {
   (
     lines: readonly CodeLine[],
-    language: ScriptingLanguage,
+    language: ScriptLanguage,
   ): InvalidCodeLine[];
 }
 

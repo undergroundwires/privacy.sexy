@@ -1,5 +1,5 @@
-import type { IApplication } from '@/domain/IApplication';
+import type { Application } from '@/domain/Application/Application';
 
 export interface IApplicationFactory {
-  getApp(): Promise<IApplication>;
+  getApp(): Promise<Application>;
 }

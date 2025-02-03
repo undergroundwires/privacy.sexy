@@ -1,6 +1,6 @@
 import type { IApplicationContext, IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
 import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import type { IApplication } from '@/domain/IApplication';
+import type { Application } from '@/domain/Application/Application';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStateStub } from './CategoryCollectionStateStub';
 import { ApplicationStub } from './ApplicationStub';
@@ -21,7 +21,7 @@ export class ApplicationContextStub implements IApplicationContext {
     this.dispatchContextChange(event);
   }
 
-  public app: IApplication = new ApplicationStub();
+  public app: Application = new ApplicationStub();
 
   public contextChanged = new EventSourceStub<IApplicationContextChangedEvent>();
 

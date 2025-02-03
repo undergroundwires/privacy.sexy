@@ -1,9 +1,9 @@
-import type { IApplication } from '@/domain/IApplication';
+import type { Application } from '@/domain/Application/Application';
 import type { TestExecutionDetailsLogger } from './TestExecutionDetailsLogger';
 
 interface UrlExtractionContext {
   readonly logger: TestExecutionDetailsLogger;
-  readonly application: IApplication;
+  readonly application: Application;
   readonly urlExclusionPatterns: readonly RegExp[];
 }
 
@@ -34,7 +34,7 @@ export function extractDocumentationUrls(
   return includedUrls;
 }
 
-function extractUrlsFromApplication(application: IApplication): string[] {
+function extractUrlsFromApplication(application: Application): string[] {
   return [ // Get all executables
     ...application.collections.flatMap((c) => c.getAllCategories()),
     ...application.collections.flatMap((c) => c.getAllScripts()),

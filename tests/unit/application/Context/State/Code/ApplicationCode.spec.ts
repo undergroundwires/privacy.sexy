@@ -4,9 +4,9 @@ import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/I
 import type { IUserScriptGenerator } from '@/application/Context/State/Code/Generation/IUserScriptGenerator';
 import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
 import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { ScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadata';
 import type { IUserScript } from '@/application/Context/State/Code/Generation/IUserScript';
-import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
+import { ScriptMetadataStub } from '@tests/unit/shared/Stubs/ScriptMetadataStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
@@ -19,7 +19,7 @@ describe('ApplicationCode', () => {
       const selectedScripts: readonly SelectedScript[] = [];
       const selection = new ScriptSelectionStub()
         .withSelectedScripts(selectedScripts);
-      const definition = new ScriptingDefinitionStub();
+      const definition = new ScriptMetadataStub();
       const sut = new ApplicationCode(selection, definition);
       // act
       const actual = sut.current;
@@ -32,13 +32,13 @@ describe('ApplicationCode', () => {
       const selectedScripts = scripts.map((script) => script.toSelectedScript());
       const selection = new ScriptSelectionStub()
         .withSelectedScripts(selectedScripts);
-      const definition = new ScriptingDefinitionStub();
+      const definition = new ScriptMetadataStub();
       const expected: IUserScript = {
         code: 'expected-code',
         scriptPositions: new Map(),
       };
       const generator = new UserScriptGeneratorMock()
-        .plan({ scripts: selection.selectedScripts, definition }, expected);
+        .plan({ scripts: selection.selectedScripts, scriptMetadata: definition }, expected);
       const sut = new ApplicationCode(selection, definition, generator);
       // act
       const actual = sut.current;
@@ -55,7 +55,7 @@ describe('ApplicationCode', () => {
         const selectedScripts = scripts.map((script) => script.toSelectedScript());
         const selection = new ScriptSelectionStub()
           .withSelectedScripts(selectedScripts);
-        const definition = new ScriptingDefinitionStub();
+        const definition = new ScriptMetadataStub();
         const sut = new ApplicationCode(selection, definition);
         sut.changed.on((code) => {
           signaled = code;
@@ -76,7 +76,7 @@ describe('ApplicationCode', () => {
         );
         const selection = new ScriptSelectionStub()
           .withSelectedScripts(selectedScripts);
-        const definition = new ScriptingDefinitionStub();
+        const definition = new ScriptMetadataStub();
         const sut = new ApplicationCode(selection, definition);
         sut.changed.on((code) => {
           signaled = code;
@@ -90,15 +90,15 @@ describe('ApplicationCode', () => {
       });
     });
     describe('calls UserScriptGenerator', () => {
-      it('sends scripting definition to generator', () => {
+      it('sends script metadata to generator', () => {
         // arrange
-        const expectedDefinition = new ScriptingDefinitionStub();
+        const expectedDefinition = new ScriptMetadataStub();
         const selection = new ScriptSelectionStub()
           .withSelectedScripts([]);
         const generatorMock: IUserScriptGenerator = {
           buildCode: (_, definition) => {
             if (definition !== expectedDefinition) {
-              throw new Error('Unexpected scripting definition');
+              throw new Error('Unexpected script metadata');
             }
             return {
               code: 'non-important-code',
@@ -115,7 +115,7 @@ describe('ApplicationCode', () => {
       });
       it('sends selected scripts to generator', () => {
         // arrange
-        const expectedDefinition = new ScriptingDefinitionStub();
+        const expectedDefinition = new ScriptMetadataStub();
         const scripts = [new ScriptStub('first'), new ScriptStub('second')];
         const selectedScripts = scripts.map((script) => script.toSelectedScript());
         const selection = new ScriptSelectionStub()
@@ -147,7 +147,7 @@ describe('ApplicationCode', () => {
         );
         const selection = new ScriptSelectionStub()
           .withSelectedScripts(selectedScripts);
-        const scriptingDefinition = new ScriptingDefinitionStub();
+        const scriptMetadata = new ScriptMetadataStub();
         const totalLines = 20;
         const expected = new Map<SelectedScript, ICodePosition>(
           [
@@ -163,7 +163,7 @@ describe('ApplicationCode', () => {
             };
           },
         };
-        const sut = new ApplicationCode(selection, scriptingDefinition, generatorMock);
+        const sut = new ApplicationCode(selection, scriptMetadata, generatorMock);
         sut.changed.on((code) => {
           signaled = code;
         });
@@ -182,7 +182,7 @@ describe('ApplicationCode', () => {
 
 interface ScriptGenerationParameters {
   readonly scripts: readonly SelectedScript[];
-  readonly definition: IScriptingDefinition;
+  readonly scriptMetadata: ScriptMetadata;
 }
 class UserScriptGeneratorMock implements IUserScriptGenerator {
   private prePlanned = new Map<ScriptGenerationParameters, IUserScript>();
@@ -197,11 +197,11 @@ class UserScriptGeneratorMock implements IUserScriptGenerator {
 
   public buildCode(
     selectedScripts: readonly SelectedScript[],
-    scriptingDefinition: IScriptingDefinition,
+    scriptMetadata: ScriptMetadata,
   ): IUserScript {
     for (const [parameters, result] of this.prePlanned) {
       if (selectedScripts === parameters.scripts
-        && scriptingDefinition === parameters.definition) {
+        && scriptMetadata === parameters.scriptMetadata) {
         return result;
       }
     }

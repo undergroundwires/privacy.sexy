@@ -2,7 +2,7 @@ import { describe, it } from 'vitest';
 import { analyzeCommentOnlyCode, type CommentOnlyCodeAnalyzer } from '@/application/Parser/Executable/Script/Validation/Analyzers/AnalyzeCommentOnlyCode';
 import type { CommentLineChecker } from '@/application/Parser/Executable/Script/Validation/Analyzers/Common/CommentLineChecker';
 import type { SyntaxFactory } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/SyntaxFactory';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { CodeLine, InvalidCodeLine } from '@/application/Parser/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
 import { CommentLineCheckerStub } from '@tests/unit/shared/Stubs/CommentLineCheckerStub';
 import { SyntaxFactoryStub } from '@tests/unit/shared/Stubs/SyntaxFactoryStub';
@@ -53,8 +53,8 @@ describe('AnalyzeCommentOnlyCode', () => {
     });
     it('uses correct language for syntax creation', () => {
       // arrange
-      const expectedLanguage = ScriptingLanguage.batchfile;
-      let actualLanguage: ScriptingLanguage | undefined;
+      const expectedLanguage = ScriptLanguage.batchfile;
+      let actualLanguage: ScriptLanguage | undefined;
       const factory: SyntaxFactory = (language) => {
         actualLanguage = language;
         return new LanguageSyntaxStub();
@@ -96,7 +96,7 @@ function setupScenario(
 export class TestContext {
   private codeLines: readonly CodeLine[] = createCodeLines(['test-code-line']);
 
-  private language = ScriptingLanguage.batchfile;
+  private language = ScriptLanguage.batchfile;
 
   private syntaxFactory: SyntaxFactory = new SyntaxFactoryStub().get();
 
@@ -107,7 +107,7 @@ export class TestContext {
     return this;
   }
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }

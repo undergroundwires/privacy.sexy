@@ -1,6 +1,6 @@
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import type { FilterStrategy } from '@/application/Context/State/Filter/Strategy/FilterStrategy';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { FilterResultStub } from './FilterResultStub';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
@@ -9,7 +9,7 @@ export class FilterStrategyStub
   implements FilterStrategy {
   private predeterminedResult: FilterResult = new FilterResultStub();
 
-  public applyFilter(filter: string, collection: ICategoryCollection): FilterResult {
+  public applyFilter(filter: string, collection: CategoryCollection): FilterResult {
     this.registerMethodCall({
       methodName: 'applyFilter',
       args: [filter, collection],

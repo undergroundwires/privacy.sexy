@@ -14,7 +14,7 @@ import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub'
 import type { CategoryCollectionParser } from '@/application/Parser/CategoryCollectionParser';
 import type { NonEmptyCollectionAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 
 describe('ApplicationParser', () => {
   describe('parseApplication', () => {
@@ -77,7 +77,7 @@ describe('ApplicationParser', () => {
         const testScenarios: {
           readonly description: string;
           readonly input: readonly CollectionData[];
-          readonly output: readonly ICategoryCollection[];
+          readonly output: readonly CategoryCollection[];
         }[] = [
           {
             description: 'single collection',

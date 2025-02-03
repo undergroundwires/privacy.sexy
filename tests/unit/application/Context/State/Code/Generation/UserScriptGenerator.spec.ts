@@ -3,7 +3,7 @@ import { UserScriptGenerator } from '@/application/Context/State/Code/Generation
 import type { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation/ICodeBuilderFactory';
 import type { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
+import { ScriptMetadataStub } from '@tests/unit/shared/Stubs/ScriptMetadataStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
@@ -12,7 +12,7 @@ import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { indentText } from '@/application/Common/Text/IndentText';
 
 describe('UserScriptGenerator', () => {
-  describe('scriptingDefinition', () => {
+  describe('scriptMetadata', () => {
     describe('startCode', () => {
       it('is prepended if not empty', () => {
         // arrange
@@ -21,7 +21,7 @@ describe('UserScriptGenerator', () => {
         const script = new ScriptStub('id')
           .withCode('code\nmulti-lined')
           .toSelectedScript();
-        const definition = new ScriptingDefinitionStub()
+        const definition = new ScriptMetadataStub()
           .withStartCode(startCode);
         const expectedStart = `${startCode}\n`;
         // act
@@ -38,7 +38,7 @@ describe('UserScriptGenerator', () => {
           const script = new ScriptStub('id')
             .withCode('code\nmulti-lined')
             .toSelectedScript();
-          const definition = new ScriptingDefinitionStub()
+          const definition = new ScriptMetadataStub()
             .withStartCode(absentValue);
           const expectedStart = codeBuilderStub
             .appendFunction(script.script.name, script.script.code.execute)
@@ -59,7 +59,7 @@ describe('UserScriptGenerator', () => {
         const script = new ScriptStub('id')
           .withCode('code\nmulti-lined')
           .toSelectedScript();
-        const definition = new ScriptingDefinitionStub()
+        const definition = new ScriptMetadataStub()
           .withEndCode(endCode);
         const expectedEnd = `${endCode}\n`;
         // act
@@ -79,7 +79,7 @@ describe('UserScriptGenerator', () => {
           const expectedEnd = codeBuilderStub
             .appendFunction(script.script.name, script.script.code.execute)
             .toString();
-          const definition = new ScriptingDefinitionStub()
+          const definition = new ScriptMetadataStub()
             .withEndCode(absentValue);
           // act
           const code = sut.buildCode([script], definition);
@@ -98,7 +98,7 @@ describe('UserScriptGenerator', () => {
       const scriptCode = 'REM nop';
       const script = new ScriptStub('id').withName(scriptName).withCode(scriptCode);
       const selectedScripts = [new SelectedScriptStub(script).withRevert(false)];
-      const definition = new ScriptingDefinitionStub();
+      const definition = new ScriptMetadataStub();
       // act
       const actual = sut.buildCode(selectedScripts, definition);
       // assert
@@ -118,7 +118,7 @@ describe('UserScriptGenerator', () => {
         .withRevertCode(scriptCode)
         .toSelectedScript()
         .withRevert(true);
-      const definition = new ScriptingDefinitionStub();
+      const definition = new ScriptMetadataStub();
       // act
       const actual = sut.buildCode([script], definition);
       // assert
@@ -134,7 +134,7 @@ describe('UserScriptGenerator', () => {
           .withRevertCode(emptyRevertCode)
           .toSelectedScript()
           .withRevert(true);
-        const definition = new ScriptingDefinitionStub();
+        const definition = new ScriptMetadataStub();
         // act
         const act = () => sut.buildCode([script], definition);
         // assert
@@ -147,7 +147,7 @@ describe('UserScriptGenerator', () => {
       // arrange
       const sut = new UserScriptGenerator();
       const selectedScripts: readonly SelectedScript[] = [];
-      const definition = new ScriptingDefinitionStub();
+      const definition = new ScriptMetadataStub();
       // act
       const actual = sut.buildCode(selectedScripts, definition);
       // assert
@@ -157,7 +157,7 @@ describe('UserScriptGenerator', () => {
       // arrange
       const totalStartCodeLines = 2;
       const totalFunctionNameLines = 4;
-      const definition = new ScriptingDefinitionStub()
+      const definition = new ScriptMetadataStub()
         .withStartCode('First line\nSecond line');
       describe('single script', () => {
         const testCases: readonly {

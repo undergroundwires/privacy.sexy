@@ -2,7 +2,7 @@ import { describe, it } from 'vitest';
 import { analyzeDuplicateLines, type DuplicateLinesAnalyzer } from '@/application/Parser/Executable/Script/Validation/Analyzers/AnalyzeDuplicateLines';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import type { CodeLine, InvalidCodeLine } from '@/application/Parser/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { SyntaxFactory } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/SyntaxFactory';
 import { SyntaxFactoryStub } from '@tests/unit/shared/Stubs/SyntaxFactoryStub';
 import type { CommentLineChecker } from '@/application/Parser/Executable/Script/Validation/Analyzers/Common/CommentLineChecker';
@@ -53,8 +53,8 @@ describe('AnalyzeDuplicateLines', () => {
     describe('syntax handling', () => {
       it('uses correct language for syntax creation', () => {
         // arrange
-        const expectedLanguage = ScriptingLanguage.batchfile;
-        let actualLanguage: ScriptingLanguage | undefined;
+        const expectedLanguage = ScriptLanguage.batchfile;
+        let actualLanguage: ScriptLanguage | undefined;
         const factory: SyntaxFactory = (language) => {
           actualLanguage = language;
           return new LanguageSyntaxStub();
@@ -181,7 +181,7 @@ function createExpectedDuplicateLineErrors(
 export class TestContext {
   private codeLines: readonly CodeLine[] = createCodeLines(['test-code-line']);
 
-  private language = ScriptingLanguage.batchfile;
+  private language = ScriptLanguage.batchfile;
 
   private syntaxFactory: SyntaxFactory = new SyntaxFactoryStub().get();
 
@@ -192,7 +192,7 @@ export class TestContext {
     return this;
   }
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }

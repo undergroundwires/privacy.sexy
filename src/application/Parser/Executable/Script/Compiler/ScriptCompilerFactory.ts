@@ -4,7 +4,7 @@ import { validateCode, type CodeValidator } from '@/application/Parser/Executabl
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { createScriptCode, type ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
-import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { FunctionCallSequenceCompiler } from './Function/Call/Compiler/FunctionCallSequenceCompiler';
 import { parseFunctionCalls } from './Function/Call/FunctionCallsParser';
@@ -50,13 +50,13 @@ const DefaultUtilities: ScriptCompilerUtilities = {
 
 interface CategoryCollectionDataContext {
   readonly functions: readonly FunctionData[];
-  readonly language: ScriptingLanguage;
+  readonly language: ScriptLanguage;
 }
 
 class FunctionCallScriptCompiler implements ScriptCompiler {
   private readonly functions: ISharedFunctionCollection;
 
-  private readonly language: ScriptingLanguage;
+  private readonly language: ScriptLanguage;
 
   constructor(
     categoryContext: CategoryCollectionDataContext,
@@ -97,7 +97,7 @@ class FunctionCallScriptCompiler implements ScriptCompiler {
 
 function validateFinalCompiledCode(
   compiledCode: CompiledCode,
-  language: ScriptingLanguage,
+  language: ScriptLanguage,
   validate: CodeValidator,
 ): void {
   filterEmptyStrings([compiledCode.code, compiledCode.revertCode])

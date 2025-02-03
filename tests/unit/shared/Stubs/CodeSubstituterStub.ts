@@ -1,5 +1,5 @@
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import type { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
+import type { CodeSubstituter } from '@/application/Parser/ScriptMetadata/CodeSubstituter';
 
 export class CodeSubstituterStub {
   private readonly scenarios = new Array<{

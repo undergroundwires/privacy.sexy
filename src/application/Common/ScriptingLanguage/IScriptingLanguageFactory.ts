@@ -1,5 +1,5 @@
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 
 export interface IScriptingLanguageFactory<T> {
-  create(language: ScriptingLanguage): T;
+  create(language: ScriptLanguage): T;
 }

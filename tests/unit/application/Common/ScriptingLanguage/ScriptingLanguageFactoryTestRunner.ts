@@ -1,21 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import type { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 
 type Constructible<T = object> = new (...args: unknown[]) => T;
 
 export class ScriptingLanguageFactoryTestRunner<T> {
-  private expectedLanguageTypes = new Map<ScriptingLanguage, Constructible<T>>();
+  private expectedLanguageTypes = new Map<ScriptLanguage, Constructible<T>>();
 
-  private expectedValues = new Map<ScriptingLanguage, T>();
+  private expectedValues = new Map<ScriptLanguage, T>();
 
-  public expectInstance(language: ScriptingLanguage, resultType: Constructible<T>) {
+  public expectInstance(language: ScriptLanguage, resultType: Constructible<T>) {
     this.expectedLanguageTypes.set(language, resultType);
     return this;
   }
 
-  public expectValue(language: ScriptingLanguage, resultType: T) {
+  public expectValue(language: ScriptLanguage, resultType: T) {
     this.expectedValues.set(language, resultType);
     return this;
   }
@@ -33,7 +33,7 @@ export class ScriptingLanguageFactoryTestRunner<T> {
 
 function testExpectedInstanceTypes<T>(
   sut: IScriptingLanguageFactory<T>,
-  expectedTypes: Map<ScriptingLanguage, Constructible<T>>,
+  expectedTypes: Map<ScriptLanguage, Constructible<T>>,
 ) {
   if (!expectedTypes.size) {
     throw new Error('No expected types provided.');
@@ -41,7 +41,7 @@ function testExpectedInstanceTypes<T>(
   describe('`create` creates expected instances', () => {
     // arrange
     for (const language of expectedTypes.keys()) {
-      it(ScriptingLanguage[language], () => {
+      it(ScriptLanguage[language], () => {
         // act
         const expected = expectedTypes.get(language);
         const result = sut.create(language);
@@ -54,7 +54,7 @@ function testExpectedInstanceTypes<T>(
 
 function testExpectedValues<T>(
   sut: IScriptingLanguageFactory<T>,
-  expectedValues: Map<ScriptingLanguage, T>,
+  expectedValues: Map<ScriptLanguage, T>,
 ) {
   if (!expectedValues.size) {
     throw new Error('No expected values provided.');
@@ -62,7 +62,7 @@ function testExpectedValues<T>(
   describe('`create` creates expected values', () => {
     // arrange
     for (const language of expectedValues.keys()) {
-      it(ScriptingLanguage[language], () => {
+      it(ScriptLanguage[language], () => {
         // act
         const expected = expectedValues.get(language);
         const result = sut.create(language);
@@ -76,9 +76,9 @@ function testExpectedValues<T>(
 function testLanguageValidation<T>(sut: IScriptingLanguageFactory<T>) {
   describe('`create` validates language selection', () => {
     // arrange
-    const validValue = ScriptingLanguage.batchfile;
+    const validValue = ScriptLanguage.batchfile;
     // act
-    const act = (value: ScriptingLanguage) => sut.create(value);
+    const act = (value: ScriptLanguage) => sut.create(value);
     // assert
     new EnumRangeTestRunner(act)
       .testOutOfRangeThrows()

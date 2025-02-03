@@ -1,4 +1,4 @@
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { CodeValidationAnalyzer, InvalidCodeLine } from './CodeValidationAnalyzer';
 
 export const analyzeTooLongLines: CodeValidationAnalyzer = (
@@ -18,15 +18,15 @@ export const analyzeTooLongLines: CodeValidationAnalyzer = (
     }));
 };
 
-function getMaxAllowedLineLength(language: ScriptingLanguage): number {
+function getMaxAllowedLineLength(language: ScriptLanguage): number {
   switch (language) {
-    case ScriptingLanguage.batchfile:
+    case ScriptLanguage.batchfile:
       /*
         The maximum length of the string that you can use at the command prompt is 8191 characters.
         https://web.archive.org/web/20240815120224/https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/command-line-string-limitation
       */
       return 8191;
-    case ScriptingLanguage.shellscript:
+    case ScriptLanguage.shellscript:
       /*
         Tests show:
 
@@ -39,6 +39,6 @@ function getMaxAllowedLineLength(language: ScriptingLanguage): number {
       */
       return 1048576; // Minimum value for reliability
     default:
-      throw new Error(`Unsupported language: ${ScriptingLanguage[language]} (${language})`);
+      throw new Error(`Unsupported language: ${ScriptLanguage[language]} (${language})`);
   }
 }

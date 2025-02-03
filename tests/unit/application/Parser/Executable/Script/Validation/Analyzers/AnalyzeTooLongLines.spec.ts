@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import type { CodeLine, InvalidCodeLine } from '@/application/Parser/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { analyzeTooLongLines } from '@/application/Parser/Executable/Script/Validation/Analyzers/AnalyzeTooLongLines';
 import { createCodeLines } from './CreateCodeLines';
 import { expectInvalidCodeLines, expectSameInvalidCodeLines } from './ExpectSameInvalidCodeLines';
@@ -140,10 +140,10 @@ describe('AnalyzeTooLongLines', () => {
 
     it('throws an error for unsupported language', () => {
       // arrange
-      const unsupportedLanguage = 'unsupported' as unknown as ScriptingLanguage;
-      const expectedError = `Unsupported language: ${ScriptingLanguage[unsupportedLanguage]} (${unsupportedLanguage})`;
+      const unsupportedLanguage = 'unsupported' as unknown as ScriptLanguage;
+      const expectedError = `Unsupported language: ${ScriptLanguage[unsupportedLanguage]} (${unsupportedLanguage})`;
       const context = new TestContext()
-        .withLanguage('unsupported' as unknown as ScriptingLanguage)
+        .withLanguage('unsupported' as unknown as ScriptLanguage)
         .withLines(['A', 'B', 'C']);
       // act
       const act = () => context.analyze();
@@ -156,19 +156,19 @@ describe('AnalyzeTooLongLines', () => {
 interface ScriptLanguageScenario {
   readonly description: string;
   readonly maxLength: number;
-  readonly language: ScriptingLanguage;
+  readonly language: ScriptLanguage;
 }
 
 function createScriptLanguageScenarios(): readonly ScriptLanguageScenario[] {
   const maxLengths: Record< // `Record` catches missing entries at compile-time
-  ScriptingLanguage, number> = {
-    [ScriptingLanguage.batchfile]: 8191,
-    [ScriptingLanguage.shellscript]: 1048576,
+  ScriptLanguage, number> = {
+    [ScriptLanguage.batchfile]: 8191,
+    [ScriptLanguage.shellscript]: 1048576,
   };
   return Object.entries(maxLengths).map(([language, length]): ScriptLanguageScenario => {
-    const languageValue = Number.parseInt(language, 10) as ScriptingLanguage;
+    const languageValue = Number.parseInt(language, 10) as ScriptLanguage;
     return {
-      description: `${ScriptingLanguage[languageValue]} (max: ${length})`,
+      description: `${ScriptLanguage[languageValue]} (max: ${length})`,
       language: languageValue,
       maxLength: length,
     };
@@ -178,14 +178,14 @@ function createScriptLanguageScenarios(): readonly ScriptLanguageScenario[] {
 class TestContext {
   private codeLines: readonly CodeLine[] = createCodeLines(['test-code-line']);
 
-  private language = ScriptingLanguage.batchfile;
+  private language = ScriptLanguage.batchfile;
 
   public withLines(lines: readonly string[]): this {
     this.codeLines = createCodeLines(lines);
     return this;
   }
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }

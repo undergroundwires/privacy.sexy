@@ -12,7 +12,7 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { getReverter } from './Reverter/ReverterFactory';
 import ToggleSwitch from './ToggleSwitch.vue';
 import type { Reverter } from './Reverter/Reverter';
@@ -33,7 +33,7 @@ export default defineComponent({
     } = injectKey((keys) => keys.useUserSelectionState);
     const { currentState } = injectKey((keys) => keys.useCollectionState);
 
-    const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
+    const currentCollection = computed<CategoryCollection>(() => currentState.value.collection);
 
     const revertHandler = computed<Reverter>(
       () => getReverter(props.node, currentCollection.value),

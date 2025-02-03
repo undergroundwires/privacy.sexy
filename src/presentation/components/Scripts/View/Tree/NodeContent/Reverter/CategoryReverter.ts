@@ -1,5 +1,5 @@
 import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { createExecutableIdFromNodeId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
@@ -12,7 +12,7 @@ export class CategoryReverter implements Reverter {
 
   private readonly scriptReverters: ReadonlyArray<ScriptReverter>;
 
-  constructor(nodeId: TreeNodeId, collection: ICategoryCollection) {
+  constructor(nodeId: TreeNodeId, collection: CategoryCollection) {
     this.categoryId = createExecutableIdFromNodeId(nodeId);
     this.scriptReverters = createScriptReverters(this.categoryId, collection);
   }
@@ -40,7 +40,7 @@ export class CategoryReverter implements Reverter {
 
 function createScriptReverters(
   categoryId: ExecutableId,
-  collection: ICategoryCollection,
+  collection: CategoryCollection,
 ): ScriptReverter[] {
   const category = collection.getCategory(categoryId);
   const scripts = category

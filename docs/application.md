@@ -27,13 +27,13 @@ Presentation layer uses a singleton (same instance of) [`ApplicationContext.ts`]
 
 Application data is collection files using YAML. You can refer to [collection-files.md](./collection-files.md) to read more about the scheme and structure of application data files. You can also check the source code [collection yaml files](./../src/application/collections/) to directly see the application data using that scheme.
 
-Application layer [parses and compiles](#parsing-and-compiling) application data into [`Application`](./../src/domain/Application.ts)). Once parsed, application layer provides the necessary functionality to presentation layer based on the application data. You can read more about how presentation layer consumes the application data in [presentation.md | Application Data](./presentation.md#application-data).
+Application layer [parses and compiles](#parsing-and-compiling) application data into [`Application`](./../src/domain/Application/Application.ts)). Once parsed, application layer provides the necessary functionality to presentation layer based on the application data. You can read more about how presentation layer consumes the application data in [presentation.md | Application Data](./presentation.md#application-data).
 
 Application layer enables [data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming) by leveraging the data to the rest of the source code. It makes it easy for community to contribute on the project by using a declarative language used in collection files.
 
 ### Parsing and compiling
 
-Application layer parses the application data to compile the domain object [`Application.ts`](./../src/domain/Application.ts).
+Application layer parses the application data to compile the domain object [`Application.ts`](./../src/domain/Application/Application.ts).
 
 The build tool loads (or injects) application data ([collection yaml files](./../src/application/collections/)) into the application layer in compile time. Application layer ([`ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts)) parses and compiles this data in runtime.
 

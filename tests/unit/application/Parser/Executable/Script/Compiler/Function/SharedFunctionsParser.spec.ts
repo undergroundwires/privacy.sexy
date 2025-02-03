@@ -23,7 +23,7 @@ import type { IReadOnlyFunctionParameterCollection } from '@/application/Parser/
 import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import type { FunctionParameterParser } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterParser';
 import { createFunctionParameterParserStub } from '@tests/unit/shared/Stubs/FunctionParameterParserStub';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { expectCallsFunctionBody, expectCodeFunctionBody } from './ExpectFunctionBodyType';
 
@@ -195,7 +195,7 @@ describe('SharedFunctionsParser', () => {
         });
         it('validates for correct scripting language', () => {
           // arrange
-          const expectedLanguage: ScriptingLanguage = ScriptingLanguage.shellscript;
+          const expectedLanguage: ScriptLanguage = ScriptLanguage.shellscript;
           const functionData = createFunctionDataWithCode();
           const validator = new CodeValidatorStub();
           // act
@@ -435,7 +435,7 @@ describe('SharedFunctionsParser', () => {
 });
 
 class TestContext {
-  private language: ScriptingLanguage = ScriptingLanguage.batchfile;
+  private language: ScriptLanguage = ScriptLanguage.batchfile;
 
   private codeValidator: CodeValidator = new CodeValidatorStub()
     .get();
@@ -451,7 +451,7 @@ class TestContext {
   private parameterCollectionFactory
   : FunctionParameterCollectionFactory = () => new FunctionParameterCollectionStub();
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }

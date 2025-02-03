@@ -1,10 +1,10 @@
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptMetadata } from '@/domain/ScriptMetadata/ScriptMetadata';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 
-export class ScriptingDefinitionStub implements IScriptingDefinition {
+export class ScriptMetadataStub implements ScriptMetadata {
   public fileExtension = '.bat';
 
-  public language = ScriptingLanguage.batchfile;
+  public language = ScriptLanguage.batchfile;
 
   public startCode = 'REM start code';
 
@@ -20,7 +20,7 @@ export class ScriptingDefinitionStub implements IScriptingDefinition {
     return this;
   }
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }

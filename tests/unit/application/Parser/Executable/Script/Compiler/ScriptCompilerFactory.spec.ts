@@ -20,7 +20,7 @@ import { createScriptCodeFactoryStub } from '@tests/unit/shared/Stubs/ScriptCode
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
 import type { SharedFunctionsParser } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
 import type { ScriptCompiler } from '@/application/Parser/Executable/Script/Compiler/ScriptCompiler';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 
 describe('ScriptCompilerFactory', () => {
@@ -117,7 +117,7 @@ describe('ScriptCompilerFactory', () => {
       describe('parses functions as expected', () => {
         it('parses functions with expected language', () => {
           // arrange
-          const expectedLanguage = ScriptingLanguage.batchfile;
+          const expectedLanguage = ScriptLanguage.batchfile;
           const functionParserMock = createSharedFunctionsParserStub();
           const sut = new TestContext()
             .withSomeFunctions()
@@ -249,7 +249,7 @@ describe('ScriptCompilerFactory', () => {
         });
         it('validates for correct scripting language', () => {
           // arrange
-          const expectedLanguage: ScriptingLanguage = ScriptingLanguage.shellscript;
+          const expectedLanguage: ScriptLanguage = ScriptLanguage.shellscript;
           const scriptData = createScriptDataWithCall();
           const validator = new CodeValidatorStub();
           const sut = new TestContext()
@@ -276,7 +276,7 @@ class TestContext {
 
   private functions: FunctionData[] | undefined;
 
-  private language: ScriptingLanguage = ScriptingLanguage.batchfile;
+  private language: ScriptLanguage = ScriptLanguage.batchfile;
 
   private sharedFunctionsParser: SharedFunctionsParser = createSharedFunctionsParserStub().parser;
 
@@ -311,7 +311,7 @@ class TestContext {
     return this;
   }
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }

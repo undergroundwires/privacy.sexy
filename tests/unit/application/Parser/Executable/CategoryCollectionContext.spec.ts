@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { FunctionData } from '@/application/collections/';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
@@ -41,7 +41,7 @@ describe('CategoryCollectionContext', () => {
     });
     it('constructed with correct language', () => {
       // arrange
-      const expectedLanguage = ScriptingLanguage.batchfile;
+      const expectedLanguage = ScriptLanguage.batchfile;
       const compilerSpy = createScriptCompilerFactorySpy();
       const context = new TextContext()
         .withLanguage(expectedLanguage)
@@ -58,7 +58,7 @@ describe('CategoryCollectionContext', () => {
   describe('language', () => {
     it('set from syntax factory', () => {
       // arrange
-      const expectedLanguage = ScriptingLanguage.shellscript;
+      const expectedLanguage = ScriptLanguage.shellscript;
       const context = new TextContext()
         .withLanguage(expectedLanguage);
       // act
@@ -73,7 +73,7 @@ describe('CategoryCollectionContext', () => {
 class TextContext {
   private functionsData: readonly FunctionData[] | undefined = [createFunctionDataWithCode()];
 
-  private language: ScriptingLanguage = ScriptingLanguage.shellscript;
+  private language: ScriptLanguage = ScriptLanguage.shellscript;
 
   private scriptCompilerFactory: ScriptCompilerFactory = createScriptCompilerFactorySpy().instance;
 
@@ -87,7 +87,7 @@ class TextContext {
     return this;
   }
 
-  public withLanguage(language: ScriptingLanguage): this {
+  public withLanguage(language: ScriptLanguage): this {
     this.language = language;
     return this;
   }

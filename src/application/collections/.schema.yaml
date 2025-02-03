@@ -17,7 +17,7 @@ definitions:
         type: string
         enum: [windows, macos, linux]
       scripting:
-        $ref: '#/definitions/ScriptingDefinition'
+        $ref: '#/definitions/ScriptMetadata'
       actions:
         type: array
         items:
@@ -27,7 +27,7 @@ definitions:
         items:
           $ref: '#/definitions/Function'
 
-  ScriptingDefinition:
+  ScriptMetadata:
     type: object
     additionalProperties: false
     required: [language, startCode, endCode]

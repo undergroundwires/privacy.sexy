@@ -1,5 +1,5 @@
 import { ScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/ScriptingLanguageFactory';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { BatchBuilder } from './Languages/BatchBuilder';
 import { ShellBuilder } from './Languages/ShellBuilder';
 import type { ICodeBuilder } from './ICodeBuilder';
@@ -10,7 +10,7 @@ export class CodeBuilderFactory
   implements ICodeBuilderFactory {
   constructor() {
     super();
-    this.registerGetter(ScriptingLanguage.shellscript, () => new ShellBuilder());
-    this.registerGetter(ScriptingLanguage.batchfile, () => new BatchBuilder());
+    this.registerGetter(ScriptLanguage.shellscript, () => new ShellBuilder());
+    this.registerGetter(ScriptLanguage.batchfile, () => new BatchBuilder());
   }
 }

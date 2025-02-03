@@ -1,5 +1,5 @@
 import type { LanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
-import type { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { createSyntax, type SyntaxFactory } from './Syntax/SyntaxFactory';
 import { isCommentLine, type CommentLineChecker } from './Common/CommentLineChecker';
 import type { CodeLine, CodeValidationAnalyzer, InvalidCodeLine } from './CodeValidationAnalyzer';
@@ -16,7 +16,7 @@ export type DuplicateLinesAnalyzer = CodeValidationAnalyzer & {
 
 export const analyzeDuplicateLines: DuplicateLinesAnalyzer = (
   lines: readonly CodeLine[],
-  language: ScriptingLanguage,
+  language: ScriptLanguage,
   syntaxFactory: SyntaxFactory = createSyntax,
   commentLineChecker: CommentLineChecker = isCommentLine,
 ) => {

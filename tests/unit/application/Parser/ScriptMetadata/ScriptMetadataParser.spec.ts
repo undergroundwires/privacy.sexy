@@ -1,26 +1,27 @@
 import { describe, it, expect } from 'vitest';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { EnumParser } from '@/application/Common/Enum';
-import type { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { CodeSubstituter } from '@/application/Parser/ScriptMetadata/CodeSubstituter';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
-import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';
+import { ScriptMetadataDataStub } from '@tests/unit/shared/Stubs/ScriptMetadataDataStub';
 import { CodeSubstituterStub } from '@tests/unit/shared/Stubs/CodeSubstituterStub';
-import { parseScriptingDefinition } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
+import { parseScriptMetadata } from '@/application/Parser/ScriptMetadata/ScriptMetadataParser';
 import type { ObjectAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import type { ScriptingDefinitionData } from '@/application/collections/';
+import type { ScriptMetadataData } from '@/application/collections/';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
+import { createScriptMetadataFactorySpy } from '@tests/unit/shared/Stubs/ScriptMetadataFactoryStub';
+import type { ScriptMetadataInitParameters } from '@/domain/ScriptMetadata/ScriptMetadataFactory';
 
-describe('ScriptingDefinitionParser', () => {
-  describe('parseScriptingDefinition', () => {
+describe('ScriptMetadataParser', () => {
+  describe('parseScriptMetadata', () => {
     it('validates data', () => {
       // arrange
-      const data = new ScriptingDefinitionDataStub();
-      const expectedAssertion: ObjectAssertion<ScriptingDefinitionData> = {
+      const data = new ScriptMetadataDataStub();
+      const expectedAssertion: ObjectAssertion<ScriptMetadataData> = {
         value: data,
-        valueName: 'scripting definition',
+        valueName: 'script metadata',
         allowedProperties: ['language', 'startCode', 'endCode'],
       };
       const validatorStub = new TypeValidatorStub();
@@ -28,27 +29,27 @@ describe('ScriptingDefinitionParser', () => {
         .withTypeValidator(validatorStub)
         .withData(data);
       // act
-      context.parseScriptingDefinition();
+      context.parse();
       // assert
       validatorStub.assertObject(expectedAssertion);
     });
     describe('language', () => {
       it('parses as expected', () => {
         // arrange
-        const expectedLanguage = ScriptingLanguage.batchfile;
+        const expectedLanguage = ScriptLanguage.batchfile;
         const languageText = 'batchfile';
         const expectedName = 'language';
-        const definition = new ScriptingDefinitionDataStub()
+        const definition = new ScriptMetadataDataStub()
           .withLanguage(languageText);
-        const parserMock = new EnumParserStub<ScriptingLanguage>()
+        const parserMock = new EnumParserStub<ScriptLanguage>()
           .setup(expectedName, languageText, expectedLanguage);
         const context = new TestContext()
           .withParser(parserMock)
           .withData(definition);
         // act
-        const actual = context.parseScriptingDefinition();
+        const parameters = context.parse();
         // assert
-        expect(actual.language).to.equal(expectedLanguage);
+        expect(parameters.language).to.equal(expectedLanguage);
       });
     });
     describe('substitutes code as expected', () => {
@@ -57,19 +58,19 @@ describe('ScriptingDefinitionParser', () => {
       const expected = 'substituted';
       const testScenarios: readonly {
         readonly description: string;
-        getActualValue(result: IScriptingDefinition): string;
-        readonly data: ScriptingDefinitionData;
+        getActualValue(params: ScriptMetadataInitParameters): string;
+        readonly data: ScriptMetadataData;
       }[] = [
         {
           description: 'startCode',
-          getActualValue: (result: IScriptingDefinition) => result.startCode,
-          data: new ScriptingDefinitionDataStub()
+          getActualValue: (params) => params.startCode,
+          data: new ScriptMetadataDataStub()
             .withStartCode(code),
         },
         {
           description: 'endCode',
-          getActualValue: (result: IScriptingDefinition) => result.endCode,
-          data: new ScriptingDefinitionDataStub()
+          getActualValue: (params) => params.endCode,
+          data: new ScriptMetadataDataStub()
             .withEndCode(code),
         },
       ];
@@ -85,7 +86,7 @@ describe('ScriptingDefinitionParser', () => {
             .withProjectDetails(projectDetails)
             .withSubstituter(substituterMock.substitute);
           // act
-          const definition = context.parseScriptingDefinition();
+          const definition = context.parse();
           // assert
           const actual = getActualValue(definition);
           expect(actual).to.equal(expected);
@@ -96,18 +97,18 @@ describe('ScriptingDefinitionParser', () => {
 });
 
 class TestContext {
-  private languageParser: EnumParser<ScriptingLanguage> = new EnumParserStub<ScriptingLanguage>()
-    .setupDefaultValue(ScriptingLanguage.shellscript);
+  private languageParser: EnumParser<ScriptLanguage> = new EnumParserStub<ScriptLanguage>()
+    .setupDefaultValue(ScriptLanguage.shellscript);
 
   private codeSubstituter: CodeSubstituter = new CodeSubstituterStub().substitute;
 
   private validator: TypeValidator = new TypeValidatorStub();
 
-  private data: ScriptingDefinitionData = new ScriptingDefinitionDataStub();
+  private data: ScriptMetadataData = new ScriptMetadataDataStub();
 
   private projectDetails: ProjectDetails = new ProjectDetailsStub();
 
-  public withData(data: ScriptingDefinitionData): this {
+  public withData(data: ScriptMetadataData): this {
     this.data = data;
     return this;
   }
@@ -117,7 +118,7 @@ class TestContext {
     return this;
   }
 
-  public withParser(parser: EnumParser<ScriptingLanguage>): this {
+  public withParser(parser: EnumParser<ScriptLanguage>): this {
     this.languageParser = parser;
     return this;
   }
@@ -132,15 +133,22 @@ class TestContext {
     return this;
   }
 
-  public parseScriptingDefinition() {
-    return parseScriptingDefinition(
+  public parse(): ScriptMetadataInitParameters {
+    const spy = createScriptMetadataFactorySpy();
+    const scriptMetadata = parseScriptMetadata(
       this.data,
       this.projectDetails,
       {
         languageParser: this.languageParser,
         codeSubstituter: this.codeSubstituter,
         validator: this.validator,
+        createScriptMetadata: spy.factory,
       },
     );
+    const parameters = spy.getInitParameters(scriptMetadata);
+    if (!parameters) {
+      throw new Error('Factory did not create any instance');
+    }
+    return parameters;
   }
 }

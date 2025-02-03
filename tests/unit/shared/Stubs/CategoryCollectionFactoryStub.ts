@@ -1,16 +1,15 @@
-import type { CategoryCollectionFactory } from '@/application/Parser/CategoryCollectionParser';
-import type { CategoryCollectionInitParameters } from '@/domain/Collection/CategoryCollection';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollectionFactory, CategoryCollectionInitParameters } from '@/domain/Collection/CategoryCollectionFactory';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { CategoryCollectionStub } from './CategoryCollectionStub';
 
 export function createCategoryCollectionFactorySpy(): {
   readonly categoryCollectionFactorySpy: CategoryCollectionFactory;
   getInitParameters: (
-    category: ICategoryCollection,
+    category: CategoryCollection,
   ) => CategoryCollectionInitParameters | undefined;
 } {
   const createdCategoryCollections = new Map<
-  ICategoryCollection, CategoryCollectionInitParameters
+  CategoryCollection, CategoryCollectionInitParameters
   >();
   return {
     categoryCollectionFactorySpy: (parameters) => {
