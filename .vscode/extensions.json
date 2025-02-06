@@ -15,6 +15,7 @@
     // Vue
     "Vue.volar",                        // Official Vue extensions
     "Vue.vscode-typescript-vue-plugin", // Official TypeScript Vue Plugin
+    "vitest.explorer",                  // Adds testing (unit, integration and more) support.
     // Scripting
     "timonwong.shellcheck",             // Lints bash files.
     "ms-vscode.powershell",             // Lints PowerShell files.

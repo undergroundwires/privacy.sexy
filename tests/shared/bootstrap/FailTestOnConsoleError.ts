@@ -11,13 +11,17 @@ export function failTestOnConsoleError() {
 
   beforeEach(() => {
     consoleMethodsToCheck.forEach((methodName) => {
-      vi.spyOn(console, methodName).mockClear();
+      vi.spyOn(console, methodName);
     });
   });
 
   afterEach(() => {
     consoleMethodsToCheck.forEach((methodName) => {
       expect(console[methodName]).not.toHaveBeenCalled();
+    });
+    // Cleanup
+    consoleMethodsToCheck.forEach((methodName) => {
+      vi.spyOn(console, methodName).mockReset();
     });
   });
 }

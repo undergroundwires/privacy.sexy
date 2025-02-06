@@ -41,7 +41,9 @@ logger.logLabeledInformation('HTTP request options', JSON.stringify(requestOptio
 const testTimeoutInMs = urls.length * 60 /* seconds */ * 1000;
 logger.logLabeledInformation('Scheduled test duration', convertMillisecondsToHumanReadableFormat(testTimeoutInMs));
 logger.logTestSectionEndDelimiter();
-test(`all URLs (${urls.length}) should be alive`, async () => {
+test(`all URLs (${urls.length}) should be alive`, {
+  timeout: testTimeoutInMs,
+}, async () => {
   // act
   const results = await getUrlStatusesInParallel(urls, requestOptions);
   // assert
@@ -50,7 +52,7 @@ test(`all URLs (${urls.length}) should be alive`, async () => {
     0,
     formatAssertionMessage([createReportForDeadUrlStatuses(deadUrls)]),
   );
-}, testTimeoutInMs);
+});
 
 function isOkStatusCode(statusCode: number): boolean {
   return statusCode >= 200 && statusCode < 300;
