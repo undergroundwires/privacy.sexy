@@ -1,4 +1,4 @@
-import { describe } from 'vitest';
+import { describe, expect } from 'vitest';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { WindowVariablesStub } from '@tests/unit/shared/Stubs/WindowVariablesStub';
 import { WindowInjectedLogger } from '@/infrastructure/Log/WindowInjectedLogger';
@@ -18,6 +18,7 @@ describe('WindowInjectedLogger', () => {
       expect(act).to.throw(expectedError);
     });
   });
+
   describe('throws if window is absent', () => {
     itEachAbsentObjectValue((absentValue) => {
       // arrange
@@ -29,6 +30,7 @@ describe('WindowInjectedLogger', () => {
       expect(act).to.throw(expectedError);
     }, { excludeUndefined: true });
   });
+
   describe('methods log the provided params', () => {
     itEachLoggingMethod((functionName) => {
       // arrange

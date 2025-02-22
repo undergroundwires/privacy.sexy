@@ -2308,6 +2308,12 @@ actions:
                 recommend: standard
                 docs: |-
                     This script deletes the Windows System Resource Usage Monitor (SRUM) database file.
+                    [6]: https://web.archive.org/web/20231008135333/https://www.sciencedirect.com/science/article/abs/pii/S1742287615000031 "Forensic implications of System Resource Usage Monitor (SRUM) data in Windows 8 | Yogesh Khatri | sciencedirect.com"
+                call:
+                    function: RunPowerShell
+                recommend: standard
+                docs: |-
+                    This script deletes the Windows System Resource Usage Monitor (SRUM) database file.
 
                     SRUM tracks the usage of desktop applications, services, Windows applications, and network connections [1] [2] [3]. SRUM stores its file at
                     `C:\Windows\System32\sru\SRUDB.dat` [1] [3] [4].
