@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
 import { RepositoryEntityStub } from '@tests/unit/shared/Stubs/RepositoryEntityStub';
 import type { RepositoryEntity, RepositoryEntityId } from '@/application/Repository/RepositoryEntity';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('InMemoryRepository', () => {
   describe('exists', () => {
@@ -47,8 +48,10 @@ describe('InMemoryRepository', () => {
       const sut = new InMemoryRepository(expectedItems);
       const actualItems = sut.getItems();
       // assert
-      expect(actualItems).to.have.lengthOf(expectedItems.length);
-      expect(actualItems).to.deep.members(expectedItems);
+      expectArrayEquals(actualItems, expectedItems, {
+        ignoreOrder: true,
+        deep: true,
+      });
     });
   });
   describe('addItem', () => {
@@ -111,8 +114,10 @@ describe('InMemoryRepository', () => {
       sut.removeItem(itemIdToDelete);
       // assert
       const actualItems = sut.getItems();
-      expect(actualItems).to.have.lengthOf(expectedItems.length);
-      expect(actualItems).to.have.deep.members(expectedItems);
+      expectArrayEquals(actualItems, expectedItems, {
+        ignoreOrder: true,
+        deep: true,
+      });
     });
   });
   describe('addOrUpdateItem', () => {
@@ -132,8 +137,9 @@ describe('InMemoryRepository', () => {
       sut.addOrUpdateItem(newItem);
       // assert
       const actualItems = sut.getItems();
-      expect(actualItems).to.have.lengthOf(expectedItems.length);
-      expect(actualItems).to.have.members(expectedItems);
+      expectArrayEquals(actualItems, expectedItems, {
+        ignoreOrder: true,
+      });
     });
     it('updates when item exists', () => {
       // arrange

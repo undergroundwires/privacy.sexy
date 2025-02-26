@@ -17,6 +17,7 @@ import { TreeNodeStateAccessStub } from '@tests/unit/shared/Stubs/TreeNodeStateA
 import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 import type { FunctionKeys } from '@/TypeHelpers';
 import { indentText } from '@/application/Common/Text/IndentText';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 import type { Ref } from 'vue';
 
 describe('useNodeStateChangeAggregator', () => {
@@ -262,13 +263,21 @@ function assertCurrentNodeCalls(context: {
 
   const actualNodeIds = context.actualArgs.map((c) => c.node.id);
   const expectedNodeIds = context.expectedNodes.map((node) => node.id);
-  expect(actualNodeIds).to.have.members(expectedNodeIds, assertionMessage);
+  expectArrayEquals(actualNodeIds, expectedNodeIds, {
+    ignoreOrder: true,
+  });
 
   const actualOldStates = context.actualArgs.map((c) => c.oldState);
-  expect(actualOldStates).to.have.deep.members(context.expectedOldStates, assertionMessage);
+  expectArrayEquals(actualOldStates, context.expectedOldStates, {
+    ignoreOrder: true,
+    deep: true,
+  });
 
   const actualNewStates = context.actualArgs.map((c) => c.newState);
-  expect(actualNewStates).to.have.deep.members(context.expectedNewStates, assertionMessage);
+  expectArrayEquals(actualNewStates, context.expectedNewStates, {
+    ignoreOrder: true,
+    deep: true,
+  });
 }
 
 function buildAssertionMessage(

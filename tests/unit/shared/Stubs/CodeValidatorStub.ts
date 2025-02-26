@@ -3,6 +3,7 @@ import type { CodeValidator } from '@/application/Parser/Executable/Script/Valid
 import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 export class CodeValidatorStub {
   public callHistory = new Array<Parameters<CodeValidator>>();
@@ -36,20 +37,11 @@ function expectExpectedCodes(
   validator: CodeValidatorStub,
   expectedCodes: readonly string[],
 ): void {
-  expect(validator.callHistory).to.have.lengthOf(expectedCodes.length, formatAssertionMessage([
-    'Mismatch in number of validated codes',
-    `Expected: ${expectedCodes.length}`,
-    `Actual: ${validator.callHistory.length}`,
-  ]));
   const actualValidatedCodes = validator.callHistory.map((args) => {
     const [code] = args;
     return code;
   });
-  expect(actualValidatedCodes).to.have.members(expectedCodes, formatAssertionMessage([
-    'Mismatch in validated codes',
-    `Expected: ${JSON.stringify(expectedCodes)}`,
-    `Actual: ${JSON.stringify(actualValidatedCodes)}`,
-  ]));
+  expectArrayEquals(actualValidatedCodes, expectedCodes);
 }
 
 function expectExpectedRules(
@@ -63,11 +55,7 @@ function expectExpectedRules(
       `Expected: ${expectedRules.length}`,
       `Actual: ${actualRules.length}`,
     ]));
-    expect(actualRules).to.have.members(expectedRules, formatAssertionMessage([
-      'Mismatch in validation rules for for a call.',
-      `Expected: ${JSON.stringify(expectedRules)}`,
-      `Actual: ${JSON.stringify(actualRules)}`,
-    ]));
+    expectArrayEquals(actualRules, expectedRules);
   }
 }
 

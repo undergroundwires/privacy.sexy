@@ -15,7 +15,8 @@ import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/C
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 import type { FunctionCallArgumentFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
-import { FunctionCallArgumentFactoryStub } from '../../../../../../../../../../../shared/Stubs/FunctionCallArgumentFactoryStub';
+import { FunctionCallArgumentFactoryStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentFactoryStub';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('NestedFunctionArgumentCompiler', () => {
   describe('createCompiledNestedCall', () => {
@@ -112,8 +113,9 @@ describe('NestedFunctionArgumentCompiler', () => {
           const call = builder.createCompiledNestedCall();
           // assert
           const actualParameterNames = call.args.getAllParameterNames();
-          expect(actualParameterNames.length).to.equal(expectedParameterNames.length);
-          expect(actualParameterNames).to.have.members(expectedParameterNames);
+          expectArrayEquals(actualParameterNames, expectedParameterNames, {
+            ignoreOrder: true,
+          });
         });
         it('compiles args using parent parameters', () => {
           // arrange
@@ -158,8 +160,9 @@ describe('NestedFunctionArgumentCompiler', () => {
           // assert
           const expectedParameterNames = testParameterScenarios.map((p) => p.parameterName);
           const actualParameterNames = compiledCall.args.getAllParameterNames();
-          expect(expectedParameterNames.length).to.equal(actualParameterNames.length);
-          expect(expectedParameterNames).to.have.members(actualParameterNames);
+          expectArrayEquals(actualParameterNames, expectedParameterNames, {
+            ignoreOrder: true,
+          });
           const getActualArgumentValue = (parameterName: string) => compiledCall
             .args
             .getArgument(parameterName)

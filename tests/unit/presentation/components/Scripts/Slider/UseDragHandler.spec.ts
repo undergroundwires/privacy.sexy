@@ -6,6 +6,7 @@ import { type ThrottleFunction } from '@/application/Common/Timing/Throttle';
 import type { ConstructorArguments } from '@/TypeHelpers';
 import type { LifecycleHook } from '@/presentation/components/Shared/Hooks/Common/LifecycleHook';
 import { LifecycleHookStub } from '@tests/unit/shared/Stubs/LifecycleHookStub';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('useDragHandler', () => {
   describe('initially', () => {
@@ -113,8 +114,9 @@ describe('useDragHandler', () => {
 
       // assert
       const actualEventNames = [...dragDomModifierMock.events].map(([eventName]) => eventName);
-      expect(expectedEventNames).to.have.lengthOf(actualEventNames.length);
-      expect(expectedEventNames).to.have.members(actualEventNames);
+      expectArrayEquals(actualEventNames, expectedEventNames, {
+        ignoreOrder: true,
+      });
     });
     describe('throttling', () => {
       it('initializes event throttling', () => {

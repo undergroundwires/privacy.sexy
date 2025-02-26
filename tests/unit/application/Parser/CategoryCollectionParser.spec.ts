@@ -21,6 +21,8 @@ import { createCategoryCollectionFactorySpy } from '@tests/unit/shared/Stubs/Cat
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import type { CategoryCollectionFactory } from '@/domain/Collection/CategoryCollectionFactory';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('CategoryCollectionParser', () => {
   describe('parseCategoryCollection', () => {
@@ -84,8 +86,10 @@ describe('CategoryCollectionParser', () => {
         const actualCollection = context.parseCategoryCollection();
         // assert
         const actualActions = getInitParameters(actualCollection)?.actions;
-        expect(actualActions).to.have.lengthOf(expectedActions.length);
-        expect(actualActions).to.have.members(expectedActions);
+        expectExists(actualActions);
+        expectArrayEquals(actualActions, expectedActions, {
+          ignoreOrder: true,
+        });
       });
       describe('context', () => {
         it('parses actions with correct context', () => {
