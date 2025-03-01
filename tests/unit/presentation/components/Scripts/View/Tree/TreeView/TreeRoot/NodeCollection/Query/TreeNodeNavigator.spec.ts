@@ -2,6 +2,7 @@ import { expect } from 'vitest';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { HierarchyAccessStub } from '@tests/unit/shared/Stubs/HierarchyAccessStub';
 import { TreeNodeNavigator } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/Query/TreeNodeNavigator';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('TreeNodeNavigator', () => {
   describe('flattenedNodes', () => {
@@ -10,11 +11,12 @@ describe('TreeNodeNavigator', () => {
       const rootNode1 = new TreeNodeStub();
       const rootNode2 = new TreeNodeStub();
       const rootNode3 = new TreeNodeStub();
+      const providedRootNodes = [rootNode1, rootNode2, rootNode3];
       // act
-      const navigator = new TreeNodeNavigator([rootNode1, rootNode2, rootNode3]);
+      const navigator = new TreeNodeNavigator(providedRootNodes);
       // assert
-      expect(navigator.flattenedNodes).to.have.length(3);
-      expect(navigator.flattenedNodes).to.include.members([rootNode1, rootNode2, rootNode3]);
+      const actualNodes = navigator.flattenedNodes;
+      expectArrayEquals(actualNodes, providedRootNodes);
     });
 
     it('should flatten nested nodes correctly', () => {
@@ -26,8 +28,11 @@ describe('TreeNodeNavigator', () => {
       // act
       const navigator = new TreeNodeNavigator([rootNode]);
       // assert
-      expect(navigator.flattenedNodes).to.have.length(3);
-      expect(navigator.flattenedNodes).to.include.members([nestedNode, nestedNode2, rootNode]);
+      const expectedNodes = [nestedNode, nestedNode2, rootNode];
+      const actualNodes = navigator.flattenedNodes;
+      expectArrayEquals(actualNodes, expectedNodes, {
+        ignoreOrder: true,
+      });
     });
 
     it('should flatten deeply nested nodes correctly', () => {
@@ -41,10 +46,11 @@ describe('TreeNodeNavigator', () => {
       // act
       const navigator = new TreeNodeNavigator([rootNode]);
       // assert
-      expect(navigator.flattenedNodes).to.have.length(4);
-      expect(navigator.flattenedNodes).to.include.members([
+      const expectedNodes = [
         rootNode, nestedNode, deepNestedNode1, deepNestedNode2,
-      ]);
+      ];
+      const actualNodes = navigator.flattenedNodes;
+      expectArrayEquals(actualNodes, expectedNodes);
     });
   });
 
@@ -57,8 +63,9 @@ describe('TreeNodeNavigator', () => {
       // act
       const navigator = new TreeNodeNavigator([rootNode]);
       // assert
-      expect(navigator.rootNodes).to.have.length(1);
-      expect(navigator.flattenedNodes).to.include.members([rootNode]);
+      const expectedRootNodes = [rootNode];
+      const actualRootNodes = navigator.rootNodes;
+      expectArrayEquals(actualRootNodes, expectedRootNodes);
     });
   });
 

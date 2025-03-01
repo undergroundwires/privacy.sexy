@@ -5,6 +5,8 @@ import { ref } from 'vue';
 import type { IconName } from '@/presentation/components/Shared/Icon/IconName';
 import { type FileLoaders, clearIconCache, useSvgLoader } from '@/presentation/components/Shared/Icon/UseSvgLoader';
 import { waitForValueChange } from '@tests/shared/Vue/WaitForValueChange';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { indentText } from '@/application/Common/Text/IndentText';
 
 describe('useSvgLoader', () => {
   beforeEach(() => {
@@ -95,7 +97,13 @@ describe('useSvgLoader', () => {
       const pathElements = Array.from(svgElement.querySelectorAll('path'));
       expect(pathElements).to.have.lengthOf(2, svgContent.value);
       const fillAttributeValues = pathElements.map((el: Element) => el.getAttribute('fill'));
-      expect(fillAttributeValues).to.have.members(['currentColor', 'currentColor']);
+      const expectedAttributeValue = 'currentColor';
+      const unexpectedAttributeValues = fillAttributeValues
+        .filter((v) => v !== expectedAttributeValue);
+      expect(unexpectedAttributeValues).to.have.lengthOf(0, formatAssertionMessage([
+        'Unexpected values:',
+        ...unexpectedAttributeValues.map((value) => indentText(`- ${value}`)),
+      ]));
     });
     it('removes comments from loaded SVG', async () => {
       // arrange

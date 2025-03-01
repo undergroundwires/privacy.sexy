@@ -9,6 +9,7 @@ import type { CategorySelectionChange } from '@/application/Context/State/Select
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('ScriptToCategorySelectionMapper', () => {
   describe('areAllScriptsSelected', () => {
@@ -215,8 +216,10 @@ describe('ScriptToCategorySelectionMapper', () => {
         expectExists(call);
         const [command] = call.args;
         const { changes: actualChanges } = (command as ScriptSelectionChangeCommand);
-        expect(actualChanges).to.have.lengthOf(expected.length);
-        expect(actualChanges).to.deep.members(expected);
+        expectArrayEquals(actualChanges, expected, {
+          ignoreOrder: true,
+          deep: true,
+        });
       });
     });
   });

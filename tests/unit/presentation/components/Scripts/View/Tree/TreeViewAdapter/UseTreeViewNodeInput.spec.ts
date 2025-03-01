@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { describe, it, expect } from 'vitest';
+import { describe, it } from 'vitest';
 import { ref, nextTick, type Ref } from 'vue';
 import { type CategoryNodeParser, useTreeViewNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/UseTreeViewNodeInput';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
@@ -13,6 +13,7 @@ import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { convertToNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/TreeNodeMetadataConverter';
 import { TreeInputNodeDataStub as TreeInputNodeData, TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('useTreeViewNodeInput', () => {
   describe('when given categoryId', () => {
@@ -48,8 +49,7 @@ describe('useTreeViewNodeInput', () => {
       await nextTick();
       // assert
       const actualInputNodes = treeViewInputNodes.value;
-      expect(actualInputNodes).have.lengthOf(expectedNodeInputData.length);
-      expect(actualInputNodes).include.members(expectedNodeInputData);
+      expectArrayEquals(actualInputNodes, expectedNodeInputData);
     });
   });
 
@@ -83,8 +83,7 @@ describe('useTreeViewNodeInput', () => {
       testCategoryId.value = undefined;
       // assert
       const actualInputNodes = treeViewInputNodes.value;
-      expect(actualInputNodes).have.lengthOf(expectedNodeInputData.length);
-      expect(actualInputNodes).include.members(expectedNodeInputData);
+      expectArrayEquals(actualInputNodes, expectedNodeInputData);
     });
   });
 });

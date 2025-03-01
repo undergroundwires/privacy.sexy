@@ -8,6 +8,7 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import type { TreeNodeId } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import type { Executable } from '@/domain/Executables/Executable';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('useSelectedScriptNodeIds', () => {
   it('returns an empty array when no scripts are selected', () => {
@@ -40,8 +41,7 @@ describe('useSelectedScriptNodeIds', () => {
       const actualIds = returnObject.selectedScriptNodeIds.value;
       // assert
       const expectedNodeIds = [...parsedNodeIds.values()];
-      expect(actualIds).to.have.lengthOf(expectedNodeIds.length);
-      expect(actualIds).to.include.members(expectedNodeIds);
+      expectArrayEquals(actualIds, expectedNodeIds);
     });
     it('when the selection state changes', () => {
       // arrange
@@ -65,8 +65,7 @@ describe('useSelectedScriptNodeIds', () => {
       const actualIds = returnObject.selectedScriptNodeIds.value;
       // assert
       const expectedNodeIds = [...parsedNodeIds.values()];
-      expect(actualIds).to.have.lengthOf(expectedNodeIds.length);
-      expect(actualIds).to.include.members(expectedNodeIds);
+      expectArrayEquals(actualIds, expectedNodeIds);
     });
   });
 });

@@ -6,6 +6,7 @@ import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { createCategory } from '@/domain/Executables/Category/CategoryFactory';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('CategoryFactory', () => {
   describe('createCategory', () => {
@@ -128,9 +129,12 @@ describe('CategoryFactory', () => {
           .withScripts(expectedScripts)
           .build();
         // act
-        const actual = category.getAllScriptsRecursively();
+        const actualScripts = category.getAllScriptsRecursively();
         // assert
-        expect(actual).to.have.deep.members(expectedScripts);
+        expectArrayEquals(actualScripts, expectedScripts, {
+          ignoreOrder: true,
+          deep: true,
+        });
       });
       it('retrieves scripts from direct child categories', () => {
         // arrange
@@ -146,11 +150,14 @@ describe('CategoryFactory', () => {
           .withSubcategories(subcategories)
           .build();
         // act
-        const actualIds = category
+        const actualScriptIds = category
           .getAllScriptsRecursively()
           .map((s) => s.executableId);
         // assert
-        expect(actualIds).to.have.deep.members(expectedScriptIds);
+        expectArrayEquals(actualScriptIds, expectedScriptIds, {
+          ignoreOrder: true,
+          deep: true,
+        });
       });
       it('retrieves scripts from both direct children and child categories', () => {
         // arrange
@@ -170,11 +177,14 @@ describe('CategoryFactory', () => {
           .withScripts(scripts)
           .build();
         // act
-        const actualIds = category
+        const actualScriptIds = category
           .getAllScriptsRecursively()
           .map((s) => s.executableId);
         // assert
-        expect(actualIds).to.have.deep.members(expectedScriptIds);
+        expectArrayEquals(actualScriptIds, expectedScriptIds, {
+          ignoreOrder: true,
+          deep: true,
+        });
       });
       it('retrieves scripts from nested categories recursively', () => {
         // arrange
@@ -207,11 +217,14 @@ describe('CategoryFactory', () => {
           .withSubcategories(subcategories)
           .build();
         // act
-        const actualIds = category
+        const actualScriptIds = category
           .getAllScriptsRecursively()
           .map((s) => s.executableId);
         // assert
-        expect(actualIds).to.have.deep.members(expectedScriptIds);
+        expectArrayEquals(actualScriptIds, expectedScriptIds, {
+          ignoreOrder: true,
+          deep: true,
+        });
       });
     });
     describe('includes', () => {

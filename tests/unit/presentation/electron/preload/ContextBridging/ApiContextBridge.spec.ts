@@ -1,5 +1,6 @@
-import { it, describe, expect } from 'vitest';
+import { it, describe } from 'vitest';
 import { type BridgeConnector, type MethodContextBinder, connectApisWithContextBridge } from '@/presentation/electron/preload/ContextBridging/ApiContextBridge';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('ApiContextBridge', () => {
   describe('connectApisWithContextBridge', () => {
@@ -20,8 +21,8 @@ describe('ApiContextBridge', () => {
         .run();
 
       // assert
-      expect(exposedItems).to.have.lengthOf(expectedKeys.length);
-      expect(exposedItems.map(([key]) => key)).to.have.members(expectedKeys);
+      const actualKeys = exposedItems.map(([key]) => key);
+      expectArrayEquals(actualKeys, expectedKeys);
     });
     it('connects values after binding their context', () => {
       // arrange
@@ -49,8 +50,8 @@ describe('ApiContextBridge', () => {
         .run();
 
       // assert
-      expect(exposedItems).to.have.lengthOf(rawValues.length);
-      expect(exposedItems.map(([,value]) => value)).to.have.members(expectedValues);
+      const actualValues = exposedItems.map(([,value]) => value);
+      expectArrayEquals(actualValues, expectedValues);
     });
   });
 });

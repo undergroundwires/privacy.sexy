@@ -22,6 +22,7 @@ import type { NonEmptyCollectionAssertion, ObjectAssertion } from '@/application
 import { indentText } from '@/application/Common/Text/IndentText';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import type { CategoryFactory } from '@/domain/Executables/Category/CategoryFactory';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 import { itThrowsContextualError } from '../Common/ContextualErrorTester';
 import { itValidatesName, itValidatesType, itAsserts } from './Validation/ExecutableValidationTester';
 import { generateDataValidationTestScenarios } from './Validation/DataValidationTestScenarioGenerator';
@@ -354,8 +355,9 @@ describe('CategoryParser', () => {
           // assert
           const actualParsedScripts = getInitParameters(actualCategory)?.scripts;
           expectExists(actualParsedScripts);
-          expect(actualParsedScripts.length).to.equal(expectedScripts.length);
-          expect(actualParsedScripts).to.have.members(expectedScripts);
+          expectArrayEquals(actualParsedScripts, expectedScripts, {
+            ignoreOrder: true,
+          });
         });
         it('parses all scripts with correct context', () => {
           // arrange

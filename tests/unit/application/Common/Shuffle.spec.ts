@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { shuffle } from '@/application/Common/Shuffle';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('Shuffle', () => {
   describe('shuffle', () => {
@@ -27,7 +28,9 @@ describe('Shuffle', () => {
       // act
       const result = shuffle(inputArray);
       // assert
-      expect(result).to.have.members(inputArray);
+      expectArrayEquals(result, inputArray, {
+        ignoreOrder: true,
+      });
     });
 
     it('does not modify the input array', () => {

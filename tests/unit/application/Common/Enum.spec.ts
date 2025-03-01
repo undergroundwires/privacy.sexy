@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import {
   getEnumNames, getEnumValues, createEnumParser, assertInRange,
 } from '@/application/Common/Enum';
-import { scrambledEqual } from '@/application/Common/Array';
 import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 import { EnumRangeTestRunner } from './EnumRangeTestRunner';
 
 describe('Enum', () => {
@@ -84,7 +84,7 @@ describe('Enum', () => {
       // act
       const actual = getEnumNames(TestEnum);
       // assert
-      expect(scrambledEqual(expected, actual));
+      expectArrayEquals(expected, actual);
     });
   });
   describe('getEnumValues', () => {
@@ -95,7 +95,7 @@ describe('Enum', () => {
       // act
       const actual = getEnumValues(TestEnum);
       // assert
-      expect(scrambledEqual(expected, actual));
+      expectArrayEquals(expected, actual);
     });
   });
   describe('assertInRange', () => {

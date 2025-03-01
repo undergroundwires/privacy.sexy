@@ -11,6 +11,7 @@ import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/
 import { createChangeEvent } from '@tests/unit/shared/Stubs/NodeStateChangeEventArgsStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('useAutoUpdateChildrenCheckState', () => {
   it('registers change handler', () => {
@@ -179,8 +180,9 @@ describe('useAutoUpdateChildrenCheckState', () => {
         aggregatorStub.notifyChange(changeEvent);
         // assert
         const actualStates = childrenStates.map((state) => state.current.checkState);
-        expect(actualStates).to.have.lengthOf(expectedChildrenStates.length);
-        expect(actualStates).to.have.members(expectedChildrenStates);
+        expectArrayEquals(actualStates, expectedChildrenStates, {
+          ignoreOrder: true,
+        });
       });
     });
   });
