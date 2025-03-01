@@ -39,7 +39,7 @@
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.e2e.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="E2E tests status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/e2e-tests/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.e2e.yaml/badge.svg"
     />
   </a>
   <!-- Security checks -->
@@ -47,13 +47,13 @@
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.sast.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Status of dependency security checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.security.sast/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.sast.yaml/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.dependencies.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Status of Static Analysis Security Testing (SAST)"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.security.dependencies/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.dependencies.yaml/badge.svg"
     />
   </a>
   <!-- Checks -->
@@ -61,31 +61,31 @@
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.quality.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Status of quality checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.quality/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.quality.yaml/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Status of build checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.build/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.desktop-runtime-errors.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Status of runtime error checks for the desktop application"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.desktop-runtime-errors/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.desktop-runtime-errors.yaml/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.scripts.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Status of script checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.scripts/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.scripts.yaml/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.external-urls.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Status of external URL checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.external-urls/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.external-urls.yaml/badge.svg"
     />
   </a>
   <!-- Release -->
@@ -93,19 +93,19 @@
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.git.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Git release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-git/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.git.yaml/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.site.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Site release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-site/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.site.yaml/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.desktop.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Desktop application release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-desktop/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.desktop/badge.svg"
     />
   </a>
   <!-- Others -->

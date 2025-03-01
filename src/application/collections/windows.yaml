@@ -158,7 +158,7 @@ actions:
                         docs: |-
                             This category focuses on removing specific types of usage data from the Windows Registry
                             to enhance privacy and improve system performance.
-                            
+
                             The Windows Registry is a hierarchical database that stores settings, configurations, and
                             options for the operating system, installed applications, and user preferences [1].
                             It's like a central storage system for Windows and its programs.
@@ -600,7 +600,7 @@ actions:
                         docs: |-
                             This script removes the most recent application usage data stored by DirectX to enhance privacy.
 
-                            DirectX is a set of Windows components that helps software (often games and multimedia applications) 
+                            DirectX is a set of Windows components that helps software (often games and multimedia applications)
                             to work directly with video and audio hardware [1].
                             It logs the most recent application data in the system registry [2].
                             Attackers exploit this information to gather insights about a target's system or network [3].
@@ -872,7 +872,7 @@ actions:
                                             contain details about application usage, errors, and performance [1].
                                             SQM files are created and used by Microsoft to gather data for the Microsoft Customer Experience Improvement Program [2].
                                             When offline, Visual Studio stores these files in the user's local application data folder [3].
-                                            
+
                                             Removing these files helps protect user privacy by deleting usage data.
                                             Removing this data may improve Visual Studio's performance, as the accumulation of these files can potentially slow
                                             down the application [3].
@@ -1502,7 +1502,7 @@ actions:
 
                                     The `moz_places` table holds URL data, connecting to various other tables like `moz_annos`, `moz_bookmarks`, `moz_inputhistory`, and `moz_historyvisits` [2].
                                     Due to these connections, the script removes entries from all relevant tables simultaneously to maintain database integrity.
-                                    
+
                                     **Bookmarks**: Stored across several tables (`moz_bookmarks`, `moz_bookmarks_folders`, `moz_bookmarks_roots`) [3], with additional undocumented tables like `moz_bookmarks_deleted` [4].
 
                                     **Downloads**: Stored in the 'places.sqlite' database, within the 'moz_annos' table [5]. The entries in `moz_annos` are linked to `moz_places` that store the actual history entry
@@ -1542,7 +1542,7 @@ actions:
                                 docs: |-
                                     This script performs a reset of Mozilla Firefox, erasing all user profiles, settings, and personalized data to restore the
                                     browser to its default state.
-                                    
+
                                     Firefox user profiles, encompassing bookmarks, browsing history, passwords, extensions, themes, and preferences [1].
                                     These folders are in:
 
@@ -2351,7 +2351,7 @@ actions:
                             useStateFile: 'true'
             -
                 name: Clear previous Windows installations
-                call:   
+                call:
                     function: DeleteDirectory
                     parameters:
                         directoryGlob: '%SYSTEMDRIVE%\Windows.old'
@@ -3324,7 +3324,7 @@ actions:
                             This includes movement of the user's head, hands, motion controllers, and other tracked objects [1],
                             as well as nearby surfaces [2].
                             This data may be accessed while the apps are running in the background [1] [2].
-                            
+
                             This script enhances privacy by preventing apps from accessing body-related data automatically [1] [2]
                             , without explicit user permission.
 
@@ -3545,7 +3545,7 @@ actions:
                             Additionally, turning off CEIP improves system performance by reducing background data collection.
                             Security frameworks such as the CIS Center for Internet Security recommend this action to enhance your security [3].
 
-                            This change is applied by modifying registry keys: 
+                            This change is applied by modifying registry keys:
 
                             - `HKLM\Software\Policies\Microsoft\SQMClient\Windows!CEIPEnable` [1] [2] [3]
                             - `HKLM\Software\Microsoft\SQMClient\Windows!CEIPEnable` [1]
@@ -3715,7 +3715,7 @@ actions:
                                 recommend: standard
                                 docs: |-
                                     This script disables the "BthSQM" scheduled task.
-                                    
+
                                     This task is part of the Bluetooth Customer Experience Improvement Program (CEIP) [1].
                                     The BthSQM task collects and sends data about your Bluetooth usage to Microsoft [1].
                                     This data transmission compromises your privacy.
@@ -4160,10 +4160,10 @@ actions:
                 docs: |-
                     Application Experience comprises services and tasks that help applications, including older ones, run smoothly.
                     These components collect and send telemetry data to Microsoft, potentially impacting user privacy [1] [2] [3] [4].
-                    
+
                     Scripts under this category aim to enhance user privacy, data protection, and protect the system from potential
                     vulnerabilities [5]. They also optimize system performance [1] [2] by removing non-essential operating system components.
-                    
+
                     However, disabling Application Experience could influence the performance or compatibility of specific applications
                     or services on your system [3] [5].
 
@@ -4968,7 +4968,7 @@ actions:
                                     ### Overview of default task statuses
 
                                     `\Microsoft\Windows\Device Information\Device`:
-                                    
+
                                     | OS Version       | Default status |
                                     | ---------------- | -------------- |
                                     | Windows 10 22H2  | 🟢 Ready |
@@ -4996,7 +4996,7 @@ actions:
                                     ### Overview of default task statuses
 
                                     `\Microsoft\Windows\Device Information\Device User`:
-                                    
+
                                     | OS Version       | Default status |
                                     | ---------------- | -------------- |
                                     | Windows 10 22H2  | 🟢 Ready |
@@ -6591,7 +6591,7 @@ actions:
                                     This collection can be a privacy concern as it involves the retention and potential analysis of personal behavior patterns.
 
                                     By disabling this feature, users can prevent their activity history from being used for customization or other purposes,
-                                    thereby enhancing their privacy and potentially improving system performance by reducing background data processing tasks.  
+                                    thereby enhancing their privacy and potentially improving system performance by reducing background data processing tasks.
                                 children:
                                     -
                                         name: Disable Cortana's history display
@@ -6839,7 +6839,7 @@ actions:
                         docs: |-
                             This script blocks both the Windows search function and Cortana, Microsoft's virtual assistant, from
                             accessing your device's location data [1].
-                            
+
                             By default, Microsoft processes location data, impacting user privacy [2].
 
                             The U.S. Internal Revenue Service advises restricting access to this data to improve security, given the
@@ -6849,7 +6849,7 @@ actions:
                             location [1], thus enhancing privacy.
 
                             The script accomplishes this by modifying the following registry keys:
-                            
+
                             - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!AllowSearchToUseLocation` [1] [2]
                             - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search!AllowSearchToUseLocation` [4]
 
@@ -7100,7 +7100,7 @@ actions:
                         recommend: strict
                         docs: |-
                             This disables the storage and display of search history in Windows [1] [2].
-                            
+
                             When executed, the script prevents the operating system from storing search queries in the registry [1] [2].
                             Consequently, suggestions based on previous searches will no longer appear in the search pane [1] [2].
                             However, suggestions based on local content from apps or Windows itself will remain available [1] [2].
@@ -7111,7 +7111,7 @@ actions:
                             Running this script disables this feature, thereby enhancing privacy.
 
                             The script configures the following registry keys:
-                            
+
                             - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer!DisableSearchHistory` registry key [1] [2].
                             - `HKCU\Software\Microsoft\Windows\CurrentVersion\SearchSettings!IsDeviceSearchHistoryEnabled` [5].
 
@@ -7841,7 +7841,7 @@ actions:
                             > You will need to set up these preferences separately on each device.
 
                             ### Technical Details
-                            
+
                             The script disables language synchronization by setting this Windows Registry value to `0`:
                             `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language!Enabled` [2] [5] [6].
 
@@ -8769,7 +8769,7 @@ actions:
                             The `OfficeTelemetryAgentLogOn` scheduled task, collects data for the Office Telemetry Dashboard [1]. This task activates upon
                             user login to an Office client and continues to scan and collect data during the session [1]. The types of data collected encompass
                             file names of recently accessed Office documents [2] [3], names of add-ins and solutions interacting with Office [3], and system information
-                            including user and computer names [2]. 
+                            including user and computer names [2].
 
                             Disabling these tasks is recommended for enhancing privacy. The script effectively prevents privacy risks associated with telemetry
                             data collection by disabling the related scheduled tasks. It prevents the collection and upload of potentially sensitive information,
@@ -8851,7 +8851,7 @@ actions:
                     -
                         name: Disable "Microsoft Office Subscription Heartbeat" task
                         docs: |-
-                            This script disables the "Microsoft Office Subscription Heartbeat" scheduled task. 
+                            This script disables the "Microsoft Office Subscription Heartbeat" scheduled task.
 
                             The primary function of the Office Subscription Heartbeat task is to periodically check the subscription status of Microsoft Office products [1] [2],
                             verifying their licenses are active and valid [1]. This task actively communicates with Microsoft servers, transmitting Microsoft account data [3] for
@@ -8886,7 +8886,7 @@ actions:
                                 taskNamePattern: Office 15 Subscription Heartbeat
                                 # "Office 16 Subscription Heartbeat":
                                 #   For Office 16, there isn't a separate and verified task named "Office 16 Subscription Heartbeat".
-                                #   Instead, it appears to utilize the "Office 15 Subscription Heartbeat" task, 
+                                #   Instead, it appears to utilize the "Office 15 Subscription Heartbeat" task,
                                 #   but runs the `OLicenseHeartbeat.exe` process from the Office16 folder.
             -
                 category: Configure browsers
@@ -8902,7 +8902,7 @@ actions:
                         docs: |- # Similar to "Configure Chrome"
                             This category contains scripts that adjust Microsoft Edge settings to enhance privacy, security,
                             and potentially improve system performance
-                            
+
                             This category is designed for Chromium-based Edge only, not for legacy Edge.
                             Edge (Chromium) is the current version of Microsoft Edge, replacing Edge (Legacy) [1] [2].
                             It comes pre-installed on all Windows versions starting from Windows 10 20H2 [2].
@@ -8994,7 +8994,7 @@ actions:
                                     -
                                         name: Disable outdated Edge site information sending
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "Disabling this telemetry.." 
+                                        docs: |- # refactor-with-variables: • Chromium Policy Caution • "Disabling this telemetry.."
                                             This script prevents Edge from sending site-related information.
 
                                             This prevents the browser from sending site information used to improve Microsoft services [1] [2].
@@ -9026,7 +9026,7 @@ actions:
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution
                                             This script disables the Edge Feedback feature in Microsoft Edge, enhancing user privacy by preventing feedback and data
                                             from being sent to Microsoft.
-                                            
+
                                             The feature is enabled by default and cannot be disabled through standard browser settings [1] [2].
                                             When signed into Microsoft Edge with a work or school account, feedback is linked to the user's account and organization,
                                             potentially exposing sensitive information [1].
@@ -9110,7 +9110,7 @@ actions:
 
                                             Keep in mind:
 
-                                            - Security vulnerabilities and issues in Edge won't be fixed if updates are disabled [1] [3] [4]. 
+                                            - Security vulnerabilities and issues in Edge won't be fixed if updates are disabled [1] [3] [4].
                                             - Manual updates are still possible as these services start automatically for manual updates.
 
                                             ### Overview of default service statuses
@@ -9151,7 +9151,7 @@ actions:
                                         recommend: strict
                                         docs: |- # refactor-with-variable: Same • Edge Update Caution
                                             This script stops Microsoft Edge from updating automatically by disabling specific scheduled tasks.
-                                            
+
                                             Specifically, it targets two tasks:
 
                                             - `MicrosoftEdgeUpdateTaskMachineCore` [1] [2] [3]
@@ -9432,7 +9432,7 @@ actions:
                                             these installations, users can manage their system's exposure to such risks.
 
                                             Overall, these scripts help to:
-                                            
+
                                             - Prevent unsolicited installations of Microsoft Edge.
                                             - Enable users to decide when and if Edge WebView should be installed, aligning with best practices for security and privacy.
                                             - Provide users with tools to manage software deployment in a controlled manner.
@@ -9442,7 +9442,7 @@ actions:
                                                 recommend: standard # Preventing automatic installation helps control unwanted software without impacting system stability or security
                                                 docs: |-
                                                     This script prevents the automatic installation of Edge (Chromium) via Windows Update.
-                                                    
+
                                                     Microsoft Edge (Chromium), designed to replace Edge (Legacy), is automatically distributed
                                                     to devices running Windows 10 version 1803 or newer [1] [2] [3].
                                                     This script does not impact Windows 10, version 20H2 and later [3].
@@ -9450,11 +9450,11 @@ actions:
 
                                                     This script only blocks the automatic installation of Edge (Chromium) through Windows Update,
                                                     without affecting other installation methods [2] [3] or system updates [2].
-                                                    
+
                                                     As Microsoft has ceased support for Edge (Legacy), including security updates [1], this script
                                                     enables you to manage the installation timing and method for Edge (Chromium),
                                                     aligning the updates with your preferences.
-                                                    
+
                                                     This script modifies the `HKLM\SOFTWARE\Microsoft\EdgeUpdate!DoNotUpdateToEdgeWithChromium` [2] [3] registry
                                                     key to to configure this setting.
 
@@ -9538,7 +9538,7 @@ actions:
                                                     This improves your privacy and control over installed software on your system.
 
                                                     This script configures the `Install{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}` policy [1].
- 
+
                                                     > **Caution**:
                                                     > - This will display the message "Your browser is managed by your organization" on the settings page.
                                                     > - This locks settings and prevents them from being changed on the settings page.
@@ -9696,7 +9696,7 @@ actions:
                                         name: Disable Edge Copilot access on new tab page
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution
                                             This script disables the Copilot access on the new tab page of Microsoft Edge.
-                                            
+
                                             Originally known as Bing Chat, Copilot is a generative AI solution developed by Microsoft, integrated
                                             directly into the Edge browser [2].
                                             By default, the new tab page in Edge features two access points to Copilot: within the search box and in
@@ -9954,7 +9954,7 @@ actions:
                                         recommend: standard
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Microsoft recommends
                                             This script disables Microsoft Edge Insider promotions to create a cleaner and more streamlined browser experience.
-                                            
+
                                             By default, Edge displays content promoting its Insider channels on the "About Microsoft Edge" settings page [1].
                                             Running this script prevents these promotional materials from appearing [1] [2].
 
@@ -10211,7 +10211,7 @@ actions:
 
                                     Microsoft Rewards encourages users to earn points through Bing searches, which can be redeemed for items at the Microsoft Store [1].
                                     However, this feature involves tracking user activities, which may pose privacy risks by potentially sharing sensitive data with third parties [1].
-                                    
+
                                     Running this script prevents Microsoft Rewards notifications and features from appearing in Edge [1], enhancing privacy.
                                     The script modifies the `ShowMicrosoftRewards` policy to turn off these features [2] [3]
                                     It's recommended for those who prefer not to have their search activities monitored or used for advertising purposes.
@@ -10308,7 +10308,7 @@ actions:
                                 docs: |- # refactor-with-variables: • Chromium Policy Caution
                                     This script removes the sign-in prompt from the new tab page in Microsoft Edge to
                                     minimize distractions and protect your privacy.
-                                    
+
                                     By default, Microsoft Edge shows a sign-in prompt on the new tab page, asking users to log in [1].
                                     This prompt, which resembles advertising, can compromise your privacy by encouraging the sharing of
                                     personal information.
@@ -10696,12 +10696,12 @@ actions:
                                 recommend: strict
                                 docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities • Microsoft recommends
                                     This script disables the in-app support feature of Microsoft Edge.
-                                    
+
                                     The in-app support allows users to contact Microsoft support directly from the browser [1].
                                     This feature is enabled by default, activating the Microsoft Rewards experience in Edge [1].
                                     It cannot be disabled by users through the standard browser settings [1].
                                     This feature leads to sharing of browser usage data with Microsoft.
-                                    Microsoft support agents directly from the browser [1]. 
+                                    Microsoft support agents directly from the browser [1].
 
                                     Authorities like The Center for Internet Security (CIS) [2]
                                     recommend this script for enhanced security.
@@ -10729,7 +10729,7 @@ actions:
                                 name: Disable Edge payment data storage and ads
                                 recommend: standard
                                 docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities
-                                    This script disables Microsoft Edge's AutoFill feature for payment data and suppresses payment-related advertisements, 
+                                    This script disables Microsoft Edge's AutoFill feature for payment data and suppresses payment-related advertisements,
                                     enhancing privacy by preventing the storage and suggestion of unsolicited financial information.
 
                                     By default, Microsoft Edge allows users to save and autofill payment information, such as credit and debit card details,
@@ -10769,7 +10769,7 @@ actions:
                                     is not stored or automatically completed in web forms.
 
                                     The AutoFill feature, by default, allows users to quickly complete address forms using previously stored information [1] [2].
-                                    
+
                                     Running this script results in:
                                     - No new address information being saved  [1] [2].
                                     - AutoFill not suggesting or filling in any previously stored address information  [1] [2].
@@ -10844,7 +10844,7 @@ actions:
                                 recommend: standard
                                 docs: |- # refactor-with-variables: • Chromium Policy Caution
                                     This script disables the Startup Boost feature in Microsoft Edge.
-                                    
+
                                     Startup Boost enables Edge to launch more quickly by allowing certain processes to start at OS sign-in [1].
                                     It keeps running in the background even after all browser windows are closed [1] [2].
                                     While this can decrease the browser's start time [2], it might also pose privacy and security risks.
@@ -10947,7 +10947,7 @@ actions:
                                 recommend: strict
                                 docs: |- # refactor-with-variables: • Chromium Policy Caution
                                     This script disables the Site Safety Services in Microsoft Edge.
-                                    
+
                                     By default, this service displays top site information in the page information dialog [1].
                                     Clicking the lock icon in the address bar causes Edge to retrieve detailed site information from Microsoft Bing [2] [3].
 
@@ -11023,7 +11023,7 @@ actions:
 
                                     By default, typing in the Address bar of Edge (Legacy) displays search suggestions [1] [2] [3],
                                     potentially compromising privacy by sending typed data to Microsoft.
-                                    
+
                                     This script prevents such data sharing by disabling the search suggestions feature [1] [2] [3].
                                     As a result, users will no longer receive search suggestions when typing in the Address bar,
                                     thereby enhancing privacy [1] [2] [3] [4].
@@ -11276,7 +11276,7 @@ actions:
                                             parameters:
                                                 valueName: ChromeCleanupReportingEnabled # Chrome ≥ 68
                                                 dwordData: "0"
-                                    - 
+                                    -
                                         name: Disable Chrome system cleanup scans
                                         recommend: standard # DISA recommends
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Authorities • Performance + Privacy • Active Directory only
@@ -12922,7 +12922,7 @@ actions:
                                     -
                                         name: Disable insecure "SSL 2.0" protocol
                                         recommend: standard # Outdated protocol, removed from Windows
-                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • identified as • authorities • previously enabled 
+                                        docs: |- # refactor-with-variables: Same • Compatibility Caution • identified as • authorities • previously enabled
                                             This script disables the SSL 2.0 protocol.
                                             This protocol is identified as `SSL 2.0` on Windows [1] [2] [3],
                                             and also known as *SSL2* [4] [5].
@@ -13182,7 +13182,7 @@ actions:
 
                             > **Caution:** This may cause compatibility issues with older devices or software.
 
-                            [1]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"                                    
+                            [1]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"
                         children:
                             -
                                 name: Enable secure "DTLS 1.2" protocol
@@ -13931,7 +13931,7 @@ actions:
                             in the background [1].
                             Additionally, it enhances privacy by preventing the storage and sharing of clipboard history with Microsoft servers.
                             Clipboard data often contains sensitive information, including passwords and credit card numbers [4].
-                            
+
                             > **Caution**: Disabling this service will remove the functionalities for clipboard history and synchronization across devices.
                             > If you depend on these features, you should weigh the benefits against the loss of these functionalities.
 
@@ -14063,7 +14063,7 @@ actions:
                         dataType: REG_DWORD
                         data: "1"
                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-            - 
+            -
                 name: Disable storage of the LAN Manager password hashes
                 recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
@@ -14221,7 +14221,7 @@ actions:
 
                     Windows Error Reporting (WER) creates minidumps (small memory snapshots at crash time) and
                     sends them to Microsoft [1].
-                    
+
                     Although intended to improve software by analyzing crash data, this feature raises privacy concerns
                     such as:
 
@@ -14519,7 +14519,7 @@ actions:
 
                             The blocked hosts are:
 
-                            - `telemetry.dropbox.com` [3] 
+                            - `telemetry.dropbox.com` [3]
                             - `telemetry.v.dropbox.com` [4]
 
                             [1]: https://web.archive.org/web/20240123113411/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/m-p/463436/highlight/true#M4616 "Re: Why So Much Telemetry ? - Page 3 - Dropbox Community | www.dropboxforum.com"
@@ -15776,7 +15776,7 @@ actions:
                                     This script specifically targets the Microsoft Defender Core Service.
                                     This service is a part of **Defender Antivirus** and **Defender for Endpoint** products [2].
                                     It contributes to the stability and performance of these products [2].
-                                    
+
                                     This service connects to Microsoft servers to receive remote configurations, manage feature rollouts,
                                     and participate in experiments [1].
 
@@ -16308,7 +16308,7 @@ actions:
                                         parameters:
                                             # Availability: ✅ Windows 10 Pro (≥ 22H2) | ✅ Windows 11 Pro (≥ 21H2)
                                             fileGlob: '%SYSTEMROOT%\System32\drivers\MsSecFlt.sys'
-                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 (≥ 22H2) | 🔒️ Protected on Windows 11 (≥ 21H2)  
+                                            grantPermissions: 'true' # 🔒️ Protected on Windows 10 (≥ 22H2) | 🔒️ Protected on Windows 11 (≥ 21H2)
                                     -
                                         function: SoftDeleteFiles
                                         parameters:
@@ -16415,7 +16415,7 @@ actions:
 
                                     - `HKLM\SOFTWARE\Microsoft\Windows Defender\Features!TamperProtection` [4] [5] [6].
                                     - `HKLM\SOFTWARE\Microsoft\Windows Defender\Features!TamperProtectionSource` [7]
-                                    
+
                                     These keys interact with the `MpClient.dll` library within **Defender Antivirus** [8].
                                     The script sets values to replicate changes made through the **Windows Security** interface [5].
 
@@ -16549,7 +16549,7 @@ actions:
                                             This allows for more extensive privacy-focused configurations that may otherwise be restricted or overridden by
                                             the secure environment.
 
-                                            Disabling this feature may also improve system performance by reducing the overhead of maintaining isolated environments. 
+                                            Disabling this feature may also improve system performance by reducing the overhead of maintaining isolated environments.
 
                                             However, this comes at the cost of potentially decreased protection against specific types of attacks.
                                             The Center for Internet Security (CIS) recommends enabling this feature for additional security on supported processors [4].
@@ -16802,7 +16802,7 @@ actions:
                                                     defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
                                                     maximumWindowsVersion: 'Windows11-21H2'
                                             -
-                                                function: DisableServiceInRegistry 
+                                                function: DisableServiceInRegistry
                                                 parameters:
                                                     serviceName: SgrmBroker
                                                     defaultStartupMode: Disabled
@@ -16835,7 +16835,7 @@ actions:
                                             However, this monitoring may compromise privacy by sharing system health data with external services [1].
 
                                             This script enhances privacy by preventing the sharing of system health data.
-                                            It may also improve performance by reducing the overhead from security checks. 
+                                            It may also improve performance by reducing the overhead from security checks.
                                             However, disabling these assertions may reduce your protection against advanced threats.
 
                                             > **Caution**: This script may weaken your system's ability to detect threats.
@@ -16870,10 +16870,10 @@ actions:
                                         name: Disable System Guard rule scanner
                                         docs: |-
                                             This script disables the **Secure Enclave**, a component of the **System Guard** feature in Windows.
-                                            
+
                                             The **Secure Enclave** is also known as the **assertion engine** [1] [2].
                                             It continuously monitors and checks system integrity during runtime, assessing the system's security state [2].
-                                            It is a core component of **System Guard** [1] [2]. 
+                                            It is a core component of **System Guard** [1] [2].
                                             This engine can send collected data to cloud or third-party providers [1] [2].
 
                                             This script enhances privacy by preventing system integrity data from being shared externally.
@@ -17180,7 +17180,7 @@ actions:
 
                             Defender Antivirus, integrated into Windows, provides protection against viruses, ransomware, and other
                             types of malware [1] [2] [3].
-                            
+
                             Disabling Defender Antivirus may improve system performance and privacy by stopping related data collection
                             However, disabling it may severely compromise your system's security if not complemented by proper security practices.
                             Carefully consider the trade-off before proceeding.
@@ -19479,7 +19479,7 @@ actions:
                                                     - Collecting system data
                                                     - Scanning files
                                                     - Sending telemetry data to Microsoft
-    
+
                                                     This also increases system speed in Safe Mode by reducing background processes and memory usage.
 
                                                     However, running this script may compromise your security by leaving your system unprotected from malware
@@ -20527,7 +20527,7 @@ actions:
 
                                             ### Technical Details
 
-                                            This task executes the following command:                                            
+                                            This task executes the following command:
                                             `%PROGRAMFILES\Windows Defender\MpCmdRun.exe Scan -ScheduleJob -ScanTrigger 55` [2] [3] [4].
                                             The `MpCmdRun.exe` is a command-line tool used for various **Defender Antivirus** functions [5].
 
@@ -20932,7 +20932,7 @@ actions:
                             [10]: https://web.archive.org/web/20240408101037/https://softwareg.com.au/blogs/internet-security/what-is-a-major-weakness-with-a-network-host-based-firewall "What Is A Major Weakness With A Network Host-Based Firewall | softwareg.com.au"
                             [11]: https://web.archive.org/web/20240409085528/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-logging?tabs=intune "Configure Windows Firewall logging - Windows Security | Microsoft Learn | learn.microsoft.com"
                         children:
-                            - 
+                            -
                                 category: Disable Defender Firewall services and drivers
                                 docs: |-
                                     This section contains scripts to disable the essential services and drivers of Defender Firewall.
@@ -21417,7 +21417,7 @@ actions:
                                     - `%PROGRAMFILES%\Windows Defender\MpDlpService.exe` for older Windows versions, such as Windows 10 and Windows Server 2019 [1].
                                     - `%PROGRAMDATA%\Microsoft\Windows Defender\Platform\<version number>\MpDlpService.exe` for modern Windows versions.
                                       Tests confirm this path since Windows 10 Pro ≥ 22H2 and Windows 11 Pro ≥ 23H2.
-  
+
                                     Historically, this functionality was part of the main Defender service [5].
                                     In 2024, Microsoft separated DLP into its own process [3] [5].
 
@@ -21550,7 +21550,7 @@ actions:
                                     > **Caution**: Disabling this feature may reduce protection against unauthorized data sharing and increase the risk of data leaks.
 
                                     ### Technical Details
-                                        
+
                                     `MpDlpCmd.exe` is a command-line tool that may display dialogs or notifications [6].
                                     It is loaded by `SvcHost.exe` as a Windows service [9] and loads `MpClient.dll` [9].
 
@@ -21826,7 +21826,7 @@ actions:
                                             - Increase the risk of running malicious software unknowingly.
                                             - Allow Microsoft Store apps to access potentially dangerous web content without warning.
 
-                                            This category provides options to customize various aspects of SmartScreen's behavior for Store apps, balancing 
+                                            This category provides options to customize various aspects of SmartScreen's behavior for Store apps, balancing
                                             between security, privacy, and user freedom.
 
                                             > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
@@ -21995,7 +21995,7 @@ actions:
                                                             keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost
                                                             valueName: PreventOverride
                                                             dataType: REG_DWORD
-                                                            data: '0'   
+                                                            data: '0'
                                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                                     -
                                                         function: SetRegistryValue
@@ -22018,7 +22018,7 @@ actions:
                                     SmartScreen feature raises privacy concerns because it sends unhashed URLs, downloaded files, applications being run, IP addresses,
                                     and the user's Security Identifier (SID) to Microsoft [1] [2] [3].
 
-                                    This data transmission can potentially allow the company to track browsing history and user activities.                                   
+                                    This data transmission can potentially allow the company to track browsing history and user activities.
                                     The transmission of full file paths and download URLs can expose a significant amount of sensitive and private information about a
                                     user's system and network structure.
                                     The combination of these data points could enable Microsoft to build a comprehensive profile of user activities and behavior.
@@ -22141,7 +22141,7 @@ actions:
                                             parameters:
                                                 valueName: PreventSmartScreenPromptOverride # Edge ≥ 77
                                                 dwordData: '0'
-                                    - 
+                                    -
                                         name: Enable Edge SmartScreen warning dismissal for files
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • SmartScreen Caution
                                             This script allows users to bypass Edge SmartScreen warnings when downloading files.
@@ -22184,7 +22184,7 @@ actions:
 
                                             By default [1] [2], Microsoft Defender SmartScreen sends DNS requests [1] [2] to identify
                                             potentially harmful websites, like those involved in phishing or malware [2] [3].
-                                            
+
                                             Disabling DNS requests stops SmartScreen from obtaining IP addresses [1] [2],
                                             which enhances privacy by reducing IP data sharing.
                                             This script also improves security by reducing dependence on DNS servers.
@@ -22254,7 +22254,7 @@ actions:
                                         name: Disable outdated Edge SmartScreen library update
                                         docs: |- # refactor-with-variables: • Chromium Policy Caution • Active Directory only • SmartScreen Caution
                                             This script prevents specific versions of Microsoft Edge from updating to the newer SmartScreen library.
-                                              
+
                                             This script reverts Microsoft Edge to the previous SmartScreen library, used before version 103 [1] [2].
                                             It blocks Edge from loading the new SmartScreen library (`libSmartScreenN`),
                                             which is responsible for checking site URLs and application downloads [1].
@@ -22266,7 +22266,7 @@ actions:
 
                                             Disabling the updated SmartScreen library can increase privacy by limiting data collection but may reduce
                                             security as it bypasses the latest updates that combat phishing and malware.
-                                            
+
                                             This script may improve system performance since some users have reported slowdowns with the new
                                             library [3]; these issues have probably already been resolved as the library has matured.
 
@@ -22293,7 +22293,7 @@ actions:
                                         name: Disable Edge (Legacy) SmartScreen
                                         docs: |- # refactor-with-variables: Same • Edge (Legacy) only • SmartScreen Caution
                                             This script disables the SmartScreen feature in Edge (Legacy).
-                                            
+
                                             Edge (Legacy) uses the Windows Defender SmartScreen by default to protect users from phishing scams and malicious software [1] [2].
                                             This feature is enabled by default and cannot be turned off by users [2].
 
@@ -22324,7 +22324,7 @@ actions:
                                         name: Enable Edge (Legacy) SmartScreen warning dismissal
                                         docs: |- # refactor-with-variables: Same • Performance + Privacy • Edge (Legacy) only • SmartScreen Caution
                                             This script allows users to bypass SmartScreen warnings in Edge (Legacy).
-                                            
+
                                             Edge (Legacy) features a SmartScreen filter that warns users about potentially malicious websites and file downloads [1].
                                             By default, this feature allows users to ignore these warnings and proceed to download files [1].
                                             This script keeps this option, enhancing user privacy by minimizing data sent to Microsoft.
@@ -22338,7 +22338,7 @@ actions:
 
                                             This script configures the `PreventOverride` policy [1] [2] [3].
                                             This script only applies to Edge (Legacy) and does not impact newer versions of Edge.
-    
+
                                             > **Caution**: Disabling SmartScreen may reduce your protection against phishing and malware.
 
                                             [1]: https://web.archive.org/web/20240624133131/https://learn.microsoft.com/en-us/previous-versions/windows/edge-legacy/available-policies#configure-windows-defender-smartscreen "Group Policy and Mobile Device Management settings for Microsoft Edge (Microsoft Edge for IT Pros) | Microsoft Learn | learn.microsoft.com"
@@ -22521,7 +22521,7 @@ actions:
                                 docs: |-
                                     This category includes scripts that disable SmartScreen system components.
 
-                                    SmartScreen is a security feature in Windows that helps protect your device from 
+                                    SmartScreen is a security feature in Windows that helps protect your device from
                                     potentially harmful applications, files, and websites [1].
                                     Its components run in the background as part of the operating system.
 
@@ -23409,7 +23409,7 @@ actions:
 
                                             This script enhances privacy by reducing the data sent to Microsoft.
                                             It may also improve system performance through reduced resource usage, fewer notifications, and less network activity.
-                                            
+
                                             However, this script may decrease security.
                                             The Center for Internet Security (CIS) recommends enabling this feature for better protection against phishing attacks [3].
 
@@ -23562,14 +23562,14 @@ actions:
                                             It may slightly improve system performance by disabling these UI elements.
                                             However, you will not receive warnings about potential phishing attempts, increasing your
                                             risk of falling victim to such attacks.
-                                            
+
                                             > **Caution**: This action reduces your ability to detect phishing attempts.
 
                                             ### Technical Details
 
                                             The script sets the following registry value:
                                             `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\FeatureFlags!BlockUxDisabled` [2] [3].
-                                            
+
                                             This feature is unavailable on Windows 10 and Windows 11 21H2 [1].
                                             It is enabled by default on Windows 11 [3] (confirmed by tests on version 23H2 and later).
 
@@ -23617,7 +23617,7 @@ actions:
 
                                             The script sets the following registry value:
                                             `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\FeatureFlags!TelemetryCallsEnabled` [2] [3].
-                                            
+
                                             This feature is unavailable on Windows 10 and Windows 11 21H2 [1].
                                             It is enabled by default on Windows 11 Pro (version 23H2 and later versions) [3].
 
@@ -23681,7 +23681,7 @@ actions:
                         docs: |-
                             This category offers scripts to disable or modify different aspects of the **Windows Security** user interface,
                             formerly known as **Windows Defender Security Center**.
-                            
+
                             **Windows Security** is a centralized interface managing various Windows security features [1] [2] [3] [4].
                             It evolved from **Windows Defender**, initially a standalone antivirus with its own interface [5].
                             Over time, Microsoft separated the management interface from the core antivirus component [6].
@@ -23693,7 +23693,7 @@ actions:
                             2. Windows 10 version 1703 introduced **Windows Defender Security Center (WDSC)**, combining Windows Defender's
                                interface with **Windows Security and Maintenance** [7].
                             3. Version 1803 renamed the Windows Defender settings page to **Windows Security** and redesigned it to emphasize
-                               various protection areas [3].                               
+                               various protection areas [3].
                             4. In version 1809, **Windows Defender Security Center** was renamed to **Windows Security (WSC)** [1] [2] [4] [8].
 
                             Windows Security features include:
@@ -24462,7 +24462,7 @@ actions:
 
                                             WSHA is a component that transmits a client's security health state to a network policy server [1].
                                             It sends a summary of Windows Update-related information [2].
-                                            This data transmission may raise privacy concerns for users who wish to limit the information shared 
+                                            This data transmission may raise privacy concerns for users who wish to limit the information shared
                                             with Microsoft or network administrators.
 
                                             By disabling WSHA, this script improves privacy by preventing the automatic sending of system health
@@ -25160,7 +25160,7 @@ actions:
                                 name: Remove "Scan with Defender" from context menu
                                 docs: |-
                                     This script removes the **Scan with Microsoft Defender** option from the right-click context menu.
-                                    
+
                                     This script enhances user privacy by limiting engagement with Defender's data collection processes.
                                     Defender may collect data during scans and at regular intervals, which some users may find
                                     unnecessary or unwanted.
@@ -25223,7 +25223,7 @@ actions:
 
                                     The icon in the system tray is controlled by the `SecurityHealthSystray.exe` file [3] [4].
 
-                                    > **Caution:** 
+                                    > **Caution:**
                                     > Removing the icon may hide important security alerts and make accessing security settings less convenient.
 
                                     ### Technical Details
@@ -25347,7 +25347,7 @@ actions:
                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ❌ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
                             -
-                                category: Disable sections in "Windows Security" 
+                                category: Disable sections in "Windows Security"
                                 docs: |-
                                     This category provides scripts that let you disable specific sections of the "Windows Security" interface.
 
@@ -25538,7 +25538,7 @@ actions:
                                         category: Disable Security and Maintenance notifications
                                         docs: |-
                                             This category includes scripts to disable Security and Maintenance notifications in Windows.
-                                            
+
                                             **Security and Maintenance** was previously known as the **Action Center** [1] or
                                             **Security Center** [1] [2].
                                             It serves as a central interface in Windows for managing security and maintenance settings [3].
@@ -27063,7 +27063,7 @@ actions:
                                     MDM offers a method to remotely adjust the ExploitGuard settings on a device [2].
 
                                     Microsoft rolled out the Exploit Guard feature starting from Windows 10 version 1709 [3] [4].
-                                    
+
                                     Notably, the National Security Agency (NSA) in the USA has recommended the use of this feature for enhanced security [3].
 
                                     ### Overview of default task statuses
@@ -27717,12 +27717,12 @@ actions:
                                     After running this script, Windows Update will not be searched for drivers when a new device is installed [2] [3].
 
                                     This script enhances your privacy by:
-                                        
+
                                     - Preventing automatic connections to Microsoft servers for driver updates
                                     - Stopping the transmission of system information to hardware vendors [5]
                                     - Lowering the risk of sensitive data leaving your device
 
-                                    This script configuration is recommended by the Defense Information Systems Agency (DISA), 
+                                    This script configuration is recommended by the Defense Information Systems Agency (DISA),
                                     a U.S. Department of Defense agency that provides IT security guidelines [5].
 
                                     This script may also improve system performance by:
@@ -27848,7 +27848,7 @@ actions:
                                     ### Technical Details
 
                                     This script sets the following registry value:
-                                    
+
                                     - `HKLM\Software\Policies\Microsoft\Windows\DriverSearching!DriverServerSelection` [1] [2] [3]
 
                                     [1]: https://web.archive.org/web/20241110104726/https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Cyber-Security/SiSyPHuS/AP3d/Workpackage3d_Analysis_Device_Setup_Manager.pdf?__blob=publicationFile&v=2 "Device Setup Manager | Federal Office for Information Security | www.bsi.bund.de"
@@ -27894,7 +27894,7 @@ actions:
 
                             - `0`: Automatic Updates are enabled.
                             - `1`: Automatic Updates are disabled.
-                            
+
                             By default, Windows enables Automatic Updates by setting `NoAutoUpdate` to `0` [3].
                             This script disables Automatic Updates by setting `NoAutoUpdate` to `1` [3] [4] [5].
 
@@ -28543,7 +28543,7 @@ actions:
                                 name: Disable "Scheduled Start" task
                                 docs: |-
                                     This script disables the "Scheduled Start" scheduled task.
-                                    
+
                                     This task initiates the Windows Update service at predetermined times or under specific conditions to perform tasks like
                                     checking for and installing updates.
 
@@ -28623,7 +28623,7 @@ actions:
                                 name: Disable "Schedule Scan" task
                                 docs: |-
                                     This script disables the "Schedule Scan" scheduled task.
-                                    
+
                                     This task responsible for periodically scanning for Windows updates.
 
                                     According to the Task Scheduler, this task executes `%SYSTEMROOT%\System32\UsoClient.exe StartScan`.
@@ -28728,10 +28728,10 @@ actions:
                                     This script disables the "UpdateModelTask Work" scheduled task.
 
                                     This task is responsible for updating Machine Learning (ML) models related to Windows Updates.
-                                    
+
                                     According to the Task Scheduler, its purpose is to update ML models and it
                                     executes `%SYSTEMROOT%\System32\UsoClient.exe StartModelUpdates`.
-                                    
+
                                     Microsoft suggests disabling it for performance optimization and reduced data collection [1].
 
                                     ### Overview of default task statuses
@@ -28968,12 +28968,12 @@ actions:
                                 docs: |-
                                     This script disables older scheduled tasks associated with Windows updates, which are no longer present in
                                     Windows versions since Windows 10 22H2 and Windows 11 22H2.
-                                    
+
                                     The script is compatible with Windows 10 and newer versions, skipping any missing tasks on recent systems.
 
                                     These tasks are linked to specific system files and are involved in various update processes, such as downloading and installing updates,
                                     rebooting after updates, and more.
-                                    
+
                                     Disabling these tasks can help reduce unnecessary system activity and potentially enhance privacy by limiting background update operations.
 
                                     ### Overview of older Windows Update tasks
@@ -30259,7 +30259,7 @@ actions:
                         name: Remove "Desktop" folder from This PC in File Explorer
                         docs: |- # refactor-with-variables: Same • Quick Access Productivity
                             This script hides the **Desktop** folder from **This PC** in **File Explorer**.
-                            
+
                             It improves privacy by hiding desktop contents, which often include personal files,
                             shortcuts, and temporary items.
                             This reduces the risk of accidentally revealing sensitive information when using
@@ -30390,7 +30390,7 @@ actions:
                         name: Remove "Videos"folder from This PC in File Explorer
                         docs: |- # refactor-with-variables: Same • Quick Access Productivity
                             This script hides the **Videos** folder from **This PC** in **File Explorer**.
-                            
+
                             It enhances privacy by hiding your video collection, which may contain personal or sensitive content.
                             This reduces the risk of inadvertently exposing private videos when using common file dialogs.
 
@@ -30544,7 +30544,7 @@ actions:
                             in **This PC** are hidden by default [5].
 
                             > **Caution**: This action enhances privacy but may require extra steps for access.
-                            
+
                             [1]: https://web.archive.org/web/20240729214345/https://blogs.windows.com/windows-insider/2021/02/24/announcing-windows-10-insider-preview-build-21322/ "Announcing Windows 10 Insider Preview Build 21322 | Windows Insider Blog | blogs.windows.com"
                             [2]: https://web.archive.org/web/20240803200324/https://github.com/privacysexy-forks/wdkmetadata/blob/99192741981aa7b7dc7db4aca3401f5d20496c91/generation/WDK/IdlHeaders/um/KnownFolders.h "wdkmetadata/generation/WDK/IdlHeaders/um/KnownFolders.h at 99192741981aa7b7dc7db4aca3401f5d20496c91 · privacysexy-forks/wdkmetadata · GitHub | github.com"
                             [3]: https://web.archive.org/web/20240225155108/https://www.winhelponline.com/blog/remove-3d-objects-folder-pc-windows-10/ "Remove 3D Objects Folder from This PC in Windows 10 » Winhelponline | www.winhelponline.com"
@@ -30630,7 +30630,7 @@ actions:
                     However, if you remove those dependent applications, the associated framework package will be deleted [4].
 
                     To list all framework apps, you can use the following command:
-                    
+
                     ```powershell
                     Get-AppxPackage | Where-Object { $_.IsFramework -eq $true } | Select-Object -ExpandProperty Name
                     ```
@@ -30794,7 +30794,7 @@ actions:
                                     This script uninstalls the "Microsoft 3D Builder" app.
 
                                     Microsoft 3D Builder offers tools for creating, viewing, and printing 3D objects [1].
-                                    It supports editing various 3D file types with features like material rendering, texture layering, 
+                                    It supports editing various 3D file types with features like material rendering, texture layering,
                                     and includes tools to prepare models for 3D printing [1].
 
                                     This app succeeded the older "Print 3D" app as the default 3D printing software starting with the Windows 10 version 19H1 [2].
@@ -32578,7 +32578,7 @@ actions:
                                     | Windows 11 | 23H2 | ❌ |
                                 call:
                                     function: UninstallStoreApp
-                                    parameters:                                        
+                                    parameters:
                                         packageName: Flipboard.Flipboard # Get-AppxPackage Flipboard.Flipboard
                                         publisherId: 3f5azkryzdbc4
                             -
@@ -32955,7 +32955,7 @@ actions:
                             and modern development methods [43].
 
                             This app is part of Microsoft's effort to modularize Windows, separating system functions into individual
-                            apps [40] [42]. 
+                            apps [40] [42].
                             This modularization allows for easier and quicker updates and improvements [40].
 
                             This app raises several privacy concerns:
@@ -33462,7 +33462,7 @@ actions:
                                             -
                                                 function: UninstallNonRemovableStoreAppWithCleanup
                                                 parameters:
-                                                    
+
                                                     packageName: Microsoft.MicrosoftEdge # Get-AppxPackage Microsoft.MicrosoftEdge
                                                     publisherId: 8wekyb3d8bbwe
                                             -
@@ -33532,7 +33532,7 @@ actions:
                                             However, some Legacy Edge associations may persist depending on the Windows version.
 
                                             ### Technical Details
-                                            
+
                                             Edge Legacy is associated with several ProgIDs, each prefixed with `AppX` [3].
                                             Known ProgIDs include:
 
@@ -33547,7 +33547,7 @@ actions:
 
                                             - `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\Microsoft.MicrosoftEdge_{Version}\MicrosoftEdge\Capabilities\URLAssociations`
                                             - `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\Microsoft.MicrosoftEdge_{Version}\MicrosoftEdge\Capabilities\FileAssociations`
-                                            
+
                                             Within these registry keys:
 
                                             - URL associations may include `http`, `https`, `microsoft-edge`, `microsoft-edge-holographic`.
@@ -33611,7 +33611,7 @@ actions:
                                                 docs: |-
                                                     This script removes file and URL associations with Microsoft Edge Legacy (an old version of Edge),
                                                     enhancing your privacy and potentially improving system performance.
-                                                    
+
                                                     This script removes Edge Legacy from the default application selection dialog for certain file types and
                                                     protocols, preventing it from being easily chosen as the default handler.
                                                     Even on newer Windows computers, the old Edge might still be set to open common file types like:
@@ -34915,7 +34915,7 @@ actions:
                                     parameters:
                                         packageName: MicrosoftWindows.UndockedDevKit # Get-AppxPackage MicrosoftWindows.UndockedDevKit
                                         publisherId: cw5n1h2txyewy
-            - 
+            -
                 category: Remove OneDrive
                 docs: |-
                     Microsoft OneDrive (formerly SkyDrive) is a file hosting service operated by Microsoft [1].
@@ -35252,7 +35252,7 @@ actions:
                                     valueName: DisableFileSyncNGSC
                                     dataType: REG_DWORD
                                     data: "1"
-                                    deleteOnRevert: 'true' # Missing key since Windows 10 21H2, Windows 11 21H2 
+                                    deleteOnRevert: 'true' # Missing key since Windows 10 21H2, Windows 11 21H2
                             -
                                 function: SetRegistryValue
                                 parameters:
@@ -35267,7 +35267,7 @@ actions:
                         docs: |-
                             This script prevents OneDrive from automatically reinstalling itself.
 
-                            OneDrive, Microsoft's cloud storage service, can automatically reinstall itself after being 
+                            OneDrive, Microsoft's cloud storage service, can automatically reinstall itself after being
                             uninstalled on older Windows 10 versions [1].
                             This is done through a startup entry that runs `OneDriveSetup.exe`, which silently installs
                             OneDrive [2] when a user logs in [3].
@@ -35597,7 +35597,7 @@ actions:
                                     It improves privacy by preventing Edge from appearing as an option when selecting programs
                                     to open certain files or web links.
                                     This increases user control and reduces data collection and tracking via Microsoft Edge.
-                                    
+
                                     If you've uninstalled Edge, this script stabilizes your system by removing leftover associations [1].
                                     It may also boost performance by removing unnecessary Edge-related file and protocol handlers.
 
@@ -35606,7 +35606,7 @@ actions:
                                     > Remember to set up an alternative browser.
 
                                     ### Technical Details
-                                    
+
                                     The script removes all Edge associations for web-related file types (e.g., .htm, .html, .pdf, .svg) and
                                     protocols (e.g., http, https, mailto) from the Windows registry.
 
@@ -35646,8 +35646,8 @@ actions:
                                         if (-Not (Test-Path $path)) {
                                             continue
                                         }
-                                        $items = Get-Item -Path $path | 
-                                                ForEach-Object { $_.Property } | 
+                                        $items = Get-Item -Path $path |
+                                                ForEach-Object { $_.Property } |
                                                 Where-Object { $_ -Match 'MSEdge' }
                                         foreach ($item in $items) {
                                             $split = $item -split '_'
@@ -35662,7 +35662,7 @@ actions:
                                     }
                                     $results | Format-Table -Property ProgID, Association, RegistryPath -AutoSize
                                     ```
-                                    
+
                                     [1]: https://web.archive.org/web/20240803173827/https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
                                 call:
                                     -
@@ -36395,7 +36395,7 @@ actions:
 
                             The Xbox app collects and shares personal information with Microsoft and third-party game publishers [2].
                             It gathers data including:
-                            
+
                             - Personal information like account details [2]
                             - Hardware and software information about your device [2]
                             - Gaming activities and communications [2]
@@ -37280,7 +37280,7 @@ actions:
                             | **Description**  | Manages distributed scanners, scan processes, and scan servers. |
                             | **Default** (Windows 11 ≥ 23H2) | 🟡 Missing |
                             | **Default** (Windows 10 ≥ 22H2) | 🟡 Missing |
-                            
+
                             [1]: "Unattended Windows Setup Reference | systemscenter.ru" https://web.archive.org/web/20240406125031/https://systemscenter.ru/unattend.en/index.html?page=html%2Fdb43485b-ffad-476f-9b22-97bde41ceb47.htm
                         call:
                             function: DisableWindowsFeature
@@ -37707,8 +37707,8 @@ actions:
                             This app is responsible for enabling the Widgets feature [1].
                             Widgets are mini-programs that provide information and easy access to frequently used functions.
 
-                            The app is not essential, and its removal does not impact other functionalities of the operating system, provided you do not 
-                            ntend to use Widgets. 
+                            The app is not essential, and its removal does not impact other functionalities of the operating system, provided you do not
+                            ntend to use Widgets.
 
                             "Windows Web Experience Pack" app collects diagnostic data, and the individual widgets it enables might also gather user data [2].
 
@@ -37794,7 +37794,7 @@ actions:
 
                             Disabling Windows Copilot prevents it from appearing on the taskbar and stops it from functioning [1] [2].
                             This action is useful for users who prioritize privacy and system performance, as it eliminates a potential
-                            channel for data sharing with Microsoft servers and reduces the attacks on language models [3]. 
+                            channel for data sharing with Microsoft servers and reduces the attacks on language models [3].
                             Read more: [Attacks on language models](https://erkinekici.com/articles/attacks-on-language-models/).
 
                             The script operates by modifying two registry keys:
@@ -38036,7 +38036,7 @@ actions:
                             This script disables the **Microsoft Retail Demo** (`RetailDemo`) service.
 
                             This service is used to control device activity when the device is in retail demo mode [1].
-                            
+
                             For personal use, this service is generally redundant, and disabling it strengthens privacy.
                             By turning off this service, you prevent the potential misuse of demo content and settings, ensuring that your
                             device operates under standard conditions without unnecessary exposure to retail demo features.
@@ -38187,7 +38187,7 @@ actions:
                               - Windows 10: May cause issues accessing network settings [5] [6] [7].
                               - Windows 11: No reported issues [5].
                               - To reproduce (Windows 10):
-                                1. Open **Settings** 
+                                1. Open **Settings**
                                 2. Select **Network & Internet**
                             - **Notification Center** in taskbar:
                               - All Windows 11 versions:
@@ -40228,7 +40228,7 @@ functions:
                 #   The difference from this script and `code` is that:
                 #     - It sets `$revert` variable to `$true`.
                 #     - It uses value of `$revertPathGlob` instead of `$pathGlob`
-                revertCode: |- 
+                revertCode: |-
                     {{ with $revertPathGlob }}
                         $revert = $true
                         $pathGlobPattern = "{{ . }}"
@@ -40388,7 +40388,7 @@ functions:
                         Write-Host "Successfully deleted: $($path) (already deleted)."
                         $deletedCount++
                         continue
-                    } 
+                    }
                     try {
                         Remove-Item -Path $path -Force -Recurse -ErrorAction Stop
                         $deletedCount++
@@ -40547,7 +40547,7 @@ functions:
                     code: |-
                         $taskPathPattern='{{ $taskPathPattern }}'
                         $taskNamePattern='{{ $taskNamePattern }}'
-                        Write-Output "Disabling tasks matching pattern `"$taskNamePattern`"." 
+                        Write-Output "Disabling tasks matching pattern `"$taskNamePattern`"."
                         $tasks = @(Get-ScheduledTask -TaskPath $taskPathPattern -TaskName $taskNamePattern -ErrorAction Ignore)
                         if (-Not $tasks) {
                             Write-Output "Skipping, no tasks matching pattern `"$taskNamePattern`" found, no action needed."
@@ -40562,7 +40562,7 @@ functions:
                             }
                             {{ with $grantPermissions }}
                                 $taskFullPath = "$($task.TaskPath)$($task.TaskName)"
-                                $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544' 
+                                $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544'
                                 $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
                                 $taskFilePath="$($env:SYSTEMROOT)\System32\Tasks$($task.TaskPath)$($task.TaskName)"
                                 $accessGranted = $false
@@ -40610,7 +40610,7 @@ functions:
                         $taskPathPattern='{{ $taskPathPattern }}'
                         $taskNamePattern='{{ $taskNamePattern }}'
                         $shouldDisable = {{ with $disableOnRevert }} $true # {{ end }} $false
-                        Write-Output "Enabling tasks matching pattern `"$taskNamePattern`"." 
+                        Write-Output "Enabling tasks matching pattern `"$taskNamePattern`"."
                         $tasks = @(Get-ScheduledTask -TaskPath $taskPathPattern -TaskName $taskNamePattern -ErrorAction Ignore)
                         if (-Not $tasks) {
                             Write-Warning (                                                             `
@@ -40636,7 +40636,7 @@ functions:
                             }
                             {{ with $grantPermissions }}
                                 $taskFullPath = "$($task.TaskPath)$($task.TaskName)"
-                                $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544' 
+                                $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544'
                                 $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
                                 $taskFilePath="$($env:SYSTEMROOT)\System32\Tasks$($task.TaskPath)$($task.TaskName)"
                                 $accessGranted = $false
@@ -42031,7 +42031,7 @@ functions:
             - name: policySubkey
             - name: valueName
             - name: dwordData
-        docs: |- 
+        docs: |-
             This function configures policies specifically for Edge (Legacy) via the Windows Registry.
 
             It configures two policies using different ways:
@@ -42475,8 +42475,8 @@ functions:
                                 Write-Error "Failed to remove the registry value: $($_.Exception.Message)"
                             } {{ with $grantPermissions }} finally { Revoke-Permissions } {{ end }}
                         {{ end }}
-                    # Note: 
-                    #   Storing the original ACL (e.g., `$originalAcl = $subkey.GetAccessControl()`) and restoring it with `SetAccessControl()` 
+                    # Note:
+                    #   Storing the original ACL (e.g., `$originalAcl = $subkey.GetAccessControl()`) and restoring it with `SetAccessControl()`
                     #   does not work due to broken identity references. Therefore, changes are managed individually.
                     setupCodeElevated: |-
                         {{ with $grantPermissions }}
@@ -42803,7 +42803,7 @@ functions:
             registry subkey.
             This key in Windows stores user preferences for file type and application associations.
             When a user opens a file with a non-default application, Windows may display a "toast" notification
-            suggesting the use of the default application for that file type. 
+            suggesting the use of the default application for that file type.
             The user's response to this suggestion is recorded in the ApplicationAssociationToasts registry key.
             This allows Windows to remember the user's application preferences for specific file types
             and determine whether to show the notification again in the future.
@@ -42856,7 +42856,7 @@ functions:
             | Windows 10 Pro 22H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
             | Windows 11 Pro 22H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
             | Windows 11 Pro 23H2 | ❌ | ❌ | ✅ | ✅ | 1 | Administrators | ✅ Yes |
-            
+
             These registry keys are protected by deny ACLs, which prevent programmatic modifications.
             To work around this limitation, the script temporarily removes these deny ACLs to allow changes.
 
