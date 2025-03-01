@@ -7,6 +7,7 @@ import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { LinearFilterStrategy } from '@/application/Context/State/Filter/Strategy/LinearFilterStrategy';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('LinearFilterStrategy', () => {
   describe('applyFilter', () => {
@@ -243,8 +244,9 @@ function expectCategoryMatches(
   expectedMatches: readonly Category[],
 ): void {
   expect(actualFilter.hasAnyMatches()).be.equal(true);
-  expect(actualFilter.categoryMatches).to.have.lengthOf(expectedMatches.length);
-  expect(actualFilter.categoryMatches).to.have.members(expectedMatches);
+  expectArrayEquals(actualFilter.categoryMatches, expectedMatches, {
+    ignoreOrder: true,
+  });
 }
 
 function expectScriptMatches(
@@ -252,8 +254,9 @@ function expectScriptMatches(
   expectedMatches: readonly Script[],
 ): void {
   expect(actualFilter.hasAnyMatches()).be.equal(true);
-  expect(actualFilter.scriptMatches).to.have.lengthOf(expectedMatches.length);
-  expect(actualFilter.scriptMatches).to.have.members(expectedMatches);
+  expectArrayEquals(actualFilter.scriptMatches, expectedMatches, {
+    ignoreOrder: true,
+  });
 }
 
 class FilterStrategyTestBuilder {

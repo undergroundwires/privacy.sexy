@@ -14,6 +14,7 @@ import { CodeSegmentMergerStub } from '@tests/unit/shared/Stubs/CodeSegmentMerge
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import type { CompiledCode } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('FunctionCallSequenceCompiler', () => {
   describe('instance', () => {
@@ -70,9 +71,10 @@ describe('FunctionCallSequenceCompiler', () => {
           builder.compileFunctionCalls();
           // assert
           const calledMethods = singleCallCompilerStub.callHistory.filter((m) => m.methodName === 'compileSingleCall');
-          expect(calledMethods).to.have.lengthOf(expectedCalls.length);
-          const callArguments = calledMethods.map((c) => c.args[0]);
-          expect(expectedCalls).to.have.members(callArguments);
+          const actualCalls = calledMethods.map((c) => c.args[0]);
+          expectArrayEquals(actualCalls, expectedCalls, {
+            ignoreOrder: true,
+          });
         });
       });
       describe('context', () => {
@@ -146,8 +148,9 @@ describe('FunctionCallSequenceCompiler', () => {
         const calledMethod = codeSegmentMergerStub.callHistory.find((c) => c.methodName === 'mergeCodeParts');
         expectExists(calledMethod);
         const [actualSegments] = calledMethod.args;
-        expect(expectedFlattenedSegments).to.have.lengthOf(actualSegments.length);
-        expect(expectedFlattenedSegments).to.have.deep.members(actualSegments);
+        expectArrayEquals(actualSegments, expectedFlattenedSegments, {
+          ignoreOrder: true,
+        });
       });
       it('returns code segment merger result', () => {
         // arrange

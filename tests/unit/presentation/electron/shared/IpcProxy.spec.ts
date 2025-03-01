@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createIpcConsumerProxy, registerIpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcProxy';
 import type { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('IpcProxy', () => {
   describe('createIpcConsumerProxy', () => {
@@ -212,8 +213,7 @@ describe('IpcProxy', () => {
       registerIpcChannel(testIpcChannel, testObject, ipcMainMock);
       // assert
       const actualChannelNames = Object.keys(registeredHandlersByChannel);
-      expect(actualChannelNames).to.have.lengthOf(expectedChannelNames.length);
-      expect(actualChannelNames).to.have.members(expectedChannelNames);
+      expectArrayEquals(actualChannelNames, expectedChannelNames);
     });
     describe('validation', () => {
       it('throws error for non-function members', () => {

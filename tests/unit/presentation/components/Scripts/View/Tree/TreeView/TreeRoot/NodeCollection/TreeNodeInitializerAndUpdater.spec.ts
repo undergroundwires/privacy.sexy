@@ -7,6 +7,7 @@ import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';
 import type { QueryableNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/Query/QueryableNodes';
 import type { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('TreeNodeInitializerAndUpdater', () => {
   describe('updateRootNodes', () => {
@@ -25,19 +26,22 @@ describe('TreeNodeInitializerAndUpdater', () => {
 
     it('should update nodes when valid data is provided', () => {
       // arrange
-      const expectedData = [new TreeNodeStub(), new TreeNodeStub()];
+      const expectedNodes = [new TreeNodeStub(), new TreeNodeStub()];
       const inputData = [new TreeInputNodeDataStub(), new TreeInputNodeDataStub()];
       const builder = new TreeNodeInitializerAndUpdaterBuilder();
       builder.parserStub.registerScenario({
         given: inputData,
-        result: expectedData,
+        result: expectedNodes,
       });
       const initializer = builder.build();
       // act
       initializer.updateRootNodes(inputData);
       // assert
       expect(initializer.nodes).to.be.instanceOf(TreeNodeNavigator);
-      expect(initializer.nodes.rootNodes).to.have.members(expectedData);
+      const actualNodes = initializer.nodes.rootNodes;
+      expectArrayEquals(actualNodes, expectedNodes, {
+        ignoreOrder: true,
+      });
     });
 
     it('should notify when nodes are updated', () => {
@@ -58,7 +62,10 @@ describe('TreeNodeInitializerAndUpdater', () => {
       initializer.updateRootNodes(inputData);
       // assert
       expect(notifiedNodes).to.toBeTruthy();
-      expect(initializer.nodes.rootNodes).to.have.members(expectedData);
+      const actualNodes = initializer.nodes.rootNodes;
+      expectArrayEquals(actualNodes, expectedData, {
+        ignoreOrder: true,
+      });
     });
   });
 });

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { type ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('IpcChannelDefinitions', () => {
   it('defines IPC channels correctly', () => {
@@ -35,8 +36,7 @@ describe('IpcChannelDefinitions', () => {
           // act
           const actualAccessibleMembers = ipcChannelUnderTest.accessibleMembers;
           // assert
-          expect(actualAccessibleMembers).to.have.lengthOf(expectedAccessibleMembers.length);
-          expect(actualAccessibleMembers).to.have.members(expectedAccessibleMembers);
+          expectArrayEquals(actualAccessibleMembers, expectedAccessibleMembers);
         });
       });
     });

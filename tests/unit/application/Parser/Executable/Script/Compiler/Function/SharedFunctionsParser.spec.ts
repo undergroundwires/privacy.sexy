@@ -25,6 +25,7 @@ import type { FunctionParameterParser } from '@/application/Parser/Executable/Sc
 import { createFunctionParameterParserStub } from '@tests/unit/shared/Stubs/FunctionParameterParserStub';
 import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 import { expectCallsFunctionBody, expectCodeFunctionBody } from './ExpectFunctionBodyType';
 
 describe('SharedFunctionsParser', () => {
@@ -538,6 +539,7 @@ function expectEqualFunctionWithCalls(
 ): void {
   expectCallsFunctionBody(actualFunction.body);
   const actualCalls = actualFunction.body.calls;
-  expect(actualCalls.length).to.equal(expectedCalls.length);
-  expect(actualCalls).to.have.members(expectedCalls);
+  expectArrayEquals(actualCalls, expectedCalls, {
+    ignoreOrder: true,
+  });
 }

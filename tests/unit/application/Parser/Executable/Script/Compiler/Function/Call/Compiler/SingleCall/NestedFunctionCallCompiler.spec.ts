@@ -12,6 +12,7 @@ import type { CompiledCode } from '@/application/Parser/Executable/Script/Compil
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('NestedFunctionCallCompiler', () => {
   describe('canCompile', () => {
@@ -159,8 +160,9 @@ describe('NestedFunctionCallCompiler', () => {
       // act
       const actualCodes = compiler.compileFunction(frontFunction, callToFrontFunc, expectedContext);
       // assert
-      expect(actualCodes).have.lengthOf(expectedFlattenedCodes.length);
-      expect(actualCodes).to.have.members(expectedFlattenedCodes);
+      expectArrayEquals(actualCodes, expectedFlattenedCodes, {
+        ignoreOrder: true,
+      });
     });
     describe('error handling', () => {
       describe('rethrows error from argument compiler', () => {

@@ -29,7 +29,7 @@ describe('WithParser', () => {
         code: 'outer: {{ with $outer }}outer value with context variable: {{ . }}, inner: {{ with $inner }}inner value{{ end }}.{{ end }}',
         expected: [
           /* outer: */ new ExpressionPosition(7, 122),
-          /* inner: */ new ExpressionPosition(77, 112),
+          /* inner: */ new ExpressionPosition(75, 112),
         ],
       },
       {

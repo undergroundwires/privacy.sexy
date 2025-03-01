@@ -4,7 +4,7 @@ import type { IExpressionParser } from '@/application/Parser/Executable/Script/C
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { ExpressionEvaluationContextStub } from '@tests/unit/shared/Stubs/ExpressionEvaluationContextStub';
 import { PipelineCompilerStub } from '@tests/unit/shared/Stubs/PipelineCompilerStub';
-import { scrambledEqual } from '@/application/Common/Array';
+import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 export class SyntaxParserTestsRunner {
   constructor(private readonly sut: IExpressionParser) {
@@ -16,8 +16,12 @@ export class SyntaxParserTestsRunner {
         // act
         const expressions = this.sut.findExpressions(testCase.code);
         // assert
-        const actual = expressions.map((e) => e.position);
-        expect(scrambledEqual(actual, testCase.expected));
+        const actualPositions = expressions.map((e) => e.position);
+        const expectedPositions = testCase.expected;
+        expectArrayEquals(actualPositions, expectedPositions, {
+          ignoreOrder: true,
+          deep: true,
+        });
       });
     }
     return this;
