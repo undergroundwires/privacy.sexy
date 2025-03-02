@@ -42,4 +42,4 @@ Convention for naming pipeline files: **`<type>.<name>.yaml`**.
 - Kebab-case allows to have better URL references to them.
   - [README.md](./../README.md) uses URL references to show status badges for actions.
 
-[1]: https://web.archive.org/web/20250126141528/https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#about-yaml-syntax-for-workflows "Workflow syntax for GitHub Actions - GitHub Docs | docs.github.com"
+[1]: https://web.archive.org/web/20250126141528/https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#about-yaml-syntax-for-workflows "Workflow syntax for GitHub Actions - GitHub Docs | docs.github.com"

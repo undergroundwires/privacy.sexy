@@ -5,173 +5,162 @@
 
 os: linux
 scripting:
-    language: shellscript
-    startCode: |-
-      #!/usr/bin/env bash
-      # {{ $homepage }} — v{{ $version }} — {{ $date }}
-      if [ "$EUID" -ne 0 ]; then
-        script_path=$([[ "$0" = /* ]] && echo "$0" || echo "$PWD/${0#./}")
-        sudo "$script_path" || (
-          echo 'Administrator privileges are required.'
-          exit 1
-        )
-        exit 0
-      fi
-      export HOME="/home/${SUDO_USER:-${USER}}" # Keep `~` and `$HOME` for user not `/root`.
-    endCode: |-
-      echo 'Your privacy and security is now hardened 🎉💪'
-      echo 'Press any key to exit.'
-      read -n 1 -s
+  language: shellscript
+  startCode: |-
+    #!/usr/bin/env bash
+    # {{ $homepage }} — v{{ $version }} — {{ $date }}
+    if [ "$EUID" -ne 0 ]; then
+      script_path=$([[ "$0" = /* ]] && echo "$0" || echo "$PWD/${0#./}")
+      sudo "$script_path" || (
+        echo 'Administrator privileges are required.'
+        exit 1
+      )
+      exit 0
+    fi
+    export HOME="/home/${SUDO_USER:-${USER}}" # Keep `~` and `$HOME` for user not `/root`.
+  endCode: |-
+    echo 'Your privacy and security is now hardened 🎉💪'
+    echo 'Press any key to exit.'
+    read -n 1 -s
 actions:
-  -
-    category: Privacy cleanup
+  - category: Privacy cleanup
     docs: |-
       These scripts allow you to increase privacy by deleting collected data about you and your behavior.
     children:
-      -
-        category: Clear terminal history
+      - category: Clear terminal history
         docs: |-
           Reading terminal history is one of the attack techniques.
           The existence of bash history files is defined as an unsecured credential attack technique by MITRE [1].
 
           [1]: https://web.archive.org/web/20221029134827/https://attack.mitre.org/techniques/T1552/003/ "Unsecured Credentials: Bash History, Sub-technique T1552.003 - Enterprise | MITRE ATT&CK® | attack.mitre.org"
         children:
-            -
-              name: Clear bash history
-              recommend: strict
-              docs: |-
-                Bash (Bourne-Again SHell) is from the GNU project.
-                It is used by most distributions as their default shell.
+          - name: Clear bash history
+            recommend: strict
+            docs: |-
+              Bash (Bourne-Again SHell) is from the GNU project.
+              It is used by most distributions as their default shell.
 
 
-                See also [GNU Bash Homepage](https://web.archive.org/web/20221029211839/https://www.gnu.org/software/bash/).
-              call:
+              See also [GNU Bash Homepage](https://web.archive.org/web/20221029211839/https://www.gnu.org/software/bash/).
+            call:
+              function: DeleteFileFromUserAndRootHome
+              parameters:
+                file: .bash_history
+          - name: Clear Zsh history
+            recommend: strict
+            docs: |-
+              Zsh is also known as Z-shell [1]. See its [homepage](https://web.archive.org/web/20221029211848/https://www.zsh.org/) for more information.
+              It is one of the most used shells and has been the default shell in Kali Linux since 2020.4 [2].
+              Arch Linux installer uses zsh [3] but sets bash on disk as default [4].
+
+              [1]: https://web.archive.org/web/20221029134900/https://en.wikipedia.org/wiki/Z_shell "Z shell - Wikipedia | wikipedia.org"
+              [2]: https://web.archive.org/web/20221029134925/https://www.kali.org/blog/kali-linux-2020-4-release/ "Kali Linux 2020.4 Release (ZSH, Bash, CME, MOTD, AWS, Docs, Win-KeX & Vagrant) | Kali Linux Blog | kali.org"
+              [3]: https://web.archive.org/web/20221029181441/https://gitlab.archlinux.org/archlinux/archiso/-/blob/9f16862acd7e7be02da72f63a03b4c0e256dabff/configs/releng/packages.x86_64#L32 "configs/releng/packages.x86_64 · 9f16862acd7e7be02da72f63a03b4c0e256dabff · Arch Linux / archiso · GitLab"
+              [4]: https://web.archive.org/web/20221029181616/https://wiki.archlinux.org/title/bash "Bash - ArchWiki"
+            call:
+              function: DeleteFileFromUserAndRootHome
+              parameters:
+                file: .zsh_history
+          - name: Clear tcsh history
+            recommend: strict
+            docs: |-
+              C shell (csh) with file name completion and command line editing.
+              `~/.history` is its default histfile (history file) [1].
+              It's shipped by FreeBSD as the default root shell [2].
+
+              See also:
+              - [tcsh homepage](https://web.archive.org/web/20221029211930/https://www.tcsh.org/),
+              - [tcsh source code](https://web.archive.org/web/20221029212024/https://github.com/tcsh-org/tcsh).
+
+              [1]: https://web.archive.org/web/20221029134950/https://linux.die.net/man/1/tcsh "tcsh(1) - Linux man page | linux.die.net"
+              [2]: https://web.archive.org/web/20221029135007/https://books.google.com/books?id=LyDP5b2xzaMC&pg=PA56#v=onepage&q&f=false "Sams Teach Yourself FreeBSD in 24 Hours - Michael Urban, Brian Tiemann - Google Books | books.google.com"
+            call:
+              function: DeleteFileFromUserAndRootHome
+              parameters:
+                file: .history
+          - name: Clear fish history
+            recommend: strict
+            docs: |-
+              It is one of the most popular exotic shells that favors usability over standard compliance.
+              Its history file is stored in `~/.local/share/fish/fish_history` and `~/.config/fish/fish_history` [1].
+              It is used by PEUX OS as the default shell [2].
+
+              See also [fish shell homepage](https://web.archive.org/web/20221029212109/https://fishshell.com/) for more information.
+
+              [1]: https://web.archive.org/web/20221029135026/https://github.com/fish-shell/fish-shell/issues/862 "history file location · Issue #862 · fish-shell/fish-shell | github.com/fish-shell"
+              [2]: https://web.archive.org/web/20221029135110/https://peux-os.netlify.app/ "Homepage of Peux OS | [POS] | peux-os.netlify.app"
+            call:
+              - # >= 2.3.0
                 function: DeleteFileFromUserAndRootHome
                 parameters:
-                  file: .bash_history
-            -
-              name: Clear Zsh history
-              recommend: strict
-              docs: |-
-                Zsh is also known as Z-shell [1]. See its [homepage](https://web.archive.org/web/20221029211848/https://www.zsh.org/) for more information.
-                It is one of the most used shells and has been the default shell in Kali Linux since 2020.4 [2].
-                Arch Linux installer uses zsh [3] but sets bash on disk as default [4].
-
-                [1]: https://web.archive.org/web/20221029134900/https://en.wikipedia.org/wiki/Z_shell "Z shell - Wikipedia | wikipedia.org"
-                [2]: https://web.archive.org/web/20221029134925/https://www.kali.org/blog/kali-linux-2020-4-release/ "Kali Linux 2020.4 Release (ZSH, Bash, CME, MOTD, AWS, Docs, Win-KeX & Vagrant) | Kali Linux Blog | kali.org"
-                [3]: https://web.archive.org/web/20221029181441/https://gitlab.archlinux.org/archlinux/archiso/-/blob/9f16862acd7e7be02da72f63a03b4c0e256dabff/configs/releng/packages.x86_64#L32 "configs/releng/packages.x86_64 · 9f16862acd7e7be02da72f63a03b4c0e256dabff · Arch Linux / archiso · GitLab"
-                [4]: https://web.archive.org/web/20221029181616/https://wiki.archlinux.org/title/bash "Bash - ArchWiki"
-              call:
+                  file: .local/share/fish/fish_history
+              - # < 2.3.0
                 function: DeleteFileFromUserAndRootHome
                 parameters:
-                  file: .zsh_history
-            -
-              name: Clear tcsh history
-              recommend: strict
-              docs: |-
-                C shell (csh) with file name completion and command line editing.
-                `~/.history` is its default histfile (history file) [1].
-                It's shipped by FreeBSD as the default root shell [2].
+                  file: .config/fish/fish_history
+          - name: Clear KornShell (ksh) history
+            recommend: strict
+            docs: |-
+              KornShell is a shell that has different versions by different maintainers and developers such as `ksh93+u`, `ksh93v-`, and `ksh2020`.
+              The latest maintained version is `ksh93u+m`, see its [GitHub repository (ksh93/ksh)](https://web.archive.org/web/20221029212509/https://github.com/ksh93/ksh).
 
-                See also:
-                - [tcsh homepage](https://web.archive.org/web/20221029211930/https://www.tcsh.org/),
-                - [tcsh source code](https://web.archive.org/web/20221029212024/https://github.com/tcsh-org/tcsh).
+              Its history file (histfile) is saved at `~/.sh_history` by default [1] [2].
 
-                [1]: https://web.archive.org/web/20221029134950/https://linux.die.net/man/1/tcsh "tcsh(1) - Linux man page | linux.die.net"
-                [2]: https://web.archive.org/web/20221029135007/https://books.google.com/books?id=LyDP5b2xzaMC&pg=PA56#v=onepage&q&f=false "Sams Teach Yourself FreeBSD in 24 Hours - Michael Urban, Brian Tiemann - Google Books | books.google.com"
-              call:
-                function: DeleteFileFromUserAndRootHome
-                parameters:
-                  file: .history
-            -
-              name: Clear fish history
-              recommend: strict
-              docs: |-
-                It is one of the most popular exotic shells that favors usability over standard compliance.
-                Its history file is stored in `~/.local/share/fish/fish_history` and `~/.config/fish/fish_history` [1].
-                It is used by PEUX OS as the default shell [2].
+              OpenBSD symlinks sh to ksh [3].
 
-                See also [fish shell homepage](https://web.archive.org/web/20221029212109/https://fishshell.com/) for more information.
+              See also the [Wikipedia page](https://web.archive.org/web/20221029212931/https://en.wikipedia.org/wiki/KornShell) for more information.
 
-                [1]: https://web.archive.org/web/20221029135026/https://github.com/fish-shell/fish-shell/issues/862 "history file location · Issue #862 · fish-shell/fish-shell | github.com/fish-shell"
-                [2]: https://web.archive.org/web/20221029135110/https://peux-os.netlify.app/ "Homepage of Peux OS | [POS] | peux-os.netlify.app"
-              call:
-                - # >= 2.3.0
-                  function: DeleteFileFromUserAndRootHome
-                  parameters:
-                    file: .local/share/fish/fish_history
-                - # < 2.3.0
-                  function: DeleteFileFromUserAndRootHome
-                  parameters:
-                    file: .config/fish/fish_history
-            -
-              name: Clear KornShell (ksh) history
-              recommend: strict
-              docs: |-
-                KornShell is a shell that has different versions by different maintainers and developers such as `ksh93+u`, `ksh93v-`, and `ksh2020`.
-                The latest maintained version is `ksh93u+m`, see its [GitHub repository (ksh93/ksh)](https://web.archive.org/web/20221029212509/https://github.com/ksh93/ksh).
+              [1]: https://web.archive.org/web/20221029135158/https://www.mkssoftware.com/docs/man1/history.1.asp "history -- display KornShell command history | manpage | mkssoftware.com"
+              [2]: https://web.archive.org/web/20221029135207/https://www.ibm.com/docs/en/aix/7.2?topic=commands-korn-shell-posix-shell-command-history "Korn shell or POSIX shell command history - IBM Documentation | ibm.com"
+              [3]: https://web.archive.org/web/20221029135300/https://www.reddit.com/r/unix/comments/6zqyl1/nix_distros_with_default_shells/ "*nix distros with default shells? | Reddit (/r/unix) | reddit.com"
+            call:
+              function: DeleteFileFromUserAndRootHome
+              parameters:
+                file: .sh_history
+          # -
+          #   Dash [1] (used by Debian, Ubuntu, Void Linux etc.) does not support history [2].
+          #   [1]: https://web.archive.org/web/20221029135301/https://git.kernel.org/pub/scm/utils/dash/dash.git
+          #   [2]: https://web.archive.org/web/20221029135344/https://unix.stackexchange.com/questions/271595/how-can-i-access-the-history-buffer-in-sh-not-in-bash
+          - name: Clear ash history
+            recommend: strict
+            docs: |-
+              It's also known as Almquist shell [1].
+              It's mainly a fork of dash (Debian Almquist shell) used in embedded Linux distributions such as DSLinux,
+              Alpine Linux, Tiny Core Linux and Linux-based router firmware such as OpenWrt, Tomato and DD-WRT [1].
+              It was also used by Android until Android 4.0 [2].
 
-                Its history file (histfile) is saved at `~/.sh_history` by default [1] [2].
+              It uses `~/.ash_history` as the history file [3].
 
-                OpenBSD symlinks sh to ksh [3].
+              [1]: https://web.archive.org/web/20221030142637/https://en.wikipedia.org/wiki/Almquist_shell#Embedded_Linux "Almquist shell - Wikipedia | wikipedia.org"
+              [2]: https://web.archive.org/web/20221029135416/https://android.googlesource.com/platform/system/core/+/master/shell_and_utilities/README.md "Android's shell and utilities | android.googlesource.com"
+              [3]: https://web.archive.org/web/20221029135513/https://github.com/brgl/busybox/blob/abbf17abccbf832365d9acf1c280369ba7d5f8b2/shell/ash.c#L13626 "busybox/ash.c source code | github.com/brgl/busybox"
+            call:
+              function: DeleteFileFromUserAndRootHome
+              parameters:
+                file: .ash_history
+          - name: Clear crosh history
+            recommend: strict
+            docs: |-
+              crosh is also known as ChromiumOS shell [1].
+              It is used in Chromium OS [2].
+              The history file is found in `~/.crosh_history` by default.
 
-                See also the [Wikipedia page](https://web.archive.org/web/20221029212931/https://en.wikipedia.org/wiki/KornShell) for more information.
+              See its [source code (chromiumos/platform2)](https://web.archive.org/web/20221029135520/https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/crosh) for more information.
 
-                [1]: https://web.archive.org/web/20221029135158/https://www.mkssoftware.com/docs/man1/history.1.asp "history -- display KornShell command history | manpage | mkssoftware.com"
-                [2]: https://web.archive.org/web/20221029135207/https://www.ibm.com/docs/en/aix/7.2?topic=commands-korn-shell-posix-shell-command-history "Korn shell or POSIX shell command history - IBM Documentation | ibm.com"
-                [3]: https://web.archive.org/web/20221029135300/https://www.reddit.com/r/unix/comments/6zqyl1/nix_distros_with_default_shells/ "*nix distros with default shells? | Reddit (/r/unix) | reddit.com"
-              call:
-                function: DeleteFileFromUserAndRootHome
-                parameters:
-                  file: .sh_history
-            # -
-            #   Dash [1] (used by Debian, Ubuntu, Void Linux etc.) does not support history [2].
-            #   [1]: https://web.archive.org/web/20221029135301/https://git.kernel.org/pub/scm/utils/dash/dash.git
-            #   [2]: https://web.archive.org/web/20221029135344/https://unix.stackexchange.com/questions/271595/how-can-i-access-the-history-buffer-in-sh-not-in-bash
-            -
-              name: Clear ash history
-              recommend: strict
-              docs: |-
-                It's also known as Almquist shell [1].
-                It's mainly a fork of dash (Debian Almquist shell) used in embedded Linux distributions such as DSLinux,
-                Alpine Linux, Tiny Core Linux and Linux-based router firmware such as OpenWrt, Tomato and DD-WRT [1].
-                It was also used by Android until Android 4.0 [2].
-
-                It uses `~/.ash_history` as the history file [3].
-
-                [1]: https://web.archive.org/web/20221030142637/https://en.wikipedia.org/wiki/Almquist_shell#Embedded_Linux "Almquist shell - Wikipedia | wikipedia.org"
-                [2]: https://web.archive.org/web/20221029135416/https://android.googlesource.com/platform/system/core/+/master/shell_and_utilities/README.md "Android's shell and utilities | android.googlesource.com"
-                [3]: https://web.archive.org/web/20221029135513/https://github.com/brgl/busybox/blob/abbf17abccbf832365d9acf1c280369ba7d5f8b2/shell/ash.c#L13626 "busybox/ash.c source code | github.com/brgl/busybox"
-              call:
-                function: DeleteFileFromUserAndRootHome
-                parameters:
-                  file: .ash_history
-            -
-              name: Clear crosh history
-              recommend: strict
-              docs: |-
-                crosh is also known as ChromiumOS shell [1].
-                It is used in Chromium OS [2].
-                The history file is found in `~/.crosh_history` by default.
-
-                See its [source code (chromiumos/platform2)](https://web.archive.org/web/20221029135520/https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/crosh) for more information.
-
-                [1]: https://web.archive.org/web/20221029135520/https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/crosh "crosh git repository | chromium.googlesource.com"
-                [2]: https://web.archive.org/web/20221029135620/https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/crosh/README.md "README.md file | crosh git repository | chromium.googlesource.com"
-                [3]: https://web.archive.org/web/20221029135627/https://chromium.googlesource.com/chromiumos/platform2/+/183c7e421bd3a55c757b33b639201555b9d7a283/crosh/crosh#154 "histfile source code | crosh git repository | chromium.googlesource.com"
-              call:
-                function: DeleteFileFromUserAndRootHome
-                parameters:
-                  file: .crosh_history
-      -
-        category: Clear third-party application data
+              [1]: https://web.archive.org/web/20221029135520/https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/crosh "crosh git repository | chromium.googlesource.com"
+              [2]: https://web.archive.org/web/20221029135620/https://chromium.googlesource.com/chromiumos/platform2/+/HEAD/crosh/README.md "README.md file | crosh git repository | chromium.googlesource.com"
+              [3]: https://web.archive.org/web/20221029135627/https://chromium.googlesource.com/chromiumos/platform2/+/183c7e421bd3a55c757b33b639201555b9d7a283/crosh/crosh#154 "histfile source code | crosh git repository | chromium.googlesource.com"
+            call:
+              function: DeleteFileFromUserAndRootHome
+              parameters:
+                file: .crosh_history
+      - category: Clear third-party application data
         docs: |-
           Scripts in this category clear data for third-party applications installed on the operating system.
           Third-party applications are not typically distributed as part of the operating system and are
           installed separately.
         children:
-          -
-            category: Clear privacy.sexy data
+          - category: Clear privacy.sexy data
             # Marked: refactor-with-variables, refactor-with-partials
             #   - Documentation is same across macOS, Linux and Windows, this should be shared and not duplicated.
             docs: |-
@@ -191,8 +180,7 @@ actions:
               [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
               [2]: https://github.com/undergroundwires/privacy.sexy/blob/master/SECURITY.md "SECURITY.md  | privacy.sexy | github.com"
             children:
-              -
-                name: Clear privacy.sexy script history
+              - name: Clear privacy.sexy script history
                 docs: |-
                   This script removes script files generated by the privacy.sexy desktop application.
 
@@ -212,8 +200,7 @@ actions:
                   function: ClearDirectoryContents
                   parameters:
                     directoryGlob: "$HOME/.config/privacy.sexy/runs"
-              -
-                name: Clear privacy.sexy activity logs
+              - name: Clear privacy.sexy activity logs
                 docs: |-
                   This script removes log files generated by the privacy.sexy desktop application.
 
@@ -233,8 +220,7 @@ actions:
                   function: ClearDirectoryContents
                   parameters:
                     directoryGlob: "$HOME/.config/privacy.sexy/logs"
-          -
-            name: Clear Steam cache
+          - name: Clear Steam cache
             docs: |-
               Steam is a video game digital distribution service and storefront by Valve [1].
 
@@ -253,8 +239,7 @@ actions:
               # Flatpak
               rm -rfv ~/.var/app/com.valvesoftware.Steam/cache/*
               rm -rfv ~/.var/app/com.valvesoftware.Steam/data/Steam/appcache/*
-          -
-            name: Clear Clementine cache
+          - name: Clear Clementine cache
             docs: |-
               Clementine is a free and open-source audio player [1].
               Cover art, moodbar, and network cache are all part of Clementine cache [2].
@@ -272,8 +257,7 @@ actions:
               rm -rfv ~/.var/app/org.clementine_player.Clementine/cache/*
               # Snap installation
               rm -rfv ~/snap/clementine/common/.cache/*
-          -
-            category: Clear Wine data
+          - category: Clear Wine data
             docs: |-
               Wine is a compatibility layer capable of running Windows applications [1].
 
@@ -281,8 +265,7 @@ actions:
 
               [1]: https://web.archive.org/web/20221029135913/https://en.wikipedia.org/wiki/Wine_%28software%29 "Wine | Wikipedia | en.wikipedia.org"
             children:
-              -
-                name: Clear Wine cache
+              - name: Clear Wine cache
                 recommend: standard
                 docs: |-
                   Wine has two different caches:
@@ -298,8 +281,7 @@ actions:
                   rm -rfv ~/.wine/drive_c/windows/temp/*
                   # Wine cache:
                   rm -rfv ~/.cache/wine/
-              -
-                name: Clear Winetricks cache
+              - name: Clear Winetricks cache
                 recommend: standard
                 docs: |-
                   Winetricks is a helper script to download and install various redistributable runtime libraries
@@ -315,8 +297,7 @@ actions:
                   [3]: https://web.archive.org/web/20221029140047/https://github.com/Winetricks/winetricks/blob/164d243e1384ba7cc6058a6524c1472100b7722c/src/winetricks#L1515-L1517 "Wine source code | GitHub | github.com/Winetricks/winetricks"
                   [4]: https://web.archive.org/web/20221029140204/https://manpages.debian.org/experimental/winetricks/winetricks.1.en.html#XDG_CACHE_HOME "winetricks man page | Debian Manpages | manpages.debian.org"
                 code: rm -rfv ~/.cache/winetricks/
-          -
-            name: Clear LibreOffice usage history
+          - name: Clear LibreOffice usage history
             recommend: strict
             docs: |-
               LibreOffice is a free and open-source office productivity software suite, a project of The Document Foundation (TDF) [1].
@@ -338,8 +319,7 @@ actions:
               rm -fv ~/snap/libreoffice/*/.config/libreoffice/4/user/registrymodifications.xcu
               # Flatpak installation
               rm -fv ~/.var/app/org.libreoffice.LibreOffice/config/libreoffice/4/user/registrymodifications.xcu
-          -
-            category: Clear Thunderbird data
+          - category: Clear Thunderbird data
             docs: |-
               Mozilla Thunderbird is a free and open-source cross-platform email client, personal information manager, news client, RSS and chat
               client developed by the Mozilla Foundation [1].
@@ -351,8 +331,7 @@ actions:
 
               [1]: https://web.archive.org/web/20221029140516/https://en.wikipedia.org/wiki/Mozilla_Thunderbird "Thunderbird | Wikipedia | en.wikipedia.org"
             children:
-              -
-                name: Clear Thunderbird cookies
+              - name: Clear Thunderbird cookies
                 docs: |-
                   Thunderbird stores cookie information in [1]:
 
@@ -365,24 +344,19 @@ actions:
                   [1]: https://web.archive.org/web/20221029140819/https://kb.mozillazine.org/Files_and_folders_in_the_profile_-_Thunderbird "Files and folders in the profile | Thunderbird | kb.mozillazine.org"
                   [2]: https://web.archive.org/web/20221029140816/https://kb.mozillazine.org/Cookies.sqlite "Cookies.sqlite | Thunderbird | kb.mozillazine.org"
                 call:
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: cookies.sqlite
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: cookies.sqlite-wal
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: cookies.sqlite-journal
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: cookies.sqlite-shm
-              -
-                name: Clear Thunderbird session restoration data (open windows and tabs)
+              - name: Clear Thunderbird session restoration data (open windows and tabs)
                 docs: |-
                   The default window layout is saved in the session file (`session.json`) [1].
                   It includes data on what tabs are open [1].
@@ -392,8 +366,7 @@ actions:
                   function: DeleteFileFromThunderbirdProfiles
                   parameters:
                     file: session.json
-              -
-                name: Clear Thunderbird passwords
+              - name: Clear Thunderbird passwords
                 docs: |-
                   `logins.json` stores encrypted passwords [1].
                   It replaces `signons.sqlite`, which had replaced `signons.txt` [1].
@@ -403,16 +376,13 @@ actions:
                   [1]: https://web.archive.org/web/20221029140819/https://kb.mozillazine.org/Files_and_folders_in_the_profile_-_Thunderbird "Files and folders in the profile | Thunderbird | kb.mozillazine.org"
                   [2]: https://web.archive.org/web/20221029141151/https://support.mozilla.org/id/questions/1362315#answer-1469311 "Mozilla Support | support.mozilla.org"
                 call:
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: logins.json
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: logins-backup.json
-              -
-                name: Clear Thunderbird download history
+              - name: Clear Thunderbird download history
                 docs: |-
                   Download history is saved in `downloads.sqlite` since Thunderbird 3 and in `downloads.rdf` before [1].
                   It stores data to show downloads in **Download Manager** [2].
@@ -422,16 +392,13 @@ actions:
                   [2]: https://web.archive.org/web/20221029210450/https://kb.mozillazine.org/Downloads_not_visible_in_Download_Manager "Downloads not visible in Download Manager | Thunderbird | kb.mozillazine.org"
                   [3]: https://web.archive.org/web/20221029141349/https://bugzilla.mozilla.org/show_bug.cgi?id=159107 "159107 - page saving/downloads takes too much time (is slow) ('marooned' entries in downloads.rdf) | Mozilla Bug Report | bugzilla.mozilla.org"
                 call:
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: downloads.rdf # < Thunderbird 3
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: downloads.sqlite # >= Thunderbird 3
-              -
-                category: Clear Thunderbird address book data
+              - category: Clear Thunderbird address book data
                 docs: |-
                   Most users open the Thunderbird address book from within the email client, but it can also be launched separately [1].
 
@@ -443,8 +410,7 @@ actions:
                   [1]: https://web.archive.org/web/20221029141424/https://wiki.mozilla.org/Thunderbird:Help_Documentation:Using_the_Address_Book "Thunderbird:Help Documentation:Using the Address Book | MozillaWiki | wiki.mozilla.org"
                   [2]: https://web.archive.org/web/20221029141448/https://support.mozilla.org/en-US/questions/1038172 "WHAT ARE COLLECTED ADDRESSES VS, PERSONAL ADDRESS BOOK | Thunderbird Support Forum | Mozilla Support | support.mozilla.org"
                 children:
-                  -
-                    name: Clear Thunderbird personal address book
+                  - name: Clear Thunderbird personal address book
                     docs: |-
                       Files for personal addresses [1]:
 
@@ -453,20 +419,16 @@ actions:
 
                       [1]: https://web.archive.org/web/20221029141501/https://www.recoverytools.com/blog/thunderbird-new-address-book/ "Thunderbird v78 Introduces New Address Book Formats (abook.sqlite) | RecoveryTools | recoverytools.com"
                     call:
-                      -
-                        function: DeleteFileFromThunderbirdProfiles
+                      - function: DeleteFileFromThunderbirdProfiles
                         parameters:
                           file: abook.sqlite # >= Thunderbird v78
-                      -
-                        function: DeleteFileFromThunderbirdProfiles
+                      - function: DeleteFileFromThunderbirdProfiles
                         parameters:
                           file: abook.sqlite-wal # >= Thunderbird v78
-                      -
-                        function: DeleteFileFromThunderbirdProfiles
+                      - function: DeleteFileFromThunderbirdProfiles
                         parameters:
                           file: abook.mab # < Thunderbird v78
-                  -
-                    name: Clear Thunderbird collected address book
+                  - name: Clear Thunderbird collected address book
                     docs: |-
                       Files for collected addresses [1]:
 
@@ -475,20 +437,16 @@ actions:
 
                       [1]: https://web.archive.org/web/20221029141501/https://www.recoverytools.com/blog/thunderbird-new-address-book/ "Thunderbird v78 Introduces New Address Book Formats (abook.sqlite) | RecoveryTools | recoverytools.com"
                     call:
-                      -
-                        function: DeleteFileFromThunderbirdProfiles
+                      - function: DeleteFileFromThunderbirdProfiles
                         parameters:
                           file: history.sqlite # >= Thunderbird v78
-                      -
-                        function: DeleteFileFromThunderbirdProfiles
+                      - function: DeleteFileFromThunderbirdProfiles
                         parameters:
                           file: history.sqlite-wal # >= Thunderbird v78
-                      -
-                        function: DeleteFileFromThunderbirdProfiles
+                      - function: DeleteFileFromThunderbirdProfiles
                         parameters:
                           file: history.mab # < Thunderbird v78
-              -
-                name: Clear clicked links history in Thunderbird
+              - name: Clear clicked links history in Thunderbird
                 docs: |-
                   Thunderbird saves annotations, bookmarks, favorite icons, input history, keywords, and browsing history
                   (a list of pages visited) [1].
@@ -498,27 +456,22 @@ actions:
                   [1]: https://web.archive.org/web/20221029141626/https://kb.mozillazine.org/Places.sqlite "Places.sqlite | MozillaZine Knowledge Base | kb.mozillazine.org"
                   [2]: https://web.archive.org/web/20221029141631/https://bugzilla.mozilla.org/show_bug.cgi?id=686237 "686237 - places.sqlite-wal and places.sqlite-shm not removed on exit | Mozilla Bugs | bugzilla.mozilla.org"
                 call:
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: places.sqlite
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: places.sqlite-shm
-                  -
-                    function: DeleteFileFromThunderbirdProfiles
+                  - function: DeleteFileFromThunderbirdProfiles
                     parameters:
                       file: places.sqlite.wal
-          -
-            category: Clear data from development tools
+          - category: Clear data from development tools
             docs: |-
               This category includes tools that are typically used by developers, also known as "developer tools".
               These tools allow a developer to create, test, and debug software.
               Their data may leak data about the developer, their usage patterns, the environment used for development or the developed project.
             children:
-              -
-                name: Clear Python history
+              - name: Clear Python history
                 docs: |-
                   Python is a high-level, general-purpose programming language [1]. Python comes preinstalled on most Linux distributions [2].
 
@@ -537,16 +490,14 @@ actions:
                   function: DeleteFileFromUserAndRootHome
                   parameters:
                     file: .python_history
-              -
-                category: Clear Visual Studio Code data
+              - category: Clear Visual Studio Code data
                 docs: |-
                   Visual Studio Code, also commonly referred to as VS Code, is a source-code editor made by Microsoft [1].
                   Visual Studio Code saves data that reveals user behavior and preferences.
 
                   [1]: https://web.archive.org/web/20221029142001/https://en.wikipedia.org/wiki/Visual_Studio_Code "Visual Studio Code | Wikipedia | en.wikipedia.org"
                 children:
-                  -
-                    name: Clear Visual Studio Code crash reports
+                  - name: Clear Visual Studio Code crash reports
                     recommend: standard
                     docs: |-
                       Visual Studio Code stores crash reports that later on are uploaded to Microsoft servers by default [1].
@@ -557,16 +508,13 @@ actions:
 
                       [1]: https://web.archive.org/web/20221029142036/https://github.com/microsoft/vscode/blob/2948450d50c201acb40c8b10da305d8d3a293473/src/vs/workbench/services/extensions/electron-browser/localProcessExtensionHost.ts#L280-L301 "vscode source code | GitHub | github.com"
                     call:
-                      -
-                        function: ClearDirFromVsCodeUserDataDir
+                      - function: ClearDirFromVsCodeUserDataDir
                         parameters:
                           directory: Crash\ Reports
-                      -
-                        function: ClearDirFromVsCodeUserDataDir
+                      - function: ClearDirFromVsCodeUserDataDir
                         parameters:
                           directory: exthost\ Crash\ Reports
-                  -
-                    name: Clear Visual Studio Code cache
+                  - name: Clear Visual Studio Code cache
                     docs: |-
                       Unless you have unsaved changes, deleting the cache does not result in data loss [1].
                       However deleting cached data will lead to a slower initial experience as the files are cached again [1].
@@ -581,32 +529,25 @@ actions:
                       [3]: https://web.archive.org/web/20221029142505/https://github.com/microsoft/vscode/issues/126182#issue-919877609 "Cache files not stored under appropriate XDG directory · Issue #126182 · microsoft/vscode | GitHub | github.com"
                       [4]: https://web.archive.org/web/20221029142526/https://stackoverflow.com/questions/46246437/visual-studio-for-mac-cache-location/66295480 "macos - Visual Studio for Mac: Cache Location | Stack Overflow | stackoverflow.com"
                     call:
-                      -
-                        function: ClearDirFromVsCodeUserDataDir
+                      - function: ClearDirFromVsCodeUserDataDir
                         parameters:
                           directory: Cache
-                      -
-                        function: ClearDirFromVsCodeUserDataDir
+                      - function: ClearDirFromVsCodeUserDataDir
                         parameters:
                           directory: CachedData
-                      -
-                        function: ClearDirFromVsCodeUserDataDir
+                      - function: ClearDirFromVsCodeUserDataDir
                         parameters:
                           directory: Code\ Cache
-                      -
-                        function: ClearDirFromVsCodeUserDataDir
+                      - function: ClearDirFromVsCodeUserDataDir
                         parameters:
                           directory: GPUCache
-                      -
-                        function: ClearDirFromVsCodeUserDataDir
+                      - function: ClearDirFromVsCodeUserDataDir
                         parameters:
                           directory: CachedExtensions
-                      -
-                        function: ClearDirFromVsCodeUserDataDir
+                      - function: ClearDirFromVsCodeUserDataDir
                         parameters:
                           directory: CachedExtensionVSIXs
-                  -
-                    name: Clear Visual Studio Code logs
+                  - name: Clear Visual Studio Code logs
                     recommend: standard
                     docs: |-
                       Deleting Visual Studio Code logs does not cause any data loss, but hides usage patterns.
@@ -614,19 +555,17 @@ actions:
 
                       [1]: https://web.archive.org/web/20221029142630/https://github.com/microsoft/vscode/blob/f0f4c8782190861ce7ad536eecca45edca7d2ac7/src/vs/platform/environment/common/environmentService.ts#L71-L78 "vscode/environmentService.ts · microsoft/vscode · GitHub | "
                     call:
-                        function: ClearDirFromVsCodeUserDataDir
-                        parameters:
-                          directory: logs
-              -
-                category: Clear Azure CLI data
+                      function: ClearDirFromVsCodeUserDataDir
+                      parameters:
+                        directory: logs
+              - category: Clear Azure CLI data
                 docs: |-
                   The Azure command-line interface (Azure CLI) is a set of commands used to create and manage Azure resources [1].
                   With an emphasis on automation, the Azure CLI is accessible across all Azure services and is made to work quickly with Azure [1].
 
                   [1]: https://web.archive.org/web/20221029142932/https://learn.microsoft.com/en-us/cli/azure/ "Azure Command-Line Interface (CLI) - Overview | Microsoft Learn | learn.microsoft.com"
                 children:
-                  -
-                    name: Clear Azure CLI telemetry data
+                  - name: Clear Azure CLI telemetry data
                     recommend: standard
                     docs: |-
                       The Azure CLI stores telemetry in the `telemetry` directory and `telemetry.txt`, `logs/telemetry.txt` files [1].
@@ -636,16 +575,14 @@ actions:
                       rm -rfv ~/.azure/telemetry
                       rm -fv ~/.azure/telemetry.txt
                       rm -fv ~/.azure/logs/telemetry.txt
-                  -
-                    name: Clear Azure CLI logs
+                  - name: Clear Azure CLI logs
                     recommend: standard
                     docs: |-
                       Azure CLI saves logs in the `logs` directory [1].
 
                       [1]: https://web.archive.org/web/20221029143112/https://github.com/Azure/azure-cli/blob/87c9c3c5a46de622b38e1ec4d5797bb9a3eb9e6f/src/azure/cli/_logging.py#L23 "Azure CLI Source Code | GitHub | github.com"
                     code: rm -rfv ~/.azure/logs
-                  -
-                    name: Clear Azure CLI cache
+                  - name: Clear Azure CLI cache
                     recommend: standard
                     docs: |-
                       This script deletes cached Azure CLI objects [1].
@@ -657,8 +594,7 @@ actions:
                       parameters:
                         command: az
                         code: az cache purge
-                  -
-                    name: Clear Azure login data (this will log you out of the current session)
+                  - name: Clear Azure login data (this will log you out of the current session)
                     recommend: strict
                     docs: |-
                       This script cleans the login data in three steps:
@@ -687,8 +623,7 @@ actions:
                           az logout 2&> /dev/null
                           az account clear
                           rm -fv ~/.azure/accessTokens.json
-      -
-        category: Clear browser history
+      - category: Clear browser history
         docs: |-
           A web browser (commonly just called a browser) is software that is used to visit websites [1].
 
@@ -696,8 +631,7 @@ actions:
 
           [1]: https://web.archive.org/web/20221029193056/https://en.wikipedia.org/wiki/Web_browser "Web browser - Wikipedia | wikipedia.org"
         children:
-          -
-            category: Clear GNOME Web (Epiphany) history
+          - category: Clear GNOME Web (Epiphany) history
             docs: |-
               GNOME Web (called Epiphany until 2012) is a free and open-source web browser based on the GTK port of Apple's WebKit rendering engine, called WebKitGTK [1].
               It is developed by the GNOME project for Unix-like systems [1].
@@ -711,8 +645,7 @@ actions:
               [2]: https://web.archive.org/web/20221029211521/https://medium.com/elementaryos/elementary-os-5-juno-is-here-471dfdedc7b3 "elementary OS 5 Juno is Here | medium.com"
               [3]: https://web.archive.org/web/20221029211555/https://www.bodhilinux.com/2020/03/25/bodhi-linux-5-1-0-released/ "Bodhi Linux 5.1.0 Released | bodhilinux.com"
             children:
-              -
-                name: Clear GNOME Web cache
+              - name: Clear GNOME Web cache
                 docs: This script clears the temporary cache and does not cause any user data loss.
                 code: |-
                   # Global installation
@@ -721,8 +654,7 @@ actions:
                   rm -rfv ~/.var/app/org.gnome.Epiphany/cache/*
                   # Snap installation
                   rm -rfv ~/~/snap/epiphany/common/.cache/*
-              -
-                name: Clear GNOME Web browsing history
+              - name: Clear GNOME Web browsing history
                 recommend: strict
                 docs: |-
                   Your browsing history consists of the web pages that you have visited [1].
@@ -732,20 +664,16 @@ actions:
                   [2]: https://web.archive.org/web/20221030154804/https://gitlab.gnome.org/GNOME/epiphany/-/issues/1169 "Maintainer defining ephy-history.db | GNOME/epiphany | GitLab | gitlab.gnome.org"
                   [3]: https://web.archive.org/web/20221030154903/https://gitlab.gnome.org/GNOME/epiphany/-/issues/1642 "Logs showing ephy-history.db-shm | GNOME/epiphany | GitLab | gitlab.gnome.org"
                 call:
-                  -
-                    function: DeleteFileFromGNOMEWebData
+                  - function: DeleteFileFromGNOMEWebData
                     parameters:
                       file: ephy-history.db
-                  -
-                    function: DeleteFileFromGNOMEWebData
+                  - function: DeleteFileFromGNOMEWebData
                     parameters:
                       file: ephy-history.db-shm
-                  -
-                    function: DeleteFileFromGNOMEWebData
+                  - function: DeleteFileFromGNOMEWebData
                     parameters:
                       file: ephy-history.db-wal
-              -
-                name: Clear GNOME Web cookies
+              - name: Clear GNOME Web cookies
                 recommend: strict
                 docs: |-
                   `cookies.sqlite` file is used to store cookies in WebKit-based browsers [1].
@@ -756,11 +684,10 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029144608/https://bugs.webkit.org/show_bug.cgi?id=149551 "Discussion around cookies.sqlite in WebKit source code | WebKit Bugzilla | bugs.webkit.org"
                 call:
-                    function: DeleteFileFromGNOMEWebData
-                    parameters:
-                      file: cookies.sqlite
-              -
-                name: Clear GNOME Web bookmarks
+                  function: DeleteFileFromGNOMEWebData
+                  parameters:
+                    file: cookies.sqlite
+              - name: Clear GNOME Web bookmarks
                 docs: |-
                   Bookmarks are evidently stored in a file called `bookmarks.gvdb` [1].
 
@@ -768,18 +695,16 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029144626/https://gitlab.gnome.org/GNOME/epiphany/-/issues/198 "Discussion around bookmarks.gvdb | GNOME/epiphany | gitlab.gnome.org"
                 call:
-                    function: DeleteFileFromGNOMEWebData
-                    parameters:
-                      file: bookmarks.gvdb
-          -
-            category: Clear Firefox history
+                  function: DeleteFileFromGNOMEWebData
+                  parameters:
+                    file: bookmarks.gvdb
+          - category: Clear Firefox history
             docs: |-
-                This category encompasses a series of scripts aimed at helping users manage and delete their browsing history and related data in Mozilla Firefox.
+              This category encompasses a series of scripts aimed at helping users manage and delete their browsing history and related data in Mozilla Firefox.
 
-                The scripts are designed to target different aspects of user data stored by Firefox, providing users options for maintaining privacy and freeing up disk space.
+              The scripts are designed to target different aspects of user data stored by Firefox, providing users options for maintaining privacy and freeing up disk space.
             children:
-              -
-                name: Clear Firefox cache
+              - name: Clear Firefox cache
                 recommend: standard
                 docs: |-
                   The cache gets stored `.cache` folder, which you can see when you navigate to `about:cache` [1] [2].
@@ -793,8 +718,7 @@ actions:
                   rm -rfv ~/.var/app/org.mozilla.firefox/cache/*
                   # Snap installation
                   rm -rfv ~/snap/firefox/common/.cache/*
-              -
-                name: Clear Firefox crash reports
+              - name: Clear Firefox crash reports
                 recommend: standard
                 docs: |-
                   Firefox stores crash reports in `~/.mozilla/firefox/Crash Reports/` to submit them later [1].
@@ -805,8 +729,7 @@ actions:
                   [1]: https://web.archive.org/web/20221029145258/https://support.mozilla.org/en-US/kb/mozillacrashreporter "Mozilla Crash Reporter | Firefox Help | support.mozilla.org"
                   [2]: https://web.archive.org/web/20221029145312/https://bugzilla.mozilla.org/show_bug.cgi?id=1653852#c16 "1653852 - Flatpak sandbox breaks crash reporting | Bugzilla | mozilla.org"
                 call:
-                  -
-                    function: RunInlineCode
+                  - function: RunInlineCode
                     parameters:
                       code: |-
                         # Global installation
@@ -815,16 +738,13 @@ actions:
                         rm -rfv ~/.var/app/org.mozilla.firefox/.mozilla/firefox/Crash\ Reports/*
                         # Snap installation
                         rm -rfv ~/snap/firefox/common/.mozilla/firefox/Crash\ Reports/*
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: crashes/*
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: crashes/events/*
-              -
-                name: Clear Firefox cookies
+              - name: Clear Firefox cookies
                 docs: |-
                   Firefox Cookies are stored in the `cookies.sqlite` database, within the 'moz_cookies' table [1].
 
@@ -833,8 +753,7 @@ actions:
                   function: DeleteFilesFromFirefoxProfiles
                   parameters:
                     pathGlob: cookies.sqlite
-              -
-                name: Clear Firefox browsing history (URLs, downloads, bookmarks, visits, etc.)
+              - name: Clear Firefox browsing history (URLs, downloads, bookmarks, visits, etc.)
                 # This script (name, documentation and code) is same in Linux and Windows collections.
                 #   Changes should be done at both places.
                 #   Marked: refactor-with-partials
@@ -851,7 +770,7 @@ actions:
 
                   The `moz_places` table holds URL data, connecting to various other tables like `moz_annos`, `moz_bookmarks`, `moz_inputhistory`, and `moz_historyvisits` [2].
                   Due to these connections, the script removes entries from all relevant tables simultaneously to maintain database integrity.
-                  
+
                   **Bookmarks**: Stored across several tables (`moz_bookmarks`, `moz_bookmarks_folders`, `moz_bookmarks_roots`) [3], with additional undocumented tables like `moz_bookmarks_deleted` [4].
 
                   **Downloads**: Stored in the 'places.sqlite' database, within the 'moz_annos' table [5]. The entries in `moz_annos` are linked to `moz_places` that store the actual history entry
@@ -870,24 +789,19 @@ actions:
                   [6]: https://web.archive.org/web/20221029145550/https://support.mozilla.org/en-US/questions/1319253 "Where does Firefox store SQLITE download history | Firefox Support Forum | Mozilla Support | support.mozilla.org"
                   [7]: https://web.archive.org/web/20221029145712/https://kb.mozillazine.org/Downloads.rdf "Downloads.rdf | MozillaZine Knowledge Base | kb.mozillazine.org"
                 call:
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: downloads.rdf
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: downloads.sqlite
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: places.sqlite
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: favicons.sqlite
-              -
-                name: Clear Firefox logins
+              - name: Clear Firefox logins
                 docs: |-
                   Logins for Firefox are saved in the `logins.json` file [1].
                   Older versions of Firefox stored logins in the `signons.sqlite` database, within the `moz_logins` table [1].
@@ -897,20 +811,16 @@ actions:
                   [1]: https://web.archive.org/web/20221029145535/https://www.foxtonforensics.com/browser-history-examiner/firefox-history-location "Mozilla Firefox History Location | Firefox History Viewer | foxtonforensics.com"
                   [2]: https://web.archive.org/web/20221029145757/https://bugzilla.mozilla.org/show_bug.cgi?id=1593467 "1593467 - Automatically restore from logins-backup.json when logins.json is missing or corrupt | Bugzilla | mozilla.org | bugzilla.mozilla.org"
                 call:
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: logins.json
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: logins-backup.json
-                  -
-                    function: DeleteFilesFromFirefoxProfiles
+                  - function: DeleteFilesFromFirefoxProfiles
                     parameters:
                       pathGlob: signons.sqlite
-              -
-                name: Clear Firefox autocomplete history
+              - name: Clear Firefox autocomplete history
                 docs: |-
                   The `formhistory.sqlite` file remembers what you have searched for in the Firefox search bar
                   and what information you've entered into website forms [1].
@@ -920,18 +830,16 @@ actions:
                   function: DeleteFilesFromFirefoxProfiles
                   parameters:
                     pathGlob: formhistory.sqlite
-              -
-                name: Clear Firefox "Multi-Account Containers" data
+              - name: Clear Firefox "Multi-Account Containers" data
                 docs: |-
                   The `containers.json` file stores the details of containers used by the [Container Tabs](https://web.archive.org/web/20221029214648/https://support.mozilla.org/en-US/kb/containers) feature [1].
 
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
-                    function: DeleteFilesFromFirefoxProfiles
-                    parameters:
-                      pathGlob: containers.json
-              -
-                name: Clear Firefox open tabs and windows data
+                  function: DeleteFilesFromFirefoxProfiles
+                  parameters:
+                    pathGlob: containers.json
+              - name: Clear Firefox open tabs and windows data
                 docs: |-
                   The `sessionstore.jsonlz4` file stores the currently open tabs and windows [1].
 
@@ -939,18 +847,16 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
-                    function: DeleteFilesFromFirefoxProfiles
-                    parameters:
-                      pathGlob: sessionstore.jsonlz4
-      -
-        category: Clear system and kernel usage data
+                  function: DeleteFilesFromFirefoxProfiles
+                  parameters:
+                    pathGlob: sessionstore.jsonlz4
+      - category: Clear system and kernel usage data
         docs: |-
           Your system (operating system along with other software on it) and kernel store
           data that may reveal your behavior and can be considered sensitive. These scripts clean
           up the data that could potentially expose your user data.
         children:
-          -
-            name: Clear system crash report files
+          - name: Clear system crash report files
             docs: |-
               The `/var/crash` directory holds system crash dumps according to Filesystem Hierarchy Standard (FHS) [1].
 
@@ -976,8 +882,7 @@ actions:
             code: |-
               sudo rm -rfv /var/crash/*
               sudo rm -rfv /var/lib/systemd/coredump/
-          -
-            name: Clear system logs (`journald`)
+          - name: Clear system logs (`journald`)
             docs: |-
               journald is the part of systemd that captures, queries, and removes logs when needed [1].
               It allows removing logs by setting `--vacuum-time` [2].
@@ -990,19 +895,16 @@ actions:
               [3]: https://web.archive.org/web/20221026211029/https://systemd.io/ "Systemd Homepage | systemd.io"
               [4]: https://web.archive.org/web/20221029150659/https://www.freedesktop.org/software/systemd/man/systemd-journald.service.html "systemd-journald.service | freedesktop.org"
             call:
-              -
-                function: RunIfCommandExists
+              - function: RunIfCommandExists
                 parameters:
                   command: journalctl
                   code: sudo journalctl --vacuum-time=1s
-              -
-                function: RunInlineCode
+              - function: RunInlineCode
                 parameters:
                   code: |-
                     sudo rm -rfv /run/log/journal/*
                     sudo rm -rfv /var/log/journal/*
-          -
-            name: Clear Zeitgeist data (activity logs)
+          - name: Clear Zeitgeist data (activity logs)
             recommend: strict
             docs: |-
               Zeitgeist logs files opened, websites visited, conversations, and emails and provides
@@ -1020,14 +922,12 @@ actions:
               [3]: https://web.archive.org/web/20221029150959/https://bugs.launchpad.net/ubuntu/+source/zeitgeist/+bug/941643 "Bug #941643 “activity.sqlite-wal's size increments dramatically” : Bugs : zeitgeist package : Ubuntu | Ubuntu Zeitgeist Package | bugs.launchpad.net"
             code: |-
               sudo rm -rfv {/root,/home/*}/.local/share/zeitgeist
-      -
-        category: Clear recently used files list
+      - category: Clear recently used files list
         docs: |-
           Revealing data about recent files used by a user has privacy risks, such as exposing
           your actions and files that you wish to keep private.
         children:
-          -
-            name: Clear GTK recently used files list
+          - name: Clear GTK recently used files list
             recommend: strict
             docs: |-
               `recently-used.xbel` is part of the GTK+ toolkit [1] that's developed and used by GNOME [2].
@@ -1052,8 +952,7 @@ actions:
               rm -fv ~/snap/*/*/.local/share/recently-used.xbel
               # From Flatpak packages
               rm -fv ~/.var/app/*/data/recently-used.xbel
-          -
-            name: Clear KDE-tracked recently used items list
+          - name: Clear KDE-tracked recently used items list
             recommend: strict
             docs: |-
               `.desktop` files are used by KDE to store recent documents and are exposed through an API [1].
@@ -1073,8 +972,7 @@ actions:
               rm -fv ~/snap/*/*/.local/share/*.desktop
               # From Flatpak packages
               rm -rfv ~/.var/app/*/data/*.desktop
-      -
-        name: Empty trash
+      - name: Empty trash
         docs: |-
           The trash location is standardized by ["The FreeDesktop.org Trash specification"](https://web.archive.org/web/20221029151648/https://specifications.freedesktop.org/trash-spec/trashspec-latest.html) [1].
           It uses the `$XDG_DATA_HOME/Trash` directory [1], which defaults to `$HOME/.local/share/Trash` [2].
@@ -1094,8 +992,7 @@ actions:
           rm -rfv ~/snap/*/*/.local/share/Trash/*
           # Empty Flatpak trash (apps may not choose to use Portal API)
           rm -rfv ~/.var/app/*/data/Trash/*
-      -
-        name: Clear global temporary folders
+      - name: Clear global temporary folders
         docs: |-
           A temporary folder or temporary directory is a directory used to hold temporary files [1].
 
@@ -1113,14 +1010,12 @@ actions:
         code: |-
           sudo rm -rfv /tmp/*
           sudo rm -rfv /var/tmp/*
-      -
-        category: Clear package manager data
+      - category: Clear package manager data
         docs: |-
           Package managers store caches, statistics, and logs that may reveal data on how you use the package
           managers and software downloaded from them, such as your choice of software.
         children:
-          -
-            name: Clear YUM/RPM data
+          - name: Clear YUM/RPM data
             docs: |-
               The Yellowdog Updater, Modified (YUM) is a free and open-source command-line package-management
               utility for computers running the Linux operating system using the RPM Package Manager [1].
@@ -1140,8 +1035,7 @@ actions:
               parameters:
                 command: yum
                 code: yum clean all --enablerepo='*'
-          -
-            name: Clear DNF/RPM data
+          - name: Clear DNF/RPM data
             docs: |-
               DNF or Dandified YUM is the next-generation version of YUM, a package manager for
               .rpm-based Linux distributions [1].
@@ -1159,8 +1053,7 @@ actions:
               parameters:
                 command: dnf
                 code: dnf clean all --enablerepo='*'
-          -
-            category: Clear Snap data
+          - category: Clear Snap data
             docs: |-
               Snap is a software packaging and deployment system developed by Canonical [1].
               The packages are called snaps, and the tool for using them is called snapd [1].
@@ -1170,8 +1063,7 @@ actions:
 
               [1]: https://web.archive.org/web/20221029152606/https://en.wikipedia.org/wiki/Snap_%28software%29 "Snap | Wikipedia | en.wikipedia.org"
             children:
-              -
-                name: Clear Snap cache
+              - name: Clear Snap cache
                 docs: |-
                   The Snap cache is stored at `/var/lib/snapd/cache/` [1].
 
@@ -1181,8 +1073,7 @@ actions:
                   [1]: https://web.archive.org/web/20221029152638/https://github.com/snapcore/snapd/blob/76b081beee1899c573b42bf216b6e087656011e7/tests/main/auto-refresh-private/task.yaml#L74 "snapd source code | GitHub | github.com"
                   [2]: https://web.archive.org/web/20221029152651/https://forum.snapcraft.io/t/is-if-safe-for-me-to-remove-cache-files/7641/2 "Is if safe for me to remove cache files? - snapd - snapcraft.io | forum.snapcraft.io"
                 code: sudo rm -rfv /var/lib/snapd/cache/*
-              -
-                name: Remove old Snap packages
+              - name: Remove old Snap packages
                 recommend: standard
                 docs: |-
                   This script removes all disabled Snap packages.
@@ -1204,8 +1095,7 @@ actions:
                           sudo snap remove "$name" --revision="$rev";
                         fi
                       done
-          -
-            category: Clear Flatpak data
+          - category: Clear Flatpak data
             docs: |-
               Flatpak, formerly known as xdg-app, is a utility for software deployment and package
               management for Linux [1]. It is supported out-of-the-box by many Linux distributions
@@ -1214,8 +1104,7 @@ actions:
 
               [1]: https://web.archive.org/web/20221029153354/https://en.wikipedia.org/wiki/Flatpak "Flatpak - Wikipedia | en.wikipedia.org"
             children:
-              -
-                name: Remove orphaned Flatpak runtimes
+              - name: Remove orphaned Flatpak runtimes
                 recommend: standard
                 docs: |-
                   This script removes runtimes and extensions that are not used by installed
@@ -1237,8 +1126,7 @@ actions:
                   parameters:
                     command: flatpak
                     code: flatpak uninstall --unused --noninteractive
-              -
-                name: Clear Flatpak cache
+              - name: Clear Flatpak cache
                 docs: |-
                   This script clears the Flatpak cache.
 
@@ -1257,8 +1145,7 @@ actions:
                   rm -rfv ~/.cache/flatpak/system-cache/*
                   # Old cache
                   rm -rfv ~/.local/share/flatpak/system-cache/*
-          -
-            category: Clear APT data
+          - category: Clear APT data
             docs: |-
               Advanced Package Tool (APT) is a free software user interface that works with
               core libraries to handle the installation and removal of software on Debian, and
@@ -1268,8 +1155,7 @@ actions:
 
               [1]: https://web.archive.org/web/20221029153651/https://en.wikipedia.org/wiki/APT_%28software%29 "APT | Wikipedia"
             children:
-              -
-                name: Clear obsolete APT packages
+              - name: Clear obsolete APT packages
                 recommend: standard
                 docs: |-
                   This script runs the `autoclean` command which removes package files that can no longer be downloaded,
@@ -1282,8 +1168,7 @@ actions:
                   parameters:
                     command: apt-get
                     code: sudo apt-get autoclean
-              -
-                name: Clear APT package file lists
+              - name: Clear APT package file lists
                 docs: |-
                   This script removes package file lists. APT stores a copy of those files (in `/var/lib/apt/lists/`)
                   and searches are done within those local files to avoid going through the network for every search [1].
@@ -1294,8 +1179,7 @@ actions:
                   [1]: https://web.archive.org/web/20221029153731/https://www.debian.org/doc/manuals/debian-handbook/sect.apt-cache.en.html "6.3. The apt-cache Command | Debian Handbook | www.debian.org"
                   [2]: https://web.archive.org/web/20221029154335/https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=775163 "#775163 - apt pigs out in /var, particularly with multi-arch - Debian Bug report logs | bugs.debian.org"
                 code: sudo rm -rfv /var/lib/apt/lists/*
-              -
-                name: Clear orphaned APT package dependencies
+              - name: Clear orphaned APT package dependencies
                 recommend: standard
                 docs: |-
                   This script runs the `autoremove` command, which removes packages that were automatically installed
@@ -1310,8 +1194,7 @@ actions:
                   parameters:
                     command: apt-get
                     code: sudo apt-get -y autoremove --purge
-              -
-                name: Clear cache for APT packages
+              - name: Clear cache for APT packages
                 docs: |-
                   This script runs the `clean` command. It clears out the local repository of retrieved package files [1],
                   meaning that it deletes downloaded packages (`.deb`) already installed (and no longer needed) [2].
@@ -1326,14 +1209,12 @@ actions:
                   parameters:
                     command: apt-get
                     code: sudo apt-get clean
-      -
-        category: Clear shared caches
+      - category: Clear shared caches
         docs: |-
           The scripts in this category bulk delete all cache entries for the given scope.
           These scripts are designed to affect more than a single application and do a wide range of cleaning.
         children:
-          -
-            name: Clear user-specific cache
+          - name: Clear user-specific cache
             docs: |-
               User-specific non-essential data is stored in `$XDG_CACHE_HOME`, which defaults to `$HOME/.cache` [1].
               Even though this data should be safe to delete, an application might still not comply with the standard
@@ -1350,8 +1231,7 @@ actions:
             code: |-
               rm -rfv ~/.cache/*
               sudo rm -rfv root/.cache/*
-          -
-            name: Clear system-wide cache
+          - name: Clear system-wide cache
             docs: |-
               The `/var/cache` directory contains cached files, i.e. files that were generated and can be
               re-generated at any time, but they are worth storing to save time recomputing them [1].
@@ -1369,8 +1249,7 @@ actions:
               [1]: https://web.archive.org/web/20130511220135/http://www.lindevdoc.org/wiki//var/cache "/var/cache - Linux Developer's Documentation"
               [2]: https://web.archive.org/web/20221029154623/https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch05s05.html "5.5. /var/cache : Application cache data | refspecs.linuxfoundation.org"
             code: rm -rf /var/cache/*
-          -
-            name: Clear Flatpak application cache
+          - name: Clear Flatpak application cache
             docs: |-
               Non-essential user-specific data is stored in `~/.var/app/<app-id>/cache` by Flatpak applications [1].
               This directory points to `XDG_CACHE_HOME` [1] from the XDG base directory specification [2].
@@ -1378,16 +1257,14 @@ actions:
               [1]: https://web.archive.org/web/20221029154654/https://docs.flatpak.org/en/latest/conventions.html#xdg-base-directories "Requirements & Conventions - Flatpak documentation | docs.flatpak.org"
               [2]: https://web.archive.org/web/20221029151712/https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html "XDG Base Directory Specification | specifications.freedesktop.org"
             code: rm -rfv ~/.var/app/*/cache/*
-          -
-            name: Clear Snap application cache
+          - name: Clear Snap application cache
             docs: |-
               Application caches are isolated per application and stored in the `~/snaps/APP-NAME/VERSION/.cache`
               folders for Snap applications [1].
 
               [1]: https://web.archive.org/web/20221029154850/https://bugs.launchpad.net/snappy/+bug/1744584 "Bug #1744584 “Exclude Snap .cache from Dejadup backups” : Bugs : Snappy | bugs.launchpad.net/snappy"
             code: rm -fv ~/snap/*/*/.cache/*
-          -
-            name: Clear thumbnails (icon cache)
+          - name: Clear thumbnails (icon cache)
             docs: |-
               Thumbnails are reduced-size versions of pictures or videos, used to help in recognizing and organizing
               them, serving the same role for images as a normal text index does for words [1].
@@ -1403,8 +1280,7 @@ actions:
             code: |-
               rm -rfv ~/.thumbnails/*
               rm -rfv ~/.cache/thumbnails/*
-      -
-        name: Clear screenshots
+      - name: Clear screenshots
         docs: |-
           GNOME's default screenshot folder (as seen in Pop!_OS and Elementary OS) is `~/Pictures/Screenshots/` [1].
           Flameshot also uses the same default folder as GNOME [2].
@@ -1440,8 +1316,7 @@ actions:
           find ~ -name 'ksnip_*' | while read -r file_path; do
             rm -fv "$file_path" # E.g. ksnip_20220927-195151.png
           done
-  -
-    category: Disable OS data collection
+  - category: Disable OS data collection
     docs: |-
       All operating systems collect data. This is part of their work. Sometimes, this data has
       high privacy implications, especially when it is submitted to third parties. Some Linux
@@ -1451,8 +1326,7 @@ actions:
       Data collection and telemetry is not always a bad thing, and can help developers provide
       better software that can compete with proprietary and much more privacy-invasive alternatives.
     children:
-      -
-        category: Disable Debian telemetry
+      - category: Disable Debian telemetry
         docs: |-
           Debian, also known as Debian GNU/Linux, is a Linux distribution composed of free and open-source
           software, developed by the community-supported Debian Project [1].
@@ -1468,8 +1342,7 @@ actions:
           [3]: https://web.archive.org/web/20221029160255/https://wiki.debian.org/PrivacyIssues#Telemetry_libraries "Privacy Issues | Debian Wiki | wiki.debian.org"
           [4]: https://web.archive.org/web/20221030133248/https://www.debian.org/legal/privacy "Debian -- Privacy Policy | www.debian.org"
         children:
-          -
-            category: Disable sending of package statistics (popcon)
+          - category: Disable sending of package statistics (popcon)
             docs: |-
               Popularity Contest (or popcon) collects statistical data to determine which packages are the most popular [1].
               It sends a list of packages installed and the access and change times of relevant files to the server via email
@@ -1493,8 +1366,7 @@ actions:
               [3]: https://web.archive.org/web/20221029160859/https://packages.debian.org/buster/popularity-contest "Debian - Details of package popularity-contest in buster | packages.debian.org"
               [4]: https://web.archive.org/web/20221029160841/https://popcon.debian.org/FAQ "FAQ | popcon | popcon.debian.org"
             children:
-              -
-                name: Disable participation in Popularity Contest
+              - name: Disable participation in Popularity Contest
                 recommend: standard
                 docs: |-
                   `popularity-contest` checks `/etc/popularity-contest.conf` for the value of `PARTICIPATE` to send data [1].
@@ -1515,8 +1387,7 @@ actions:
                   else
                     echo "Skipping because configuration file ($config_file) is not found. Is popcon installed?"
                   fi
-              -
-                name: Remove Popularity Contest (`popcon`) package
+              - name: Remove Popularity Contest (`popcon`) package
                 recommend: strict
                 docs: |-
                   This script deletes the `popularity-contest` package.
@@ -1529,8 +1400,7 @@ actions:
                   function: UninstallAptPackage
                   parameters:
                     packageName: popularity-contest
-              -
-                name: Remove daily cron entry for Popularity Contest (popcon)
+              - name: Remove daily cron entry for Popularity Contest (popcon)
                 recommend: strict
                 docs: |-
                   Normally, `popularity-contest` is run from a cron job, `/etc/cron.daily/popularity-contest` [1].
@@ -1544,8 +1414,7 @@ actions:
                   function: DisableCronjob
                   parameters:
                     jobName: popularity-contest
-          -
-            category: Disable reportbug (opt-in telemetry)
+          - category: Disable reportbug (opt-in telemetry)
             docs: |-
               These scripts disable the functionality of reportbug.
 
@@ -1561,8 +1430,7 @@ actions:
               [1]: https://web.archive.org/web/20221029161457/https://wiki.debian.org/reportbug "reportbug - Debian Wiki | wiki.debian.org"
               [2]: https://web.archive.org/web/20221029161559/https://manpages.ubuntu.com/manpages/trusty/man1/reportbug.1.html "Ubuntu Manpage: reportbug - reports a bug to a debbugs server | manpages.ubuntu.com"
             children:
-              -
-                name: Remove `reportbug` package
+              - name: Remove `reportbug` package
                 recommend: strict
                 docs: |-
                   This script uninstalls `reportbug` package, which includes the tool itself.
@@ -1573,8 +1441,7 @@ actions:
                   function: UninstallAptPackage
                   parameters:
                     packageName: reportbug
-              -
-                name: Remove Python modules for `reportbug`
+              - name: Remove Python modules for `reportbug`
                 recommend: strict
                 docs: |-
                   This script uninstalls `python3-reportbug`.
@@ -1586,8 +1453,7 @@ actions:
                   function: UninstallAptPackage
                   parameters:
                     packageName: python3-reportbug
-              -
-                name: Remove UI for reportbug (`reportbug-gtk` package)
+              - name: Remove UI for reportbug (`reportbug-gtk` package)
                 recommend: strict
                 docs: |-
                   This script uninstalls `reportbug-gtk`. It consists of a desktop file and an icon, and it has dependencies to enable the
@@ -1600,8 +1466,7 @@ actions:
                   function: UninstallAptPackage
                   parameters:
                     packageName: reportbug-gtk
-      -
-        category: Disable Arch Linux telemetry
+      - category: Disable Arch Linux telemetry
         docs: |-
           Arch Linux is an independently developed, x86-64 general-purpose Linux distribution that strives to
           provide the latest stable versions of most software by following a rolling-release model [1]. The default
@@ -1609,8 +1474,7 @@ actions:
 
           [1]: https://web.archive.org/web/20221029161747/https://en.wikipedia.org/wiki/Arch_Linux "Arch Linux | Wikipedia | en.wikipedia.org"
         children:
-          -
-            category: Disable `pkgstats` that collects installed package list (opt-in)
+          - category: Disable `pkgstats` that collects installed package list (opt-in)
             docs: |-
               `pkgstats` sends a list of all installed packages, the architecture, and the mirror you are using to
               the Arch Linux project [1]. It stores personally identifiable information such as IP addresses for
@@ -1619,8 +1483,7 @@ actions:
               [1]: https://web.archive.org/web/20221029161806/https://wiki.archlinux.org/title/Pkgstats "pkgstats - ArchWiki | wiki.archlinux.org"
               [2]: https://web.archive.org/web/20221029161821/https://pkgstats.archlinux.de/privacy-policy "Privacy policy | pkgstats | pkgstats.archlinux.de"
             children:
-              -
-                name: Remove `pkgstats` package
+              - name: Remove `pkgstats` package
                 recommend: strict
                 docs: |-
                   `pkgstats` package submits a list of installed packages to the Arch Linux project [1].
@@ -1633,8 +1496,7 @@ actions:
                   function: UninstallPacmanPackage
                   parameters:
                     packageName: pkgstats
-              -
-                name: Disable weekly `pkgstats` submission
+              - name: Disable weekly `pkgstats` submission
                 recommend: standard
                 docs: |-
                   `pkgstats` is set up to automatically run every week using systemd/timers [1]. Once disabled,
@@ -1646,16 +1508,14 @@ actions:
                   function: DisableSystemdService
                   parameters:
                     serviceName: pkgstats.timer
-      -
-        category: Disable Zorin OS telemetry
+      - category: Disable Zorin OS telemetry
         docs: |-
           Zorin OS is a Linux distribution based on Ubuntu [1].
           It is customized to help users transition from Windows and macOS easily [1].
 
           [1]: https://web.archive.org/web/20221029162035/https://en.wikipedia.org/wiki/Zorin_OS "Zorin OS - Wikipedia | en.wikipedia.org"
         children:
-          -
-            name: Disable Zorin OS census pings
+          - name: Disable Zorin OS census pings
             docs: |-
               Zorin OS pings Zorin OS servers [1].
               It sends pings on an hourly basis [2].
@@ -1669,8 +1529,7 @@ actions:
               function: UninstallAptPackage
               parameters:
                 packageName: zorin-os-census
-          -
-            name: Remove Zorin OS census unique ID
+          - name: Remove Zorin OS census unique ID
             docs: |-
               Census submits a unique ID associated with the installation when pings are sent [1].
               Removing the identifier reduces the risk of your computer being identified.
@@ -1684,8 +1543,7 @@ actions:
                 sudo mkdir -p /var/lib/zorin-os-census
                 uuidgen | sudo tee /var/lib/zorin-os-census/uuid > /dev/null
               fi
-      -
-        category: Disable Ubuntu telemetry
+      - category: Disable Ubuntu telemetry
         docs: |-
           Ubuntu is a Linux distribution based on Debian and composed mostly of free and open-source software [1].
           Ubuntu, along with its upstream Debian, has many official (Kubuntu, Lubuntu, Ubuntu Studio…) and unofficial
@@ -1694,8 +1552,7 @@ actions:
           [1]: https://web.archive.org/web/20221029162338/https://en.wikipedia.org/wiki/Ubuntu "Ubuntu - Wikipedia | en.wikipedia.org"
           [2]: https://web.archive.org/web/20221029160241/https://en.wikipedia.org/wiki/List_of_Linux_distributions#Ubuntu-based "List of Linux distributions - Wikipedia | en.wikipedia.org"
         children:
-          -
-            name: Disable online search result collection (collects queries)
+          - name: Disable online search result collection (collects queries)
             recommend: strict
             docs: |-
               Online search is introduced in Ubuntu Lens in Ubuntu 12.10 [1]. It has been known as "Shopping Lens",
@@ -1712,8 +1569,7 @@ actions:
                 command: gsettings
                 code: gsettings set com.canonical.Unity.Lenses remote-content-search none
                 revertCode: gsettings set com.canonical.Unity.Lenses remote-content-search all
-          -
-            category: Disable metrics reporting in Ubuntu
+          - category: Disable metrics reporting in Ubuntu
             docs: |-
               `ubuntu-report` reports hardware and other collected metrics like installer or upgrade information [1].
 
@@ -1742,8 +1598,7 @@ actions:
               [1]: https://web.archive.org/web/20221029162505/https://github.com/ubuntu/ubuntu-report/blob/30e902ebc17e4e10d83392d7cd3dc05fc9e35cc4/README.md "ubuntu-report/README.md at master · ubuntu/ubuntu-report | github.com"
               [2]: https://web.archive.org/web/20221029162538/https://github.com/ubuntu/ubuntu-report/blob/8e6030ff9bbeacacf41a9b58ea638a5c9a6f864d/README.md "More diagnostics data from desktop | lists.ubuntu.com"
             children:
-              -
-                name: Disable participation in metrics reporting in Ubuntu
+              - name: Disable participation in metrics reporting in Ubuntu
                 recommend: standard
                 docs: |-
                   This script uses the `ubuntu-report` CLI to opt you out of data submission [1].
@@ -1768,8 +1623,7 @@ actions:
                       else
                         >&2 echo 'Failed to opt in.'
                       fi
-              -
-                name: Remove Ubuntu Report tool (`ubuntu-report`)
+              - name: Remove Ubuntu Report tool (`ubuntu-report`)
                 recommend: strict
                 docs: |-
                   `ubuntu-report` is installed as an apt package and can be uninstalled in this way [1].
@@ -1781,8 +1635,7 @@ actions:
                   function: UninstallAptPackage
                   parameters:
                     packageName: ubuntu-report
-          -
-            category: Disable Ubuntu error tracker
+          - category: Disable Ubuntu error tracker
             docs: |-
               Ubuntu's error tracker explains crashes, hangs, and other severe errors to end users; lets
               them report an error; and collects these reports and shares them with Ubuntu [1]. Error reports
@@ -1793,8 +1646,7 @@ actions:
 
               [1]: https://web.archive.org/web/20221029162649/https://wiki.ubuntu.com/ErrorTracker
             children:
-              -
-                category: Disable creating crash reports to send (Apport)
+              - category: Disable creating crash reports to send (Apport)
                 docs: |-
                   Apport intercepts program crashes, collects debugging information about the
                   crash and the operating system environment, and sends it to bug trackers in a
@@ -1822,8 +1674,7 @@ actions:
                   [3]: https://web.archive.org/web/20221029162829/https://help.ubuntu.com/community/ReportingBugs#A4._Collect_information_about_the_bug "ReportingBugs - Community Help Wiki | help.ubuntu.com"
                   [4]: https://web.archive.org/web/20221029150025/https://support.starlabs.systems/kb/guides/disable-program-problem-reports "Disable program problem reports - Star Labs | support.starlabs.systems"
                 children:
-                  -
-                    name: Remove `apport` package
+                  - name: Remove `apport` package
                     recommend: strict
                     docs: |-
                       The `apport` package is responsible for automatically generating crash reports for debugging [1].
@@ -1846,8 +1697,7 @@ actions:
                       function: UninstallAptPackage
                       parameters:
                         packageName: apport
-                  -
-                    name: Disable Apport service
+                  - name: Disable Apport service
                     recommend: standard
                     docs: |-
                       The Apport service can be stopped using the following command: `systemctl stop apport` [1] [2].
@@ -1864,8 +1714,7 @@ actions:
                       function: DisableSystemdService
                       parameters:
                         serviceName: apport
-                  -
-                    name: Disable participation in Apport error messaging system
+                  - name: Disable participation in Apport error messaging system
                     recommend: standard
                     docs: |-
                       Opting out of Apport prevents it from creating crash files after a crash [1].
@@ -1892,8 +1741,7 @@ actions:
                       else
                         echo 'Skipping, apport is not configured to be disabled.'
                       fi
-              -
-                category: Disable uploading errors (Whoopsie)
+              - category: Disable uploading errors (Whoopsie)
                 docs: |-
                   The software responsible for uploading crash reports is called Whoopsie [1].
                   It's always running on Ubuntu systems, watching the `/var/crash` directory for crash reports
@@ -1913,8 +1761,7 @@ actions:
                   [2]: https://web.archive.org/web/20221029163347/https://wiki.ubuntu.com/ErrorTracker/ServerArchitecture "ErrorTracker/ServerArchitecture - Ubuntu Wiki | wiki.ubuntu.com"
                   [3]: https://web.archive.org/web/20221029162829/https://help.ubuntu.com/community/ReportingBugs#A4._Collect_information_about_the_bug "ReportingBugs - Community Help Wiki | help.ubuntu.com"
                 children:
-                  -
-                    name: Remove `whoopsie` package
+                  - name: Remove `whoopsie` package
                     docs: |-
                       This script uninstalls the `whoopsie` package.
                       This package is used for error tracker submission in Ubuntu [1].
@@ -1924,8 +1771,7 @@ actions:
                       function: UninstallAptPackage
                       parameters:
                         packageName: whoopsie
-                  -
-                    name: Disable Whoopsie service
+                  - name: Disable Whoopsie service
                     recommend: standard
                     docs: |-
                       Whoopsie works through a service file created in `/lib/systemd/system/whoopsie.service` [1].
@@ -1939,8 +1785,7 @@ actions:
                       function: DisableSystemdService
                       parameters:
                         serviceName: whoopsie
-                  -
-                    name: Disable crash report submissions
+                  - name: Disable crash report submissions
                     recommend: standard
                     docs: |-
                       Once opted-out Whoopsie disables the related service [1].
@@ -1957,8 +1802,7 @@ actions:
                       if [ -f /etc/default/whoopsie ] ; then
                         sudo sed -i 's/report_crashes=false/report_crashes=true/' /etc/default/whoopsie
                       fi
-      -
-        category: Disable Zeitgeist activity logging
+      - category: Disable Zeitgeist activity logging
         docs: |-
           Zeitgeist logs files opened, websites visited, conversations, and emails and provides
           this information over an API to applications [1].
@@ -1991,8 +1835,7 @@ actions:
           [6]: https://web.archive.org/web/20221029164402/https://docs.xfce.org/apps/catfish/introduction "apps:catfish:introduction [Xfce Docs] | docs.xfce.org"
           [7]: https://web.archive.org/web/20221029164405/https://launchpad.net/synapse-project "Synapse in Launchpad | launchpad.net"
         children:
-          -
-            name: Kill Zeitgeist daemon process
+          - name: Kill Zeitgeist daemon process
             docs: |-
               `zeitgeist-daemon` is a daemon providing an activity log [1]. Activity logs consist of a central
               database for events such as file usage, browser history, and calendar entries [1].
@@ -2017,8 +1860,7 @@ actions:
                 # > Replace any existing Zeitgeist instance if there is one already running. If this option isn't
                 # > used, zeitgeist-daemon will refuse to start if another running instance is found.
                 revertCode: zeitgeist-daemon --replace
-          -
-            name: Remove Zeitgeist startup entry
+          - name: Remove Zeitgeist startup entry
             docs: |-
               This script removes the Autostart entry that is used by the Zeitgeist package to start itself [1].
               [The XDG Autostart specification](https://web.archive.org/web/20221029223114/https://specifications.freedesktop.org/autostart-spec/autostart-spec-latest.html)
@@ -2033,8 +1875,7 @@ actions:
               function: RenameFile
               parameters:
                 path: /etc/xdg/autostart/zeitgeist-datahub.desktop
-          -
-            name: Disable access to Zeitgeist database
+          - name: Disable access to Zeitgeist database
             docs: |-
               Zeitgeist logs its data in the `activity.sqlite` file at `$HOME/.local/share/zeitgeist/activity.sqlite` [1].
 
@@ -2061,8 +1902,7 @@ actions:
               else
                 >&2 echo "Failed to restore access, file does not exist at $file."
               fi
-          -
-            name: Remove Zeitgeist package (can break integrated software)
+          - name: Remove Zeitgeist package (can break integrated software)
             docs: |-
               The main functionality for Zeitgeist is provided by the `zeitgeist` package in Fedora [1] and Arch Linux [2],
               and the `zeitgeist-core` package in Debian [3].
@@ -2082,23 +1922,19 @@ actions:
               [7]: https://web.archive.org/web/20221029165914/https://forum.artixlinux.org/index.php/topic,1432.0.html "Remove Unmaintained Zeitgeist (Spyware/Telemetry) from Default MATE installation | artixlinux.org"
               [8]: https://web.archive.org/web/20221029165902/https://askubuntu.com/questions/45548/disabling-zeitgeist/57487 "Disabling Zeitgeist - Ask Ubuntu | askubuntu.com"
             call:
-              -
-                function: UninstallAptPackage
+              - function: UninstallAptPackage
                 parameters:
                   packageName: zeitgeist-core
                   # Other related packages include (apt list *zeitgeist*):
                   #   zeitgeist-core, zeitgeist-datahub, python3-zeitgeist among many others.
                   # Packages that use it include e.g. activity-log-manager, activity-log-manager-control-center..
-              -
-                function: UninstallPacmanPackage
+              - function: UninstallPacmanPackage
                 parameters:
                   packageName: zeitgeist
-              -
-                function: UninstallRPMPackage
+              - function: UninstallRPMPackage
                 parameters:
                   packageName: zeitgeist
-      -
-        name: Disable connectivity checks (breaks Captive Portal detection)
+      - name: Disable connectivity checks (breaks Captive Portal detection)
         docs: |-
           [NetworkManager](https://web.archive.org/web/20221029223230/https://developer-old.gnome.org/NetworkManager/stable/NetworkManager.conf.html) can try
           to reach a web server after connecting to a network in order to determine if it is, e.g., behind a captive portal [1].
@@ -2155,8 +1991,7 @@ actions:
               else
                 echo 'It will take effect after reboot.'
               fi
-  -
-    category: Configure programs
+  - category: Configure programs
     docs: |-
       These scripts configure third-party applications installed on Linux distributions to harden their
       security and privacy to protect your data.
@@ -2164,8 +1999,7 @@ actions:
       native to Linux distributions, i.e., not included in the OS itself and are not known as being part of
       a specific distribution.
     children:
-      -
-        name: Disable Python history for future interactive commands
+      - name: Disable Python history for future interactive commands
         docs: |-
           Python is a high-level, general-purpose programming language [1].
           Most Python implementations (including CPython) include a [read-eval-print loop (REPL)](https://web.archive.org/web/20221029223210/https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop),
@@ -2193,381 +2027,353 @@ actions:
           else
             sudo chattr -i "$(realpath $history_file)" # realpath in case of symlink
           fi
-      -
-        category: Disable Visual Studio Code data collection
+      - category: Disable Visual Studio Code data collection
         docs: |-
-            Visual Studio Code, also commonly referred to as VS Code, is a source-code editor made by Microsoft [1].
+          Visual Studio Code, also commonly referred to as VS Code, is a source-code editor made by Microsoft [1].
 
-            Visual Studio Code makes outgoing network requests to collect data in the background without users invoking
-            a feature that requires online access [2]. The requests include, but are not limited to, automatic extension
-            update checks, querying settings for A/B experiments, and fetching online data for auto-completion [2].
+          Visual Studio Code makes outgoing network requests to collect data in the background without users invoking
+          a feature that requires online access [2]. The requests include, but are not limited to, automatic extension
+          update checks, querying settings for A/B experiments, and fetching online data for auto-completion [2].
 
-            In addition, Visual Studio Code collects and transmits telemetry data to Microsoft servers, such as [3]:
-            - Diagnostic information about your system and usage is sent to Microsoft servers [3].
-            - Your usage data and data about feature performance [3].
+          In addition, Visual Studio Code collects and transmits telemetry data to Microsoft servers, such as [3]:
+          - Diagnostic information about your system and usage is sent to Microsoft servers [3].
+          - Your usage data and data about feature performance [3].
 
-            [1]: https://web.archive.org/web/20221029142001/https://en.wikipedia.org/wiki/Visual_Studio_Code "Visual Studio Code - Wikipedia | en.wikipedia.org"
-            [2]: https://web.archive.org/web/20221029170840/https://code.visualstudio.com/updates/v1_26#_offline-mode "Visual Studio Code July 2018 | code.visualstudio.com"
-            [3]: https://web.archive.org/web/20221029171138/https://code.visualstudio.com/docs/getstarted/telemetry "Visual Studio Code Telemetry | code.visualstudio.com"
+          [1]: https://web.archive.org/web/20221029142001/https://en.wikipedia.org/wiki/Visual_Studio_Code "Visual Studio Code - Wikipedia | en.wikipedia.org"
+          [2]: https://web.archive.org/web/20221029170840/https://code.visualstudio.com/updates/v1_26#_offline-mode "Visual Studio Code July 2018 | code.visualstudio.com"
+          [3]: https://web.archive.org/web/20221029171138/https://code.visualstudio.com/docs/getstarted/telemetry "Visual Studio Code Telemetry | code.visualstudio.com"
         children:
-            -
-              name: Disable Visual Studio Code telemetry
-              recommend: standard
-              docs: |-
-                The `telemetry.telemetryLevel` preference can be adjusted as follows [1]:
+          - name: Disable Visual Studio Code telemetry
+            recommend: standard
+            docs: |-
+              The `telemetry.telemetryLevel` preference can be adjusted as follows [1]:
 
-                - `default` (on): Transmits usage data, errors, and crash reports.
-                - `error`: Transmits general error telemetry and crash reports.
-                - `crash`: Transmits OS-level crash reports.
-                - `off`: Disables all product telemetry.
+              - `default` (on): Transmits usage data, errors, and crash reports.
+              - `error`: Transmits general error telemetry and crash reports.
+              - `crash`: Transmits OS-level crash reports.
+              - `off`: Disables all product telemetry.
 
-                This script disables telemetry data, which includes usage data, errors, and crash reports.
+              This script disables telemetry data, which includes usage data, errors, and crash reports.
 
-                The `telemetry.enableTelemetry` was the primary option to disable telemetry collection [2].
-                This disabled the collection of diagnostic data [3].
-                However, it has been deprecated and replaced by the `telemetry.telemetryLevel` setting [4] [5].
+              The `telemetry.enableTelemetry` was the primary option to disable telemetry collection [2].
+              This disabled the collection of diagnostic data [3].
+              However, it has been deprecated and replaced by the `telemetry.telemetryLevel` setting [4] [5].
 
-                Crash reports use a unique ID to identify you [6]. They were initially controlled using the
-                `telemetry.enableCrashReporter` setting [7], but this setting has been deprecated and replaced by
-                the `telemetry.telemetryLevel` setting [7].
+              Crash reports use a unique ID to identify you [6]. They were initially controlled using the
+              `telemetry.enableCrashReporter` setting [7], but this setting has been deprecated and replaced by
+              the `telemetry.telemetryLevel` setting [7].
 
-                [1]: https://web.archive.org/web/20221029171158/https://github.com/microsoft/vscode/blob/d32b92bd7a49ce8667b954d86320cc29545fc505/src/vs/platform/telemetry/common/telemetryService.ts#L278-L294 "vscode/telemetryService.ts at d32b92bd7a49ce8667b954d86320cc29545fc505 · microsoft/vscode · GitHub | github.com"
-                [2]: https://web.archive.org/web/20221029171236/https://github.com/microsoft/vscode/issues/3182 "Telemetry opt-out · Issue #3182 · microsoft/vscode · GitHub | github.com"
-                [3]: https://web.archive.org/web/20221029171302/https://github.com/microsoft/vscode/blob/9f2d55f21247224e00e438ff0e8a080c557356dc/src/vs/platform/telemetry/common/telemetryService.ts#L247-L265 "vscode/telemetryService.ts at 9f2d55f21247224e00e438ff0e8a080c557356dc · microsoft/vscode · GitHub | github.com"
-                [4]: https://web.archive.org/web/20221029171313/https://github.com/microsoft/vscode/issues/132552 "Explore splitting the telemetry settings into error telemetry + all other telemetry · Issue #132552 · microsoft/vscode · GitHub | github.com"
-                [5]: https://web.archive.org/web/20221029171158/https://github.com/microsoft/vscode/blob/d32b92bd7a49ce8667b954d86320cc29545fc505/src/vs/platform/telemetry/common/telemetryService.ts#L302-L314 "vscode/telemetryService.ts at d32b92bd7a49ce8667b954d86320cc29545fc505 · microsoft/vscode · GitHub | github.com"
-                [6]: https://web.archive.org/web/20221029171339/https://github.com/microsoft/vscode/blob/1dd67592e120d916a8963903babaf0fae74440c5/src/vs/code/electron-main/app.ts#L1259 "vscode/app.ts at 1dd67592e120d916a8963903babaf0fae74440c5 · microsoft/vscode · GitHub | github.com"
-                [7]: https://web.archive.org/web/20221029171353/https://github.com/microsoft/vscode/blob/17fc955b4ffb1f9a0097a561291aaa5c8918eee6/src/vs/workbench/electron-sandbox/desktop.contribution.ts#L253-L267 "vscode/desktop.contribution.ts at 17fc955b4ffb1f9a0097a561291aaa5c8918eee6 · microsoft/vscode · GitHub | github.com"
-              call:
-                -
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: telemetry.telemetryLevel
-                      jsonValue: >-
-                        "off"
-                -
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: telemetry.enableTelemetry
-                      jsonValue: >-
-                        false
-                -
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: telemetry.enableCrashReporter
-                      jsonValue: >-
-                        false
-            -
-              name: Disable online experiments by Microsoft in Visual Studio Code
-              recommend: standard
-              docs: |-
-                VS Code employs experiments to test new features or gradually roll them out [1].
-                The experimentation framework communicates with Microsoft servers [1].
-
-                This setting is enabled by default [1].
-
-                This script disables fetching experiments from a Microsoft online service [1].
-                It accomplishes this by setting `workbench.enableExperiments` to `false` [1].
-
-                [1]: https://web.archive.org/web/20221029171424/https://github.com/microsoft/vscode-docs/blob/d2dbfc5bcad0be08afca69e9253c1d5541e19d31/docs/supporting/faq.md "vscode-docs/faq.md at d2dbfc5bcad0be08afca69e9253c1d5541e19d31 · microsoft/vscode-docs · GitHub"
-                [2]: https://web.archive.org/web/20221029171439/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/experiments/browser/experiments.contribution.ts#L25-L34 "vscode/experiments.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub"
-              call:
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: workbench.enableExperiments
-                      jsonValue: >-
-                        false
-            -
-              name: Disable Visual Studio Code automatic updates in favor of manual updates
-              docs: |-
-                By default, VS Code is configured to automatically update when new versions are released [1].
-                Automatic updates reduce your control over privacy by sending data to Microsoft servers.
-
-                On Linux, updates are often handled by the system package manager, rendering this
-                setting redundant [1].
-
-                To opt out of auto-updates, the Update: Mode (`update.mode`) setting is changed from default
-                to none [1]. `update.mode` has replaced the older `update.channel` setting [2] [3].
-
-                [1]: https://web.archive.org/web/20221029171537/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/supporting/faq.md#how-do-i-opt-out-of-vs-code-auto-updates "vscode-docs/faq.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
-                [2]: https://web.archive.org/web/20221029171549/https://github.com/microsoft/vscode/blob/8e2ec5a7ee1ae5500c645c05145359f2a814611c/src/vs/platform/update/common/update.config.contribution.ts#L36-L42 "vscode/update.config.contribution.ts at 8e2ec5a7ee1ae5500c645c05145359f2a814611c · microsoft/vscode · GitHub | github.com"
-                [3]: https://web.archive.org/web/20221029171607/https://github.com/microsoft/vscode/issues/70084 'VS Code 1.31.1 does not respect "update.channel": "none" · Issue #70084 · microsoft/vscode · GitHub | github.com'
-              call:
-                -
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: update.mode
-                      jsonValue: >-
-                          "none"
-                -
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: update.channel
-                      jsonValue: >-
-                          "none"
-            -
-              name: Disable fetching release notes from Microsoft servers after an update
-              docs: |-
-                This script prevents Visual Studio Code from displaying release notes after an update [1].
-
-                Release notes are fetched from a Microsoft online service [1] and thus expose data about you,
-                such as your IP address, to Microsoft.
-
-                It is enabled by default [1] and can be disabled by setting `update.showReleaseNotes` to `false` [1].
-
-                [1]: https://web.archive.org/web/20221029171549/https://github.com/microsoft/vscode/blob/8e2ec5a7ee1ae5500c645c05145359f2a814611c/src/vs/platform/update/common/update.config.contribution.ts#L51-L57 "vscode/update.config.contribution.ts at 8e2ec5a7ee1ae5500c645c05145359f2a814611c · microsoft/vscode | github.com"
-              call:
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: update.showReleaseNotes
-                      jsonValue: >-
-                        false
-            -
-              category: Configure auto-update settings for Visual Studio Code extensions
-              docs: |-
-                These scripts control the automatic update behavior of extensions.
-                Updates are fetched from Microsoft servers [1] [2].
-
-                Use of online Microsoft services can disclose information about you and your behavior.
-
-                [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L135-L150 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub | github.com"
-                [2]: https://web.archive.org/web/20221029171719/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/extension-marketplace.md#extension-auto-update "vscode-docs/extension-marketplace.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
-              children:
-                -
-                  name: Disable automatic Visual Studio Code extension updates
-                  docs: |-
-                    By default, Visual Studio Code automatically downloads and installs updates for all
-                    extensions [1]. These updates are fetched from a Microsoft online service [1].
-
-                    This script disables the automatic updating of installed extensions.
-                    It accomplishes this by setting `extensions.autoUpdate` to `false` [2].
-
-                    [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L135-L150 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub | github.com"
-                    [2]: https://web.archive.org/web/20221029171719/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/extension-marketplace.md#extension-auto-update "vscode-docs/extension-marketplace.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
-                  call:
-                      function: SetVsCodeSetting
-                      parameters:
-                          setting: extensions.autoUpdate
-                          jsonValue: >-
-                            false
-                -
-                  name: Disable Visual Studio Code automatic extension update checks
-                  docs: |-
-                    By default, Visual Studio Code automatically checks extensions for updates [1].
-                    If an update for an extension is available, it is marked as outdated in the Extensions view [1].
-                    These updates are fetched from a Microsoft online service [1].
-
-                    This script disables the automatic checking of updates for extensions.
-                    It achieves this by setting `extensions.autoCheckUpdates` to `false` [2].
-
-                    [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L152-L158 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode | github.com"
-                    [2]: https://web.archive.org/web/20221029171719/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/extension-marketplace.md#extension-auto-update "vscode-docs/extension-marketplace.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
-                  call:
-                      function: SetVsCodeSetting
-                      parameters:
-                          setting: extensions.autoCheckUpdates
-                          jsonValue: >-
-                            false
-                -
-                  name: Disable automatic fetching of Microsoft recommendations in Visual Studio Code
-                  recommend: strict
-                  docs: |-
-                    Visual Studio Code, by default, fetches recommendations from online Microsoft servers [1].
-                    This script modifies that default behavior, making recommendations from Microsoft servers
-                    available only on demand, rather than being fetched automatically [1].
-
-                    Despite this setting being deprecated [1] [2], it is still respected [3] [4].
-
-                    [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L164-L169 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub | github.com"
-                    [2]: https://web.archive.org/web/20221029171802/https://github.com/microsoft/vscode/issues/94416 "Combine extensions.ignoreRecommendations and extensions.showRecommendationsOnlyOnDemand · Issue #94416 · microsoft/vscode · GitHub | github.com"
-                    [3]: https://web.archive.org/web/20221029171840/https://github.com/microsoft/vscode/blob/df0a8572e5e97ba71160c736addf171c671bb9e9/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts#L221-L234 "vscode/extensionsViewlet.ts at df0a8572e5e97ba71160c736addf171c671bb9e9 · microsoft/vscode · GitHub | github.com"
-                    [4]: https://web.archive.org/web/20221029171850/https://github.com/microsoft/vscode/blob/1f86576cb95925e79d92c8af04424680bb144945/src/vs/workbench/contrib/extensions/browser/extensionRecommendationNotificationService.ts#L144-L147 "vscode/extensionRecommendationNotificationService.ts at 1f86576cb95925e79d92c8af04424680bb144945 · microsoft/vscode · GitHub | github.com"
-                  call:
-                      function: SetVsCodeSetting
-                      parameters:
-                          setting: extensions.showRecommendationsOnlyOnDemand
-                          jsonValue: >-
-                            true
-            -
-              name: Disable automatic fetching of remote repositories in Visual Studio Code
-              docs: |-
-                Visual Studio Code (VS Code) periodically fetches changes from remote repositories [1].
-                This feature lets VS Code display how many changes your local repository is ahead or behind the remote [1].
-
-                This script disables the automatic fetching, providing you more control over when you
-                communicate with remote servers. Note that this feature shares data not with Microsoft,
-                but with the servers hosting the remote repositories you're working with.
-
-                As of VS Code 1.19, this feature is disabled by default [1] [3], although it was enabled by
-                default in earlier versions [2].
-
-                The `git.autofetch` setting controls this feature, with `true` enabling it and
-                `false` disabling it [2].
-
-                [1]: https://web.archive.org/web/20221029171946/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/sourcecontrol/overview.md#remotes "vscode-docs/overview.md at main · microsoft/vscode-docs · GitHub | github.com"
-                [2]: https://web.archive.org/web/20221029172003/https://github.com/Microsoft/vscode/issues/34684 "Set git.autofetch to disabled, by default · Issue #34684 · microsoft/vscode · GitHub | github.com"
-                [3]: https://web.archive.org/web/20221029172102/https://github.com/microsoft/vscode/blob/9bc43c7f8acc1d3b2d572f75ca30dccc2fed643d/extensions/git/package.json#L1929-L1945 "vscode/package.json at 9bc43c7f8acc1d3b2d572f75ca30dccc2fed643d · microsoft/vscode · GitHub | github.com"
-              call:
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: git.autofetch
-                      jsonValue: >-
-                        false
-            -
-              name: Disable fetching package information from NPM and Bower in Visual Studio Code
-              docs: |-
-                Visual Studio Code fetches data from NPM and Bower to provide autocompletion and hover information
-                for npm dependencies [1]. By default, this feature is enabled [2] and fetches data from
-                `https://registry.npmjs.org` and `https://registry.bower.io` [1].
-
-                This script prevents the automatic fetching of package information.
-
-                You can disable this feature by setting `npm.fetchOnlinePackageInfo` to `false` [2].
-
-                [1]: https://web.archive.org/web/20221029172113/https://github.com/microsoft/vscode/blob/21504708043941c1e9e45b7d0892a9a8a03470d7/extensions/npm/package.nls.json#L17 "vscode/package.nls.json at 21504708043941c1e9e45b7d0892a9a8a03470d7 · microsoft/vscode · GitHub | github.com"
-                [2]: https://web.archive.org/web/20221029172220/https://github.com/microsoft/vscode/blob/29e985eca0713c8458ae8349c1742d6fb75719e4/extensions/npm/package.json#L293-L300 "vscode/package.json at 29e985eca0713c8458ae8349c1742d6fb75719e4 · microsoft/vscode · GitHub | github.com"
-              call:
-                  function: SetVsCodeSetting
-                  parameters:
-                      setting: npm.fetchOnlinePackageInfo
-                      jsonValue: >-
-                        false
-            -
-              name: Disable sending search queries to Microsoft in Visual Studio Code
-              recommend: strict
-              docs: |-
-                By default, Visual Studio Code sends setting search queries to Microsoft servers [1]. This is
-                part of the natural language search mode, which is powered by a Microsoft online service [1].
-
-                You can disable this feature by setting `enableNaturalLanguageSettingsSearch` to `false` [1].
-
-                For more information, see [Settings search | Feature announcement](https://web.archive.org/web/20221029223417/https://github.com/microsoft/vscode-docs/blob/8f6d43a3b24d8661f25f93d5e679c3e6ee1191b6/release-notes/v1_20.md#settings-search).
-
-                [1]: https://web.archive.org/web/20221029172320/https://github.com/microsoft/vscode/blob/13ba7bb446a638d37ebccb1a7d74e31c32bb9790/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts#L151-L157 "vscode/preferencesContribution.ts at 13ba7bb446a638d37ebccb1a7d74e31c32bb9790 · microsoft/vscode · GitHub | github.com"
-              call:
-                function: SetVsCodeSetting
+              [1]: https://web.archive.org/web/20221029171158/https://github.com/microsoft/vscode/blob/d32b92bd7a49ce8667b954d86320cc29545fc505/src/vs/platform/telemetry/common/telemetryService.ts#L278-L294 "vscode/telemetryService.ts at d32b92bd7a49ce8667b954d86320cc29545fc505 · microsoft/vscode · GitHub | github.com"
+              [2]: https://web.archive.org/web/20221029171236/https://github.com/microsoft/vscode/issues/3182 "Telemetry opt-out · Issue #3182 · microsoft/vscode · GitHub | github.com"
+              [3]: https://web.archive.org/web/20221029171302/https://github.com/microsoft/vscode/blob/9f2d55f21247224e00e438ff0e8a080c557356dc/src/vs/platform/telemetry/common/telemetryService.ts#L247-L265 "vscode/telemetryService.ts at 9f2d55f21247224e00e438ff0e8a080c557356dc · microsoft/vscode · GitHub | github.com"
+              [4]: https://web.archive.org/web/20221029171313/https://github.com/microsoft/vscode/issues/132552 "Explore splitting the telemetry settings into error telemetry + all other telemetry · Issue #132552 · microsoft/vscode · GitHub | github.com"
+              [5]: https://web.archive.org/web/20221029171158/https://github.com/microsoft/vscode/blob/d32b92bd7a49ce8667b954d86320cc29545fc505/src/vs/platform/telemetry/common/telemetryService.ts#L302-L314 "vscode/telemetryService.ts at d32b92bd7a49ce8667b954d86320cc29545fc505 · microsoft/vscode · GitHub | github.com"
+              [6]: https://web.archive.org/web/20221029171339/https://github.com/microsoft/vscode/blob/1dd67592e120d916a8963903babaf0fae74440c5/src/vs/code/electron-main/app.ts#L1259 "vscode/app.ts at 1dd67592e120d916a8963903babaf0fae74440c5 · microsoft/vscode · GitHub | github.com"
+              [7]: https://web.archive.org/web/20221029171353/https://github.com/microsoft/vscode/blob/17fc955b4ffb1f9a0097a561291aaa5c8918eee6/src/vs/workbench/electron-sandbox/desktop.contribution.ts#L253-L267 "vscode/desktop.contribution.ts at 17fc955b4ffb1f9a0097a561291aaa5c8918eee6 · microsoft/vscode · GitHub | github.com"
+            call:
+              - function: SetVsCodeSetting
                 parameters:
-                    setting: workbench.settings.enableNaturalLanguageSearch
-                    jsonValue: >-
-                      false
-            -
-              name: Disable Visual Studio Code automatic type acquisition in TypeScript
-              docs: |-
-                This script disables [automatic type acquisition](https://web.archive.org/web/20221029223431/https://code.visualstudio.com/docs/nodejs/working-with-javascript#_typings-and-automatic-type-acquisition) [1],
-                a feature that fetches `@types` packages from npm to improve IntelliSense for external libraries [1].
-
-                Although this feature is disabled by default [2], you can ensure it's off by setting
-                `typescript.disableAutomaticTypeAcquisition` to `false` [2].
-
-                [1]: https://web.archive.org/web/20221029172348/https://github.com/microsoft/vscode/blob/3c37a5a8d7768ea068acf578594f9b71cfbe81e1/extensions/typescript-language-features/package.nls.json#L13 "vscode/package.nls.json at 3c37a5a8d7768ea068acf578594f9b71cfbe81e1 · microsoft/vscode · GitHub | github.com"
-                [2]: https://web.archive.org/web/20221029172429/https://github.com/microsoft/vscode/blob/29e985eca0713c8458ae8349c1742d6fb75719e4/extensions/typescript-language-features/package.json "vscode/package.json at 29e985eca0713c8458ae8349c1742d6fb75719e4 · microsoft/vscode · GitHub | github.com"
-              call:
-                function: SetVsCodeSetting
+                  setting: telemetry.telemetryLevel
+                  jsonValue: >-
+                    "off"
+              - function: SetVsCodeSetting
                 parameters:
-                    setting: typescript.disableAutomaticTypeAcquisition
-                    jsonValue: >-
-                      false
-            -
-              name: Disable Visual Studio Code Edit Sessions
-              docs: |-
-                **Edit Sessions** is a Visual Studio Code feature that synchronizes uncommitted changes between
-                VS Code for the Web (e.g., GitHub Codespaces) and the Desktop version, storing data in the
-                Microsoft Cloud [1].
+                  setting: telemetry.enableTelemetry
+                  jsonValue: >-
+                    false
+              - function: SetVsCodeSetting
+                parameters:
+                  setting: telemetry.enableCrashReporter
+                  jsonValue: >-
+                    false
+          - name: Disable online experiments by Microsoft in Visual Studio Code
+            recommend: standard
+            docs: |-
+              VS Code employs experiments to test new features or gradually roll them out [1].
+              The experimentation framework communicates with Microsoft servers [1].
 
-                This script disables **Edit Sessions** and its more granular subsettings like
-                `workbench.experimental.editSessions.autoStore`, `workbench.editSessions.autoResume`, and
-                `workbench.editSessions.continueOn` [2].
+              This setting is enabled by default [1].
 
-                [1]: https://web.archive.org/web/20221029172502/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/release-notes/v1_71.md#bring-your-changes-with-you-when-moving-across-development-environments "vscode-docs/v1_71.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
-                [2]: https://web.archive.org/web/20221029172519/https://github.com/microsoft/vscode/blob/b891aa212a3644cc345d061c63a67ba51080cace/src/vs/workbench/contrib/editSessions/browser/editSessions.contribution.ts#L816-L877 "vscode/editSessions.contribution.ts at b891aa212a3644cc345d061c63a67ba51080cace · microsoft/vscode | github.com"
-              call:
-                -
+              This script disables fetching experiments from a Microsoft online service [1].
+              It accomplishes this by setting `workbench.enableExperiments` to `false` [1].
+
+              [1]: https://web.archive.org/web/20221029171424/https://github.com/microsoft/vscode-docs/blob/d2dbfc5bcad0be08afca69e9253c1d5541e19d31/docs/supporting/faq.md "vscode-docs/faq.md at d2dbfc5bcad0be08afca69e9253c1d5541e19d31 · microsoft/vscode-docs · GitHub"
+              [2]: https://web.archive.org/web/20221029171439/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/experiments/browser/experiments.contribution.ts#L25-L34 "vscode/experiments.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub"
+            call:
+              function: SetVsCodeSetting
+              parameters:
+                setting: workbench.enableExperiments
+                jsonValue: >-
+                  false
+          - name: Disable Visual Studio Code automatic updates in favor of manual updates
+            docs: |-
+              By default, VS Code is configured to automatically update when new versions are released [1].
+              Automatic updates reduce your control over privacy by sending data to Microsoft servers.
+
+              On Linux, updates are often handled by the system package manager, rendering this
+              setting redundant [1].
+
+              To opt out of auto-updates, the Update: Mode (`update.mode`) setting is changed from default
+              to none [1]. `update.mode` has replaced the older `update.channel` setting [2] [3].
+
+              [1]: https://web.archive.org/web/20221029171537/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/supporting/faq.md#how-do-i-opt-out-of-vs-code-auto-updates "vscode-docs/faq.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
+              [2]: https://web.archive.org/web/20221029171549/https://github.com/microsoft/vscode/blob/8e2ec5a7ee1ae5500c645c05145359f2a814611c/src/vs/platform/update/common/update.config.contribution.ts#L36-L42 "vscode/update.config.contribution.ts at 8e2ec5a7ee1ae5500c645c05145359f2a814611c · microsoft/vscode · GitHub | github.com"
+              [3]: https://web.archive.org/web/20221029171607/https://github.com/microsoft/vscode/issues/70084 'VS Code 1.31.1 does not respect "update.channel": "none" · Issue #70084 · microsoft/vscode · GitHub | github.com'
+            call:
+              - function: SetVsCodeSetting
+                parameters:
+                  setting: update.mode
+                  jsonValue: >-
+                    "none"
+              - function: SetVsCodeSetting
+                parameters:
+                  setting: update.channel
+                  jsonValue: >-
+                    "none"
+          - name: Disable fetching release notes from Microsoft servers after an update
+            docs: |-
+              This script prevents Visual Studio Code from displaying release notes after an update [1].
+
+              Release notes are fetched from a Microsoft online service [1] and thus expose data about you,
+              such as your IP address, to Microsoft.
+
+              It is enabled by default [1] and can be disabled by setting `update.showReleaseNotes` to `false` [1].
+
+              [1]: https://web.archive.org/web/20221029171549/https://github.com/microsoft/vscode/blob/8e2ec5a7ee1ae5500c645c05145359f2a814611c/src/vs/platform/update/common/update.config.contribution.ts#L51-L57 "vscode/update.config.contribution.ts at 8e2ec5a7ee1ae5500c645c05145359f2a814611c · microsoft/vscode | github.com"
+            call:
+              function: SetVsCodeSetting
+              parameters:
+                setting: update.showReleaseNotes
+                jsonValue: >-
+                  false
+          - category: Configure auto-update settings for Visual Studio Code extensions
+            docs: |-
+              These scripts control the automatic update behavior of extensions.
+              Updates are fetched from Microsoft servers [1] [2].
+
+              Use of online Microsoft services can disclose information about you and your behavior.
+
+              [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L135-L150 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub | github.com"
+              [2]: https://web.archive.org/web/20221029171719/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/extension-marketplace.md#extension-auto-update "vscode-docs/extension-marketplace.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
+            children:
+              - name: Disable automatic Visual Studio Code extension updates
+                docs: |-
+                  By default, Visual Studio Code automatically downloads and installs updates for all
+                  extensions [1]. These updates are fetched from a Microsoft online service [1].
+
+                  This script disables the automatic updating of installed extensions.
+                  It accomplishes this by setting `extensions.autoUpdate` to `false` [2].
+
+                  [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L135-L150 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub | github.com"
+                  [2]: https://web.archive.org/web/20221029171719/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/extension-marketplace.md#extension-auto-update "vscode-docs/extension-marketplace.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
+                call:
                   function: SetVsCodeSetting
                   parameters:
-                    setting: workbench.experimental.editSessions.enabled
+                    setting: extensions.autoUpdate
                     jsonValue: >-
                       false
-                -
+              - name: Disable Visual Studio Code automatic extension update checks
+                docs: |-
+                  By default, Visual Studio Code automatically checks extensions for updates [1].
+                  If an update for an extension is available, it is marked as outdated in the Extensions view [1].
+                  These updates are fetched from a Microsoft online service [1].
+
+                  This script disables the automatic checking of updates for extensions.
+                  It achieves this by setting `extensions.autoCheckUpdates` to `false` [2].
+
+                  [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L152-L158 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode | github.com"
+                  [2]: https://web.archive.org/web/20221029171719/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/extension-marketplace.md#extension-auto-update "vscode-docs/extension-marketplace.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
+                call:
                   function: SetVsCodeSetting
                   parameters:
-                    setting: workbench.experimental.editSessions.autoStore
+                    setting: extensions.autoCheckUpdates
                     jsonValue: >-
                       false
-                -
+              - name: Disable automatic fetching of Microsoft recommendations in Visual Studio Code
+                recommend: strict
+                docs: |-
+                  Visual Studio Code, by default, fetches recommendations from online Microsoft servers [1].
+                  This script modifies that default behavior, making recommendations from Microsoft servers
+                  available only on demand, rather than being fetched automatically [1].
+
+                  Despite this setting being deprecated [1] [2], it is still respected [3] [4].
+
+                  [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L164-L169 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub | github.com"
+                  [2]: https://web.archive.org/web/20221029171802/https://github.com/microsoft/vscode/issues/94416 "Combine extensions.ignoreRecommendations and extensions.showRecommendationsOnlyOnDemand · Issue #94416 · microsoft/vscode · GitHub | github.com"
+                  [3]: https://web.archive.org/web/20221029171840/https://github.com/microsoft/vscode/blob/df0a8572e5e97ba71160c736addf171c671bb9e9/src/vs/workbench/contrib/extensions/browser/extensionsViewlet.ts#L221-L234 "vscode/extensionsViewlet.ts at df0a8572e5e97ba71160c736addf171c671bb9e9 · microsoft/vscode · GitHub | github.com"
+                  [4]: https://web.archive.org/web/20221029171850/https://github.com/microsoft/vscode/blob/1f86576cb95925e79d92c8af04424680bb144945/src/vs/workbench/contrib/extensions/browser/extensionRecommendationNotificationService.ts#L144-L147 "vscode/extensionRecommendationNotificationService.ts at 1f86576cb95925e79d92c8af04424680bb144945 · microsoft/vscode · GitHub | github.com"
+                call:
                   function: SetVsCodeSetting
                   parameters:
-                    setting: workbench.editSessions.autoResume
+                    setting: extensions.showRecommendationsOnlyOnDemand
                     jsonValue: >-
-                      false
-                -
+                      true
+          - name: Disable automatic fetching of remote repositories in Visual Studio Code
+            docs: |-
+              Visual Studio Code (VS Code) periodically fetches changes from remote repositories [1].
+              This feature lets VS Code display how many changes your local repository is ahead or behind the remote [1].
+
+              This script disables the automatic fetching, providing you more control over when you
+              communicate with remote servers. Note that this feature shares data not with Microsoft,
+              but with the servers hosting the remote repositories you're working with.
+
+              As of VS Code 1.19, this feature is disabled by default [1] [3], although it was enabled by
+              default in earlier versions [2].
+
+              The `git.autofetch` setting controls this feature, with `true` enabling it and
+              `false` disabling it [2].
+
+              [1]: https://web.archive.org/web/20221029171946/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/sourcecontrol/overview.md#remotes "vscode-docs/overview.md at main · microsoft/vscode-docs · GitHub | github.com"
+              [2]: https://web.archive.org/web/20221029172003/https://github.com/Microsoft/vscode/issues/34684 "Set git.autofetch to disabled, by default · Issue #34684 · microsoft/vscode · GitHub | github.com"
+              [3]: https://web.archive.org/web/20221029172102/https://github.com/microsoft/vscode/blob/9bc43c7f8acc1d3b2d572f75ca30dccc2fed643d/extensions/git/package.json#L1929-L1945 "vscode/package.json at 9bc43c7f8acc1d3b2d572f75ca30dccc2fed643d · microsoft/vscode · GitHub | github.com"
+            call:
+              function: SetVsCodeSetting
+              parameters:
+                setting: git.autofetch
+                jsonValue: >-
+                  false
+          - name: Disable fetching package information from NPM and Bower in Visual Studio Code
+            docs: |-
+              Visual Studio Code fetches data from NPM and Bower to provide autocompletion and hover information
+              for npm dependencies [1]. By default, this feature is enabled [2] and fetches data from
+              `https://registry.npmjs.org` and `https://registry.bower.io` [1].
+
+              This script prevents the automatic fetching of package information.
+
+              You can disable this feature by setting `npm.fetchOnlinePackageInfo` to `false` [2].
+
+              [1]: https://web.archive.org/web/20221029172113/https://github.com/microsoft/vscode/blob/21504708043941c1e9e45b7d0892a9a8a03470d7/extensions/npm/package.nls.json#L17 "vscode/package.nls.json at 21504708043941c1e9e45b7d0892a9a8a03470d7 · microsoft/vscode · GitHub | github.com"
+              [2]: https://web.archive.org/web/20221029172220/https://github.com/microsoft/vscode/blob/29e985eca0713c8458ae8349c1742d6fb75719e4/extensions/npm/package.json#L293-L300 "vscode/package.json at 29e985eca0713c8458ae8349c1742d6fb75719e4 · microsoft/vscode · GitHub | github.com"
+            call:
+              function: SetVsCodeSetting
+              parameters:
+                setting: npm.fetchOnlinePackageInfo
+                jsonValue: >-
+                  false
+          - name: Disable sending search queries to Microsoft in Visual Studio Code
+            recommend: strict
+            docs: |-
+              By default, Visual Studio Code sends setting search queries to Microsoft servers [1]. This is
+              part of the natural language search mode, which is powered by a Microsoft online service [1].
+
+              You can disable this feature by setting `enableNaturalLanguageSettingsSearch` to `false` [1].
+
+              For more information, see [Settings search | Feature announcement](https://web.archive.org/web/20221029223417/https://github.com/microsoft/vscode-docs/blob/8f6d43a3b24d8661f25f93d5e679c3e6ee1191b6/release-notes/v1_20.md#settings-search).
+
+              [1]: https://web.archive.org/web/20221029172320/https://github.com/microsoft/vscode/blob/13ba7bb446a638d37ebccb1a7d74e31c32bb9790/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts#L151-L157 "vscode/preferencesContribution.ts at 13ba7bb446a638d37ebccb1a7d74e31c32bb9790 · microsoft/vscode · GitHub | github.com"
+            call:
+              function: SetVsCodeSetting
+              parameters:
+                setting: workbench.settings.enableNaturalLanguageSearch
+                jsonValue: >-
+                  false
+          - name: Disable Visual Studio Code automatic type acquisition in TypeScript
+            docs: |-
+              This script disables [automatic type acquisition](https://web.archive.org/web/20221029223431/https://code.visualstudio.com/docs/nodejs/working-with-javascript#_typings-and-automatic-type-acquisition) [1],
+              a feature that fetches `@types` packages from npm to improve IntelliSense for external libraries [1].
+
+              Although this feature is disabled by default [2], you can ensure it's off by setting
+              `typescript.disableAutomaticTypeAcquisition` to `false` [2].
+
+              [1]: https://web.archive.org/web/20221029172348/https://github.com/microsoft/vscode/blob/3c37a5a8d7768ea068acf578594f9b71cfbe81e1/extensions/typescript-language-features/package.nls.json#L13 "vscode/package.nls.json at 3c37a5a8d7768ea068acf578594f9b71cfbe81e1 · microsoft/vscode · GitHub | github.com"
+              [2]: https://web.archive.org/web/20221029172429/https://github.com/microsoft/vscode/blob/29e985eca0713c8458ae8349c1742d6fb75719e4/extensions/typescript-language-features/package.json "vscode/package.json at 29e985eca0713c8458ae8349c1742d6fb75719e4 · microsoft/vscode · GitHub | github.com"
+            call:
+              function: SetVsCodeSetting
+              parameters:
+                setting: typescript.disableAutomaticTypeAcquisition
+                jsonValue: >-
+                  false
+          - name: Disable Visual Studio Code Edit Sessions
+            docs: |-
+              **Edit Sessions** is a Visual Studio Code feature that synchronizes uncommitted changes between
+              VS Code for the Web (e.g., GitHub Codespaces) and the Desktop version, storing data in the
+              Microsoft Cloud [1].
+
+              This script disables **Edit Sessions** and its more granular subsettings like
+              `workbench.experimental.editSessions.autoStore`, `workbench.editSessions.autoResume`, and
+              `workbench.editSessions.continueOn` [2].
+
+              [1]: https://web.archive.org/web/20221029172502/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/release-notes/v1_71.md#bring-your-changes-with-you-when-moving-across-development-environments "vscode-docs/v1_71.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
+              [2]: https://web.archive.org/web/20221029172519/https://github.com/microsoft/vscode/blob/b891aa212a3644cc345d061c63a67ba51080cace/src/vs/workbench/contrib/editSessions/browser/editSessions.contribution.ts#L816-L877 "vscode/editSessions.contribution.ts at b891aa212a3644cc345d061c63a67ba51080cace · microsoft/vscode | github.com"
+            call:
+              - function: SetVsCodeSetting
+                parameters:
+                  setting: workbench.experimental.editSessions.enabled
+                  jsonValue: >-
+                    false
+              - function: SetVsCodeSetting
+                parameters:
+                  setting: workbench.experimental.editSessions.autoStore
+                  jsonValue: >-
+                    false
+              - function: SetVsCodeSetting
+                parameters:
+                  setting: workbench.editSessions.autoResume
+                  jsonValue: >-
+                    false
+              - function: SetVsCodeSetting
+                parameters:
+                  setting: workbench.editSessions.continueOn
+                  jsonValue: >-
+                    false
+          - category: Disable data sharing for Visual Studio Code "Settings Sync"
+            docs: |-
+              **Settings Sync** is a Visual Studio Code feature that synchronizes settings, keybindings,
+              and installed extensions across different machines [1]. This data is stored in the Microsoft
+              Cloud [1].
+
+              [1]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
+            children:
+              - name: Disable synchronization of Visual Studio Code keybindings
+                docs: |-
+                  By default [1], Keyboard Shortcuts are synchronized across platforms [2].
+                  You can disable this by setting `settingsSync.keybindingsPerPlatform` to `false` [1] [2].
+
+                  [1]: https://web.archive.org/web/20221029172910/https://github.com/microsoft/vscode/blob/095ddabc52b82498ee7f718a34f9dd11d59099a8/src/vs/platform/userDataSync/common/userDataSync.ts#L58-L64 "vscode/userDataSync.ts at 095ddabc52b82498ee7f718a34f9dd11d59099a8 · microsoft/vscode · GitHub | github.com"
+                  [2]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
+                call:
                   function: SetVsCodeSetting
                   parameters:
-                    setting: workbench.editSessions.continueOn
+                    setting: settingsSync.keybindingsPerPlatform
                     jsonValue: >-
                       false
-            -
-              category: Disable data sharing for Visual Studio Code "Settings Sync"
-              docs: |-
-                **Settings Sync** is a Visual Studio Code feature that synchronizes settings, keybindings,
-                and installed extensions across different machines [1]. This data is stored in the Microsoft
-                Cloud [1].
+              - name: Disable synchronization of Visual Studio Code extensions
+                docs: |-
+                  Visual Studio Code synchronizes all built-in and installed extensions, along with their
+                  global enablement state, by default [1] [2].
 
-                [1]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
-              children:
-                -
-                  name: Disable synchronization of Visual Studio Code keybindings
-                  docs: |-
-                    By default [1], Keyboard Shortcuts are synchronized across platforms [2].
-                    You can disable this by setting `settingsSync.keybindingsPerPlatform` to `false` [1] [2].
+                  This script prevents the synchronization of all Visual Studio Code extensions.
 
-                    [1]: https://web.archive.org/web/20221029172910/https://github.com/microsoft/vscode/blob/095ddabc52b82498ee7f718a34f9dd11d59099a8/src/vs/platform/userDataSync/common/userDataSync.ts#L58-L64 "vscode/userDataSync.ts at 095ddabc52b82498ee7f718a34f9dd11d59099a8 · microsoft/vscode · GitHub | github.com"
-                    [2]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
-                  call:
-                    function: SetVsCodeSetting
-                    parameters:
-                        setting: settingsSync.keybindingsPerPlatform
-                        jsonValue: >-
-                          false
-                -
-                  name: Disable synchronization of Visual Studio Code extensions
-                  docs: |-
-                    Visual Studio Code synchronizes all built-in and installed extensions, along with their
-                    global enablement state, by default [1] [2].
+                  To disable extension synchronization, set `settingsSync.ignoredExtensions` [1],
+                  which configures the list of extensions to be ignored during synchronization [2].
 
-                    This script prevents the synchronization of all Visual Studio Code extensions.
+                  [1]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
+                  [2]: https://web.archive.org/web/20221029172910/https://github.com/microsoft/vscode/blob/095ddabc52b82498ee7f718a34f9dd11d59099a8/src/vs/platform/userDataSync/common/userDataSync.ts#L65-L78 "vscode/userDataSync.ts at 095ddabc52b82498ee7f718a34f9dd11d59099a8 · microsoft/vscode · GitHub | github.com"
+                call:
+                  function: SetVsCodeSetting
+                  parameters:
+                    setting: settingsSync.ignoredExtensions
+                    jsonValue: >-
+                      ["*"]
+              - name: Disable synchronization of Visual Studio Code settings
+                docs: |-
+                  By default, Visual Studio Code synchronizes all settings, except for machine settings
+                  (those with machine or machine-overridable scopes), as these are specific to a given machine [1] [2].
 
-                    To disable extension synchronization, set `settingsSync.ignoredExtensions` [1],
-                    which configures the list of extensions to be ignored during synchronization [2].
+                  This script disables the synchronization of all settings.
 
-                    [1]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
-                    [2]: https://web.archive.org/web/20221029172910/https://github.com/microsoft/vscode/blob/095ddabc52b82498ee7f718a34f9dd11d59099a8/src/vs/platform/userDataSync/common/userDataSync.ts#L65-L78 "vscode/userDataSync.ts at 095ddabc52b82498ee7f718a34f9dd11d59099a8 · microsoft/vscode · GitHub | github.com"
-                  call:
-                    function: SetVsCodeSetting
-                    parameters:
-                        setting: settingsSync.ignoredExtensions
-                        jsonValue: >-
-                          ["*"]
-                -
-                  name: Disable synchronization of Visual Studio Code settings
-                  docs: |-
-                    By default, Visual Studio Code synchronizes all settings, except for machine settings
-                    (those with machine or machine-overridable scopes), as these are specific to a given machine [1] [2].
+                  You can specify settings to ignore during synchronization using the `settingsSync.ignoredSettings`
+                  setting [1] [2].
 
-                    This script disables the synchronization of all settings.
-
-                    You can specify settings to ignore during synchronization using the `settingsSync.ignoredSettings`
-                    setting [1] [2].
-
-                    [1]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
-                    [2]: https://web.archive.org/web/20221029172910/https://github.com/microsoft/vscode/blob/095ddabc52b82498ee7f718a34f9dd11d59099a8/src/vs/platform/userDataSync/common/userDataSync.ts#L79-L89 "vscode/userDataSync.ts at 095ddabc52b82498ee7f718a34f9dd11d59099a8 · microsoft/vscode · GitHub | github.com"
-                  call:
-                    function: SetVsCodeSetting
-                    parameters:
-                        setting: settingsSync.ignoredSettings
-                        jsonValue: >-
-                          ["*"]
-      -
-        name: Disable .NET telemetry
+                  [1]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
+                  [2]: https://web.archive.org/web/20221029172910/https://github.com/microsoft/vscode/blob/095ddabc52b82498ee7f718a34f9dd11d59099a8/src/vs/platform/userDataSync/common/userDataSync.ts#L79-L89 "vscode/userDataSync.ts at 095ddabc52b82498ee7f718a34f9dd11d59099a8 · microsoft/vscode · GitHub | github.com"
+                call:
+                  function: SetVsCodeSetting
+                  parameters:
+                    setting: settingsSync.ignoredSettings
+                    jsonValue: >-
+                      ["*"]
+      - name: Disable .NET telemetry
         recommend: standard
         docs: |-
           .NET, previously known as .NET Core [1], is a free, open-source, and cross-platform developer platform
@@ -2589,10 +2395,9 @@ actions:
         call:
           function: PersistSystemEnvironmentVariable
           parameters:
-              variable: DOTNET_CLI_TELEMETRY_OPTOUT
-              value: '1'
-      -
-        name: Disable PowerShell Core telemetry
+            variable: DOTNET_CLI_TELEMETRY_OPTOUT
+            value: "1"
+      - name: Disable PowerShell Core telemetry
         docs: |-
           PowerShell Core, a cross-platform (Windows, Linux, and macOS) automation and configuration
           tool/framework, incorporates a command-line shell, a related scripting language, and a
@@ -2609,10 +2414,9 @@ actions:
         call:
           function: PersistSystemEnvironmentVariable
           parameters:
-              variable: POWERSHELL_TELEMETRY_OPTOUT
-              value: '1'
-      -
-        category: Configure Firefox
+            variable: POWERSHELL_TELEMETRY_OPTOUT
+            value: "1"
+      - category: Configure Firefox
         docs: |-
           Mozilla Firefox, colloquially known as Firefox, is a free and open-source web browser created by
           the Mozilla Foundation and its subsidiary, the Mozilla Corporation [1].
@@ -2626,15 +2430,13 @@ actions:
           [2]: https://web.archive.org/web/20220901045358/https://support.mozilla.org/en-US/kb/telemetry-clientid "Telemetry collection and deletion | Firefox Help | support.mozilla.org"
           [3]: https://web.archive.org/web/20221008150941/https://support.mozilla.org/en-US/kb/how-does-phishing-and-malware-protection-work "How does built-in Phishing and Malware Protection work? | Firefox Help | support.mozilla.org"
         children:
-          -
-            category: Harden Firefox privacy # Same name as Windows > "Harden Edge privacy"
+          - category: Harden Firefox privacy # Same name as Windows > "Harden Edge privacy"
             docs: |-
               The following are privacy-focused tweaks to prevent browser fingerprinting and tracking.
 
               See also: [What is browser fingerprinting? | AmIUnique.org](https://web.archive.org/web/20221029223510/https://www.amiunique.org/faq)
             children:
-              -
-                category: Enable Firefox state partitioning (Total Cookie Protection)
+              - category: Enable Firefox state partitioning (Total Cookie Protection)
                 docs: |-
                   Web browsers, including Firefox, save various data types such as cookies, cache, and site-specific details.
                   While this data helps in providing a faster and personalized browsing experience, it can be exploited by websites to track
@@ -2668,8 +2470,7 @@ actions:
                   [3]: https://web.archive.org/web/20230918172352/https://blog.mozilla.org/security/2021/02/23/total-cookie-protection/ "Firefox 86 Introduces Total Cookie Protection - Mozilla Security Blog"
                   [4]: https://web.archive.org/web/20230918172503/https://blog.mozilla.org/security/2021/01/26/supercookie-protections/ "Firefox 85 Cracks Down on Supercookies - Mozilla Security Blog"
                 children:
-                  -
-                    name: Enable dynamic First-Party Isolation (dFPI)
+                  - name: Enable dynamic First-Party Isolation (dFPI)
                     recommend: standard
                     docs: |-
                       Dynamic First-Party Isolation, also known as dFPI, is an advanced privacy feature in Firefox. This feature commonly
@@ -2707,9 +2508,8 @@ actions:
                       function: AddFirefoxPrefs
                       parameters:
                         prefName: network.cookie.cookieBehavior
-                        jsonValue: '5'
-                  -
-                    name: Enable Firefox network partitioning
+                        jsonValue: "5"
+                  - name: Enable Firefox network partitioning
                     recommend: standard
                     docs: |-
                       Network partitioning is a method used by Firefox to enhance user privacy [1]. When enabled, each website you visit has its own
@@ -2731,9 +2531,8 @@ actions:
                       function: AddFirefoxPrefs
                       parameters:
                         prefName: privacy.partition.network_state
-                        jsonValue: 'true'
-                  -
-                    name: Disable outdated Firefox First-Party Isolation (FPI)
+                        jsonValue: "true"
+                  - name: Disable outdated Firefox First-Party Isolation (FPI)
                     recommend: strict
                     docs: |-
                       First-party isolation (FPI) helps in preventing third parties from tracking users across multiple websites [1] [2]. This is sometimes
@@ -2758,9 +2557,8 @@ actions:
                       function: AddFirefoxPrefs
                       parameters:
                         prefName: privacy.firstparty.isolate
-                        jsonValue: 'false'
-              -
-                name: Enable Firefox tracking protection
+                        jsonValue: "false"
+              - name: Enable Firefox tracking protection
                 recommend: standard
                 docs: |-
                   Firefox provides an option for Enhanced Tracking Protection [1], which blocks trackers that
@@ -2783,9 +2581,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: privacy.trackingprotection.enabled
-                    jsonValue: 'true'
-              -
-                name: Enable Firefox anti-fingerprinting (may break some websites)
+                    jsonValue: "true"
+              - name: Enable Firefox anti-fingerprinting (may break some websites)
                 recommend: strict
                 docs: |-
                   Fingerprinting Protection is a heavily developed experimental feature in Firefox [1].
@@ -2806,9 +2603,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: privacy.resistFingerprinting
-                    jsonValue: 'true'
-              -
-                name: Disable WebRTC exposure of your private IP address in Firefox
+                    jsonValue: "true"
+              - name: Disable WebRTC exposure of your private IP address in Firefox
                 recommend: standard
                 docs: |-
                   Websites can obtain your local IP address through WebRTC's peer-to-peer protocol, facilitated
@@ -2829,9 +2625,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: media.peerconnection.ice.default_address_only
-                    jsonValue: 'true'
-          -
-            category: Disable Firefox telemetry
+                    jsonValue: "true"
+          - category: Disable Firefox telemetry
             docs: |-
               By default, Firefox collects telemetry data [1]. This data comprises two main categories:
               **interaction data** and **technical data** [1].
@@ -2849,8 +2644,7 @@ actions:
 
               [1]: https://web.archive.org/web/20220901045358/https://support.mozilla.org/en-US/kb/telemetry-clientid "Telemetry collection and deletion | Firefox Help | support.mozilla.org"
             children:
-              -
-                name: Disable collection of technical and interaction data in Firefox
+              - name: Disable collection of technical and interaction data in Firefox
                 recommend: standard
                 docs: |-
                   This script alters the `datareporting.healthreport.uploadEnabled` preference, effectively
@@ -2870,9 +2664,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: datareporting.healthreport.uploadEnabled
-                    jsonValue: 'false'
-              -
-                name: Disable detailed telemetry collection in Firefox
+                    jsonValue: "false"
+              - name: Disable detailed telemetry collection in Firefox
                 recommend: standard
                 docs: |-
                   This script disables the `toolkit.telemetry.enabled` preference, which controls whether the
@@ -2898,9 +2691,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: toolkit.telemetry.enabled
-                    jsonValue: 'false'
-              -
-                name: Disable archiving of Firefox telemetry
+                    jsonValue: "false"
+              - name: Disable archiving of Firefox telemetry
                 recommend: standard
                 docs: |-
                   This script configures the `toolkit.telemetry.archive.enabled` preference to be disabled, thus
@@ -2915,9 +2707,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: toolkit.telemetry.archive.enabled
-                    jsonValue: 'false'
-              -
-                name: Disable Firefox unified telemetry
+                    jsonValue: "false"
+              - name: Disable Firefox unified telemetry
                 recommend: standard
                 docs: |-
                   This script is designed to disable the `toolkit.telemetry.unified` preference.
@@ -2939,17 +2730,15 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: toolkit.telemetry.unified
-                    jsonValue: 'false'
-              -
-                category: Disable Firefox telemetry logs
+                    jsonValue: "false"
+              - category: Disable Firefox telemetry logs
                 docs: |-
                   Firefox logs telemetry information in various locations, such as the console and `stdout` [1].
                   This logged information reveals details about your usage pattern.
 
                   [1]: https://web.archive.org/web/20221015102124/https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/internals/preferences.html "Preferences and Defines — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
                 children:
-                  -
-                    name: Minimize Firefox telemetry logging verbosity
+                  - name: Minimize Firefox telemetry logging verbosity
                     recommend: standard
                     docs: |-
                       This script sets the `toolkit.telemetry.log.level` preference to the least verbosity to minimize logs.
@@ -2974,8 +2763,7 @@ actions:
                         prefName: toolkit.telemetry.log.level
                         jsonValue: >-
                           "Fatal"
-                  -
-                    name: Disable Firefox telemetry log output
+                  - name: Disable Firefox telemetry log output
                     recommend: standard
                     docs: |-
                       This script adjusts the `toolkit.telemetry.log.dump` setting to its most restricted value.
@@ -2988,8 +2776,7 @@ actions:
                         prefName: toolkit.telemetry.log.dump
                         jsonValue: >-
                           "Fatal"
-              -
-                name: Clear Firefox telemetry user ID
+              - name: Clear Firefox telemetry user ID
                 recommend: standard
                 docs: |-
                   Firefox uses `toolkit.telemetry.cachedClientID` as an identifier for the client and/or the user [1] [2] [3].
@@ -3003,16 +2790,14 @@ actions:
                   parameters:
                     prefName: toolkit.telemetry.cachedClientID
                     jsonValue: '""'
-              -
-                category: Disable Firefox telemetry pings
+              - category: Disable Firefox telemetry pings
                 docs: |-
                   A telemetry ping refers to the data that Firefox transmits to Mozilla's Telemetry servers [1].
                   It comes in different types and includes information collected by telemetry [1].
 
                   [1]: https://web.archive.org/web/20221025163526/https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/concepts/pings.html "Telemetry pings — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
                 children:
-                  -
-                    name: Disable pings to Firefox telemetry server
+                  - name: Disable pings to Firefox telemetry server
                     recommend: standard
                     docs: |-
                       This script sets `toolkit.telemetry.server` to be empty.
@@ -3024,8 +2809,7 @@ actions:
                       parameters:
                         prefName: toolkit.telemetry.server
                         jsonValue: '""'
-                  -
-                    name: Disable Firefox shutdown ping
+                  - name: Disable Firefox shutdown ping
                     recommend: standard
                     docs: |-
                       The shutdown ping provides data about a clean shutdown [1].
@@ -3044,23 +2828,19 @@ actions:
                       [1]: https://web.archive.org/web/20221030201323/https://wiki.mozilla.org/QA/Shutdown_Ping#Test_Objectives "QA/Shutdown Ping - MozillaWiki | wiki.mozilla.org"
                       [2]: https://web.archive.org/web/20221015102124/https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/internals/preferences.html "Preferences and Defines — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
                     call:
-                      -
-                        function: AddFirefoxPrefs
+                      - function: AddFirefoxPrefs
                         parameters:
                           prefName: toolkit.telemetry.shutdownPingSender.enabled
-                          jsonValue: 'false'
-                      -
-                        function: AddFirefoxPrefs
+                          jsonValue: "false"
+                      - function: AddFirefoxPrefs
                         parameters:
                           prefName: toolkit.telemetry.shutdownPingSender.enabledFirstSession
-                          jsonValue: 'false'
-                      -
-                        function: AddFirefoxPrefs
+                          jsonValue: "false"
+                      - function: AddFirefoxPrefs
                         parameters:
                           prefName: toolkit.telemetry.firstShutdownPing.enabled
-                          jsonValue: 'false'
-                  -
-                    name: Disable Firefox new profile ping
+                          jsonValue: "false"
+                  - name: Disable Firefox new profile ping
                     recommend: standard
                     docs: |-
                       This script disables the `new-profile` ping sent from Firefox Desktop.
@@ -3078,9 +2858,8 @@ actions:
                       function: AddFirefoxPrefs
                       parameters:
                         prefName: toolkit.telemetry.newProfilePing.enabled
-                        jsonValue: 'false'
-                  -
-                    name: Disable Firefox update ping
+                        jsonValue: "false"
+                  - name: Disable Firefox update ping
                     recommend: standard
                     docs: |-
                       This script disables the `update` ping sent from Firefox Desktop.
@@ -3097,9 +2876,8 @@ actions:
                       function: AddFirefoxPrefs
                       parameters:
                         prefName: toolkit.telemetry.updatePing.enabled
-                        jsonValue: 'false'
-                  -
-                    name: Disable Firefox prio ping
+                        jsonValue: "false"
+                  - name: Disable Firefox prio ping
                     recommend: standard
                     docs: |-
                       This script disables the `prio` ping sent from Firefox Desktop.
@@ -3121,9 +2899,8 @@ actions:
                       function: AddFirefoxPrefs
                       parameters:
                         prefName: toolkit.telemetry.prioping.enabled
-                        jsonValue: 'false'
-          -
-            category: Disable Firefox Pioneer program
+                        jsonValue: "false"
+          - category: Disable Firefox Pioneer program
             docs: |-
               Firefox Pioneer is a system in Firefox to test new features and changes on a subset of Firefox users [1].
 
@@ -3133,8 +2910,7 @@ actions:
               [2]: https://web.archive.org/web/20221025160326/https://support.mozilla.org/en-US/questions/1224660 "What is a firefox pioneer example of how data will be used and how can this lead to a better user experience? | Firefox Support Forum | Mozilla Support"
               [3]: https://web.archive.org/web/20221025162028/https://medium.com/firefox-context-graph/make-firefox-better-with-pioneer-10c82d0f9301 "Make Firefox Better With Pioneer. Data is the lifeblood of any product… | by Toby Elliott | Firefox Context Graph | Medium"
             children:
-              -
-                name: Disable Firefox Pioneer study monitoring
+              - name: Disable Firefox Pioneer study monitoring
                 recommend: standard
                 docs: |-
                   This script configures `toolkit.telemetry.pioneer-new-studies-available` to be disabled to opt out
@@ -3147,9 +2923,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: toolkit.telemetry.pioneer-new-studies-available
-                    jsonValue: 'false'
-              -
-                name: Clear Firefox pioneer program ID
+                    jsonValue: "false"
+              - name: Clear Firefox pioneer program ID
                 recommend: standard
                 docs: |-
                   If a user has chosen to participate in the Pioneer program, their Pioneer ID will be stored in this
@@ -3162,8 +2937,7 @@ actions:
                   parameters:
                     prefName: toolkit.telemetry.pioneerId
                     jsonValue: '""'
-          -
-            name: Disable connection tests (breaks automatic Wi-Fi login)
+          - name: Disable connection tests (breaks automatic Wi-Fi login)
             docs: |-
               This script turns off the Firefox Captive Portal detection feature.
 
@@ -3190,9 +2964,8 @@ actions:
               function: AddFirefoxPrefs
               parameters:
                 prefName: network.captive-portal-service.enabled
-                jsonValue: 'false'
-          -
-            category: Disable Firefox Phishing Protection (Safe Browsing) (decreases security)
+                jsonValue: "false"
+          - category: Disable Firefox Phishing Protection (Safe Browsing) (decreases security)
             docs: |-
               Firefox's Safe Browsing feature, now referred to as Phishing Protection, is still internally
               recognized as "Safe Browsing" [1].
@@ -3215,8 +2988,7 @@ actions:
               [2]: https://web.archive.org/web/20221025193000/https://support.mozilla.org/en-US/kb/how-does-phishing-and-malware-protection-work#w_what-information-is-sent-to-mozilla-or-its-partners-when-phishing-and-malware-protection-is-enabled
               [3]: https://web.archive.org/web/20221025192516/https://www.usnews.com/opinion/articles/2016-06-22/google-is-the-worlds-biggest-censor-and-its-power-must-be-regulated "Google Is the World's Biggest Censor and Its Power Must Be Regulated | usnews.com"
             children:
-              -
-                name: Disable blocking of unstable plugins in Firefox
+              - name: Disable blocking of unstable plugins in Firefox
                 docs: |-
                   This script sets `browser.safebrowsing.blockedURIs.enabled` to 'false', thereby disabling plugin
                   stability blocking [1].
@@ -3236,9 +3008,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: browser.safebrowsing.blockedURIs.enabled
-                    jsonValue: 'false'
-              -
-                name: Disable Firefox application reputation checks for downloads
+                    jsonValue: "false"
+              - name: Disable Firefox application reputation checks for downloads
                 docs: |-
                   This script pertains to a feature that safeguards users from malware downloads [1].
 
@@ -3259,9 +3030,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: browser.safebrowsing.downloads.enabled
-                    jsonValue: 'false'
-              -
-                name: Disable Firefox malware protection
+                    jsonValue: "false"
+              - name: Disable Firefox malware protection
                 docs: |-
                   Mozilla Firefox maintains a list of known malware, and checks user downloads against
                   this list [1]. If the user downloads a file that matches an entry in the list, a warning
@@ -3281,9 +3051,8 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: browser.safebrowsing.malware.enabled
-                    jsonValue: 'false'
-              -
-                name: Disable Firefox phishing protection
+                    jsonValue: "false"
+              - name: Disable Firefox phishing protection
                 docs: |-
                   This script modifies `browser.safebrowsing.phishing.enabled` to a disabled state.
                   This preference determines whether to enable phishing protection [1] [2].
@@ -3296,20 +3065,18 @@ actions:
                   function: AddFirefoxPrefs
                   parameters:
                     prefName: browser.safebrowsing.phishing.enabled
-                    jsonValue: 'false'
+                    jsonValue: "false"
 functions:
-  -
-    name: RunInlineCode
+  - name: RunInlineCode
     #   Marked: refactor-with-partials
     #     Same function in macOS, Linux, Windows
     parameters:
       - name: code
       - name: revertCode
         optional: true
-    code: '{{ $code }}'
-    revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
-  -
-    name: RunIfCommandExists # Skips if command does not exist
+    code: "{{ $code }}"
+    revertCode: "{{ with $revertCode }}{{ . }}{{ end }}"
+  - name: RunIfCommandExists # Skips if command does not exist
     #   Marked: refactor-with-partials
     #     Same function as macOS
     parameters:
@@ -3331,8 +3098,7 @@ functions:
           {{ . }}
         fi
       {{ end }}
-  -
-    name: RunPython3Code
+  - name: RunPython3Code
     parameters:
       - name: command
       - name: code
@@ -3352,15 +3118,13 @@ functions:
           {{ . }}
           EOF
           {{ end }}
-  -
-    name: DeleteFileFromUserAndRootHome
+  - name: DeleteFileFromUserAndRootHome
     parameters:
       - name: file
     code: |-
       rm -fv ~/{{ $file }}
       sudo rm -fv /root/{{ $file }}
-  -
-    name: SetVsCodeSetting
+  - name: SetVsCodeSetting
     parameters:
       - name: setting
       - name: jsonValue
@@ -3445,8 +3209,7 @@ functions:
             new_content = json.dumps(json_object, indent=2)
             file.write_text(new_content)
             print(f'Successfully reverted "{property_name}" setting.')
-  -
-    name: UninstallPacmanPackage
+  - name: UninstallPacmanPackage
     parameters:
       - name: packageName
     call:
@@ -3469,8 +3232,7 @@ functions:
             echo "\"$pkg_package_name\" is not installed and will be reinstalled."
             sudo pacman -S "$pkg_package_name" --noconfirm
           fi
-  -
-    name: UninstallRPMPackage
+  - name: UninstallRPMPackage
     parameters:
       - name: packageName
     call:
@@ -3483,8 +3245,7 @@ functions:
         revertCode: |-
           rpm_package_name='{{ $packageName }}'
           sudo dnf install -y "$rpm_package_name"
-  -
-    name: UninstallAptPackage
+  - name: UninstallAptPackage
     parameters:
       - name: packageName
     call:
@@ -3509,8 +3270,7 @@ functions:
             echo "\"$apt_package_name\" is not installed and will be reinstalled."
             sudo apt-get install -y "$apt_package_name"
           fi
-  -
-    name: DisableSystemdService
+  - name: DisableSystemdService
     parameters:
       - name: serviceName
     call:
@@ -3542,7 +3302,8 @@ functions:
           else
             echo "Skipping, $service does not exist."
           fi
-        revertCode: |- # Not restarting/enabling service because the process/socket may need to be trigged by other hooks.
+        revertCode:
+          |- # Not restarting/enabling service because the process/socket may need to be trigged by other hooks.
           service='{{ $serviceName }}'
           if systemctl list-units --full -all | grep --fixed-strings --quiet "$service"; then # service exists
             if systemctl is-enabled --quiet "$service"; then
@@ -3557,38 +3318,34 @@ functions:
           else
             >&2 echo "Failed, $service does not exist."
           fi
-  -
-    name: Comment
+  - name: Comment
     # 💡 Purpose:
     #   Adds a comment in the executed code for better readability and debugging.
     #   This function does not affect the execution flow but helps in understanding the purpose of subsequent code.
     #   Marked: refactor-with-partials
     #     Same function as macOS
     parameters:
-        - name: codeComment
-          optional: true
-        - name: revertCodeComment
-          optional: true
+      - name: codeComment
+        optional: true
+      - name: revertCodeComment
+        optional: true
     call:
-        function: RunInlineCode
-        parameters:
-            code: '{{ with $codeComment }}# {{ . }}{{ end }}'
-            revertCode: '{{ with $revertCodeComment }}# {{ . }}{{ end }}'
-  -
-    name: DeleteFiles
+      function: RunInlineCode
+      parameters:
+        code: "{{ with $codeComment }}# {{ . }}{{ end }}"
+        revertCode: "{{ with $revertCodeComment }}# {{ . }}{{ end }}"
+  - name: DeleteFiles
     # 💡 Purpose:
     #   Deletes files but does not touch any directories.
     #   Use `DeleteDirectory` or `ClearDirectoryContents` to delete directories.
     parameters:
-      - name: fileGlob  # File glob pattern to delete.
+      - name: fileGlob # File glob pattern to delete.
     call:
-      -
-        function: Comment
+      - function: Comment
         parameters:
           codeComment: >-
             Delete files matching pattern: "{{ $fileGlob }}"
-      -
-        function: RunPython3Code
+      - function: RunPython3Code
         parameters:
           code: |-
             import glob
@@ -3606,25 +3363,23 @@ functions:
               os.remove(path)
               print(f'Successfully delete file: "{path}".')
             print(f'Successfully deleted {len(paths)} file(s).')
-  -
-    name: DeleteFilesFromFirefoxProfiles
+  - name: DeleteFilesFromFirefoxProfiles
     parameters:
       - name: pathGlob # file or folder in profile file
     call:
       - # Global installation
-          function: DeleteFiles
-          parameters:
-            fileGlob: ~/.mozilla/firefox/*/{{ $pathGlob }}
+        function: DeleteFiles
+        parameters:
+          fileGlob: ~/.mozilla/firefox/*/{{ $pathGlob }}
       - # Flatpak installation
-          function: DeleteFiles
-          parameters:
-            fileGlob: ~/.var/app/org.mozilla.firefox/.mozilla/firefox/*/{{ $pathGlob }}
+        function: DeleteFiles
+        parameters:
+          fileGlob: ~/.var/app/org.mozilla.firefox/.mozilla/firefox/*/{{ $pathGlob }}
       - # Snap installation
-          function: DeleteFiles
-          parameters:
-            fileGlob: ~/snap/firefox/common/.mozilla/firefox/*/{{ $pathGlob }}
-  -
-    name: CleanTableFromFirefoxProfileDatabase
+        function: DeleteFiles
+        parameters:
+          fileGlob: ~/snap/firefox/common/.mozilla/firefox/*/{{ $pathGlob }}
+  - name: CleanTableFromFirefoxProfileDatabase
     parameters:
       - name: databaseFileName
       - name: tableName
@@ -3664,8 +3419,7 @@ functions:
                   print(f'Table was empty, no items were deleted.' if total_deleted == 0 else f'Total deleted items: {cursor.rowcount}')
               except Exception as e:
                   print(f'Failed to delete: {e}', file=sys.stderr)
-  -
-    name: DeleteFileFromThunderbirdProfiles
+  - name: DeleteFileFromThunderbirdProfiles
     parameters:
       - name: file
     code: |-
@@ -3675,8 +3429,7 @@ functions:
       rm -fv ~/snap/thunderbird/common/.thunderbird/*/{{ $file }}
       # {{ $file }}: Snap installation
       rm -fv ~/.var/app/org.mozilla.Thunderbird/.thunderbird/*/{{ $file }}
-  -
-    name: DeleteFileFromGNOMEWebData
+  - name: DeleteFileFromGNOMEWebData
     parameters:
       - name: file
     code: |-
@@ -3686,8 +3439,7 @@ functions:
       rm -fv ~/.var/app/org.gnome.Epiphany/data/epiphany/{{ $file }}
       # {{ $file }}: Snap installation
       rm -fv ~/snap/epiphany/*/.local/share/epiphany/{{ $file }}
-  -
-    name: ClearDirFromVsCodeUserDataDir
+  - name: ClearDirFromVsCodeUserDataDir
     parameters:
       - name: directory # Whitespaces must be escaped with /
     code: |-
@@ -3695,8 +3447,7 @@ functions:
       rm -rfv ~/.config/Code/{{ $directory }}/*
       # {{ $directory }}: Flatpak installation
       rm -rfv ~/.var/app/com.visualstudio.code/config/Code/{{ $directory }}/*
-  -
-    name: PersistSystemEnvironmentVariable
+  - name: PersistSystemEnvironmentVariable
     parameters:
       - name: variable
       - name: value
@@ -3777,8 +3528,7 @@ functions:
           echo "Skipping, \"$variable\" with \"$value\" is not found."
         fi
       fi
-  -
-    name: DisableCronjob
+  - name: DisableCronjob
     parameters:
       - name: jobName
     # Cron is not restarted after changes because according to manpage:
@@ -3809,8 +3559,7 @@ functions:
       else
         >&2 echo "Failed to enable cronjob \"$job_name\" because it's missing."
       fi
-  -
-    name: AddFirefoxPrefs
+  - name: AddFirefoxPrefs
     parameters:
       - name: prefName
       - name: jsonValue
@@ -3925,8 +3674,7 @@ functions:
       else
         echo "Successfully verified preferences in $total_profiles_found profiles."
       fi
-  -
-    name: RenameFile
+  - name: RenameFile
     parameters:
       - name: path
     code: |-
@@ -3951,8 +3699,7 @@ functions:
         >&2 echo "Failed to restore, backup file could not be found at $backup_file."
         >&2 echo "Was the change initially applied by privacy.sexy?"
       fi
-  -
-    name: ReplaceFileContent
+  - name: ReplaceFileContent
     parameters:
       - name: filePath
       - name: newContent
@@ -3978,8 +3725,7 @@ functions:
         sudo mv "$file.backup" "$file"
         echo "Successfully restored from backup: $file"
       fi
-  -
-    name: ClearDirectoryContents
+  - name: ClearDirectoryContents
     # 💡 Purpose:
     #   Empties the contents of a directory recursively (including all of its files and subfolders) while preserving
     #   the directory itself.
@@ -3991,12 +3737,10 @@ functions:
       - name: grantPermissions
         optional: true
     call:
-      -
-        function: Comment
+      - function: Comment
         parameters:
           codeComment: 'Clear directory contents: "{{ $directoryGlob }}"'
-      -
-        function: RunInlineCode
+      - function: RunInlineCode
         parameters:
           code: |-
             glob_pattern="{{ $directoryGlob }}/*"

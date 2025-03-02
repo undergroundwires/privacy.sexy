@@ -65,7 +65,7 @@ async function main() {
   console.log('Starting dependency installation...');
   const exitCode = await executeWithRetry(
     command,
-    options.workingDirectory,
+    options.rootDirectory,
     MAX_RETRIES,
     RETRY_DELAY_IN_MS,
   );
@@ -79,7 +79,7 @@ async function main() {
 
 async function removeNodeModules(workingDirectory) {
   const nodeModulesDirectory = resolve(workingDirectory, 'node_modules');
-  if (await exists('./node_modules')) {
+  if (await exists(nodeModulesDirectory)) {
     console.log('Removing node_modules...');
     await rm(nodeModulesDirectory, { recursive: true });
   }
@@ -96,7 +96,7 @@ async function removePackageLockJson(workingDirectory) {
 async function ensureNpmIsAvailable() {
   const exitCode = await executeCommand('npm --version');
   if (exitCode !== 0) {
-    throw new Error('`npm` in not available!');
+    throw new Error('`npm` is not available!');
   }
 }
 
@@ -118,7 +118,7 @@ function buildCommand(ci, outputErrors) {
 function getOptions() {
   const processArgs = process.argv.slice(2); // Slice off the node and script name
   return {
-    rootDirectory: processArgs.includes('--root-directory') ? processArgs[processArgs.indexOf('--root-directory') + 1] : process.cwd(),
+    rootDirectory: processArgs.includes(ARG_NAMES.rootDirectory) ? processArgs[processArgs.indexOf(ARG_NAMES.rootDirectory) + 1] : process.cwd(),
     outputErrors: !processArgs.includes(ARG_NAMES.ignoreErrors),
     ci: processArgs.includes(ARG_NAMES.ci),
     fresh: processArgs.includes(ARG_NAMES.fresh),
