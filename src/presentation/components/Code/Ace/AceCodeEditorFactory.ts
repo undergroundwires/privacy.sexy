@@ -1,4 +1,4 @@
-import ace from './ace-importer';
+import ace, { AceRange } from './ace-importer';
 import type { CodeEditorFactory, SupportedSyntaxLanguage } from '../CodeEditorFactory';
 
 const CodeEditorTheme = 'xcode';
@@ -25,7 +25,6 @@ export const initializeAceEditor: CodeEditorFactory = (options) => {
     },
     updateSize: () => editor?.resize(),
     applyStyleToLineRange: (start, end, className) => {
-      const AceRange = ace.require('ace/range').Range;
       const markerId = editor.session.addMarker(
         new AceRange(start, 0, end, 0),
         className,

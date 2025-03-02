@@ -1,4 +1,4 @@
-import ace from 'ace-builds';
+import ace, { Range } from 'ace-builds';
 
 /*
   Following is here because `import 'ace-builds/esm-resolver' imports all unused functionality
@@ -14,3 +14,5 @@ ace.config.setModuleUrl('ace/mode/javascript_worker', new URL('ace-builds/src-no
 ace.config.setModuleUrl('ace/mode/json_worker', new URL('ace-builds/src-noconflict/worker-json.js', import.meta.url).toString());
 
 export default ace;
+
+export { Range as AceRange };
