@@ -7,6 +7,7 @@ module.exports = {
   env: {
     node: true,
     es2022: true, // add globals and sets parserOptions.ecmaVersion to 2022
+    serviceworker: true, // Add this line to enable serviceworker support
   },
   extends: [
     // Vue specific base rules, `eslint-plugin-vue`
