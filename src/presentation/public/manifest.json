@@ -1,0 +1,62 @@
+{
+    "name": "privacy.sexy",
+    "short_name": "privacy.sexy",
+    "description": "Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy.",
+    "version": "0.13.5",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "icons": [
+        {
+          "src": "icons/manifest-icon-192.maskable.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "icons/manifest-icon-192.maskable.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "maskable"
+        },
+        {
+          "src": "icons/manifest-icon-512.maskable.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "icons/manifest-icon-512.maskable.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+      ],
+      "screenshots": [
+        {
+          "src": "screenshots/screenshot-1280x720.png",
+          "sizes": "1280x720",
+          "type": "image/png",
+          "form_factor": "wide" 
+        },
+        {
+            "src": "screenshots/screenshot-1366x768.png",
+            "sizes": "1366x768",
+            "type": "image/png",
+            "form_factor": "wide" 
+        },
+        {
+            "src": "screenshots/screenshot-1600x900.png",
+            "sizes": "1600x900",
+            "type": "image/png",
+            "form_factor": "wide" 
+        },
+        {
+            "src": "screenshots/screenshot-1920x1080.png",
+            "sizes": "1920x1080",
+            "type": "image/png",
+            "form_factor": "wide" 
+        }
+      ]
+  }
