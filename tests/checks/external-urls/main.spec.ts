@@ -1,58 +1,61 @@
 import { test, expect } from 'vitest';
-import { parseApplication } from '@/application/Parser/ApplicationParser';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { shuffle } from '@/application/Common/Shuffle';
 import { indentText } from '@/application/Common/Text/IndentText';
+import { loadApplicationComposite } from '@/application/Application/Loader/CompositeApplicationLoader';
 import { type UrlStatus, formatUrlStatus } from './StatusChecker/UrlStatus';
 import { getUrlStatusesInParallel, type BatchRequestOptions } from './StatusChecker/BatchStatusChecker';
 import { TestExecutionDetailsLogger } from './TestExecutionDetailsLogger';
 import { extractDocumentationUrls } from './DocumentationUrlExtractor';
 
-// arrange
-const logger = new TestExecutionDetailsLogger();
-logger.logTestSectionStartDelimiter();
-const app = parseApplication();
-let urls = extractDocumentationUrls({
-  logger,
-  urlExclusionPatterns: [
-    /^https:\/\/archive\.ph/, // Drops HEAD/GET requests via fetch/curl, responding to Postman/Chromium.
-  ],
-  application: app,
-});
-urls = filterUrlsToEnvironmentCheckLimit(urls);
-logger.logLabeledInformation('URLs submitted for testing', urls.length.toString());
-const requestOptions: BatchRequestOptions = {
-  domainOptions: {
-    sameDomainParallelize: false, // be nice to our third-party servers
-    sameDomainDelayInMs: 5 /* sec */ * 1000,
-  },
-  requestOptions: {
-    retryExponentialBaseInMs: 3 /* sec */ * 1000,
-    requestTimeoutInMs: 60 /* sec */ * 1000,
-    additionalHeaders: { referer: app.projectDetails.homepage },
-    randomizeTlsFingerprint: true,
-  },
-  followOptions: {
-    followRedirects: true,
-    enableCookies: true,
-  },
-};
-logger.logLabeledInformation('HTTP request options', JSON.stringify(requestOptions, null, 2));
-const testTimeoutInMs = urls.length * 60 /* seconds */ * 1000;
-logger.logLabeledInformation('Scheduled test duration', convertMillisecondsToHumanReadableFormat(testTimeoutInMs));
-logger.logTestSectionEndDelimiter();
-test(`all URLs (${urls.length}) should be alive`, {
-  timeout: testTimeoutInMs,
-}, async () => {
-  // act
-  const results = await getUrlStatusesInParallel(urls, requestOptions);
-  // assert
-  const deadUrls = results.filter((r) => r.code === undefined || !isOkStatusCode(r.code));
-  expect(deadUrls).to.have.lengthOf(
-    0,
-    formatAssertionMessage([createReportForDeadUrlStatuses(deadUrls)]),
-  );
-});
+const Logger = new TestExecutionDetailsLogger();
+
+function main() {
+  // arrange
+  Logger.logTestSectionStartDelimiter();
+  const app = loadApplicationComposite();
+  let urls = extractDocumentationUrls({
+    logger: Logger,
+    urlExclusionPatterns: [
+      /^https:\/\/archive\.ph/, // Drops HEAD/GET requests via fetch/curl, responding to Postman/Chromium.
+    ],
+    application: app,
+  });
+  urls = filterUrlsToEnvironmentCheckLimit(urls);
+  Logger.logLabeledInformation('URLs submitted for testing', urls.length.toString());
+  const requestOptions: BatchRequestOptions = {
+    domainOptions: {
+      sameDomainParallelize: false, // be nice to our third-party servers
+      sameDomainDelayInMs: 5 /* sec */ * 1000,
+    },
+    requestOptions: {
+      retryExponentialBaseInMs: 3 /* sec */ * 1000,
+      requestTimeoutInMs: 60 /* sec */ * 1000,
+      additionalHeaders: { referer: app.projectDetails.homepage },
+      randomizeTlsFingerprint: true,
+    },
+    followOptions: {
+      followRedirects: true,
+      enableCookies: true,
+    },
+  };
+  Logger.logLabeledInformation('HTTP request options', JSON.stringify(requestOptions, null, 2));
+  const testTimeoutInMs = urls.length * 60 /* seconds */ * 1000;
+  Logger.logLabeledInformation('Scheduled test duration', convertMillisecondsToHumanReadableFormat(testTimeoutInMs));
+  Logger.logTestSectionEndDelimiter();
+  test(`all URLs (${urls.length}) should be alive`, {
+    timeout: testTimeoutInMs,
+  }, async () => {
+    // act
+    const results = await getUrlStatusesInParallel(urls, requestOptions);
+    // assert
+    const deadUrls = results.filter((r) => r.code === undefined || !isOkStatusCode(r.code));
+    expect(deadUrls).to.have.lengthOf(
+      0,
+      formatAssertionMessage([createReportForDeadUrlStatuses(deadUrls)]),
+    );
+  });
+}
 
 function isOkStatusCode(statusCode: number): boolean {
   return statusCode >= 200 && statusCode < 300;
@@ -64,7 +67,7 @@ function createReportForDeadUrlStatuses(deadUrlStatuses: readonly UrlStatus[]): 
 
 function filterUrlsToEnvironmentCheckLimit(originalUrls: string[]): string[] {
   const { RANDOMIZED_URL_CHECK_LIMIT } = process.env;
-  logger.logLabeledInformation('URL check limit', RANDOMIZED_URL_CHECK_LIMIT || 'Unlimited');
+  Logger.logLabeledInformation('URL check limit', RANDOMIZED_URL_CHECK_LIMIT || 'Unlimited');
   if (RANDOMIZED_URL_CHECK_LIMIT !== undefined && RANDOMIZED_URL_CHECK_LIMIT !== '') {
     const maxUrlsInTest = parseInt(RANDOMIZED_URL_CHECK_LIMIT, 10);
     if (Number.isNaN(maxUrlsInTest)) {
@@ -100,3 +103,5 @@ function convertMillisecondsToHumanReadableFormat(milliseconds: number): string 
 
   return timeParts.join(', ');
 }
+
+main();

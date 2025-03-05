@@ -1,4 +1,4 @@
-import type { ScriptParser } from '@/application/Parser/Executable/Script/ScriptParser';
+import type { ScriptParser } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/ScriptParser';
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { ScriptData } from '@/application/collections/';
 import { ScriptStub } from './ScriptStub';

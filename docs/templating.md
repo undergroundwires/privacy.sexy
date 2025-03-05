@@ -177,7 +177,7 @@ Each pipeline's output becomes the input of the following pipe.
 
 Pipes are pre-defined by the system.
 You cannot create pipes in [collection files](./collection-files.md).
-[A dedicated compiler](./application.md#parsing-and-compiling) provides pre-defined pipes to consume in collection files.
+[A dedicated compiler](./application.md#loading-parsing-and-compiling) provides pre-defined pipes to consume in collection files.
 
 **Compatibility:**
 

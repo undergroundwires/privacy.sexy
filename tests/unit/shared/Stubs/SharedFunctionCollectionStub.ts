@@ -1,5 +1,5 @@
-import type { ISharedFunction } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunction';
-import type { ISharedFunctionCollection } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunctionCollection';
+import type { ISharedFunction } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/ISharedFunction';
+import type { ISharedFunctionCollection } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/ISharedFunctionCollection';
 import { createSharedFunctionStubWithCode } from './SharedFunctionStub';
 
 export class SharedFunctionCollectionStub implements ISharedFunctionCollection {

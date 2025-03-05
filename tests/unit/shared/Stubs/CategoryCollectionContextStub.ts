@@ -1,6 +1,6 @@
-import type { CategoryCollectionContext } from '@/application/Parser/Executable/CategoryCollectionContext';
+import type { CategoryCollectionContext } from '@/application/Application/Loader/Collections/Compiler/Executable/CategoryCollectionContext';
 import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
-import type { ScriptCompiler } from '@/application/Parser/Executable/Script/Compiler/ScriptCompiler';
+import type { ScriptCompiler } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/ScriptCompiler';
 import { ScriptCompilerStub } from './ScriptCompilerStub';
 
 export class CategoryCollectionContextStub

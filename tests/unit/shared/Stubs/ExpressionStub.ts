@@ -1,7 +1,7 @@
-import { ExpressionPosition } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/ExpressionPosition';
-import type { IExpression } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/IExpression';
-import type { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
-import type { IExpressionEvaluationContext } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
+import { ExpressionPosition } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/Expression/ExpressionPosition';
+import type { IExpression } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/Expression/IExpression';
+import type { IReadOnlyFunctionParameterCollection } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+import type { IExpressionEvaluationContext } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 import { FunctionParameterCollectionStub } from './FunctionParameterCollectionStub';
 
 export class ExpressionStub implements IExpression {

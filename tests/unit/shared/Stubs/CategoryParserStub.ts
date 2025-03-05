@@ -1,7 +1,7 @@
-import type { CategoryParser } from '@/application/Parser/Executable/CategoryParser';
+import type { CategoryParser } from '@/application/Application/Loader/Collections/Compiler/Executable/CategoryParser';
 import type { CategoryData } from '@/application/collections/';
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { CategoryCollectionContext } from '@/application/Parser/Executable/CategoryCollectionContext';
+import type { CategoryCollectionContext } from '@/application/Application/Loader/Collections/Compiler/Executable/CategoryCollectionContext';
 import { CategoryStub } from './CategoryStub';
 
 export class CategoryParserStub {

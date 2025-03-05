@@ -1,4 +1,4 @@
-import type { Pipe } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/Pipe';
+import type { Pipe } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/Pipes/Pipe';
 
 export class PipeStub implements Pipe {
   public name = 'pipeStub';

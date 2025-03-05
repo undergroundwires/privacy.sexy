@@ -1,7 +1,7 @@
-import type { CompiledCode } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import type { FunctionCallCompilationContext } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
-import type { SingleCallCompiler } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
-import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
+import type { CompiledCode } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { FunctionCallCompilationContext } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
+import type { SingleCallCompiler } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
+import type { FunctionCall } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/FunctionCall';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { CompiledCodeStub } from './CompiledCodeStub';
 

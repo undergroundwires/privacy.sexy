@@ -1,8 +1,6 @@
 import type { Application } from '@/domain/Application/Application';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
 
-export async function dumpNames(): Promise<string> {
-  const application = await ApplicationFactory.Current.getApp();
+export async function dumpNames(application: Application): Promise<string> {
   const names = collectNames(application);
   const output = names.join('\n');
   return output;

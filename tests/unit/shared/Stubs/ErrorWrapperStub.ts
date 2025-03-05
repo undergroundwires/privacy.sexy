@@ -1,4 +1,4 @@
-import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Application/Loader/Collections/Compiler/Common/ContextualError';
 import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 
 export class ErrorWrapperStub {

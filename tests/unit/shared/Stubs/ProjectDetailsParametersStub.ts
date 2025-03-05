@@ -1,5 +1,5 @@
 import type { Version } from '@/domain/Version';
-import type { ProjectDetailsParameters } from '@/application/Parser/Project/ProjectDetailsFactory';
+import type { ProjectDetailsParameters } from '@/application/Application/Loader/ProjectDetails/ProjectDetailsFactory';
 import { VersionStub } from './VersionStub';
 
 export class ProjectDetailsParametersStub

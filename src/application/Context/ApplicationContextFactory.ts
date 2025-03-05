@@ -2,15 +2,15 @@ import type { IApplicationContext } from '@/application/Context/IApplicationCont
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import type { Application } from '@/domain/Application/Application';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
-import { ApplicationFactory } from '../ApplicationFactory';
+import { createOrGetApplication } from '../Application/LazySingletonApplicationProvider';
 import { ApplicationContext } from './ApplicationContext';
-import type { IApplicationFactory } from '../IApplicationFactory';
+import type { ApplicationProvider } from '../Application/ApplicationProvider';
 
 export async function buildContext(
-  factory: IApplicationFactory = ApplicationFactory.Current,
+  provideApp: ApplicationProvider = createOrGetApplication,
   environment = CurrentEnvironment,
 ): Promise<IApplicationContext> {
-  const app = await factory.getApp();
+  const app = await provideApp();
   const os = getInitialOs(app, environment.os);
   return new ApplicationContext(app, os);
 }

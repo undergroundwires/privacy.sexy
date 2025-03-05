@@ -1,5 +1,5 @@
-import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
-import type { FunctionCallsParser } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCallsParser';
+import type { FunctionCall } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/FunctionCall';
+import type { FunctionCallsParser } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/FunctionCallsParser';
 import type { FunctionCallsData } from '@/application/collections/';
 import { FunctionCallStub } from './FunctionCallStub';
 

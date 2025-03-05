@@ -10,7 +10,7 @@ import {
   parseAllCategories,
   parseSingleCategory,
 } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
-import { ExecutableType } from '@/application/Parser/Executable/Validation/ExecutableType';
+import { ExecutableType } from '@/application/Application/Loader/Collections/Compiler/Executable/Validation/ExecutableType';
 import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';

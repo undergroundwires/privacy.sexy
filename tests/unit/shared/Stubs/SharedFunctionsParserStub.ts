@@ -1,7 +1,7 @@
 import type { FunctionData } from '@/application/collections/';
 import { sequenceEqual } from '@/application/Common/Array';
-import type { ISharedFunctionCollection } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunctionCollection';
-import type { SharedFunctionsParser } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
+import type { ISharedFunctionCollection } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/ISharedFunctionCollection';
+import type { SharedFunctionsParser } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/SharedFunctionsParser';
 import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 import { SharedFunctionCollectionStub } from './SharedFunctionCollectionStub';
 

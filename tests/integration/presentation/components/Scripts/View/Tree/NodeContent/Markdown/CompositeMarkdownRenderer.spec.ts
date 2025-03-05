@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { parseApplication } from '@/application/Parser/ApplicationParser';
 import { CompositeMarkdownRenderer } from '@/presentation/components/Scripts/View/Tree/NodeContent/Markdown/CompositeMarkdownRenderer';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { parseHtml } from '@tests/shared/HtmlParser';
+import { loadApplicationComposite } from '@/application/Application/Loader/CompositeApplicationLoader';
 
 describe('CompositeMarkdownRenderer', () => {
   describe('can render all docs', () => {
@@ -218,7 +218,7 @@ interface DocumentedExecutable {
 }
 
 function collectAllDocumentedExecutables(): DocumentedExecutable[] {
-  const app = parseApplication();
+  const app = loadApplicationComposite();
   const allExecutables = app.collections.flatMap((collection) => [
     ...collection.getAllScripts(),
     ...collection.getAllCategories(),

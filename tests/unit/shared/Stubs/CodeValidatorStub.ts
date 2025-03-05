@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
-import type { CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
+import type { CodeValidator } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/CodeValidator';
 import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
-import type { CodeValidationRule } from '@/application/Parser/Executable/Script/Validation/CodeValidationRule';
+import type { CodeValidationRule } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/CodeValidationRule';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 

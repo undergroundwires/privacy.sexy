@@ -1,5 +1,5 @@
-import type { Pipe } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/Pipe';
-import type { IPipeFactory } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/PipeFactory';
+import type { Pipe } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/Pipes/Pipe';
+import type { IPipeFactory } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/Pipes/PipeFactory';
 
 export class PipeFactoryStub implements IPipeFactory {
   private readonly pipes = new Array<Pipe>();

@@ -1,5 +1,5 @@
-import type { ScriptCompilerFactory, ScriptCompilerInitParameters } from '@/application/Parser/Executable/Script/Compiler/ScriptCompilerFactory';
-import type { ScriptCompiler } from '@/application/Parser/Executable/Script/Compiler/ScriptCompiler';
+import type { ScriptCompilerFactory, ScriptCompilerInitParameters } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/ScriptCompilerFactory';
+import type { ScriptCompiler } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/ScriptCompiler';
 import { ScriptCompilerStub } from './ScriptCompilerStub';
 
 export function createScriptCompilerFactorySpy(): {

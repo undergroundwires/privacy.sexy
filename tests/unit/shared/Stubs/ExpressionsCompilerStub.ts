@@ -1,7 +1,7 @@
-import type { IExpressionsCompiler } from '@/application/Parser/Executable/Script/Compiler/Expressions/IExpressionsCompiler';
-import type { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
+import type { IExpressionsCompiler } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Expressions/IExpressionsCompiler';
+import type { IReadOnlyFunctionCallArgumentCollection } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { scrambledEqual } from '@/application/Common/Array';
-import { FunctionBodyType, type ISharedFunction } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunction';
+import { FunctionBodyType, type ISharedFunction } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/ISharedFunction';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 

@@ -41,12 +41,13 @@ export default defineComponent({
     const { log } = injectKey((keys) => keys.useLogger);
     const isOpen = ref(true);
     const scrollbarGutterWidth = useScrollbarGutterWidth();
+    const { application } = injectKey((keys) => keys.useApplication);
 
     const devActions: readonly DevAction[] = [
       {
         name: 'Log script/category names',
         handler: async () => {
-          const names = await dumpNames();
+          const names = await dumpNames(application);
           log.info(names);
         },
       },

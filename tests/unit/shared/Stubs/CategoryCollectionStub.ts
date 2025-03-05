@@ -46,8 +46,8 @@ export class CategoryCollectionStub implements CategoryCollection {
     return this;
   }
 
-  public withScriptMetadata(scripting: ScriptMetadata): this {
-    this.scriptMetadata = scripting;
+  public withScriptMetadata(scriptMetadata: ScriptMetadata): this {
+    this.scriptMetadata = scriptMetadata;
     return this;
   }
 

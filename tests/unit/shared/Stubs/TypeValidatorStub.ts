@@ -1,7 +1,7 @@
 import type {
   NonEmptyCollectionAssertion, NonEmptyStringAssertion,
   ObjectAssertion, TypeValidator,
-} from '@/application/Parser/Common/TypeValidator';
+} from '@/application/Common/TypeValidator';
 import type { FunctionKeys } from '@/TypeHelpers';
 import { expectDeepIncludes } from '@tests/shared/Assertions/ExpectDeepIncludes';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';

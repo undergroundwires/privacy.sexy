@@ -1,4 +1,4 @@
-import type { CompiledCode } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { CompiledCode } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
 
 export class CompiledCodeStub implements CompiledCode {
   public code = `${CompiledCodeStub.name}: code`;

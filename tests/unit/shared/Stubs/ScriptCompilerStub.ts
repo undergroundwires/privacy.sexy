@@ -1,6 +1,6 @@
 import type { ScriptData } from '@/application/collections/';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
-import type { ScriptCompiler } from '@/application/Parser/Executable/Script/Compiler/ScriptCompiler';
+import type { ScriptCompiler } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/ScriptCompiler';
 import { ScriptCodeStub } from './ScriptCodeStub';
 
 export class ScriptCompilerStub implements ScriptCompiler {

@@ -74,7 +74,6 @@ These checks validate various qualities like runtime execution, building process
 - [`./tests/unit/`](./../tests/unit/)
   - Stores unit test code.
   - The directory structure mirrors [`./src/`](./../src).
-    - E.g., tests for [`./src/application/ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts) reside in [`./tests/unit/application/ApplicationFactory.spec.ts`](./../tests/unit/application/ApplicationFactory.spec.ts).
   - [`shared/`](./../tests/unit/shared/)
     - Contains shared unit test functionalities.
     - [`TestCases/`](./../tests/unit/shared/TestCases/)

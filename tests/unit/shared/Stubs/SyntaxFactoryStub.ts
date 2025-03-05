@@ -1,6 +1,6 @@
-import type { LanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
+import type { LanguageSyntax } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
 import { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
-import type { SyntaxFactory } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/SyntaxFactory';
+import type { SyntaxFactory } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/Analyzers/Syntax/SyntaxFactory';
 import { LanguageSyntaxStub } from './LanguageSyntaxStub';
 
 interface PredeterminedSyntax {

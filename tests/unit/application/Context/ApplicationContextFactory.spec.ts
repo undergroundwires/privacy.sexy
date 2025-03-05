@@ -1,12 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
-import type { IApplicationFactory } from '@/application/IApplicationFactory';
-import type { Application } from '@/domain/Application/Application';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
+import { ApplicationProviderStub } from '@tests/unit/shared/Stubs/ApplicationProviderStub';
 
 describe('ApplicationContextFactory', () => {
   describe('buildContext', () => {
@@ -16,9 +14,9 @@ describe('ApplicationContextFactory', () => {
         const expected = new ApplicationStub().withCollection(
           new CategoryCollectionStub().withOs(OperatingSystem.macOS),
         );
-        const factoryMock = mockFactoryWithApp(expected);
+        const { provider } = new ApplicationProviderStub().withApp(expected);
         // act
-        const context = await buildContext(factoryMock);
+        const context = await buildContext(provider);
         // assert
         expect(expected).to.equal(context.app);
       });
@@ -30,9 +28,11 @@ describe('ApplicationContextFactory', () => {
           const expected = OperatingSystem.Windows;
           const environment = new RuntimeEnvironmentStub().withOs(expected);
           const collection = new CategoryCollectionStub().withOs(expected);
-          const factoryMock = mockFactoryWithCollection(collection);
+          const { provider } = new ApplicationProviderStub().withApp(
+            new ApplicationStub().withCollection(collection),
+          );
           // act
-          const context = await buildContext(factoryMock, environment);
+          const context = await buildContext(provider, environment);
           // assert
           const actual = context.state.os;
           expect(expected).to.equal(actual);
@@ -43,9 +43,11 @@ describe('ApplicationContextFactory', () => {
           const currentOs = OperatingSystem.macOS;
           const environment = new RuntimeEnvironmentStub().withOs(currentOs);
           const collection = new CategoryCollectionStub().withOs(expected);
-          const factoryMock = mockFactoryWithCollection(collection);
+          const { provider } = new ApplicationProviderStub().withApp(
+            new ApplicationStub().withCollection(collection),
+          );
           // act
-          const context = await buildContext(factoryMock, environment);
+          const context = await buildContext(provider, environment);
           // assert
           const actual = context.state.os;
           expect(expected).to.equal(actual);
@@ -61,9 +63,9 @@ describe('ApplicationContextFactory', () => {
           ];
           const environment = new RuntimeEnvironmentStub().withOs(runtimeOs);
           const app = new ApplicationStub().withCollections(...allCollections);
-          const factoryMock = mockFactoryWithApp(app);
+          const { provider } = new ApplicationProviderStub().withApp(app);
           // act
-          const context = await buildContext(factoryMock, environment);
+          const context = await buildContext(provider, environment);
           // assert
           const actual = context.state.os;
           expect(expectedOs).to.equal(actual, `Expected: ${OperatingSystem[expectedOs]}, actual: ${OperatingSystem[actual]}`);
@@ -79,9 +81,9 @@ describe('ApplicationContextFactory', () => {
           ];
           const environment = new RuntimeEnvironmentStub().withOs(runtimeOs);
           const app = new ApplicationStub().withCollections(...allCollections);
-          const factoryMock = mockFactoryWithApp(app);
+          const { provider } = new ApplicationProviderStub().withApp(app);
           // act
-          const context = await buildContext(factoryMock, environment);
+          const context = await buildContext(provider, environment);
           // assert
           const actual = context.state.os;
           expect(expectedOs).to.equal(actual, `Expected: ${OperatingSystem[expectedOs]}, actual: ${OperatingSystem[actual]}`);
@@ -90,13 +92,3 @@ describe('ApplicationContextFactory', () => {
     });
   });
 });
-
-function mockFactoryWithCollection(result: CategoryCollection): IApplicationFactory {
-  return mockFactoryWithApp(new ApplicationStub().withCollection(result));
-}
-
-function mockFactoryWithApp(app: Application): IApplicationFactory {
-  return {
-    getApp: () => Promise.resolve(app),
-  };
-}

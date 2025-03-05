@@ -1,4 +1,4 @@
-import type { CodeLine, InvalidCodeLine, CodeValidationAnalyzer } from '@/application/Parser/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
+import type { CodeLine, InvalidCodeLine, CodeValidationAnalyzer } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/Analyzers/CodeValidationAnalyzer';
 import type { ScriptLanguage } from '@/domain/ScriptMetadata/ScriptLanguage';
 
 export class CodeValidationAnalyzerStub {

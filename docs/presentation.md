@@ -49,7 +49,8 @@ The presentation layer uses an event-driven architecture for bidirectional react
 
 ## Application data
 
-Components (should) use [`UseApplication`](./../src/presentation/components/Shared/Hooks/UseApplication.ts) to reach the application domain to avoid [parsing and compiling](./application.md#parsing-and-compiling) the application again.
+Components (should) use [`UseApplication`](./../src/presentation/components/Shared/Hooks/UseApplication.ts) to reach the application domain
+to avoid [loading (parsing and compiling)](./application.md#loading-parsing-and-compiling) the application again.
 
 [Application.ts](../src/domain/Application/Application.ts) is an immutable domain model that represents application state. It includes:
 

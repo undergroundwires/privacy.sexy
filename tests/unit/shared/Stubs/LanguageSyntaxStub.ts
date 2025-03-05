@@ -1,4 +1,4 @@
-import type { LanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
+import type { LanguageSyntax } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Validation/Analyzers/Syntax/LanguageSyntax';
 
 export class LanguageSyntaxStub implements LanguageSyntax {
   public commentDelimiters: string[] = [];

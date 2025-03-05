@@ -1,4 +1,4 @@
-import type { FunctionParameter } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameter';
+import type { FunctionParameter } from '@/application/Application/Loader/Collections/Compiler/Executable/Script/Compiler/Function/Parameter/FunctionParameter';
 
 export class FunctionParameterStub implements FunctionParameter {
   public name = 'function-parameter-stub';
