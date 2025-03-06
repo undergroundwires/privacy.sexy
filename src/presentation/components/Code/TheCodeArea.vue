@@ -172,7 +172,7 @@ function getDefaultCode(language: ScriptLanguage, project: ProjectDetails): stri
     min-height: 200px;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    // `overflow: auto` creates duplicate scrollbars with the editor's built-in scrolling mechanism on some edge case screen sizes
     font-size: $font-size-absolute-small;
     font-family: $font-family-monospace;
     &__highlight {
