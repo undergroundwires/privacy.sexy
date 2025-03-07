@@ -5,37 +5,35 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>privacy.sexy - Maximize Your Privacy and Security</title>
-  <meta
-    name="description"
-    content="
-      Discover privacy.sexy, the privacy tool to maximize your privacy and security on Windows, macOS, and Linux.
-      Easily use best practices to prevent tracking and make your life secure and private — because privacy is sexy.
-    "
-  />
+  <meta name="description" content="
+        Discover privacy.sexy, the privacy tool to maximize your privacy and security on Windows, macOS, and Linux.
+        Easily use best practices to prevent tracking and make your life secure and private — because privacy is sexy.
+      " />
   <meta name="robots" content="index,follow" />
-  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+  <!-- Improve initial load time for critical assets by preloading -->
+  <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml">
 
   <!--
-    Security meta tags based on OWASP recommendations.
-    See https://owasp.org/www-project-secure-headers/ci/headers_add.json for all recommended policies.
-    Exceptions:
-      - [+] `style-src 'unsafe-inline'`   : Required for Vue.
-      - [+] `img-src data:`               : Required for Ace (code editor) CSS.
-      - [+] `script-src: 'unsafe-inline'` : Required for Vite legacy (@vitejs/plugin-legacy) for production builds.
-      - [-] `upgrade-insecure-requests`   : Required for development on macOS Safari or Safari will block requests on `http://localhost`.
-  -->
-  <meta
-    http-equiv="Content-Security-Policy"
-    content="
-      default-src 'self';
-      script-src 'self' 'unsafe-inline';
-      style-src 'self' 'unsafe-inline';
-      img-src 'self' data:;
-      form-action 'self';
-      object-src 'none';
-      block-all-mixed-content;
-    "
-  >
+      Security meta tags based on OWASP recommendations.
+      See https://owasp.org/www-project-secure-headers/ci/headers_add.json for all recommended policies.
+      Exceptions:
+        - [+] `style-src 'unsafe-inline'`   : Required for Vue.
+        - [+] `img-src data:`               : Required for Ace (code editor) CSS.
+        - [+] `script-src: 'unsafe-inline'` : Required for Vite legacy (@vitejs/plugin-legacy) for production builds.
+        - [-] `upgrade-insecure-requests`   : Required for development on macOS Safari or Safari will block requests on `http://localhost`.
+    -->
+  <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data:;
+        form-action 'self';
+        object-src 'none';
+        block-all-mixed-content;
+      ">
   <meta name="referrer" content="no-referrer">
 </head>
 
@@ -56,12 +54,274 @@
       <h1>Problem loading page</h1>
       <p>
         The page does not work without JavaScript enabled.
-        Please enable it to use privacy.sexy. 
+        Please enable it to use privacy.sexy.
         Don't worry; privacy.sexy is secure, transparent, and open-source.
       </p>
     </div>
   </noscript>
-  <div id="app"></div>
+  <div id="app">
+  </div>
+  <aside id="splash-screen" class="
+        splash-screen
+        splash-screen--js-only
+      " role="status" aria-live="polite" aria-label="Application loading screen" aria-description="
+        Initial loading screen while privacy.sexy prepares its options.
+        This typically takes a few seconds.
+      ">
+    <!-- This content will be removed once the application loads -->
+    <style>
+      :root {
+        --splash-color-text: #3a65ab;
+        --splash-color-background: #fff;
+        --splash-color-spinner-filled: #3a65ab;
+        --splash-color-spinner-empty: rgb(159.4192139738, 183.4541484716, 222.5807860262);
+        --splash-size-logo: min(80px, calc(100vw/5));
+        --splash-size-spinner: calc(var(--splash-size-logo) * 1.75);
+        --splash-font-size-large: 21px;
+        --splash-font-size-normal: 17px;
+        --splash-spacing-absolute-large: 15px;
+        --splash-font-family:
+          /* System font stack */
+          system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Arial, Helvetica, sans-serif;
+        --splash-animation-duration-spin: 2s;
+        --splash-animation-duration-spin-complete: 1s;
+        --splash-animation-duration-logo-breathe: 3s;
+        --splash-animation-duration-logo-breathe-last: 1s;
+        --splash-animation-duration-all-fadeout: 1.5s;
+        --splash-animation-duration-text-fadeout: 0.4s;
+        --splash-animation-delay-long-load-message: 15s;
+      }
+
+      .splash-screen,
+      .splash-screen * {
+        box-sizing: border-box;
+        /* Using border-box ensures padding doesn't affect final dimensions, preventing layout shifts */
+      }
+
+      .splash-screen {
+        position: fixed;
+
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 100vh;
+        width: 100vw;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        padding: var(--splash-spacing-absolute-large);
+        /* Adds padding to prevent content from touching screen edges on small mobile devices */
+
+        background: var(--splash-color-background);
+        flex-direction: column;
+        align-items: center;
+        gap: var(--splash-spacing-absolute-large);
+
+        z-index: 9999;
+        /* High z-index ensures splash screen remains on top of all application elements during loading phase */
+      }
+
+      .splash-screen--fading {
+        animation: splash-animation-fade-out var(--splash-animation-duration-all-fadeout) ease-out forwards;
+        pointer-events: none;
+      }
+
+      @keyframes splash-animation-fade-out {
+        from {
+          opacity: 1;
+        }
+
+        to {
+          opacity: 0;
+        }
+      }
+
+      .splash-screen__spinner-container {
+        position: relative;
+        width: var(--splash-size-spinner);
+        height: var(--splash-size-spinner);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .splash-screen__spinner {
+        position: absolute;
+        border: 3px solid var(--splash-color-spinner-empty);
+        border-radius: 50%;
+        border-top: 3px solid var(--splash-color-spinner-filled);
+        animation: splash-animation-spin var(--splash-animation-duration-spin) linear infinite;
+        width: 100%;
+        height: 100%;
+      }
+
+      @keyframes splash-animation-spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .splash-screen--fading .splash-screen__spinner {
+        animation: splash-animation-spin-complete var(--splash-animation-duration-spin-complete) forwards ease-out;
+      }
+
+      @keyframes splash-animation-spin-complete {
+        to {
+          border-color: var(--splash-color-spinner-filled);
+          transform: rotate(360deg) scale(1.05);
+        }
+      }
+
+      .splash-screen__text {
+        color: var(--splash-color-text);
+        font-family: var(--splash-font-family);
+        /* Helps avoid layout shift */
+        margin: 0 !important;
+        /* Helps avoid layout shift */
+        padding: 0 !important;
+        /* Helps avoid layout shift */
+        line-height: 1.5;
+        /* Helps avoid layout shift */
+      }
+
+      .splash-screen--fading .splash-screen__text {
+        opacity: 0;
+        transition: opacity var(--splash-animation-duration-text-fadeout) ease;
+      }
+
+      .splash-screen__text--large {
+        font-size: var(--splash-font-size-large);
+      }
+
+      .splash-screen__text--normal {
+        font-size: var(--splash-font-size-normal);
+      }
+
+      .splash-screen__text--delayed {
+        animation: splash-animation-show 0s var(--splash-animation-delay-long-load-message) forwards;
+        visibility: hidden;
+      }
+
+      .splash-screen--fading .splash-screen__text--delayed {
+        animation: none;
+        /* Cancel the "show" animation */
+        visibility: hidden !important;
+        /* Keep it hidden */
+      }
+
+      @keyframes splash-animation-show {
+        to {
+          visibility: visible;
+        }
+      }
+
+      .splash-screen__logo {
+        width: auto;
+        height: var(--splash-size-logo);
+        animation: splash-animation-breathe var(--splash-animation-duration-logo-breathe) ease-in-out infinite;
+      }
+
+      @keyframes splash-animation-breathe {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
+
+        50% {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+
+        100% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
+      }
+
+      .splash-screen--fading .splash-screen__logo {
+        animation: splash-animation-logo-complete var(--splash-animation-duration-logo-breathe-last) forwards ease-out;
+      }
+
+      @keyframes splash-animation-logo-complete {
+        to {
+          transform: scale(1.3);
+          opacity: 1;
+        }
+      }
+
+      .splash-screen--js-only {
+        display: none !important;
+      }
+
+      @keyframes splash-animation-fade-in {
+        from {
+          opacity: 0;
+        }
+
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+    <div class="splash-screen__spinner-container" aria-hidden="true">
+      <div class="splash-screen__spinner"></div>
+      <img src="/icon.svg" alt="privacy.sexy logo" class="splash-screen__logo" width="256" height="256" />
+    </div>
+    <p class="
+          splash-screen__text
+          splash-screen__text--large
+        ">
+      Preparing your privacy options
+    </p>
+    <p class="
+          splash-screen__text
+          splash-screen__text--normal
+          splash-screen__text--delayed
+        ">
+      Taking too long? Please let us know.
+    </p>
+    </div>
+    <script>
+      const splashScreenDom = {
+        id: 'splash-screen',
+        classes: {
+          javascriptOnly: 'splash-screen--js-only',
+          fading: 'splash-screen--fading'
+        },
+        events: {
+          appReady: 'app-ready'
+        },
+        animations: {
+          fadeOut: 'splash-animation-fade-out',
+        },
+      };
+      // Display content only when JavaScript is enabled
+      Array
+        .from(document.getElementsByClassName(splashScreenDom.classes.javascriptOnly))
+        .forEach((element) => {
+          element.classList.remove(splashScreenDom.classes.javascriptOnly);
+        });
+
+      // Remove splash screen when app is ready
+      document.addEventListener(splashScreenDom.events.appReady, () => {
+        const splash = document.getElementById(splashScreenDom.id);
+        splash.classList.add(splashScreenDom.classes.fading);
+        splash.addEventListener('animationend', (event) => {
+          if (event.animationName === splashScreenDom.animations.fadeOut) {
+            splash.remove();
+          }
+        });
+      });
+    </script>
+  </aside>
   <script type="module" src="/main.ts"></script>
 </body>
+
 </html>

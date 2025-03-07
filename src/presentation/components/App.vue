@@ -15,7 +15,9 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent, type Component } from 'vue';
+import {
+  defineAsyncComponent, defineComponent, onMounted, type Component,
+} from 'vue';
 import TheHeader from '@/presentation/components/TheHeader.vue';
 import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';
@@ -32,6 +34,10 @@ export default defineComponent({
   },
   setup() {
     const devToolkitComponent = getOptionalDevToolkitComponent();
+
+    onMounted(() => {
+      document.dispatchEvent(new CustomEvent('app-ready'));
+    });
 
     return {
       devToolkitComponent,

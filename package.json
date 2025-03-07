@@ -16,7 +16,7 @@
     "test:cy:open": "start-server-and-test \"vite --port 7070 --mode production\" http://localhost:7070 \"cypress open --config baseUrl=http://localhost:7070\"",
     "lint": "npm run lint:md && npm run lint:md:consistency && npm run lint:md:relative-urls && npm run lint:md:external-urls && npm run lint:eslint && npm run lint:yaml && npm run lint:pylint",
     "install-deps": "node scripts/npm-install.js",
-    "icons:build": "node scripts/logo-update.js",
+    "icons:build": "node ./scripts/logo-update",
     "check:desktop": "vitest run --dir tests/checks/desktop-runtime-errors --environment node",
     "check:external-urls": "vitest run --dir tests/checks/external-urls --environment node",
     "check:verify-build-artifacts": "node scripts/verify-build-artifacts",

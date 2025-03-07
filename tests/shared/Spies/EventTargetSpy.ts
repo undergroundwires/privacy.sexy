@@ -2,14 +2,13 @@ export function createEventSpies(
   eventTarget: EventTarget,
   restoreCallback: (restoreFunc: () => void) => void,
 ) {
-  const originalAddEventListener = eventTarget.addEventListener;
-  const originalRemoveEventListener = eventTarget.removeEventListener;
-
   const currentListeners = new Array<Parameters<typeof eventTarget.addEventListener>>();
+  const dispatchedEvents = new Array<Event>();
 
   const addEventListenerCalls = new Array<Parameters<typeof eventTarget.addEventListener>>();
   const removeEventListenerCalls = new Array<Parameters<typeof eventTarget.removeEventListener>>();
 
+  const originalAddEventListener = eventTarget.addEventListener;
   eventTarget.addEventListener = (
     ...args: Parameters<typeof eventTarget.addEventListener>
   ): ReturnType<typeof eventTarget.addEventListener> => {
@@ -18,6 +17,7 @@ export function createEventSpies(
     return originalAddEventListener.call(eventTarget, ...args);
   };
 
+  const originalRemoveEventListener = eventTarget.removeEventListener;
   eventTarget.removeEventListener = (
     ...args: Parameters<typeof eventTarget.removeEventListener>
   ): ReturnType<typeof eventTarget.removeEventListener> => {
@@ -31,6 +31,12 @@ export function createEventSpies(
       }
     }
     return originalRemoveEventListener.call(eventTarget, ...args);
+  };
+
+  const originalDispatchEvent = eventTarget.dispatchEvent;
+  eventTarget.dispatchEvent = (event) => {
+    dispatchedEvents.push(event);
+    return originalDispatchEvent.call(eventTarget, event);
   };
 
   function findCurrentListener(
@@ -56,15 +62,18 @@ export function createEventSpies(
       });
       return call !== undefined;
     },
-    isRemoveEventCalled(eventType: string) {
+    isRemoveEventCalled(eventType: string): boolean {
       const call = removeEventListenerCalls.find((args) => {
         const [type] = args;
         return type === eventType;
       });
       return call !== undefined;
     },
-    formatListeners: () => {
+    formatListeners: (): string => {
       return JSON.stringify(currentListeners);
+    },
+    isEventDispatched(eventType: string): boolean {
+      return dispatchedEvents.find((e) => e.type === eventType) !== undefined;
     },
   };
 }

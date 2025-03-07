@@ -8,7 +8,7 @@
  *  SVG logo file.
  *
  * Usage:
- *    node ./scripts/logo-update.js
+ *    node ./scripts/logo-update
  *
  * Notes:
  *    ImageMagick must be installed and accessible in the system's PATH
@@ -16,31 +16,38 @@
 
 import { resolve, join, dirname } from 'node:path';
 import { stat } from 'node:fs/promises';
-import { spawn } from 'node:child_process';
 import { URL, fileURLToPath } from 'node:url';
-import electronBuilderConfig from '../electron-builder.cjs';
+import electronBuilderConfig from '../../electron-builder.cjs';
+import { optimizeSvg } from './svg-optimizer.js'; // eslint-disable-line import/extensions
+import { runCommand } from './run-command.js'; // eslint-disable-line import/extensions
+
+const DesktopTrayIconSize = '512x512';
 
 class ImageAssetPaths {
   constructor(currentScriptDirectory) {
-    const projectRoot = resolve(currentScriptDirectory, '../');
+    const projectRoot = resolve(currentScriptDirectory, '../../');
     this.sourceImage = join(projectRoot, 'img/logo.svg');
     this.publicDirectory = join(projectRoot, 'src/presentation/public');
     this.electronBuildResourcesDirectory = electronBuilderConfig.directories.buildResources;
   }
 
   get electronTrayIconFile() {
-    return join(this.publicDirectory, 'icon.png');
+    return join(this.publicDirectory, `icon-${DesktopTrayIconSize}.png`);
   }
 
   get webFaviconFile() {
     return join(this.publicDirectory, 'favicon.ico');
   }
 
+  get appLogoSvgFile() {
+    return join(this.publicDirectory, 'icon.svg');
+  }
+
   toString() {
     return `Source image: ${this.sourceImage}`
       + `\nPublic directory: ${this.publicDirectory}`
       + `\n\t Electron tray icon file: ${this.electronTrayIconFile}`
-      + `\n\t Web favicon file: ${this.webFaviconFile}`
+      + `\n\t App logo SVG file: ${this.appLogoSvgFile}`
       + `\nElectron build directory: ${this.electronBuildResourcesDirectory}`;
   }
 }
@@ -64,6 +71,11 @@ async function main() {
     paths.electronBuildResourcesDirectory,
     convertCommand,
   );
+  await generateAppLogoSvg(
+    paths.sourceImage,
+    paths.appLogoSvgFile,
+    convertCommand,
+  );
   console.log('🎉 (Re)created icons successfully.');
 }
 
@@ -76,7 +88,7 @@ async function generateDesktopAndTrayIcons(sourceImage, targetFile, convertComma
     convertCommand,
     sourceImage,
     targetFile,
-    '512x512',
+    DesktopTrayIconSize,
   );
 }
 
@@ -115,6 +127,18 @@ async function generateDesktopIcons(sourceImage, electronBuildResourcesDirectory
     electronWindowsIconFile,
     [16, 24, 32, 48, 64, 128, 256],
   );
+}
+
+async function generateAppLogoSvg(sourceImage, targetSvgFile) {
+  await ensureFileExists(sourceImage);
+  await ensureParentFolderExists(targetSvgFile);
+  // Use ImageMagick to do basic SVG processing
+  // This won't do extensive optimization but can clean up some aspects
+  await optimizeSvg(
+    sourceImage,
+    targetSvgFile,
+  );
+  console.log(`Created optimized SVG at ${targetSvgFile}`);
 }
 
 async function ensureFileExists(filePath) {
@@ -177,31 +201,6 @@ async function convertFromSvgToPng(
     inputFile,
     outputFile,
   );
-}
-
-async function runCommand(...args) {
-  const command = args.join(' ');
-  console.log(`Running command: ${command}`);
-  await new Promise((resolve, reject) => {
-    const process = spawn(command, { shell: true });
-    process.stdout.on('data', (stdout) => {
-      console.log(stdout.toString());
-    });
-    process.stderr.on('data', (stderr) => {
-      console.error(stderr.toString());
-    });
-    process.on('error', (err) => {
-      reject(err);
-    });
-    process.on('close', (exitCode) => {
-      if (exitCode !== 0) {
-        reject(new Error(`Process exited with non-zero exit code: ${exitCode}`));
-      } else {
-        resolve();
-      }
-      process.stdin.end();
-    });
-  });
 }
 
 function getCurrentScriptDirectory() {

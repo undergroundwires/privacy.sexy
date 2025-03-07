@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { BASE_APP_COMPILATION_TIMEOUT_MS } from '@tests/unit/shared/TestTiming';
+import { BASE_APP_COMPILATION_TIMEOUT_MS } from '@tests/shared/TestTiming';
 import { loadApplicationComposite } from '@/application/Application/Loader/CompositeApplicationLoader';
 
 describe('CompositeApplicationLoader', () => {
