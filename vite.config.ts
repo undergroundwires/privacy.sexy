@@ -4,6 +4,7 @@ import { defineConfig, type UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import legacy from '@vitejs/plugin-legacy';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
+import { ViteMinifyPlugin } from 'vite-plugin-minify';
 import distDirs from './dist-dirs.json' with { type: 'json' };
 import { getAliases, getClientEnvironmentVariables, getSelfDirectoryAbsolutePath } from './vite-config-helper';
 
@@ -22,6 +23,7 @@ export function createVueConfig(options?: {
       vue(),
       ViteYaml(),
       ...[options?.supportLegacyBrowsers ? legacy() : undefined],
+      ViteMinifyPlugin(getStaticHtmlMinificationOptions()), // Minifies index.html
     ],
     esbuild: {
       supported: {
@@ -55,3 +57,17 @@ export function createVueConfig(options?: {
 export default defineConfig(createVueConfig({
   supportLegacyBrowsers: true,
 }));
+
+function getStaticHtmlMinificationOptions(): Parameters<typeof ViteMinifyPlugin>[0] {
+  return {
+    /* Options: https://www.npmjs.com/package/html-minifier-terser */
+    minifyCSS: true,
+    minifyJS: true,
+    removeComments: true,
+    noNewlinesBeforeTagClose: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    customAttrCollapse: /.*/, // Strip newlines from all attributes
+    collapseWhitespace: true,
+  };
+}
