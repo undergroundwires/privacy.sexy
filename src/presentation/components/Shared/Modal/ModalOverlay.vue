@@ -57,8 +57,7 @@ $modal-overlay-color-background: $color-on-surface;
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba($modal-overlay-color-background, 0.3);
-  opacity: 1;
+  background-color: color-mix(in srgb, $modal-overlay-color-background 30%, transparent);
 }
 
 @include fade-slide-transition('modal-overlay-transition', $modal-overlay-transition-duration);

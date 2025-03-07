@@ -3,7 +3,7 @@ root = true # Top-most EditorConfig file
 [*]
 end_of_line = lf
 
-[*.{js,jsx,ts,tsx,vue,sh,scss}]
+[*.{js,jsx,ts,tsx,vue,sh,scss,css}]
 indent_style = space
 indent_size = 2
 trim_trailing_whitespace = true

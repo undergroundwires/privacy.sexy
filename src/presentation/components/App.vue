@@ -91,7 +91,7 @@ function getOptionalDevToolkitComponent(): Component | undefined {
 
     background-color: $color-surface;
     color: $color-on-surface;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 0 5px 0 $color-primary-light;
 
     @include responsive-spacing;
 

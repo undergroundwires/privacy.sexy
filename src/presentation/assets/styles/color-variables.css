@@ -1,0 +1,44 @@
+/*
+  This file serves as the single source of truth for design tokens used throughout the application.
+
+  It's intentionally implemented using CSS custom properties as it's is imported directly from `index.html`
+  to be accessible from both HTML elements on `index.html` and Vue components via style system.
+
+  This file includes core theme variables.
+  Inspired by the material color system (https://material.io/design/color/the-color-system.html, https://material.io/develop/web/theming/color).
+
+  Colors are named according to the Vue Design System guidelines (https://github.com/viljamis/vue-design-system/wiki/Naming-of-Things#naming-colors):
+    - Default: The default base color is `color-{name}`.
+    - Darker than default: Shades are named as `color-{name}-dark`, `color-{name}-darker`, or `color-{name}-darkest`.
+    - Lighter than default: Tints are named as `color-{name}-light`, `color-{name}-lighter`, or `color-{name}-lightest`.
+*/
+
+:root {
+  /* Primary | The color displayed most frequently across screens and components */
+  --color-primary: #3a65ab;
+  --color-primary-light: #9fb7de;
+  --color-primary-dark: #223c66;
+  --color-primary-darker: #101d31;
+  --color-primary-darkest: #010203;
+  /* Text/iconography color that is usable on top of primary color */
+  --color-on-primary: #e4f1fe;
+
+  /* Secondary | Accent color, should be applied sparingly to accent select parts of UI */
+  --color-secondary: #00d1ad;
+  --color-secondary-light: #c7fff5;
+  /* Text/iconography color that is usable on top of secondary color */
+  --color-on-secondary: #005051;
+
+  /* Surface | Affect surfaces of components, such as cards, sheets, and menus. */
+  --color-surface: #fff;
+  /* Text/iconography color that is usable on surface */
+  --color-on-surface: #4d5156;
+
+  /* Background | Appears behind scrollable content. */
+  --color-background: #e6ecf4;
+
+  /* Status/Feedback Colors | Used to convey meaning and state information */
+  --color-success: #4caf50;
+  --color-danger: #f44336;
+  --color-caution: #ffc107;
+}

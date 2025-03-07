@@ -16,6 +16,12 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
 
+  <!--
+    These variables are used by both Vue components and this file.
+    Using `@import` allows time processing (minification, optimization)
+  -->
+  <style>@import '@/presentation/assets/styles/color-variables.css';</style>
+
   <!-- Improve initial load time for critical assets by preloading -->
   <link rel="preload" href="/icon.svg" as="image" type="image/svg+xml">
 
@@ -72,10 +78,10 @@
     <!-- This content will be removed once the application loads -->
     <style>
       :root {
-        --splash-color-text: #3a65ab;
+        --splash-color-text: var(--color-primary);
         --splash-color-background: #fff;
-        --splash-color-spinner-filled: #3a65ab;
-        --splash-color-spinner-empty: rgb(159.4192139738, 183.4541484716, 222.5807860262);
+        --splash-color-spinner-filled: var(--color-primary);
+        --splash-color-spinner-empty: var(--color-primary-light);
         --splash-size-logo: min(80px, calc(100vw/5));
         --splash-size-spinner: calc(var(--splash-size-logo) * 1.75);
         --splash-font-size-large: 21px;
