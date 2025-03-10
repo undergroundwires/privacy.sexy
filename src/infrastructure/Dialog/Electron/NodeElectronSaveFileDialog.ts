@@ -164,6 +164,12 @@ const FileTypeSpecificFilters: Record<FileType, Electron.FileFilter[]> = {
       extensions: ['sh', 'bash', 'zsh'],
     },
   ],
+  [FileType.Json]: [
+    {
+      name: 'JSON Files',
+      extensions: ['json'],
+    },
+  ],
 };
 
 type SaveDialogOutcome =
