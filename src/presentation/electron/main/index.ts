@@ -38,7 +38,7 @@ validateRuntimeSanity({
   validateWindowVariables: false,
 });
 
-function createWindow() {
+async function createWindow() {
   // Create the browser window.
   const size = getWindowSize(1650, 955);
   win = new BrowserWindow({
@@ -55,31 +55,17 @@ function createWindow() {
   focusAndShowOnceLoaded(win);
   win.setMenuBarVisibility(false);
   configureExternalsUrlsOpenBrowser(win);
-  loadApplication(win);
   win.on('closed', () => {
     win = null;
   });
+  await loadAppHtml(win);
 }
 
 configureAppQuitBehavior();
 registerAllIpcChannels();
 
 app.whenReady().then(async () => {
-  if (isDevelopment) {
-    try {
-      await installExtension(VUEJS_DEVTOOLS);
-    } catch (e) {
-      ElectronLogger.error('Vue Devtools failed to install:', e.toString());
-    }
-  }
-  createWindow();
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      createWindow();
-    }
-  });
+  await initializeApplication(app);
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -97,17 +83,48 @@ if (isDevelopment) {
   }
 }
 
-function loadApplication(window: BrowserWindow): void {
-  if (RENDERER_URL) { // Populated in a dev server during development
-    loadUrlWithNodeWorkaround(window, RENDERER_URL);
-  } else {
-    loadUrlWithNodeWorkaround(window, RENDERER_HTML_PATH);
-  }
-  openDevTools(window);
+async function initializeApplication(
+  electronApp: Electron.App,
+) {
+  await installVueDevTools();
+  await Promise.allSettled([
+    createWindow(),
+    checkForUpdates(),
+  ]);
+  electronApp.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      // On macOS it's common to re-create a window in the app when the
+      // dock icon is clicked and there are no other windows open.
+      createWindow();
+    }
+  });
+}
+
+async function installVueDevTools() {
   if (!isDevelopment) {
-    const updater = setupAutoUpdater();
-    updater.checkForUpdates();
+    return;
   }
+  try {
+    await installExtension(VUEJS_DEVTOOLS);
+  } catch (e) {
+    ElectronLogger.error('Vue Devtools failed to install:', e.toString());
+  }
+}
+
+async function checkForUpdates() {
+  if (isDevelopment) {
+    ElectronLogger.debug('Development Mode: Skipping automatic update checks');
+    return;
+  }
+  const updater = setupAutoUpdater();
+  await updater.checkForUpdates();
+}
+
+async function loadAppHtml(window: BrowserWindow) {
+  const url = RENDERER_URL // Populated in a dev server during development
+    ?? RENDERER_HTML_PATH;
+  await loadUrlWithNodeWorkaround(window, url);
+  openDevTools(window);
   // Do not remove [WINDOW_INIT]; it's a marker used in tests.
   ElectronLogger.info('[WINDOW_INIT] Main window initialized and content loading.');
 }
@@ -120,10 +137,20 @@ function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
 }
 
 // Workaround for https://github.com/electron/electron/issues/19554 otherwise fs does not work
-function loadUrlWithNodeWorkaround(window: BrowserWindow, url: string) {
-  setTimeout(() => {
-    window.loadURL(url);
-  }, 10);
+function loadUrlWithNodeWorkaround(
+  window: BrowserWindow,
+  url: string,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    setTimeout(async () => {
+      try {
+        await window.loadURL(url);
+        resolve();
+      } catch (err) {
+        reject(err);
+      }
+    }, 10);
+  });
 }
 
 function getWindowSize(idealWidth: number, idealHeight: number) {
