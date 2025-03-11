@@ -11,7 +11,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import {
+  defineComponent, computed, onMounted, watch,
+} from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getOperatingSystemDisplayName } from '@/presentation/components/Shared/OperatingSystemNames';
@@ -49,7 +51,44 @@ export default defineComponent({
       modifyCurrentContext((context) => {
         context.changeContext(newOs);
       });
+      updateQueryParam(newOs);
     }
+
+    function updateQueryParam(os: OperatingSystem) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('collection', OperatingSystem[os]);
+      window.history.pushState({}, '', url);
+    }
+
+    function getOsFromQueryParam(): OperatingSystem | undefined {
+      const url = new URL(window.location.href);
+      const collection = url.searchParams.get('collection');
+      if (collection) {
+        const osKey = Object.keys(OperatingSystem).find(
+          (key) => key.toLowerCase() === collection.toLowerCase(),
+        );
+        return osKey ? OperatingSystem[osKey as keyof typeof OperatingSystem] : undefined;
+      }
+      return undefined;
+    }
+
+    onMounted(() => {
+      const osFromQuery = getOsFromQueryParam();
+      if (osFromQuery !== undefined && osFromQuery !== currentOs.value) {
+        changeOs(osFromQuery);
+      }
+    });
+
+    watch(currentOs, (newOs) => {
+      updateQueryParam(newOs);
+    });
+
+    window.addEventListener('popstate', () => {
+      const osFromQuery = getOsFromQueryParam();
+      if (osFromQuery !== undefined && osFromQuery !== currentOs.value) {
+        changeOs(osFromQuery);
+      }
+    });
 
     return {
       allOses,
