@@ -10,13 +10,12 @@ import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChec
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { setupAutoUpdater } from './Update/UpdateInitializer';
 import {
-  APP_ICON_PATH, PRELOADER_SCRIPT_PATH, RENDERER_HTML_PATH, RENDERER_URL,
+  APP_ICON_PATH, IS_DEVELOPMENT, PRELOADER_SCRIPT_PATH,
 } from './ElectronConfig';
 import { registerAllIpcChannels } from './IpcRegistration';
+import { loadWindowContents } from './WindowContentLoader';
 
 const hideWindowUntilLoaded = true;
-const openDevToolsOnDevelopment = true;
-const isDevelopment = !app.isPackaged;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -58,7 +57,7 @@ async function createWindow() {
   win.on('closed', () => {
     win = null;
   });
-  await loadAppHtml(win);
+  await loadWindowContents(win);
 }
 
 configureAppQuitBehavior();
@@ -69,7 +68,7 @@ app.whenReady().then(async () => {
 });
 
 // Exit cleanly on request from parent process in development mode.
-if (isDevelopment) {
+if (IS_DEVELOPMENT) {
   if (process.platform === 'win32') {
     process.on('message', (data) => {
       if (data === 'graceful-exit') {
@@ -101,7 +100,7 @@ async function initializeApplication(
 }
 
 async function installVueDevTools() {
-  if (!isDevelopment) {
+  if (!IS_DEVELOPMENT) {
     return;
   }
   try {
@@ -112,7 +111,7 @@ async function installVueDevTools() {
 }
 
 async function checkForUpdates() {
-  if (isDevelopment) {
+  if (IS_DEVELOPMENT) {
     ElectronLogger.debug('Development Mode: Skipping automatic update checks');
     return;
   }
@@ -120,36 +119,10 @@ async function checkForUpdates() {
   await updater.checkForUpdates();
 }
 
-async function loadAppHtml(window: BrowserWindow) {
-  const url = RENDERER_URL // Populated in a dev server during development
-    ?? RENDERER_HTML_PATH;
-  await loadUrlWithNodeWorkaround(window, url);
-  openDevTools(window);
-  // Do not remove [WINDOW_INIT]; it's a marker used in tests.
-  ElectronLogger.info('[WINDOW_INIT] Main window initialized and content loading.');
-}
-
 function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
   window.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);
     return { action: 'deny' };
-  });
-}
-
-// Workaround for https://github.com/electron/electron/issues/19554 otherwise fs does not work
-function loadUrlWithNodeWorkaround(
-  window: BrowserWindow,
-  url: string,
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    setTimeout(async () => {
-      try {
-        await window.loadURL(url);
-        resolve();
-      } catch (err) {
-        reject(err);
-      }
-    }, 10);
   });
 }
 
@@ -208,14 +181,4 @@ function bringToFront(window: BrowserWindow) {
   // - https://github.com/signalapp/Signal-Desktop/blob/0999df2d6e93da805b2135f788ffc739ba69832d/app/SystemTrayService.ts#L277-L284
   window.setAlwaysOnTop(true);
   window.setAlwaysOnTop(false);
-}
-
-function openDevTools(window: BrowserWindow) {
-  if (!isDevelopment) {
-    return;
-  }
-  if (!openDevToolsOnDevelopment) {
-    return;
-  }
-  window.webContents.openDevTools();
 }
