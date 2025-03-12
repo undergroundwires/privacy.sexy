@@ -41333,6 +41333,9 @@ functions:
                 parameters:
                     # Avoid outputting the registry data, as it may be ugly code (see `evaluateDataAsPowerShell`)
                     codeComment: 'Set the registry value: "{{ $keyPath }}!{{ $valueName }}"'
+                    # Do not render `$data` or `$dataOnRevert` as `$evaluateDataAsPowerShell` will result in ugly data values.
+                    # Marked: refactor-with-if
+                    #   - With `if`, we can show it only when `$evaluateDataAsPowerShell` is not true
                     revertCodeComment: >-
                         {{ with $deleteOnRevert }}
                             Delete the registry value "{{ $keyPath }}!{{ $valueName }}"
@@ -41345,12 +41348,13 @@ functions:
                     setupCodeUnelevated: '{{ with $setupCode }}{{ . }}{{ end }}'
                     minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
                     elevateToTrustedInstaller: '{{ with $elevateToTrustedInstaller }}true{{ end }}'
+                    # Marked: refactor-with-variables
+                    #   - Logic for `evaluateDataAsPowerShell` is same as in `DeleteRegistryValue`
+                    # Marked: refactor-with-if
+                    #   - Logic for `evaluateDataAsPowerShell` can be much cleaner
                     code: |-
                         $registryPath = '{{ $keyPath }}'
-                        $data = '{{ $data }}'
-                        {{ with $evaluateDataAsPowerShell }}
-                            $data = $({{ $data }})
-                        {{ end }}
+                        $data = {{ with $evaluateDataAsPowerShell }}$({{ $data }}) # {{ end }} '{{ $data }}'
                         reg add '{{ $keyPath }}' `
                             /v '{{ $valueName }}' `
                             /t '{{ $dataType }}' `
@@ -41362,10 +41366,7 @@ functions:
                                 /v '{{ $valueName }}' `
                                 /f 2>$null
                         {{ end }}{{ with $dataOnRevert }}
-                            $revertData = '{{ . }}'
-                            {{ with $evaluateDataAsPowerShell }}
-                                $revertData = $({{ . }})
-                            {{ end }}
+                            $revertData = {{ with $evaluateDataAsPowerShell }}$({{ $dataOnRevert }}) # {{ end }} '{{ $dataOnRevert }}'
                             reg add '{{ $keyPath }}' `
                                 /v '{{ $valueName }}' `
                                 /t '{{ $dataType }}' `
@@ -42324,7 +42325,10 @@ functions:
                     codeComment: >-
                         Delete the registry value "{{ $valueName }}" from the key "{{ $keyPath }}"
                         {{ with $grantPermissions }}(with additional permissions){{ end }}
-                    revertCodeComment: >- # Do not render `$dataOnRevert` as `$evaluateDataAsPowerShell` will result in ugly data values.
+                    # Do not render `$dataOnRevert` as `$evaluateDataAsPowerShell` will result in ugly data values.
+                    # Marked: refactor-with-if
+                    #   - With `if`, we can show it only when `$evaluateDataAsPowerShell` is not true
+                    revertCodeComment: >-
                         {{ with $dataOnRevert }}
                             Restore the registry value "{{ $valueName }}" in key "{{ $keyPath }}" to its original value {{ with $grantPermissions }} (with additional permissions){{ end }}
                         {{ end }}{{ with $deleteOnRevert }}
@@ -42339,6 +42343,9 @@ functions:
                     # Marked: refactor-with-variables
                     #   - Registry path construction with hive is same as `DeleteRegistryKey` and `CreateRegistryKey`
                     #   - Deleting key in `deleteOnRevert` on revert code is same as "code"
+                    #   - Logic for `evaluateDataAsPowerShell` is same as in `SetRegistryValue`
+                    # Marked: refactor-with-if
+                    #   - Logic for `evaluateDataAsPowerShell` can be much cleaner
                     code: |-
                         $keyName = '{{ $keyPath }}'
                         $valueName = '{{ $valueName }}'
@@ -42380,10 +42387,7 @@ functions:
                         } {{ with $grantPermissions }} finally { Revoke-Permissions } {{ end }}
                     revertCode: |-
                         {{ with $dataOnRevert }}
-                            $data = '{{ . }}'
-                            {{ with $evaluateDataAsPowerShell }}
-                                $data = $(Invoke-Expression $data)
-                            {{ end }}
+                            $data = {{ with $evaluateDataAsPowerShell }}$({{ $dataOnRevert }}) # {{ end }} '{{ $dataOnRevert }}'
                             {{ with $dataTypeOnRevert }}
                                 $rawType = '{{ . }}'
                             {{ end }}
