@@ -95,7 +95,7 @@ actions:
 
                             [1]: https://web.archive.org/web/20240615080744/https://developer.apple.com/documentation/os/logging "Logging | Apple Developer Documentation | apple.com"
                             [2]: https://web.archive.org/web/20240615082213/https://cloud.google.com/blog/topics/threat-intelligence/reviewing-macos-unified-logs "macOS Unified Logs | Challenges Related to the Unified Logs | Google Cloud Blog | cloud.google.com"
-                            [3]: https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
+                            [3]: https://web.archive.org/web/20250313122126/https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
                         children:
                             -
                                 name: Clear diagnostic logs
@@ -119,7 +119,7 @@ actions:
 
                                     [1]: https://web.archive.org/web/20240615082155/https://eclecticlight.co/2017/10/10/inside-the-macos-log-logd-and-the-files-that-it-manages/ "Inside the macOS log: logd and the files that it manages – The Eclectic Light Company | eclecticlight.co"
                                     [2]: https://web.archive.org/web/20240615082213/https://cloud.google.com/blog/topics/threat-intelligence/reviewing-macos-unified-logs "macOS Unified Logs | Challenges Related to the Unified Logs | Google Cloud Blog | cloud.google.com"
-                                    [3]: https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
+                                    [3]: https://web.archive.org/web/20250313122126/https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
                                 call:
                                     function: ClearDirectoryContents
                                     parameters:
@@ -147,7 +147,7 @@ actions:
 
                                     [1]: https://web.archive.org/web/20240615082213/https://cloud.google.com/blog/topics/threat-intelligence/reviewing-macos-unified-logs "macOS Unified Logs | Challenges Related to the Unified Logs | Google Cloud Blog | cloud.google.com"
                                     [2]: https://web.archive.org/web/20240615082732/https://eclecticlight.co/2017/09/23/sierras-unified-log-evolves-more-persistent-and-a-valuable-log-log/ "Sierra’s unified log evolves: more persistent, and a valuable log log – The Eclectic Light Company | eclecticlight.co"
-                                    [3]: https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
+                                    [3]: https://web.archive.org/web/20250313122126/https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
                                 call:
                                     function: ClearDirectoryContents
                                     parameters:
@@ -461,8 +461,8 @@ actions:
                             -
                                 name: Clear Safari browsing history
                                 docs:
-                                    - https://discussions.apple.com/thread/7586106?answerId=30314600022#30314600022
-                                    - https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                    - https://archive.ph/2025.03.13-121849/https://discussions.apple.com/thread/7586106?answerId=30314600022#30314600022
+                                    - https://web.archive.org/web/20250313121423/https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                 code: |-
                                     rm -f ~/Library/Safari/History.db
                                     rm -f ~/Library/Safari/History.db-lock
@@ -473,40 +473,40 @@ actions:
                                     rm -f ~/Library/Safari/HistoryIndex.sk # History index
                             -
                                 name: Clear Safari downloads history
-                                docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
+                                docs: https://web.archive.org/web/20250313121458/https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/Downloads.plist
                             -
                                 name: Clear Safari frequently visited sites
-                                docs: https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                docs: https://web.archive.org/web/20250313121423/https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                 code: rm -f ~/Library/Safari/TopSites.plist
                             -
                                 name: Clear Safari last session (open tabs) history
                                 docs:
                                     - https://web.archive.org/web/20240314061752/https://apple.stackexchange.com/questions/374099/where-does-safari-store-the-open-tabs/374116#374116
-                                    - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-7127
+                                    - https://web.archive.org/web/20250313121409/https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-7127
                                 code: rm -f ~/Library/Safari/LastSession.plist
                             -
                                 category: Clear Safari caches
                                 children:
                                     -
                                         name: Clear Safari cached blobs, URLs and timestamps
-                                        docs: https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                        docs: https://web.archive.org/web/20250313121423/https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                         code: rm -f ~/Library/Caches/com.apple.Safari/Cache.db
                                     -
                                         name: Clear Safari URL bar web page icons
                                         docs:
-                                          - https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
-                                          - https://lifehacker.com/safaris-private-browsing-mode-saves-urls-in-an-easily-a-1691944343
+                                          - https://web.archive.org/web/20250313121423/https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                          - https://web.archive.org/web/20250313121400/https://lifehacker.com/safaris-private-browsing-mode-saves-urls-in-an-easily-a-1691944343
                                         code: rm -f ~/Library/Safari/WebpageIcons.db
                                     -
                                         name: Clear Safari webpage previews (thumbnails)
                                         docs:
-                                          - https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                          - https://web.archive.org/web/20250313121423/https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                           - https://archive.ph/2024.03.14-100910/https://www.reddit.com/r/apple/comments/18lp92/your_apple_computer_keeps_a_screen_shot_of_nearly/?rdt=59921
                                         code: rm -rfv ~/Library/Caches/com.apple.Safari/Webpage\ Previews
                             -
                                 name: Clear Safari history copy
-                                docs: https://forensicsfromthesausagefactory.blogspot.com/2010/06/safari-history-spotlight-webhistory.html
+                                docs: https://web.archive.org/web/20250313122349/https://forensicsfromthesausagefactory.blogspot.com/2010/06/safari-history-spotlight-webhistory.html
                                 code: rm -rfv ~/Library/Caches/Metadata/Safari/History
                             -
                                 name: Clear search term history embedded in Safari preferences
@@ -523,15 +523,15 @@ actions:
                                     rm -f ~/Library/Cookies/Cookies.plist
                             -
                                 name: Clear Safari zoom level preferences per site
-                                docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
+                                docs: https://web.archive.org/web/20250313121458/https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/PerSiteZoomPreferences.plist
                             -
                                 name: Clear allowed URLs for Safari notifications
-                                docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
+                                docs: https://web.archive.org/web/20250313121458/https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/UserNotificationPreferences.plist
                             -
                                 name: Clear Safari preferences for downloads, geolocation, pop-ups, and autoplay per site
-                                docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
+                                docs: https://web.archive.org/web/20250313121458/https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/PerSitePreferences.db
                     -
                         category: Clear Firefox history
@@ -1178,7 +1178,7 @@ actions:
             -
                 name: Disable Firefox telemetry
                 recommend: standard
-                docs: https://github.com/privacysexy-forks/policy-templates/blob/master/README.md
+                docs: https://web.archive.org/web/20250313122606/https://github.com/privacysexy-forks/policy-templates/blob/master/README.md
                 code: |-
                     # Enable Firefox policies so the telemetry can be configured.
                     sudo defaults write /Library/Preferences/org.mozilla.firefox EnterprisePoliciesEnabled -bool TRUE
@@ -1206,7 +1206,7 @@ actions:
             -
                 name: Disable Homebrew user behavior analytics
                 recommend: standard
-                docs: https://docs.brew.sh/Analytics
+                docs: https://web.archive.org/web/20250311183832/https://docs.brew.sh/Analytics
                 call:
                     -
                         function: PersistUserEnvironmentConfiguration
@@ -1223,7 +1223,7 @@ actions:
             -
                 name: Disable PowerShell Core telemetry
                 recommend: standard
-                docs: https://github.com/privacysexy-forks/PowerShell/blob/v7.1.5/README.md#telemetry
+                docs: https://web.archive.org/web/20250313122521/https://github.com/privacysexy-forks/PowerShell/blob/v7.1.5/README.md#telemetry
                 call:
                     -
                         function: PersistUserEnvironmentConfiguration
@@ -1338,13 +1338,13 @@ actions:
                 revertCode: sudo systemsetup -setremoteappleevents on
             -
                 name: Disable automatic storage of documents in iCloud Drive
-                docs: https://macos-defaults.com/finder/nsdocumentsavenewdocumentstocloud.html
+                docs: https://web.archive.org/web/20250313122513/https://macos-defaults.com/finder/nsdocumentsavenewdocumentstocloud.html
                 recommend: standard
                 code: defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
                 revertCode: defaults delete NSGlobalDomain NSDocumentSaveNewDocumentsToCloud
             -
                 name: Disable display of recent applications on Dock
-                docs: https://developer.apple.com/documentation/devicemanagement/dock
+                docs: https://web.archive.org/web/20210516210037/https://developer.apple.com/documentation/devicemanagement/dock
                 code: defaults write com.apple.dock show-recents -bool false
                 revertCode: defaults delete com.apple.dock show-recents
             -
@@ -1366,14 +1366,14 @@ actions:
                             -
                                 name: Disable "Ask Siri"
                                 recommend: strict
-                                docs: https://derflounder.wordpress.com/2016/09/20/blocking-siri-on-macos-sierra/
+                                docs: https://web.archive.org/web/20250313121650/https://derflounder.wordpress.com/2016/09/20/blocking-siri-on-macos-sierra/
                                 code: defaults write com.apple.assistant.support 'Assistant Enabled' -bool false
                                 revertCode: defaults write com.apple.assistant.support 'Assistant Enabled' -bool true
                             -
                                 name: Disable Siri voice feedback
                                 recommend: strict
                                 docs:
-                                    - https://github.com/privacysexy-forks/starter/blob/master/system/siri.sh
+                                    - https://web.archive.org/web/20250313121706/https://github.com/privacysexy-forks/starter/blob/master/system/siri.sh
                                     - https://web.archive.org/web/20201002133713/https://machippie.github.io/system/
                                 code: defaults write com.apple.assistant.backedup 'Use device speaker for TTS' -int 3
                                 revertCode: defaults write com.apple.assistant.backedup 'Use device speaker for TTS' -int 2
@@ -1434,7 +1434,7 @@ actions:
                             -
                                 name: Remove Siri from status menu
                                 recommend: strict
-                                docs: https://derflounder.wordpress.com/2016/09/20/blocking-siri-on-macos-sierra/
+                                docs: https://web.archive.org/web/20250313121650/https://derflounder.wordpress.com/2016/09/20/blocking-siri-on-macos-sierra/
                                 code: |-
                                     defaults write com.apple.Siri 'StatusMenuVisible' -bool false
                                     defaults write com.apple.Siri 'UserHasDeclinedEnable' -bool true
@@ -1633,9 +1633,9 @@ actions:
                         name: Enable application firewall
                         recommend: standard
                         docs:
-                            - https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81681
-                            - https://daiderd.com/nix-darwin/manual/index.html
-                            - https://developer.apple.com/documentation/devicemanagement/firewall
+                            - https://web.archive.org/web/20241125065059/https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81681
+                            - https://web.archive.org/web/20250313120219/https://daiderd.com/nix-darwin/manual/index.html
+                            - https://web.archive.org/web/20211209015035/https://developer.apple.com/documentation/devicemanagement/firewall
                         code: |-
                             /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
                             sudo defaults write /Library/Preferences/com.apple.alf globalstate -bool true
@@ -1648,8 +1648,8 @@ actions:
                         name: Enable firewall logging
                         recommend: standard
                         docs:
-                            - https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81671
-                            - https://daiderd.com/nix-darwin/manual/index.html
+                            - https://web.archive.org/web/20241125065107/https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81671
+                            - https://web.archive.org/web/20250313120219/https://daiderd.com/nix-darwin/manual/index.html
                         code: |-
                             /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
                             sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool true
@@ -1660,9 +1660,9 @@ actions:
                         name: Enable stealth mode
                         recommend: standard
                         docs:
-                            - https://www.stigviewer.com/stig/apple_os_x_10.8_mountain_lion_workstation/2015-02-10/finding/V-51327
-                            - https://daiderd.com/nix-darwin/manual/index.html
-                            - https://developer.apple.com/documentation/devicemanagement/firewall
+                            - https://web.archive.org/web/20241125030015/https://www.stigviewer.com/stig/apple_os_x_10.8_mountain_lion_workstation/2015-02-10/finding/V-51327
+                            - https://web.archive.org/web/20250313120219/https://daiderd.com/nix-darwin/manual/index.html
+                            - https://web.archive.org/web/20211209015035/https://developer.apple.com/documentation/devicemanagement/firewall
                         code: |-
                             /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
                             sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -bool true
@@ -1676,13 +1676,13 @@ actions:
                         children:
                             -
                                 name: Disable automatic incoming connections for signed apps
-                                docs: https://daiderd.com/nix-darwin/manual/index.html
+                                docs: https://web.archive.org/web/20250313120219/https://daiderd.com/nix-darwin/manual/index.html
                                 recommend: strict
                                 code: sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
                                 revertCode: sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool true
                             -
                                 name: Disable automatic incoming connections for downloaded signed apps
-                                docs: https://daiderd.com/nix-darwin/manual/index.html
+                                docs: https://web.archive.org/web/20250313120219/https://daiderd.com/nix-darwin/manual/index.html
                                 recommend: strict
                                 code: sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool false
                                 revertCode: sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool true
@@ -1785,12 +1785,12 @@ actions:
                     -
                         name: Enable password requirement for waking from sleep or screen saver
                         # The screen saver acts as a session lock and prevents unauthorized users from accessing the current user's account.
-                        docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2020-11-27/finding/V-230744
+                        docs: https://web.archive.org/web/20241125172512/https://www.stigviewer.com/stig/apple_macos_11_big_sur/2020-11-27/finding/V-230744
                         code: sudo defaults write /Library/Preferences/com.apple.screensaver askForPassword -bool true
                         revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver askForPassword
                     -
                         name: Enable session lock five seconds after screen saver initiation
-                        docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2020-11-27/finding/V-230745
+                        docs: https://web.archive.org/web/20241125172513/https://www.stigviewer.com/stig/apple_macos_11_big_sur/2020-11-27/finding/V-230745
                         # An unattended system with an excessive grace period is vulnerable to a malicious user.
                         code: sudo defaults write /Library/Preferences/com.apple.screensaver 'askForPasswordDelay' -int 5
                         revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver 'askForPasswordDelay'
@@ -2094,7 +2094,7 @@ actions:
                     -
                         name: Disable incoming SSH and SFTP remote logins
                         recommend: standard
-                        docs: https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line/
+                        docs: https://web.archive.org/web/20250313121640/https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line/
                         # Check if enabled: sudo systemsetup -getremotelogin, returns "Remote Login: On" or "Off"
                         code: echo 'yes' | sudo systemsetup -setremotelogin off
                         revertCode: sudo systemsetup -setremotelogin on
@@ -2105,21 +2105,21 @@ actions:
                         # it is non-essential and should be disabled. The information system should be configured to
                         # provide only essential capabilities. Disabling TFTP helps prevent the unauthorized connection
                         # of devices and the unauthorized transfer of information.
-                        docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230813
+                        docs: https://web.archive.org/web/20241125172446/https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230813
                         code: sudo launchctl disable 'system/com.apple.tftpd'
                         revertCode: sudo launchctl enable 'system/com.apple.tftpd'
                     -
                         name: Disable Bonjour multicast advertising
                         recommend: standard
-                        docs: https://www.stigviewer.com/stig/apple_os_x_10.11/2017-04-06/finding/V-67593
+                        docs: https://web.archive.org/web/20241125192601/https://www.stigviewer.com/stig/apple_os_x_10.11/2017-04-06/finding/V-67593
                         code: sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
                         revertCode: sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool false
                     -
                         name: Disable insecure telnet protocol
                         recommend: standard
                         docs:
-                            - https://www.stigviewer.com/stig/apple_os_x_10.13/2020-09-11/finding/V-214882
-                            - https://www.stigviewer.com/stig/apple_os_x_10.10_yosemite_workstation/2017-04-06/finding/V-59671
+                            - https://web.archive.org/web/20241125065154/https://www.stigviewer.com/stig/apple_os_x_10.13/2020-09-11/finding/V-214882
+                            - https://web.archive.org/web/20241125030109/https://www.stigviewer.com/stig/apple_os_x_10.10_yosemite_workstation/2017-04-06/finding/V-59671
                         code: sudo launchctl disable system/com.apple.telnetd
                         revertCode: sudo launchctl enable system/com.apple.telnetd
             -
@@ -2128,25 +2128,25 @@ actions:
                 # By default, the CUPS only listens to requests from the machine that it's running on
                 # cupsctl is a tool to manage the configuration of the CUPS daemon
                 docs:
-                    - https://www.cups.org/doc/sharing.html
-                    - https://www.cups.org/doc/security.html # Security risks
+                    - https://web.archive.org/web/20250226180945/https://www.cups.org/doc/sharing.html
+                    - https://web.archive.org/web/20250228134603/https://www.cups.org/doc/security.html # Security risks
                 children:
                     -
                         name: Disable local printer sharing with other computers
                         recommend: standard
-                        docs: https://www.cups.org/doc/man-cupsctl.html
+                        docs: https://web.archive.org/web/20250313120855/https://www.cups.org/doc/man-cupsctl.html
                         code: cupsctl --no-share-printers
                         revertCode: cupsctl --share-printers
                     -
                         name: Disable printing from external addresses, including the internet
                         recommend: standard
-                        docs: https://www.cups.org/doc/man-cupsctl.html
+                        docs: https://web.archive.org/web/20250313120855/https://www.cups.org/doc/man-cupsctl.html
                         code: cupsctl --no-remote-any
                         revertCode: cupsctl --remote-any
                     -
                         name: Disable remote printer administration
                         recommend: standard
-                        docs: https://www.cups.org/doc/man-cupsctl.html
+                        docs: https://web.archive.org/web/20250313120855/https://www.cups.org/doc/man-cupsctl.html
                         code: cupsctl --no-remote-admin
                         revertCode: cupsctl --remote-admin
     -
@@ -2166,10 +2166,10 @@ actions:
                                 name: Clear logs of all downloaded files from File Quarantine
                                 recommend: strict
                                 docs:
-                                    - https://www.macobserver.com/tips/how-to/your-mac-remembers-everything-you-download-heres-how-to-clear-download-history/
-                                    - https://eclecticlight.co/2019/04/25/%F0%9F%8E%97-quarantine-apps/
-                                    - https://eclecticlight.co/2017/12/11/xattr-com-apple-quarantine-the-quarantine-flag/
-                                    - https://eclecticlight.co/2017/08/14/show-me-your-metadata-extended-attributes-in-macos-sierra/
+                                    - https://web.archive.org/web/20250313121036/https://www.macobserver.com/tips/how-to/your-mac-remembers-everything-you-download-heres-how-to-clear-download-history/
+                                    - https://web.archive.org/web/20250313121055/https://eclecticlight.co/2019/04/25/%F0%9F%8E%97-quarantine-apps/
+                                    - https://web.archive.org/web/20250313121059/https://eclecticlight.co/2017/12/11/xattr-com-apple-quarantine-the-quarantine-flag/
+                                    - https://web.archive.org/web/20250313121104/https://eclecticlight.co/2017/08/14/show-me-your-metadata-extended-attributes-in-macos-sierra/
                                     # Query entries using:
                                     #   sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 'select DISTINCT LSQuarantineDataURLString from LSQuarantineEvent'
                                 code: |-
@@ -2202,7 +2202,7 @@ actions:
                                     fi
                             -
                                 name: Clear File Quarantine attribute from downloaded files
-                                docs: https://superuser.com/questions/28384/what-should-i-do-about-com-apple-quarantine
+                                docs: https://web.archive.org/web/20250313121726/https://superuser.com/questions/28384/what-should-i-do-about-com-apple-quarantine
                                 code: |-
                                     find ~/Downloads        \
                                             -type f         \
@@ -2228,9 +2228,9 @@ actions:
                             -
                                 name: Disable downloaded file logging in quarantine
                                 docs:
-                                    - https://eclecticlight.co/2019/04/25/%F0%9F%8E%97-quarantine-apps/
-                                    - https://eclecticlight.co/2017/12/11/xattr-com-apple-quarantine-the-quarantine-flag/
-                                    - https://eclecticlight.co/2017/08/14/show-me-your-metadata-extended-attributes-in-macos-sierra/
+                                    - https://web.archive.org/web/20250313121055/https://eclecticlight.co/2019/04/25/%F0%9F%8E%97-quarantine-apps/
+                                    - https://web.archive.org/web/20250313121059/https://eclecticlight.co/2017/12/11/xattr-com-apple-quarantine-the-quarantine-flag/
+                                    - https://web.archive.org/web/20250313121104/https://eclecticlight.co/2017/08/14/show-me-your-metadata-extended-attributes-in-macos-sierra/
                                 recommend: strict
                                 code: |-
                                     file_to_lock=~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
@@ -2253,9 +2253,9 @@ actions:
                                 # Disables dialogs shown when opening an application for the first time
                                 # i.e. "Application Downloaded from Internet" quarantine warning.
                                 docs:
-                                    - https://apple.stackexchange.com/questions/373176/disable-the-use-of-the-com-apple-quarantine-extended-attribute-on-mojave
-                                    - https://superuser.com/questions/266176/is-there-some-way-to-disable-the-dialogs-shown-when-opening-an-application-for-t
-                                    - https://macos-defaults.com/misc/lsquarantine.html
+                                    - https://web.archive.org/web/20250313121721/https://apple.stackexchange.com/questions/373176/disable-the-use-of-the-com-apple-quarantine-extended-attribute-on-mojave
+                                    - https://web.archive.org/web/20250313121701/https://superuser.com/questions/266176/is-there-some-way-to-disable-the-dialogs-shown-when-opening-an-application-for-t
+                                    - https://web.archive.org/web/20250313121540/https://macos-defaults.com/misc/lsquarantine.html
                                 code: sudo defaults write com.apple.LaunchServices 'LSQuarantine' -bool NO
                                 revertCode: sudo defaults delete com.apple.LaunchServices 'LSQuarantine'
             -
@@ -2267,7 +2267,7 @@ actions:
                     -
                         name: Disable Gatekeeper's automatic reactivation
                         docs:
-                            - https://osxdaily.com/2015/11/05/stop-gatekeeper-auto-rearm-mac-os-x/
+                            - https://web.archive.org/web/20250313121531/https://osxdaily.com/2015/11/05/stop-gatekeeper-auto-rearm-mac-os-x/
                             - https://web.archive.org/web/20230327050142/https://www.cnet.com/tech/computing/how-to-disable-gatekeeper-permanently-on-os-x/
                         code: sudo defaults write /Library/Preferences/com.apple.security GKAutoRearm -bool true
                         revertCode: sudo defaults write /Library/Preferences/com.apple.security GKAutoRearm -bool false
@@ -2278,7 +2278,7 @@ actions:
                                 - https://web.archive.org/web/20240523173608/https://www.manpagez.com/man/8/spctl/
                             # References for /var/db/SystemPolicy-prefs.plist
                                 - https://web.archive.org/web/20240810103202/https://krypted.com/mac-security/manage-gatekeeper-from-the-command-line-in-mountain-lion/
-                                - https://community.jamf.com/t5/jamf-pro/users-can-t-change-password-greyed-out/m-p/54228
+                                - https://web.archive.org/web/20250313121525/https://community.jamf.com/t5/jamf-pro/users-can-t-change-password-greyed-out/m-p/54228
                         code: |-
                             os_major_ver=$(sw_vers -productVersion | awk -F "." '{print $1}')
                             os_minor_ver=$(sw_vers -productVersion | awk -F "." '{print $2}')

@@ -935,7 +935,7 @@ actions:
                 docs: |-
                   The `sessionstore.jsonlz4` file stores the currently open tabs and windows [1].
 
-                  See ["Restore previous session - Configure when Firefox shows your most recent tabs and windows"](https://web.archive.org/web/20221029220311/https://support.mozilla.org/en-US/kb/restore-previous-session).
+                  See [Restore previous session - Configure when Firefox shows your most recent tabs and windows](https://web.archive.org/web/20221029220311/https://support.mozilla.org/en-US/kb/restore-previous-session).
 
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
@@ -957,7 +957,7 @@ actions:
               You may get reports on a system's boot when crash report files exist.
               When the `/var/crash` directory contains files, Apport will display notifications [2].
               This directory is then cleaned up by Apport using [`/etc/cron.daily/apport`](https://web.archive.org/web/20221029220300/https://www.apt-browse.org/browse/ubuntu/precise/main/all/apport/2.0.1-0ubuntu5/file/etc/cron.daily/apport) job [6].
-              Read more: ["Apport | Ubuntu Wiki"](https://web.archive.org/web/20221029220354/https://wiki.ubuntu.com/Apport).
+              Read more: [Apport | Ubuntu Wiki](https://web.archive.org/web/20221029220354/https://wiki.ubuntu.com/Apport).
 
               The folder typically contains kernel crash dumps [3], but it can be used by other applications as well.
               E.g., the Debian package corekeeper stores user-space coredumps in subfolders of `/var/crash` [4].
@@ -1076,11 +1076,11 @@ actions:
       -
         name: Empty trash
         docs: |-
-          The trash location is standardized by ["The FreeDesktop.org Trash specification"](https://web.archive.org/web/20221029151648/https://specifications.freedesktop.org/trash-spec/trashspec-latest.html) [1].
+          The trash location is standardized by [The FreeDesktop.org Trash specification](https://web.archive.org/web/20221029151648/https://specifications.freedesktop.org/trash-spec/trashspec-latest.html) [1].
           It uses the `$XDG_DATA_HOME/Trash` directory [1], which defaults to `$HOME/.local/share/Trash` [2].
 
-          Flatpak applications may use the same trash using special APIs [3]. However, Snap applications do not have an API to
-          use the global trash [4].
+          Flatpak applications may use the same trash using special APIs [3].
+          However, Snap applications do not have an API to use the global trash [4].
 
           [1]: https://web.archive.org/web/20221029151648/https://specifications.freedesktop.org/trash-spec/trashspec-latest.html "The FreeDesktop.org Trash specification | freedesktop.org"
           [2]: https://web.archive.org/web/20221029151712/https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html "XDG Base Directory Specification | freedesktop.org"
@@ -1106,7 +1106,7 @@ actions:
           Programs do not assume that any files or directories in temporary folders are preserved between
           invocations of the program, and these files may be deleted after reboot and in a site-specific manner [2].
 
-          See also: "[Filesystem Hierarchy Standard](https://web.archive.org/web/20221029152204/https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch03s18.html)".
+          See also: [Filesystem Hierarchy Standard](https://web.archive.org/web/20221029152204/https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch03s18.html).
 
           [1]: https://web.archive.org/web/20221029152135/https://en.wikipedia.org/wiki/Temporary_folder "Temporary folder | Wikipedia | en.wikipedia.org"
           [2]: https://web.archive.org/web/20221029152204/https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch03s18.html "Filesystem Hierarchy Standard | LinuxFoundation.org"
@@ -1130,7 +1130,7 @@ actions:
               SQLite database cache, rpmdb cache [3]. Every YUM plugin may store its own cache [3]. `yum clean all`
               cleans all temporary files.
 
-              See also: ["Yum Package Manager homepage"](https://web.archive.org/web/20221029221419/http://yum.baseurl.org/).
+              See also: [Yum Package Manager homepage](https://web.archive.org/web/20221029221419/http://yum.baseurl.org/).
 
               [1]: https://web.archive.org/web/20221029152219/https://en.wikipedia.org/wiki/Yum_%28software%29 "Yum | Wikipedia | en.wikipedia.org"
               [2]: https://web.archive.org/web/20221029152251/https://webhome.phy.duke.edu/~rgb/General/yum_article/yum_article.pdf "YUM: Yellowdog Updater, Modified | www.phy.duke.edu"
@@ -1264,7 +1264,7 @@ actions:
               core libraries to handle the installation and removal of software on Debian, and
               Debian-based Linux distributions [1].
 
-              See also: ["APT | Debian Wiki"](https://web.archive.org/web/20221029221422/https://wiki.debian.org/Apt).
+              See also: [APT | Debian Wiki](https://web.archive.org/web/20221029221422/https://wiki.debian.org/Apt).
 
               [1]: https://web.archive.org/web/20221029153651/https://en.wikipedia.org/wiki/APT_%28software%29 "APT | Wikipedia"
             children:
@@ -1486,7 +1486,7 @@ actions:
               - [Ubuntu](https://web.archive.org/web/20220816072409/https://popcon.ubuntu.com/)
               - [Debian](https://web.archive.org/web/20221029221738/https://popcon.debian.org/)
 
-              See also: "[popularity-contest source code | debian.org](https://web.archive.org/web/20221030163518/https://salsa.debian.org/popularity-contest-team/popularity-contest)".
+              See also: [popularity-contest source code | debian.org](https://web.archive.org/web/20221030163518/https://salsa.debian.org/popularity-contest-team/popularity-contest).
 
               [1]: https://web.archive.org/web/20221029160500/https://help.ubuntu.com/community/UbuntuPopularityContest "UbuntuPopularityContest - Community Help Wiki | help.ubuntu.com"
               [2]: https://web.archive.org/web/20221029160506/https://manpages.debian.org/testing/popularity-contest/popularity-contest.8.en.html "popularity-contest - Debian testing | Debian Manpages"
@@ -1788,7 +1788,7 @@ actions:
               them report an error; and collects these reports and shares them with Ubuntu [1]. Error reports
               are also accessible to trusted Ubuntu developers who are not employed by Canonical [1].
 
-              See ["the Ubuntu error tracker | errors.ubuntu.com"](https://web.archive.org/web/20221029221957/https://errors.ubuntu.com/) that shows error
+              See [the Ubuntu error tracker | errors.ubuntu.com](https://web.archive.org/web/20221029221957/https://errors.ubuntu.com/) that shows error
               statistics to the public.
 
               [1]: https://web.archive.org/web/20221029162649/https://wiki.ubuntu.com/ErrorTracker
@@ -1837,7 +1837,7 @@ actions:
                       may crash interactive `python3` completely [2]. Uninstallation of all other packages
                       is not yet supported [3].
 
-                      See also ["source code of apport | launchpad.net"](https://web.archive.org/web/20221029222108/https://code.launchpad.net/ubuntu/+source/apport).
+                      See also [source code of apport | launchpad.net](https://web.archive.org/web/20221029222108/https://code.launchpad.net/ubuntu/+source/apport).
 
                       [1]: https://web.archive.org/web/20221030194324/https://packages.ubuntu.com/bionic/apport "Ubuntu - Details of package apport in bionic | packages.ubuntu.com"
                       [2]: https://web.archive.org/web/20221029162934/https://bugs.launchpad.net/ubuntu/+source/xorg/+bug/1773087 "Bug #1773087 “Remove python3-apport as dependency of xserver-xor...” : Bugs : xorg package : Ubuntu | bugs.launchpad.net"

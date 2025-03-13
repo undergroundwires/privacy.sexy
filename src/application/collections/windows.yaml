@@ -49,7 +49,7 @@ actions:
                     This data can be exploited by cybercriminals, aggressive marketers, or even used in legal proceedings.
 
                     Regularly clearing this information helps you control your privacy and reduces the risk of personal.
-                    It also protects you from malicious actors who may insert harmful items into your activity history [4].
+                    It also protects you from malicious actors who may insert harmful items into your activity history [1].
 
                     **Key Benefits:**
 
@@ -61,6 +61,8 @@ actions:
                     > **Caution:**
                     > Clearing recent activity may affect your productivity by removing quick access to recently used
                     > files, applications, and settings.
+
+                    [1]: https://web.archive.org/web/20241224015811/https://capec.mitre.org/data/definitions/93.html "CAPEC - CAPEC-93: Log Injection-Tampering-Forging (Version 3.9) | capec.mitre.org"
                 children:
                     -
                         category: Clear Quick Access lists
@@ -1361,7 +1363,7 @@ actions:
                                 name: Clear "Temporary Internet Files" (browser cache)
                                 recommend: standard
                                 docs:
-                                    - https://en.wikipedia.org/wiki/Temporary_Internet_Files
+                                    - https://web.archive.org/web/20250313113415/https://en.wikipedia.org/wiki/Temporary_Internet_Files
                                     - https://web.archive.org/web/20241202094338/https://www.windows-commandline.com/delete-temporary-internet-files/ # %LOCALAPPDATA%\Temporary Internet Files
                                     - https://web.archive.org/web/20241202094003/https://www.thewindowsclub.com/temporary-internet-files-folder-location # %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files and INetCache
                                 call:
@@ -6474,7 +6476,7 @@ actions:
                                 name: Disable Cortana during search
                                 recommend: standard
                                 docs:
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::AllowCortana
+                                    - https://web.archive.org/web/20250311090303/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::AllowCortana
                                     - https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#bkmk-cortana
                                 call:
                                     -
@@ -7249,7 +7251,7 @@ actions:
                             -
                                 name: Disable Windows Tips
                                 recommend: standard
-                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.CloudContent::DisableSoftLanding
+                                docs: https://web.archive.org/web/20250311090325/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.CloudContent::DisableSoftLanding
                                 call:
                                     function: SetRegistryValue
                                     parameters:
@@ -7290,8 +7292,8 @@ actions:
                                 name: Disable Microsoft Consumer Experiences
                                 recommend: standard
                                 docs:
-                                    - https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-71771
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.CloudContent::DisableWindowsConsumerFeatures
+                                    - https://web.archive.org/web/20241125174113/https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-71771
+                                    - https://web.archive.org/web/20250311090335/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.CloudContent::DisableWindowsConsumerFeatures
                                     - https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1816-feedback--diagnostics
                                 call:
                                     function: SetRegistryValue
@@ -7338,7 +7340,7 @@ actions:
                     -
                         name: Disable use of biometrics
                         recommend: strict
-                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.Biometrics::Biometrics_EnableBio
+                        docs: https://web.archive.org/web/20250311090345/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.Biometrics::Biometrics_EnableBio
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -7350,7 +7352,7 @@ actions:
                     -
                         name: Disable biometric logon
                         recommend: strict
-                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.Biometrics::Biometrics_EnableCredProv
+                        docs: https://web.archive.org/web/20250311090357/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.Biometrics::Biometrics_EnableCredProv
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -7542,7 +7544,7 @@ actions:
                                 defaultStartupMode: Manual
                     -
                         name: Disable Microsoft feature trials
-                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::EnableExperimentation
+                        docs: https://web.archive.org/web/20250311090518/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::EnableExperimentation
                         recommend: standard
                         call:
                             -
@@ -7571,7 +7573,7 @@ actions:
                                     dataOnRevert: '1' # Default value: `1` on Windows 10 Pro (≥ 22H2) | `1` on Windows 11 Pro (≥ 23H2)
                     -
                         name: Disable receipt of Windows preview builds
-                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AllowBuildPreview::AllowBuildPreview
+                        docs: https://web.archive.org/web/20250311090419/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AllowBuildPreview::AllowBuildPreview
                         recommend: standard
                         call:
                             function: SetRegistryValue
@@ -11134,7 +11136,7 @@ actions:
                             -
                                 name: Disable SSLv3 fallback
                                 recommend: standard
-                                docs: https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2018-04-02/finding/V-64729
+                                docs: https://web.archive.org/web/20241125180042/https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2018-04-02/finding/V-64729
                                 call:
                                     function: SetRegistryValue
                                     parameters:
@@ -11146,7 +11148,7 @@ actions:
                             -
                                 name: Disable certificate error ignoring
                                 recommend: standard
-                                docs: https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2017-03-01/finding/V-64717
+                                docs: https://web.archive.org/web/20241125175845/https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2017-03-01/finding/V-64717
                                 call:
                                     function: SetRegistryValue
                                     parameters:
@@ -13411,7 +13413,7 @@ actions:
                                     > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
                                     > administration is necessary.
 
-                                    [1]: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63759 "Anonymous access to Named Pipes and Shares must be restricted. | www.stigviewer.com"
+                                    [1]: https://web.archive.org/web/20241125174145/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63759 "Anonymous access to Named Pipes and Shares must be restricted. | www.stigviewer.com"
                                     [2]: https://web.archive.org/web/20240510180133/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/network-access-restrict-anonymous-access-to-named-pipes-and-shares "Network access Restrict anonymous access to Named Pipes and Shares - Windows 10 | Microsoft Learn | learn.microsoft.com"
                                 call:
                                     function: SetRegistryValue
@@ -13796,7 +13798,7 @@ actions:
                     Additionally, data synchronization features can lead to sensitive information being stored on remote servers or shared across devices, increasing the
                     risk of data exposure.
 
-                    The scripts in this category address these risks by disabling the related features..
+                    The scripts in this category address these risks by disabling the related features.
                     While these features offer convenience and productivity benefits, they can inadvertently compromise user privacy and security.
 
                     > **Caution**: Applying these scripts may lead to a loss of certain functionalities. Users who rely on these features for their daily tasks should
@@ -14016,10 +14018,10 @@ actions:
                 name: Disable AutoPlay and AutoRun
                 recommend: standard
                 docs:
-                    - https://en.wikipedia.org/wiki/AutoRun
-                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63667
-                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63671
-                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63673
+                    - https://web.archive.org/web/20250313113648/https://en.wikipedia.org/wiki/AutoRun
+                    - https://web.archive.org/web/20250119215832/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63667
+                    - https://web.archive.org/web/20241125174201/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63671
+                    - https://web.archive.org/web/20241125174200/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63673
                 call:
                     -
                         function: SetRegistryValue
@@ -14048,7 +14050,7 @@ actions:
             -
                 name: Disable lock screen camera access
                 recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_8_8.1/2014-06-27/finding/V-43237
+                docs: https://web.archive.org/web/20241125152727/https://www.stigviewer.com/stig/windows_8_8.1/2014-06-27/finding/V-43237
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -14060,7 +14062,7 @@ actions:
             - 
                 name: Disable storage of the LAN Manager password hashes
                 recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
+                docs: https://web.archive.org/web/20250119220041/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -14072,7 +14074,7 @@ actions:
             -
                 name: Disable "Always install with elevated privileges" in Windows Installer
                 recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_8/2013-07-03/finding/V-34974
+                docs: https://web.archive.org/web/20250119215905/https://www.stigviewer.com/stig/windows_8/2013-07-03/finding/V-34974
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -14084,7 +14086,7 @@ actions:
             -
                 name: Enable Structured Exception Handling Overwrite Protection (SEHOP)
                 recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-68849
+                docs: https://web.archive.org/web/20250119215928/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-68849
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -14134,7 +14136,7 @@ actions:
                 recommend: standard
                 docs:
                     - https://web.archive.org/web/20240314130322/https://learn.microsoft.com/en-us/windows/win32/wcn/about-windows-connect-now
-                    - https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-15698
+                    - https://web.archive.org/web/20250119220010/https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-15698
                 call:
                     -
                         function: SetRegistryValue
@@ -15529,7 +15531,7 @@ actions:
                                               Tests show that changing this value via the CLI also alters the registry value.
 
                                             [1]: https://web.archive.org/web/20240314122554/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#submitsamplesconsent "Defender Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
-                                            [2]: https://web.archive.org/web/20240728192845/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SubmitSamplesConsent "Send file samples when further analysis is required"
+                                            [2]: https://web.archive.org/web/20240728192845/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SubmitSamplesConsent "Send file samples when further analysis is required | admx.help"
                                             [3]: https://web.archive.org/web/20240728193037/https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75207 "Windows Defender AV must be configured to only send safe samples for MAPS telemetry. | stigviewer.com"
                                             [4]: https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps#-submitsamplesconsent "Set-MpPreference (Defender) | Microsoft Learn | learn.microsoft.com"
                                             [5]: https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#submitsamplesconsent "MSFT_MpPreference - powershell.one | powershell.one"
@@ -17152,7 +17154,7 @@ actions:
                             #        -
                             #            name: Disable Windows Defender Application Control Code Integrity Policy
                             #            docs:
-                            #                - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Windows.DeviceGuard::ConfigCIPolicy
+                            #                - https://web.archive.org/web/20250311090743/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Windows.DeviceGuard::ConfigCIPolicy
                             #                - https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/dg-readiness-tool
                             #            call:
                             #                -
@@ -17239,7 +17241,7 @@ actions:
                                 name: Disable outdated Defender Antivirus # Deprecated since Windows 10 version 1903
                                 docs:
                                     - https://web.archive.org/web/20240314125156/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-disableantispyware
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableAntiSpywareDefender
+                                    - https://web.archive.org/web/20250311090742/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableAntiSpywareDefender
                                 call:
                                     function: SetRegistryValue
                                     parameters:
@@ -17251,11 +17253,11 @@ actions:
                             -
                                 name: Disable Potentially Unwanted Application (PUA) protection # Already disabled as default
                                 docs:
-                                    - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75147
+                                    - https://web.archive.org/web/20250203123846/https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75147
                                     - https://web.archive.org/web/20240314124740/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/detect-block-potentially-unwanted-apps-microsoft-defender-antivirus?view=o365-worldwide
                                     - https://web.archive.org/web/20160410000519/https://blogs.technet.microsoft.com/mmpc/2015/11/25/shields-up-on-potentially-unwanted-applications-in-your-enterprise/
-                                    - https://admx.help/?Category=security-compliance-toolkit&Policy=Microsoft.Policies.SecGuide::Pol_SecGuide_0101_WDPUA
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Root_PUAProtection
+                                    - https://web.archive.org/web/20250311090659/https://admx.help/?Category=security-compliance-toolkit&Policy=Microsoft.Policies.SecGuide::Pol_SecGuide_0101_WDPUA
+                                    - https://web.archive.org/web/20250311090805/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Root_PUAProtection
                                     # Managing with MpPreference module:
                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                 call:
@@ -17286,7 +17288,7 @@ actions:
                                 name: Disable file hash computation feature # Added in Windows 10, version 2004
                                 docs:
                                     - https://web.archive.org/web/20240314124546/https://learn.microsoft.com/en-us/windows/client-management/mdm/defender-csp#configuration-enablefilehashcomputation
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::MpEngine_EnableFileHashComputation
+                                    - https://web.archive.org/web/20250311090731/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::MpEngine_EnableFileHashComputation
                                     - https://web.archive.org/web/20241202094117/https://techcommunity.microsoft.com/blog/microsoft-security-baselines/security-baseline-final-windows-10-and-windows-server-version-2004/1543631
                                 call:
                                     function: SetRegistryValue
@@ -17302,8 +17304,8 @@ actions:
                                     -
                                         name: Disable protocol recognition
                                         docs:
-                                            - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2019-12-12/finding/V-75209
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_DisableProtocolRecognition
+                                            - https://web.archive.org/web/20241125142924/https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2019-12-12/finding/V-75209
+                                            - https://web.archive.org/web/20250311090741/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_DisableProtocolRecognition
                                         call:
                                             function: SetRegistryValue
                                             parameters:
@@ -17314,7 +17316,7 @@ actions:
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
                                         name: Disable definition retirement
-                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_Consumers_IPS_DisableSignatureRetirement
+                                        docs: https://web.archive.org/web/20250311090857/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_Consumers_IPS_DisableSignatureRetirement
                                         call:
                                             function: SetRegistryValue
                                             parameters:
@@ -17325,7 +17327,7 @@ actions:
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                     -
                                         name: Minimize rate of detection events
-                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_Consumers_IPS_ThrottleDetectionEventsRate
+                                        docs: https://web.archive.org/web/20250311090911/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_Consumers_IPS_ThrottleDetectionEventsRate
                                         call:
                                             function: SetRegistryValue
                                             parameters:
@@ -17340,8 +17342,8 @@ actions:
                                     -
                                         name: Disable real-time monitoring
                                         docs:
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableRealtimeMonitoring
-                                            - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75227
+                                            - https://web.archive.org/web/20250311090921/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableRealtimeMonitoring
+                                            - https://web.archive.org/web/20241125142929/https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75227
                                             # Managing with MpPreference module:
                                             - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                             - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablerealtimemonitoring
@@ -17365,7 +17367,7 @@ actions:
                                     -
                                         name: Disable intrusion prevention system (IPS)
                                         docs:
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableIntrusionPreventionSystem
+                                            - https://web.archive.org/web/20250311090827/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableIntrusionPreventionSystem
                                             # Managing with MpPreference module:
                                             - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                             - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableintrusionpreventionsystem
@@ -17403,7 +17405,7 @@ actions:
                                             -
                                                 name: Disable behavior monitoring
                                                 docs:
-                                                    - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75229
+                                                    - https://web.archive.org/web/20250219151157/https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75229
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablebehaviormonitoring
@@ -17425,7 +17427,7 @@ actions:
                                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             -
                                                 name: Disable sending raw write notifications to behavior monitoring
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableRawWriteNotification
+                                                docs: https://web.archive.org/web/20250311090837/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableRawWriteNotification
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -17440,7 +17442,7 @@ actions:
                                             -
                                                 name: Disable scanning of all downloaded files and attachments
                                                 docs:
-                                                    - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75225
+                                                    - https://web.archive.org/web/20250301140008/https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75225
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableioavprotection
@@ -17462,7 +17464,7 @@ actions:
                                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             -
                                                 name: Disable scanning files larger than 1 KB (minimum possible)
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_IOAVMaxSize
+                                                docs: https://web.archive.org/web/20250311090955/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_IOAVMaxSize
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -17477,8 +17479,8 @@ actions:
                                             -
                                                 name: Disable file and program activity monitoring
                                                 docs:
-                                                    - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75223
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableOnAccessProtection
+                                                    - https://web.archive.org/web/20241125142930/https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75223
+                                                    - https://web.archive.org/web/20250311091319/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableOnAccessProtection
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -17490,7 +17492,7 @@ actions:
                                             -
                                                 name: Disable bidirectional scan for incoming and outgoing file and program activities
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_RealtimeScanDirection
+                                                    - https://web.archive.org/web/20250311091326/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_RealtimeScanDirection
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#realtimescandirection
@@ -17515,8 +17517,8 @@ actions:
                                     -
                                         name: Disable real-time protection process scanning
                                         docs:
-                                            - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75231
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableScanOnRealtimeEnable
+                                            - https://web.archive.org/web/20241125142930/https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75231
+                                            - https://web.archive.org/web/20250311091332/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableScanOnRealtimeEnable
                                         call:
                                             function: SetRegistryValue
                                             parameters:
@@ -17597,7 +17599,7 @@ actions:
                                         name: Disable routine remediation
                                         docs:
                                             - https://web.archive.org/web/20240314124159/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-microsoftdefenderantivirus#disableroutinelytakingaction
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableRoutinelyTakingAction
+                                            - https://web.archive.org/web/20250311091339/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableRoutinelyTakingAction
                                         call:
                                             function: SetRegistryValue
                                             parameters:
@@ -17609,7 +17611,7 @@ actions:
                                     -
                                         name: Disable running scheduled auto-remediation
                                         docs:
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Remediation_Scan_ScheduleDay
+                                            - https://web.archive.org/web/20250311091344/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Remediation_Scan_ScheduleDay
                                             # Managing with MpPreference module:
                                             - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                             - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#remediationscheduleday
@@ -17633,7 +17635,7 @@ actions:
                                         name: Disable remediation actions
                                         docs:
                                             - https://web.archive.org/web/20240314124221/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-threatseveritydefaultaction
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Threats_ThreatSeverityDefaultAction
+                                            - https://web.archive.org/web/20250311091703/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Threats_ThreatSeverityDefaultAction
                                             # Managing with MpPreference module:
                                             - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                         # None = 0 (default), Clean = 1, Quarantine = 2, Remove = 3, Allow = 6, UserDefined = 8, NoAction = 9, Block = 10
@@ -17702,7 +17704,7 @@ actions:
                                     -
                                         name: Enable automatically purging items from quarantine folder
                                         docs:
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Quarantine_PurgeItemsAfterDelay
+                                            - https://web.archive.org/web/20250311091807/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Quarantine_PurgeItemsAfterDelay
                                             # Managing with MpPreference module:
                                             - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                             - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#quarantinepurgeitemsafterdelay
@@ -17730,8 +17732,8 @@ actions:
                                 name: Disable Defender auto-exclusions
                                 docs:
                                     - https://web.archive.org/web/20231027190409/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/configure-server-exclusions-microsoft-defender-antivirus?view=o365-worldwide
-                                    - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75159
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableAutoExclusions
+                                    - https://web.archive.org/web/20241213222312/https://stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75159
+                                    - https://web.archive.org/web/20250311091717/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableAutoExclusions
                                     # Managing with MpPreference module:
                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableautoexclusions
@@ -17760,7 +17762,7 @@ actions:
                                             -
                                                 name: Disable signature verification before scanning # Default configuration
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::CheckForSignaturesBeforeRunningScan
+                                                    - https://web.archive.org/web/20250311091726/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::CheckForSignaturesBeforeRunningScan
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#checkforsignaturesbeforerunningscan
@@ -17782,7 +17784,7 @@ actions:
                                             -
                                                 name: Disable creation of daily system restore points # Default behavior
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableRestorePoint
+                                                    - https://web.archive.org/web/20250311091731/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableRestorePoint
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablerestorepoint
@@ -17804,7 +17806,7 @@ actions:
                                             -
                                                 name: Minimize retention time for files in scan history
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_PurgeItemsAfterDelay
+                                                    - https://web.archive.org/web/20250311091738/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_PurgeItemsAfterDelay
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#scanpurgeitemsafterdelay
@@ -17828,7 +17830,7 @@ actions:
                                         children:
                                             -
                                                 name: Maximize days until mandatory catch-up scan
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_MissedScheduledScanCountBeforeCatchup
+                                                docs: https://web.archive.org/web/20250311091918/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_MissedScheduledScanCountBeforeCatchup
                                                 # Default and minimum is 2, maximum is 20
                                                 call:
                                                     function: SetRegistryValue
@@ -17841,7 +17843,7 @@ actions:
                                             -
                                                 name: Disable catch-up full scans # Disabled by default
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupFullScan
+                                                    - https://web.archive.org/web/20250311091925/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupFullScan
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablecatchupfullscan
@@ -17863,7 +17865,7 @@ actions:
                                             -
                                                 name: Disable catch-up quick scans
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupQuickScan
+                                                    - https://web.archive.org/web/20250311092021/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupQuickScan
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablecatchupquickscan
@@ -17887,7 +17889,7 @@ actions:
                                         children:
                                             -
                                                 name: Disable scan heuristics
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableHeuristics
+                                                docs: https://web.archive.org/web/20250311091940/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableHeuristics
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -17902,7 +17904,7 @@ actions:
                                                     -
                                                         name: Minimize CPU usage during scans
                                                         docs:
-                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_AvgCPULoadFactor
+                                                            - https://web.archive.org/web/20250311092057/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_AvgCPULoadFactor
                                                             # Managing with MpPreference module:
                                                             - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                             - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#scanavgcpuloadfactor
@@ -17990,7 +17992,7 @@ actions:
                                             -
                                                 name: Disable e-mail scanning # Disabled by default
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableEmailScanning
+                                                    - https://web.archive.org/web/20250311092102/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableEmailScanning
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableemailscanning
@@ -18024,7 +18026,7 @@ actions:
                                                         default: $False                 # Default:  False | Remove-MpPreference -Force -DisableScriptScanning | Set-MpPreference -Force -DisableScriptScanning $False
                                             -
                                                 name: Disable reparse point scanning
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableReparsePointScanning
+                                                docs: https://web.archive.org/web/20250311092204/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableReparsePointScanning
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -18036,7 +18038,7 @@ actions:
                                             -
                                                 name: Disable scanning mapped network drives during full scan
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableScanningMappedNetworkDrivesForFullScan
+                                                    - https://web.archive.org/web/20250311092213/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableScanningMappedNetworkDrivesForFullScan
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablescanningmappednetworkdrivesforfullscan
@@ -18058,7 +18060,7 @@ actions:
                                             -
                                                 name: Disable network file scanning
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableScanningNetworkFiles
+                                                    - https://web.archive.org/web/20250311092119/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableScanningNetworkFiles
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablescanningnetworkfiles
@@ -18079,7 +18081,7 @@ actions:
                                                             default: $False                         # Default:  False | Remove-MpPreference -Force -DisableScanningNetworkFiles | Set-MpPreference -Force -DisableScanningNetworkFiles $False
                                             -
                                                 name: Disable scanning packed executables
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisablePackedExeScanning
+                                                docs: https://web.archive.org/web/20250311092332/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisablePackedExeScanning
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -18094,7 +18096,7 @@ actions:
                                                     -
                                                         name: Disable Defender archive file scanning
                                                         docs:
-                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableArchiveScanning
+                                                            - https://web.archive.org/web/20250311092351/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableArchiveScanning
                                                             # Managing with MpPreference module:
                                                             - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                             - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablearchivescanning
@@ -18115,7 +18117,7 @@ actions:
                                                                     default: $False                     # Default:  False | Remove-MpPreference -Force -DisableArchiveScanning | Set-MpPreference -Force -DisableArchiveScanning $False
                                                     -
                                                         name: Minimize scanning depth of archive files
-                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ArchiveMaxDepth
+                                                        docs: https://web.archive.org/web/20250311092357/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ArchiveMaxDepth
                                                         call:
                                                             function: SetRegistryValue
                                                             parameters:
@@ -18126,7 +18128,7 @@ actions:
                                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                                     -
                                                         name: Minimize file size for scanning archive files
-                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ArchiveMaxSize
+                                                        docs: https://web.archive.org/web/20250311092404/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ArchiveMaxSize
                                                         call:
                                                             function: SetRegistryValue
                                                             parameters:
@@ -18139,7 +18141,7 @@ actions:
                                                 name: Disable scanning removable drives
                                                 docs:
                                                     # Disabled by default
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableRemovableDriveScanning
+                                                    - https://web.archive.org/web/20250311092443/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableRemovableDriveScanning
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablearchivescanningDisableRemovableDriveScanning
@@ -18164,7 +18166,7 @@ actions:
                                             -
                                                 name: Disable scheduled scans
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ScheduleDay
+                                                    - https://web.archive.org/web/20250311092622/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ScheduleDay
                                                     - https://web.archive.org/web/20240314122526/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-scan-scheduleday
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
@@ -18190,7 +18192,7 @@ actions:
                                             -
                                                 name: Disable randomizing scheduled task times
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RandomizeScheduleTaskTimes
+                                                    - https://web.archive.org/web/20250311092545/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RandomizeScheduleTaskTimes
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#randomizescheduletasktimes
@@ -18213,7 +18215,7 @@ actions:
                                                 name: Disable scheduled full-scans
                                                 docs:
                                                     - https://web.archive.org/web/20240314122452/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-scan-scanparameters
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ScanParameters
+                                                    - https://web.archive.org/web/20250311092657/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ScanParameters
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#scanparameters
@@ -18236,7 +18238,7 @@ actions:
                                                             setDefaultOnWindows11: 'true'   # ❌ Remove-MpPreference with -ScanParameters fails due to a buggy behavior where it tries to set it to True on Windows 11
                                             -
                                                 name: Minimize daily quick scan frequency
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_QuickScanInterval
+                                                docs: https://web.archive.org/web/20250311092555/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_QuickScanInterval
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -18247,7 +18249,7 @@ actions:
                                                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             -
                                                 name: Disable scanning after security intelligence (signature) update
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableScanOnUpdate
+                                                docs: https://web.archive.org/web/20250311092723/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableScanOnUpdate
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -19012,7 +19014,7 @@ actions:
                                         children:
                                             -
                                                 name: Disable forced security intelligence (signature) updates from Microsoft Update
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ForceUpdateFromMU
+                                                docs: https://web.archive.org/web/20250311092732/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ForceUpdateFromMU
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -19023,7 +19025,7 @@ actions:
                                                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             -
                                                 name: Disable security intelligence (signature) updates when running on battery power
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableScheduledSignatureUpdateonBattery
+                                                docs: https://web.archive.org/web/20250311092740/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableScheduledSignatureUpdateonBattery
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -19034,7 +19036,7 @@ actions:
                                                         deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                             -
                                                 name: Disable startup check for latest virus and spyware security intelligence (signature)
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_UpdateOnStartup
+                                                docs: https://web.archive.org/web/20250311092746/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_UpdateOnStartup
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -19046,7 +19048,7 @@ actions:
                                             -
                                                 name: Disable catch-up security intelligence (signature) updates # default is one day
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_SignatureUpdateCatchupInterval
+                                                    - https://web.archive.org/web/20250311092921/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_SignatureUpdateCatchupInterval
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#signatureupdatecatchupinterval
@@ -19070,8 +19072,8 @@ actions:
                                                 name: Minimize spyware security intelligence (signature) updates # default is one day, recommended is 7 days
                                                 # Maximize period when spyware security intelligence (signature) is considered up-to-dates
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ASSignatureDue
-                                                    - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75241
+                                                    - https://web.archive.org/web/20250311093035/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ASSignatureDue
+                                                    - https://web.archive.org/web/20241125142931/https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75241
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -19084,8 +19086,8 @@ actions:
                                                 name: Minimize virus security intelligence (signature) updates  # default is one day, recommended is 7 days
                                                 # Maximize period when virus security intelligence (signature) is considered up-to-date
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_AVSignatureDue
-                                                    - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75243
+                                                    - https://web.archive.org/web/20250311092935/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_AVSignatureDue
+                                                    - https://web.archive.org/web/20241213221140/https://stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75243
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -19097,7 +19099,7 @@ actions:
                                             -
                                                 name: Disable security intelligence (signature) update on startup
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableUpdateOnStartupWithoutEngine
+                                                    - https://web.archive.org/web/20250311092941/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableUpdateOnStartupWithoutEngine
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#signaturedisableupdateonstartupwithoutengine
@@ -19119,7 +19121,7 @@ actions:
                                             -
                                                 name: Disable automatic checks for security intelligence (signature) updates # Already disabled by default
                                                 docs:
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ScheduleDay
+                                                    - https://web.archive.org/web/20250311093123/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ScheduleDay
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#signaturescheduleday
@@ -19145,7 +19147,7 @@ actions:
                                                 name: Minimize checks for security intelligence (signature) updates
                                                 docs:
                                                     - https://web.archive.org/web/20240314122335/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-signatureupdateinterval
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_SignatureUpdateInterval
+                                                    - https://web.archive.org/web/20250311093245/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_SignatureUpdateInterval
                                                     # Managing with MpPreference module:
                                                     - https://web.archive.org/web/20240314124716/https://learn.microsoft.com/en-us/powershell/module/defender/set-mppreference?view=windowsserver2022-ps
                                                     - https://web.archive.org/web/20231207105608/https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#signatureupdateinterval
@@ -19171,7 +19173,7 @@ actions:
                                                 children:
                                                     -
                                                         name: Disable definition updates via WSUS and Microsoft Malware Protection Center
-                                                        docs: https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::CheckAlternateHttpLocation
+                                                        docs: https://web.archive.org/web/20250311093136/https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::CheckAlternateHttpLocation
                                                         call:
                                                             function: SetRegistryValue
                                                             parameters:
@@ -19182,7 +19184,7 @@ actions:
                                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                                                     -
                                                         name: Disable definition updates through both WSUS and Windows Update
-                                                        docs: https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::CheckAlternateDownloadLocation
+                                                        docs: https://web.archive.org/web/20250311093240/https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::CheckAlternateDownloadLocation
                                                         call:
                                                             function: SetRegistryValue
                                                             parameters:
@@ -19309,7 +19311,7 @@ actions:
                                     -
                                         name: Disable Defender ETW provider (Windows Event Logs)
                                         docs:
-                                            - https://m365internals.com/2021/07/05/why-are-windows-defender-av-logs-so-important-and-how-to-monitor-them-with-azure-sentinel/
+                                            - https://web.archive.org/web/20250301140346/https://m365internals.com/2021/07/05/why-are-windows-defender-av-logs-so-important-and-how-to-monitor-them-with-azure-sentinel/
                                             - https://web.archive.org/web/20240314124054/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/overview-attack-surface-reduction?view=o365-worldwide
                                         call:
                                             -
@@ -19332,7 +19334,7 @@ actions:
                                         name: Minimize Windows software trace preprocessor (WPP Software Tracing)
                                         docs:
                                             - https://web.archive.org/web/20240314123926/https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/wpp-software-tracing
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Reporting_WppTracingLevel
+                                            - https://web.archive.org/web/20250311093343/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Reporting_WppTracingLevel
                                         call:
                                             function: SetRegistryValue
                                             parameters:
@@ -21144,7 +21146,7 @@ actions:
                                             | Windows 11 (21H2)   | 🟡 Missing | N/A |
                                             | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
 
-                                            [1]: http://web.archive.org/web/20241009112626/https://batcmd.com/windows/11/services/mssecwfp/ "Microsoft Security WFP Callout Driver - Windows 11 Service - batcmd.com | batcmd.com"
+                                            [1]: https://web.archive.org/web/20241009112626/https://batcmd.com/windows/11/services/mssecwfp/ "Microsoft Security WFP Callout Driver - Windows 11 Service - batcmd.com | batcmd.com"
                                             [2]: https://web.archive.org/web/20241009112634/https://learn.microsoft.com/en-us/windows/win32/fwp/windows-filtering-platform-start-page "Windows Filtering Platform - Win32 apps | Microsoft Learn | learn.microsoft.com"
                                             [3]: https://web.archive.org/web/20241009112626/https://learn.microsoft.com/en-us/windows-hardware/drivers/network/introduction-to-windows-filtering-platform-callout-drivers "Introduction to Windows Filtering Platform Callout Drivers - Windows drivers | Microsoft Learn | learn.microsoft.com"
                                             [4]: https://archive.ph/2024.10.09-113421/https://techloris.com/library/sys/mssecwfp-sys/ "Mssecwfp.sys: Troubleshooting Guide | TechLoris | techloris.com"
@@ -21213,11 +21215,11 @@ actions:
                                 name: Disable Firewall via registry # Lower-level, good in case command-line utility is not available/functioning
                                 docs:
                                     - https://web.archive.org/web/20240314124804/https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-gpfas/2100c552-7f37-4a7f-9fa0-2a864ab87212
-                                    - https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2016-05-12/finding/V-17415
-                                    - https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2016-05-12/finding/V-17416
-                                    - https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2018-02-21/finding/V-17417
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsFirewall::WF_EnableFirewall_Name_1
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsFirewall::WF_EnableFirewall_Name_2
+                                    - https://web.archive.org/web/20241125134601/https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2016-05-12/finding/V-17415
+                                    - https://web.archive.org/web/20241125134559/https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2016-05-12/finding/V-17416
+                                    - https://web.archive.org/web/20241125040929/https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2018-02-21/finding/V-17417
+                                    - https://web.archive.org/web/20250311093350/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsFirewall::WF_EnableFirewall_Name_1
+                                    - https://web.archive.org/web/20250311093355/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsFirewall::WF_EnableFirewall_Name_2
                                 call:
                                     -
                                         function: SetRegistryValue
@@ -25141,7 +25143,7 @@ actions:
                             -
                                 name: Remove "Windows Security" system tray icon
                                 docs: |-
-                                    https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::Systray_HideSystray
+                                    https://web.archive.org/web/20250311093522/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::Systray_HideSystray
                                 call:
                                     function: SetRegistryValue
                                     parameters:
@@ -26124,9 +26126,9 @@ actions:
                                             -
                                                 name: Disable non-critical Windows Security notifications
                                                 docs:
-                                                    - http://web.archive.org/web/20240314122250/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsdefendersecuritycenter#disableenhancednotifications
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::Notifications_DisableEnhancedNotifications
-                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Reporting_DisableEnhancedNotifications
+                                                    - https://web.archive.org/web/20240314122250/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsdefendersecuritycenter#disableenhancednotifications
+                                                    - https://web.archive.org/web/20250311093611/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::Notifications_DisableEnhancedNotifications
+                                                    - https://web.archive.org/web/20250311093509/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Reporting_DisableEnhancedNotifications
                                                 call:
                                                     -
                                                         function: SetRegistryValue
@@ -26287,7 +26289,7 @@ actions:
                                                             #   reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\PushNotifications\Backup\Windows.Defender"
                                             -
                                                 name: Disable Defender Antivirus reboot notifications
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::UX_Configuration_SuppressRebootNotification
+                                                docs: https://web.archive.org/web/20250311093528/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::UX_Configuration_SuppressRebootNotification
                                                 call:
                                                     function: SetRegistryValue
                                                     parameters:
@@ -27021,7 +27023,7 @@ actions:
                         children:
                             -
                                 name: Disable prevention of users and apps from accessing dangerous websites
-                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::ExploitGuard_EnableNetworkProtection
+                                docs: https://web.archive.org/web/20250311093520/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::ExploitGuard_EnableNetworkProtection
                                 call:
                                     function: SetRegistryValue
                                     parameters:
@@ -27033,7 +27035,7 @@ actions:
                             -
                                 name: Disable controlled folder access
                                 docs:
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::ExploitGuard_ControlledFolderAccess_EnableControlledFolderAccess
+                                    - https://web.archive.org/web/20250311093526/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::ExploitGuard_ControlledFolderAccess_EnableControlledFolderAccess
                                     - https://web.archive.org/web/20240314124339/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/enable-controlled-folders?view=o365-worldwide
                                 call:
                                     function: SetRegistryValue
@@ -27211,7 +27213,7 @@ actions:
                                 name: Disable auditing events in Defender Application Guard
                                 recommend: strict # Deprecated feature; Not a core system feature, improves privacy
                                 docs:
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppHVSI::AppHVSI_AuditApplicationGuardConfig
+                                    - https://web.archive.org/web/20250311093632/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppHVSI::AppHVSI_AuditApplicationGuardConfig
                                     - https://web.archive.org/web/20240314123716/https://learn.microsoft.com/en-us/windows/security/application-security/application-isolation/microsoft-defender-application-guard/md-app-guard-overview
                                 call:
                                     function: SetRegistryValue
@@ -28339,7 +28341,7 @@ actions:
 
                                     [1]: https://web.archive.org/web/20231127032408/https://www.acepace.net/2019-03-29-upfc/ "What the bleep is UPFC.exe? | www.acepace.net"
                                     [2]: https://web.archive.org/web/20231127032440/https://strontic.github.io/xcyclopedia/library/upfc.exe-299EA296575CCB9D2C1A779062535D5C.html "upfc.exe | Updateability From SCM | STRONTIC | strontic.github.io"
-                                    [3]: https://en.wikipedia.org/w/index.php?title=Service_Control_Manager&oldid=1063455957 "Service Control Manager - Wikipedia | en.wikipedia.org"
+                                    [3]: https://web.archive.org/web/20250313113533/https://en.wikipedia.org/w/index.php?title=Service_Control_Manager&oldid=1063455957 "Service Control Manager - Wikipedia | en.wikipedia.org"
                                     [4]: https://web.archive.org/web/20231129135553/https://blogs.windows.com/windows-insider/2018/07/31/announcing-windows-server-2019-insider-preview-build-17723/ "Announcing Windows Server 2019 Insider Preview Build 17723 | Windows Insider Blog | blogs.windows.com"
                                     [5]: https://web.archive.org/web/20240828090748/https://github.com/undergroundwires/privacy.sexy/issues/272 "[BUG]: Windows automatically re-enables Update after 4-5 days · Issue #272 · undergroundwires/privacy.sexy | github.com/undergroundwires"
                                     [6]: https://web.archive.org/web/20231129135227/https://www.tenforums.com/windows-updates-activation/104945-stop-windows-10-updates-properly-completely-25.html "Stop Windows 10 Updates Properly and Completely Solved - Page 25 - Windows 10 Forums | www.tenforums.com"
@@ -29735,7 +29737,7 @@ actions:
                     These scripts configures Attachment Manager included in Windows that takes further actions for
                     files that you receive or download such as storing classification metadata and notifying other software [1].
 
-                    [1]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
+                    [1]: https://web.archive.org/web/20250311093753/https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
                 children:
                     -
                         name: Disable saving of zone information in downloaded files
@@ -29773,9 +29775,9 @@ actions:
 
                             In clean Windows 10 and 11 installations, this key by default is missing for both `HKCU` and `HKLM`.
 
-                            [1]: https://www.stigviewer.com/stig/windows_10/2019-09-25/finding/V-63841 "Zone information must be preserved when saving attachments. | stigviewer.com"
-                            [2]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
-                            [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AttachmentManager::AM_MarkZoneOnSavedAtttachments "Do not preserve zone information in file attachments | admx.help"
+                            [1]: https://web.archive.org/web/20241125173748/https://www.stigviewer.com/stig/windows_10/2019-09-25/finding/V-63841 "Zone information must be preserved when saving attachments. | stigviewer.com"
+                            [2]: https://web.archive.org/web/20250311093753/https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20250311093757/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AttachmentManager::AM_MarkZoneOnSavedAtttachments "Do not preserve zone information in file attachments | admx.help"
                             [4]: https://web.archive.org/web/20230102223412/https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
                         call:
                             function: SetRegistryValue
@@ -29814,9 +29816,9 @@ actions:
                             `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments\ScanWithAntiVirus` [5],
                             and key is missing for `HKCU`.
 
-                            [1]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
-                            [2]: https://www.stigviewer.com/stig/windows_server_2008_r2_member_server/2015-09-02/finding/V-14270 "The system will notify antivirus when file attachments are opened. | stigviewer.com"
-                            [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AttachmentManager::AM_CallIOfficeAntiVirus "Notify antivirus programs when opening attachments | admx.help"
+                            [1]: https://web.archive.org/web/20250311093753/https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20241206044938/https://www.stigviewer.com/stig/windows_server_2008_r2_member_server/2015-09-02/finding/V-14270 "The system will notify antivirus when file attachments are opened. | stigviewer.com"
+                            [3]: https://web.archive.org/web/20250311093642/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AttachmentManager::AM_CallIOfficeAntiVirus "Notify antivirus programs when opening attachments | admx.help"
                             [4]: https://web.archive.org/web/20230102223412/https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
                             [5]: https://web.archive.org/web/20240829205326/https://github.com/privacysexy-forks/nickel-x64/blob/b3f8c9549e49f2a92b401b3809b210d5f78190ba/WinSxS/Manifests/amd64_windows-defender-service_31bf3856ad364e35_10.0.22621.1_none_273bee824a8ac431.manifest "nickel-x64/WinSxS/Manifests/amd64_windows-defender-service_31bf3856ad364e35_10.0.22621.1_none_273bee824a8ac431.manifest at b3f8c9549e49f2a92b401b3809b210d5f78190ba · privacysexy-forks/nickel-x64 | github.com"
                         call:
@@ -29833,7 +29835,7 @@ actions:
             -
                 name: Disable lock screen app notifications
                 recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-36687
+                docs: https://web.archive.org/web/20241125032529/https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-36687
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -29848,7 +29850,7 @@ actions:
                     -
                         name: Disable online tips
                         recommend: standard
-                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.ControlPanel::AllowOnlineTips
+                        docs: https://web.archive.org/web/20250311093741/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.ControlPanel::AllowOnlineTips
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -29860,7 +29862,7 @@ actions:
                     -
                         name: Disable "Internet File Association" service
                         recommend: standard
-                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellNoUseInternetOpenWith_2
+                        docs: https://web.archive.org/web/20250311093748/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellNoUseInternetOpenWith_2
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -29873,8 +29875,8 @@ actions:
                         name: Disable "Order Prints" picture task
                         recommend: standard
                         docs:
-                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellRemoveOrderPrints_2
-                            - https://www.stigviewer.com/stig/microsoft_windows_server_2012_member_server/2013-07-25/finding/WN12-CC-000042
+                            - https://web.archive.org/web/20250311093757/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellRemoveOrderPrints_2
+                            - https://web.archive.org/web/20241125024212/https://www.stigviewer.com/stig/microsoft_windows_server_2012_member_server/2013-07-25/finding/WN12-CC-000042
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -29886,7 +29888,7 @@ actions:
                     -
                         name: Disable "Publish to Web" option for files and folders
                         recommend: standard
-                        docs: https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-14255
+                        docs: https://web.archive.org/web/20241125032520/https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-14255
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -29898,7 +29900,7 @@ actions:
                     -
                         name: Disable provider list downloads for wizards
                         recommend: standard
-                        docs: https://www.stigviewer.com/stig/windows_10/2017-12-01/finding/V-63621
+                        docs: https://web.archive.org/web/20241125173658/https://www.stigviewer.com/stig/windows_10/2017-12-01/finding/V-63621
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -29925,7 +29927,7 @@ actions:
                     -
                         name: Clear recently opened document history upon exit
                         recommend: strict
-                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.StartMenu::ClearRecentDocsOnExit
+                        docs: https://web.archive.org/web/20250311093803/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.StartMenu::ClearRecentDocsOnExit
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -29937,7 +29939,7 @@ actions:
             -
                 name: Disable Live Tiles push notifications
                 recommend: standard
-                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.Notifications::NoTileNotification
+                docs: https://web.archive.org/web/20250311093808/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.Notifications::NoTileNotification
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -29950,8 +29952,8 @@ actions:
                 name: Disable the "Look For An App In The Store" option
                 recommend: standard
                 docs:
-                    - https://www.stigviewer.com/stig/microsoft_windows_server_2012_member_server/2013-07-25/finding/WN12-CC-000030
-                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellNoUseStoreOpenWith_1
+                    - https://web.archive.org/web/20241125024123/https://www.stigviewer.com/stig/microsoft_windows_server_2012_member_server/2013-07-25/finding/WN12-CC-000030
+                    - https://web.archive.org/web/20250311093907/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellNoUseStoreOpenWith_1
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -30559,7 +30561,7 @@ actions:
             -
                 name: Disable app usage tracking
                 recommend: standard
-                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableMFUTracking
+                docs: https://web.archive.org/web/20250311093915/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableMFUTracking
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -30571,7 +30573,7 @@ actions:
             -
                 name: Disable recent apps
                 recommend: standard
-                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableRecentApps
+                docs: https://web.archive.org/web/20250311094016/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableRecentApps
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -30583,7 +30585,7 @@ actions:
             -
                 name: Disable backtracking
                 recommend: standard
-                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::TurnOffBackstack
+                docs: https://web.archive.org/web/20250311093926/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::TurnOffBackstack
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -34920,7 +34922,7 @@ actions:
 
                     Uninstalling OneDrive is recommended by Microsoft to optimize Windows VDIs [5].
 
-                    [1]: https://en.wikipedia.org/wiki/OneDrive "OneDrive | Wikipedia"
+                    [1]: https://web.archive.org/web/20250313113448/https://en.wikipedia.org/wiki/OneDrive "OneDrive | Wikipedia"
                     [2]: https://en.wikipedia.org/w/index.php?title=OneDrive&oldid=1111615560#Privacy_concerns "OneDrive | Privacy concerns | Wikipedia"
                     [3]: https://web.archive.org/web/20191002180755/https://www.intralinks.com/blog/2014/04/microsoft-onedrive-business-can-alter-files-syncs   "Microsoft OneDrive for Business can Alter Your Files as It Syncs | Intralinks"
                     [4]: https://thehackernews.com/2014/04/microsoft-onedrive-secretly-modifies.html "Microsoft OneDrive Secretly Modifies your BackUp Files | thehackernews.com"
@@ -35235,9 +35237,9 @@ actions:
 
                             These policies do not exist by default in clean installations.
 
-                            [1]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OneDrive::PreventOnedriveFileSync "Prevent the usage of OneDrive for file storage | admx.help"
-                            [2]: https://support.microsoft.com/en-us/office/onedrive-won-t-start-0c158fa6-0cd8-4373-98c8-9179e24f10f2 "OneDrive won't start | support.microsoft.com"
-                            [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OneDrive::PreventOnedriveFileSyncForBlue "Prevent the usage of OneDrive for file storage on Windows 8.1 | admx.help"
+                            [1]: https://web.archive.org/web/20250311093930/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OneDrive::PreventOnedriveFileSync "Prevent the usage of OneDrive for file storage | admx.help"
+                            [2]: https://web.archive.org/web/20250311094414/https://support.microsoft.com/en-us/office/onedrive-won-t-start-0c158fa6-0cd8-4373-98c8-9179e24f10f2 "OneDrive won't start | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20250311094215/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OneDrive::PreventOnedriveFileSyncForBlue "Prevent the usage of OneDrive for file storage on Windows 8.1 | admx.help"
                         call:
                             -
                                 function: SetRegistryValue
@@ -35401,7 +35403,7 @@ actions:
                             [2]: https://web.archive.org/web/20231104142209/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-1803 "Optimizing Windows 10, version 1803, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
                             [3]: https://web.archive.org/web/20231104142301/http://windows.fyicenter.com/5623_OneDrive_Standalone_Update_Task-S-1-_Scheduled_Task_on_Windows_7.html '"OneDrive Standalone Update Task-S-1-..." Scheduled Task on Windows 7 | windows.fyicenter.com'
                             [4]: https://web.archive.org/web/20231104133125/https://renenyffenegger.ch/notes/Windows/security/SID/index "Windows security identifiers (SID) | renenyffenegger.ch"
-                            [5]: https://en.wikipedia.org/w/index.php?title=Windows_Task_Scheduler&oldid=1086196699#Bugs "Windows Task Scheduler - Wikipedia | wikipedia.rg"
+                            [5]: https://web.archive.org/web/20250313113504/https://en.wikipedia.org/w/index.php?title=Windows_Task_Scheduler&oldid=1086196699#Bugs "Bugs | Windows Task Scheduler - Wikipedia | wikipedia.rg"
                             [6]: https://web.archive.org/web/20231104142412/https://learn.microsoft.com/en-us/sharepoint/per-machine-installation "Install the sync app per-machine (Windows) - SharePoint in Microsoft 365 | Microsoft Learn | learn.microsoft.com"
                             [7]: https://web.archive.org/web/20231104142343/https://docs.citrix.com/en-us/tech-zone/build/deployment-guides/microsoft-365-citrix.html "Deployment Guide: Microsoft 365 with Citrix Virtual Apps and Desktops | docs.citrix.com"
                         call:
@@ -35461,7 +35463,7 @@ actions:
 
                     By default, Microsoft Edge doesn't allow uninstallation and has officially declared Microsoft Edge as uninstallable on Windows [3].
 
-                    [1]: https://en.wikipedia.org/w/index.php?title=Microsoft_Edge&oldid=1174053020#New_Edge_(2019%E2%80%93present) "Microsoft Edge - Wikipedia"
+                    [1]: https://web.archive.org/web/20250313113512/https://en.wikipedia.org/w/index.php?title=Microsoft_Edge&oldid=1174053020#New_Edge_(2019%E2%80%93present) "Microsoft Edge - Wikipedia"
                     [2]: https://web.archive.org/web/20230907002709/https://support.microsoft.com/en-us/microsoft-edge/learn-more-about-diagnostic-data-collection-in-microsoft-edge-7fcee15b-39f7-ba02-bc59-9eef622c1a9f "Learn more about diagnostic data collection in Microsoft Edge - Microsoft Support"
                     [3]: https://web.archive.org/web/20230907002011/https://support.microsoft.com/en-us/microsoft-edge/why-can-t-i-uninstall-microsoft-edge-ee150b3b-7d7a-9984-6d83-eb36683d526d "Why can't I uninstall Microsoft Edge? - Microsoft Support"
                 children:
@@ -37665,8 +37667,8 @@ actions:
                     It has privacy implications as it collects data about your usage of the computer such as diagnostics data [3].
 
                     [1]: https://web.archive.org/web/20240314091958/https://en.wikipedia.org/wiki/Features_new_to_Windows_11#Windows_shell "Features new to Windows 11 | Wikipedia"
-                    [2]: https://www.bleepingcomputer.com/news/microsoft/windows-10-news-and-interests-enabled-for-everyone-in-latest-update/ "Windows 10 News and Interests enabled for everyone in latest update | Bleeping Computer"
-                    [3]: https://support.microsoft.com/en-us/windows/stay-up-to-date-with-widgets-7ba79aaa-dac6-4687-b460-ad16a06be6e4 "What data does Microsoft collect? | Widgets | Microsoft"
+                    [2]: https://web.archive.org/web/20250313113717/https://www.bleepingcomputer.com/news/microsoft/windows-10-news-and-interests-enabled-for-everyone-in-latest-update/ "Windows 10 News and Interests enabled for everyone in latest update | Bleeping Computer"
+                    [3]: https://web.archive.org/web/20231101233034/https://support.microsoft.com/en-us/windows/stay-up-to-date-with-widgets-7ba79aaa-dac6-4687-b460-ad16a06be6e4#ID0EDN "What data does Microsoft collect? | Widgets | Microsoft"
                 children:
                     -
                         name: Remove "Widgets" from taskbar
@@ -37740,8 +37742,8 @@ actions:
                 name: Remove "Meet Now" icon from taskbar
                 recommend: strict
                 docs: # Skype feature, introduced in 20H2, KB4580364 update
-                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TaskBar2::HideSCAMeetNow
-                    - https://www.windowscentral.com/how-disable-meet-now-feature-windows-10
+                    - https://web.archive.org/web/20250311094146/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TaskBar2::HideSCAMeetNow
+                    - https://web.archive.org/web/20250311094702/https://www.windowscentral.com/how-disable-meet-now-feature-windows-10
                 call:
                     function: SetRegistryValue
                     parameters:
@@ -42241,7 +42243,7 @@ functions:
                 function: Comment
                 parameters:
                     codeComment: >-
-                        Clear register values from "{{ $keyPath }}"
+                        Clear registry values from "{{ $keyPath }}"
                         {{ with $deleteSubkeyValuesRecursively }}(recursively){{ end }}
             -
                 function: RunPowerShell
