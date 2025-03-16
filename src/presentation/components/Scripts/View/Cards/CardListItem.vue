@@ -169,7 +169,6 @@ $card-horizontal-gap    : $card-gap;
     @include hover-or-touch {
       background-color: $color-secondary;
       color: $color-on-secondary;
-      transform: scale(1.05);
     }
     .card__inner__title {
       display: flex;
