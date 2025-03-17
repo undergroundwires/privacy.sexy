@@ -11,15 +11,9 @@ const PluginOptions = {
   ].map(buildUrlPattern),
 };
 
-/** @type {import('unified-engine').Options} */
-const EngineOptions = {
-  ignorePatterns: ['CHANGELOG.md'],
-};
-
 /** @type {import('unified-engine').Preset} */
 export default {
   plugins: [[remarkLintNoDeadUrls, PluginOptions]],
-  settings: EngineOptions,
 };
 
 function buildUrlPattern(fqdn) {

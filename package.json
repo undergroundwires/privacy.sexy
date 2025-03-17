@@ -28,7 +28,7 @@
     "lint:md": "markdownlint **/*.md --ignore node_modules",
     "lint:md:consistency": "remark . --frail --use remark-preset-lint-consistent",
     "lint:md:relative-urls": "remark . --frail --use remark-validate-links",
-    "lint:md:external-urls": "remark . --frail --rc-path .remark-lint-no-dead-urls.js",
+    "lint:md:external-urls": "remark . --frail --rc-path .remark-lint-no-dead-urls.js --ignore-pattern CHANGELOG.md",
     "lint:yaml": "yamllint **/*.yaml --ignore=node_modules/**/*.yaml",
     "lint:pylint": "pylint **/*.py",
     "postinstall": "electron-builder install-app-deps",

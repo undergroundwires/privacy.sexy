@@ -12,7 +12,7 @@ As a small open source project with small community, it can sometimes take a lon
 
 ## Pull request process
 
-Your pull requests are actively welcomed. We collaborate using [GitHub flow](https://docs.github.com/en/get-started/quickstart/github-flow).
+Your pull requests are actively welcomed. We collaborate using [GitHub flow](https://web.archive.org/web/20250317121135/https://docs.github.com/en/get-started/using-github/github-flow).
 
 The steps:
 
