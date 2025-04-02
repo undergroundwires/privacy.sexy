@@ -32204,7 +32204,7 @@ actions:
                             #       References like "Windows Phone" (an operating system, not an app) and "Windows Phone Connector" (an app exclusively for macOS)
                             #       suggest a mix-up with unrelated products.
                             -
-                                name: Remove "Phone Companion" app # Deprecated in newer Windows
+                                name: Remove "Phone Companion" app (outdated) # Deprecated in newer Windows
                                 recommend: standard # Deprecated, impact on modern systems would be minimal
                                 docs: |-
                                     This script removes the "Phone Companion" app.
@@ -32242,7 +32242,7 @@ actions:
                                         packageName: Microsoft.WindowsPhone # Get-AppxPackage Microsoft.WindowsPhone
                                         publisherId: 8wekyb3d8bbwe
                             -
-                                name: Remove "Microsoft Phone" app # Windows 10 Mobile app, deprecated in newer Windows
+                                name: Remove "Microsoft Phone" app (outdated) # Windows 10 Mobile app, deprecated in newer Windows
                                 recommend: standard # Deprecated, impact on modern systems would be minimal
                                 docs: |-
                                     This script removes the "Microsoft Phone" app.
@@ -32398,6 +32398,90 @@ actions:
                                     parameters:
                                         packageName: Microsoft.Windows.CallingShellApp # Get-AppxPackage Microsoft.Windows.CallingShellApp
                                         publisherId: cw5n1h2txyewy
+                            -
+                                name: Remove "Cross Device Experience Host" app
+                                recommend: strict
+                                docs: |-
+                                    This script uninstalls and disables the Cross Device Experience Host app, which connects your Windows PC to mobile devices.
+
+                                    Cross Device Experience Host enables interactions between your Windows PC and mobile devices [1].
+                                    Removing this app will prevent you from using this feature to connect to your mobile devices [2] [3].
+
+                                    It integrates with the **Phone Link** app, extending its functionalities [4] [5].
+                                    **Phone Link** lets you view and manage your Android phone's content (photos, messages, notifications) directly from your Windows PC [5].
+                                    This script does not uninstall or disable **Phone Link** directly, but it removes components that **Phone Link** relies on for cross-device features.
+
+                                    The app provides several features:
+
+                                    - Using your Android phone's camera as a webcam in Windows applications [3]
+                                    - Accessing photos and screenshots from your mobile device on your PC [6]
+                                    - Managing your phone's files through Windows File Explorer [4] [5]
+                                    - Syncing notifications and messages from your phone to your PC [4] [5]
+
+                                    The app requires access to all system resources and writes registry entries and files that remain on your system even after uninstallation [1].
+
+                                    Removing this app enhances privacy by stopping device data sharing and eliminating a data collection path.
+                                    The app has been reported to cause high CPU usage in some instances [4], so removing it may improve system performance.
+
+                                    This script enhances security by eliminating a connection pathway between your devices.
+                                    Any software that enables device communication creates additional entry points that may be exploited.
+                                    By removing this app, you reduce the number of ways your computer can be accessed or compromised through your mobile device.
+
+                                    [Microsoft Store Page](https://apps.microsoft.com/detail/9ntxgkq8p7n0?hl=en-US&gl=US)
+
+                                    > **Caution:** Removing this app will:
+                                    > - Disable cross-device **Phone Link** features
+                                    > - Prevent using your phone's camera as a webcam in Windows
+
+                                    ### Overview of default preinstallation
+
+                                    The cross-device camera functionality was initially introduced with Pixel phones through the beta version of Android 14 in 2023 [7].
+                                    This app comes pre-installed on certain versions of Windows [6] [8] [9].
+
+                                    | OS | Version | Existence |
+                                    | -- |:-------:|:---------:|
+                                    | Windows 10 | 19H2 | ❌ |
+                                    | Windows 10 | 20H2 | ❌ |
+                                    | Windows 10 | 21H2 | ❌ |
+                                    | Windows 10 | 22H2 | ❌ |
+                                    | Windows 11 | 21H2 | ❌ |
+                                    | Windows 11 | 22H2 | ❌ |
+                                    | Windows 11 | 23H2 | ❌ |
+                                    | Windows 11 | 24H2 | ✅ |
+
+                                    ### Technical Details
+
+                                    This script:
+
+                                    - Removes this app with ID `MicrosoftWindows.CrossDevice`.
+                                        - This app is a system component [9] [10].
+                                        - It is mandatory for the cross-device connectivity feature to work [6] [7].
+                                    - Disables this feature using registry value `HKCU\Software\Microsoft\Windows\CurrentVersion\Mobility!CrossDeviceEnabled` [2] [9].
+                                        - This setting is mandatory to use features from this app [6].
+
+                                    [1]: https://apps.microsoft.com/detail/9ntxgkq8p7n0?hl=en-US&gl=US "Cross Device Experience Host - Microsoft Apps | apps.microsoft.com"
+                                    [2]: https://web.archive.org/web/20250402053523/https://www.elevenforum.com/t/enable-or-disable-allow-pc-to-access-your-mobile-devices-in-windows-11.20862/ "Enable or Disable Allow PC to Access your Mobile Devices in Windows 11 | Windows 11 Forum | www.elevenforum.com"
+                                    [3]: https://web.archive.org/web/20250402053545/https://blogs.windows.com/windows-insider/2024/02/29/ability-to-use-a-mobile-devices-camera-as-a-webcam-on-your-pc-begins-rolling-out-to-windows-insiders/ "Ability to use a mobile device’s camera as a webcam on your PC begins rolling out to Windows Insiders | Windows Insider Blog | blogs.windows.com"
+                                    [4]: https://web.archive.org/web/20250402055123/https://www.neowin.net/news/microsoft-windows-11-cross-device-service-high-cpu-usage-bug-is-real/ "Ability to use a mobile device’s camera as a webcam on your PC begins rolling out to Windows Insiders | Windows Insider Blog | www.neowin.net"
+                                    [5]: https://web.archive.org/web/20250402053509/https://xentricsolutions.com/blog/access-your-android-phones-files-from-windows-this-new-feature-is-groundbreaking/ "Access your Android phone’s files from Windows? | xentricsolutions.com"
+                                    [6]: https://web.archive.org/web/20250402053629/https://blogs.windows.com/windows-insider/2024/02/16/announcing-windows-11-insider-preview-build-22635-3209-beta-channel/ "Announcing Windows 11 Insider Preview Build 22635.3209 (Beta Channel) | Windows Insider Blog | blogs.windows.com"
+                                    [7]: https://web.archive.org/web/20250402053452/https://newsukraine.rbc.ua/news/new-feature-related-to-smartphones-introduced-1709337609.html "New feature related to smartphones introduced in Windows 11 - Details | RBC-Ukraine | newsukraine.rbc.ua"
+                                    [8]: https://web.archive.org/web/20250312200452/https://www.manelrodero.com/osd/windows11 "Windows 11 | www.manelrodero.com"
+                                    [9]: https://web.archive.org/web/20250402053515/https://github.com/undergroundwires/privacy.sexy/discussions/464 "Disable Cross Device Experience Host · undergroundwires/privacy.sexy · Discussion #464 | github.com"
+                                call:
+                                    -
+                                        function: UninstallStoreApp
+                                        parameters:
+                                            packageName: MicrosoftWindows.CrossDevice # Get-AppxPackage MicrosoftWindows.CrossDevice
+                                            publisherId: cw5n1h2txyewy
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Mobility
+                                            valueName: CrossDeviceEnabled
+                                            dataType: REG_DWORD
+                                            data: "0"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
                     -
                         name: Remove "Microsoft Remote Desktop" app
                         docs: |-
