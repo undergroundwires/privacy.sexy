@@ -38613,12 +38613,6 @@ actions:
                             dataType: REG_DWORD
                             data: '2'
                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
-            -
-                name: Run script on startup [EXPERIMENTAL]
-                code: |-
-                    del /f /q %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
-                    copy "%~dpnx0" "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"
-                revertCode: del /f /q %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
 functions:
     -
         name: TerminateRunningProcess # 💡 If applicable, consider using `TerminateAndBlockExecution` in script calls.
