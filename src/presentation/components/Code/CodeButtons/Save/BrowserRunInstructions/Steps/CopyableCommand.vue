@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { defineComponent, shallowRef } from 'vue';
-import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
+import TooltipWrapper from '@/presentation/components/Shared/Tooltip/TooltipWrapper.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 

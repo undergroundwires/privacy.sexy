@@ -31,13 +31,14 @@
 
 <script lang="ts">
 import {
-  useFloating, arrow, shift, flip, type Placement, offset, type Side, type Coords, autoUpdate,
+  useFloating, arrow, shift, flip, type Placement, offset, autoUpdate,
 } from '@floating-ui/vue';
 import { defineComponent, shallowRef, computed } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/Resize/UseResizeObserverPolyfill';
 import { throttle } from '@/application/Common/Timing/Throttle';
 import { type TargetEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
 import { injectKey } from '@/presentation/injectionSymbols';
+import { getArrowStyles } from './TooltipArrowStyles';
 import type { CSSProperties } from 'vue';
 
 const GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX = 2;
@@ -85,17 +86,11 @@ export default defineComponent({
       update();
     }, 400, { excludeLeadingCall: true }), eventListener);
 
-    const arrowStyles = computed<CSSProperties>(() => {
-      if (!middlewareData.value.arrow) {
-        return {
-          display: 'none',
-        };
-      }
-      return {
-        ...getArrowPositionStyles(middlewareData.value.arrow, placement.value),
-        ...getArrowAppearanceStyles(),
-      };
-    });
+    const arrowStyles = computed<CSSProperties>(() => getArrowStyles({
+      calculatedArrowCoords: middlewareData.value.arrow,
+      tooltipPlacement: placement.value,
+      arrowSizeInPx: ARROW_SIZE_IN_PX,
+    }));
 
     return {
       tooltipDisplayElement,
@@ -107,40 +102,6 @@ export default defineComponent({
     };
   },
 });
-
-function getArrowAppearanceStyles(): CSSProperties {
-  return {
-    width: `${ARROW_SIZE_IN_PX * 2}px`,
-    height: `${ARROW_SIZE_IN_PX * 2}px`,
-    rotate: '45deg',
-  };
-}
-
-function getArrowPositionStyles(
-  coordinations: Partial<Coords>,
-  placement: Placement,
-): CSSProperties {
-  const { x, y } = coordinations; // either X or Y is calculated
-  const oppositeSide = getCounterpartBoxOffsetProperty(placement);
-  const newStyle: CSSProperties = {
-    [oppositeSide]: `-${ARROW_SIZE_IN_PX}px`,
-    position: 'absolute',
-    left: x ? `${x}px` : undefined,
-    top: y ? `${y}px` : undefined,
-  };
-  return newStyle;
-}
-
-function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSProperties {
-  const sideCounterparts: Record<Side, keyof CSSProperties> = {
-    top: 'bottom',
-    right: 'left',
-    bottom: 'top',
-    left: 'right',
-  };
-  const currentSide = placement.split('-')[0] as Side;
-  return sideCounterparts[currentSide];
-}
 
 function setupTransitionEndEvents(
   handler: () => void,

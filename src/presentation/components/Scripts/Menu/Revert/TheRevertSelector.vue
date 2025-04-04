@@ -58,7 +58,7 @@ import {
   defineComponent, computed,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
+import TooltipWrapper from '@/presentation/components/Shared/Tooltip/TooltipWrapper.vue';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { Script } from '@/domain/Executables/Script/Script';
 import MenuOptionList from '../MenuOptionList.vue';

@@ -89,7 +89,7 @@ import {
   defineComponent, computed,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
+import TooltipWrapper from '@/presentation/components/Shared/Tooltip/TooltipWrapper.vue';
 import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';

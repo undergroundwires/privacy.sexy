@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
+import TooltipWrapper from '@/presentation/components/Shared/Tooltip/TooltipWrapper.vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 
 export default defineComponent({

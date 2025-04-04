@@ -100,7 +100,7 @@ We use homegrown components over third-party solutions or comprehensive UI frame
 Shared components include:
 
 - [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue): Renders modal windows.
-- [TooltipWrapper.vue](./../src/presentation/components/Shared/TooltipWrapper.vue): Provides tooltip functionality for improved information accessibility.
+- [TooltipWrapper.vue](./../src/presentation/components/Shared/Tooltip/TooltipWrapper.vue): Provides tooltip functionality for improved information accessibility.
 - [FlatButton.vue](./../src/presentation/components/Shared/FlatButton.vue): Creates flat-style buttons for a unified and consistent user interface.
 
 ## Desktop builds
