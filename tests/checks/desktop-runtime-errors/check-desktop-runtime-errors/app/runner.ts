@@ -3,7 +3,7 @@ import { log, LogLevel, die } from '../utils/log';
 import { captureScreen } from './system-capture/screen-capture';
 import { captureWindowTitles } from './system-capture/window-title-capture';
 
-const TERMINATION_GRACE_PERIOD_IN_SECONDS = 20;
+const TERMINATION_GRACE_PERIOD_IN_SECONDS = 4 /* minutes */ * 60;
 const TERMINATION_CHECK_INTERVAL_IN_MS = 1000;
 const WINDOW_TITLE_CAPTURE_INTERVAL_IN_MS = 100;
 
@@ -157,7 +157,7 @@ async function onExecutionLimitReached(
   if (enableScreenshot) {
     await captureScreen(screenshotPath);
   }
-
+  log('Application execution timed out.'); // TODO: Best log message possible?
   processDetails.explicitlyKilled = true;
   await terminateGracefully(processDetails.process);
   finishProcess(processDetails);
