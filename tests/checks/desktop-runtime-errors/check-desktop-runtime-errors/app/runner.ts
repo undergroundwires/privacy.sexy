@@ -36,7 +36,7 @@ export function runApplication(
     if (process.pid === undefined) {
       throw new Error('Unknown PID');
     }
-    beginCapturingTitles(process.pid, processDetails);
+    startWindowTitleCapturing(process.pid, processDetails);
     handleProcessEvents(
       processDetails,
       enableScreenshot,
@@ -78,11 +78,34 @@ function logDetails(
   );
 }
 
-function beginCapturingTitles(
+function startWindowTitleCapturing(
   processId: number,
   processDetails: ApplicationProcessDetails,
 ): void {
-  const capture = async () => {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  const shouldCapture = () => !processDetails.isDone && !processDetails.explicitlyKilled;
+
+  const scheduleNextCapture = () => {
+    if (!shouldCapture()) {
+      return;
+    }
+    timeoutId = setTimeout(captureAndScheduleNext, WINDOW_TITLE_CAPTURE_INTERVAL_IN_MS);
+  };
+
+  const cancelNextCapture = () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+  };
+
+  const captureAndScheduleNext = async () => {
+    if (!shouldCapture()) {
+      cancelNextCapture();
+      return;
+    }
+
     const titles = await captureWindowTitles(processId);
 
     (titles || []).forEach((title) => {
@@ -95,12 +118,10 @@ function beginCapturingTitles(
       }
     });
 
-    if (!processDetails.isDone) {
-      setTimeout(capture, WINDOW_TITLE_CAPTURE_INTERVAL_IN_MS);
-    }
+    scheduleNextCapture();
   };
 
-  capture();
+  captureAndScheduleNext();
 }
 
 function handleProcessEvents(
