@@ -3,7 +3,7 @@ import { log, LogLevel, die } from '../utils/log';
 import { captureScreen } from './system-capture/screen-capture';
 import { captureWindowTitles } from './system-capture/window-title-capture';
 
-const TERMINATION_GRACE_PERIOD_IN_SECONDS = 20;
+const TERMINATION_GRACE_PERIOD_IN_SECONDS = 5 /* minutes */ * 60;
 const TERMINATION_CHECK_INTERVAL_IN_MS = 1000;
 const WINDOW_TITLE_CAPTURE_INTERVAL_IN_MS = 100;
 
@@ -72,7 +72,7 @@ function logDetails(
   log(
     [
       'Executing the app to check for errors...',
-      `Maximum execution time: ${executionDurationInSeconds}`,
+      `Maximum execution time: ${executionDurationInSeconds} seconds`,
       `Application path: ${appFile}`,
     ].join('\n\t'),
   );
@@ -178,7 +178,7 @@ async function onExecutionLimitReached(
   if (enableScreenshot) {
     await captureScreen(screenshotPath);
   }
-
+  log('Application execution timed out. Initiating graceful termination.');
   processDetails.explicitlyKilled = true;
   await terminateGracefully(processDetails.process);
   finishProcess(processDetails);

@@ -4,10 +4,13 @@ import {
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { main } from './check-desktop-runtime-errors/main';
 import { COMMAND_LINE_FLAGS, CommandLineFlag } from './check-desktop-runtime-errors/cli-args';
+import { APP_EXECUTION_DURATION_IN_SECONDS } from './check-desktop-runtime-errors/config';
 
 describe('desktop runtime error checks', () => {
   const { waitForExitCode } = useInterceptedProcessExitOrCompletion(beforeAll, afterAll);
-  it('should successfully execute the main function and exit with a zero status code', async () => {
+  it('should successfully execute the main function and exit with a zero status code', {
+    timeout: APP_EXECUTION_DURATION_IN_SECONDS + 30 /* minutes */ * 60000,
+  }, async () => {
     // arrange
     setCommandLineFlagsFromEnvironmentVariables();
     // act
@@ -19,8 +22,6 @@ describe('desktop runtime error checks', () => {
       `Test failed with exit code ${exitCode}; expected 0.`,
       'Examine preceding logs to identify errors.',
     ]));
-  }, {
-    timeout: 60 /* minutes */ * 60000,
   });
 });
 
