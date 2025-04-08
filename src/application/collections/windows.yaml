@@ -30988,8 +30988,28 @@ actions:
                     -
                         name: Remove "Cortana" app
                         recommend: standard
-                        docs: |-
+                        docs: |- # TODO: Improve
+                            This app
+
                             [Microsoft Store Page](https://web.archive.org/web/20231003195834/https://apps.microsoft.com/store/detail/cortana/9NFFX4SZZ23L)
+                            
+                            ### Technical Details
+
+                            This scripts uninstall store app with id `Microsoft.549981C3F5F10`.
+
+                            It also disables its associated auto start app `CortanaStartupId`.
+                            According to tests, this app exists on:
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ❌ |
+                            | Windows 10 | 20H2 | ❌ |
+                            | Windows 10 | 21H2 | ❌ |
+                            | Windows 10 | 22H2 | ❌ |
+                            | Windows 11 | 21H2 | ✅ |
+                            | Windows 11 | 22H2 | ✅ |
+                            | Windows 11 | 23H2 | ✅ |
+                            | Windows 11 | 24H2 | ❌ |
 
                             ### Overview of default preinstallation
 
@@ -31004,13 +31024,24 @@ actions:
                             | Windows 11 | 21H2 | ✅ |
                             | Windows 11 | 22H2 | ✅ |
                             | Windows 11 | 23H2 | ✅ |
+                            | Windows 11 | 24H2 | ❌ |
 
                             [1]: https://web.archive.org/web/20240613063743/https://www.sita.co.za/sites/default/files/documents/Product_Certification/TASRR40_Windows_optimisation.pdf "List of installed apps: Windows 11 | TAS Research Report: Desktop Windows Optimisation | www.sita.co.za"
                         call:
-                            function: UninstallStoreApp
-                            parameters:
-                                packageName: Microsoft.549981C3F5F10 # Get-AppxPackage Microsoft.549981C3F5F10
-                                publisherId: 8wekyb3d8bbwe
+                            -
+                                function: UninstallStoreApp
+                                parameters:
+                                    packageName: Microsoft.549981C3F5F10 # Get-AppxPackage Microsoft.549981C3F5F10
+                                    publisherId: 8wekyb3d8bbwe
+                            -
+                                function: DisableStoreAppAutoStart
+                                parameters:
+                                    packageName: Microsoft.549981C3F5F10
+                                    publisherId: 8wekyb3d8bbwe
+                                    taskName: CortanaStartupId
+                                    enabledByDefault: 'true' # reg query "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.549981C3F5F10_8wekyb3d8bbwe\CortanaStartupId"
+                                    minimumWindowsVersion: Windows11-21H2
+                                    maximumWindowsVersion: Windows11-23H2
                     -
                         name: Remove "App Installer" app
                         docs: |-
@@ -43529,3 +43560,149 @@ functions:
                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since EdgeUpdate ≥ 1.3.187.41
                     minimumWindowsVersion: Windows11-FirstRelease # No TrustedInstaller is needed on Windows 10, but the functionality is missing so the script won't work.
                     elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ✅ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
+    -
+        name: DisableStoreAppAutoStart
+        parameters:
+            - name: packageName
+            - name: publisherId
+            - name: taskName
+            - name: enabledByDefault
+              optional: true
+            - name: missingByDefault
+              optional: true
+            - name: minimumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+            - name: maximumWindowsVersion   # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
+        # Marked refactor-with-if-syntax:
+        #   `enabledByDefault` and `disabledByDefault` can be merged
+        docs: |- # TODO: Revise
+            This function disables startup items of an UWP app [1].
+
+            These startup items are registered using a special mechanims, not visible via conventional ways [1].
+
+            This function disables them using registry entries.
+
+            You can find all entries using:
+
+            ```ps1
+            $basePath = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData"
+            $results = @()
+            if (Test-Path $basePath) {
+                Get-ChildItem -Path $basePath -ErrorAction SilentlyContinue | ForEach-Object {
+                    $packagePath = $_.PSPath
+                    $packageDir = $_.PSChildName
+                    if ($packageDir -match "(.+)_(.+)") {
+                        $packageName = $matches[1]
+                        $publisherId = $matches[2]
+                    } else {
+                        $packageName = $packageDir
+                        $publisherId = "Unknown"
+                    }
+                    Get-ChildItem -Path $packagePath -ErrorAction SilentlyContinue | ForEach-Object {
+                        $subkeyPath = $_.PSPath
+                        $subkeyName = $_.PSChildName
+                        $properties = Get-ItemProperty -Path $subkeyPath -Name "State" -ErrorAction SilentlyContinue
+                        $hasState = $properties -ne $null -and $properties.State -ne $null
+                        if ($hasState) {
+                            $fullPath = "$subkeyPath\State"
+                            $fullPath = $fullPath.Replace("Microsoft.PowerShell.Core\Registry::", "")
+                            $fullPath = $fullPath.Replace("HKCU:", "HKCU")
+                            $results += [PSCustomObject]@{
+                                FullPath = $fullPath
+                                PackageName = $packageName
+                                PublisherId = $publisherId
+                                TaskName = $subkeyName
+                            }
+                        }
+                    }
+                }
+            }
+            $results | Format-Table -AutoSize PackageName, PublisherId, TaskName, FullPath
+            ```
+
+            ### Overview of default existence
+
+            According to tests, these startup tasks exists only on Windows 11.
+
+            | Task                          | Package                       | 21H2 | 22H2 | 23H2 | 24H2 |
+            |-------------------------------|-------------------------------|:----:|:----:|:----:|:----:|
+            | `CortanaStartupId`            | `Microsoft.549981C3F5F10`     |  ✅  |  ✅  |  ✅  |  ❌  |
+            | `StartTerminalOnLoginTask`    | `Microsoft.WindowsTerminal`   |  ❌  |  ✅  |  ✅  |  ✅  |
+
+            According to tests, these tasks get enabled after some usage on Windows 11 Pro 24H2:
+
+            | Task                                  | Package Name   | Publisher ID |
+            |---------------------------------------|----------------|--------------|
+            | `Copilot.StartupTaskId`               | `Microsoft.Copilot`                   | `8wekyb3d8bbwe` |
+            | `Xbox.App.Tasks.FullTrustComponent`   | `Microsoft.GamingApp`                 | `8wekyb3d8bbwe` |
+            | `WebViewHostStartupId`                | `Microsoft.MicrosoftOfficeHub`        | `8wekyb3d8bbwe` |
+            | `AutoStartTask`                       | `Microsoft.PowerAutomateDesktop`      | `8wekyb3d8bbwe` |
+            | `ToDoStartupId`                       | `Microsoft.Todos`                     | `8wekyb3d8bbwe` |
+            | `StartTerminalOnLoginTask`            | `Microsoft.WindowsTerminal`           | `8wekyb3d8bbwe` |
+            | `YourPhone.Start`                     | `Microsoft.YourPhone`                 | `8wekyb3d8bbwe` |
+            | `CrossDevice.Start`                   | `MicrosoftWindows.CrossDevice`        | `cw5n1h2txyewy` |
+            | `TeamsTfwStartupTask`                 | `MSTeams`                             | `8wekyb3d8bbwe` |
+
+            ### Technical Details
+
+            It sets `State` to `Disabled`.
+            The default is Disabled, so in the normal case, the user must run the app at least once explicitly [3].
+            Here are the possible values for the `State` [2] [3]:
+
+            | Value | Name | Description |
+            | ----- | ---- | ----------- |
+            | `0`   | Disabled          | The task is disabled. |
+            | `1`   | DisabledByUser    | The task was disabled by the user. It can only be re-enabled by the user. |
+            | `2`   | Enabled           | The task is enabled. |
+            | `3`   | DisabledByPolicy	| The task is disabled by the administrator or group policy. Platforms that don't support startup tasks also report DisabledByPolicy. |
+            | `4`   | EnabledByPolicy   | The task is enabled by the administrator or group policy. |
+            
+            [1]: https://web.archive.org/web/20250414111920/https://stackoverflow.com/questions/63746294/how-to-use-powershell-to-manage-startup-items-of-uwp-app-in-windwos-10/63759561#63759561 "c# - How to use powershell to manage startup items of uwp app in windwos 10? - Stack Overflow | stackoverflow.com"
+            [2]: https://web.archive.org/web/20250414111811/https://learn.microsoft.com/en-us/uwp/api/windows.applicationmodel.startuptaskstate?view=winrt-19041 "StartupTaskState Enum (Windows.ApplicationModel) - Windows apps | Microsoft Learn | learn.microsoft.com"
+            [3]: https://web.archive.org/web/20190629014652/https://windowsadmins.com/configure-your-app-to-start-at-log-in/ "Configure your app to start at log-in - Windows Admins | windowsadmins.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: >-
+                        Disable auto-start task '{{ $taskName }}' from {{ $packageName }}_{{ $publisherId }}
+                    revertCodeComment: >-
+                        {{ with $enabledByDefault }}
+                            Enable auto-start task '{{ $taskName }}' from {{ $packageName }}_{{ $publisherId }}
+                        {{ end }}{{ with $missingByDefault }}
+                            Remove disabling auto-start task '{{ $taskName }}' from {{ $packageName }}_{{ $publisherId }}
+                        {{ end }}
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\{{ $packageName }}_{{ $publisherId }}\{{ $taskName }}
+                    valueName: State
+                    dataType: REG_DWORD
+                    data: "0" # Options: 0: Disabled | 1: DisabledByUser | 2: EnabledByUser | 3: DisabledByPolicy | 4: EnabledByPolicy
+                    dataOnRevert: '{{ with $enabledByDefault }}true{{ end }}'
+                    deleteOnRevert: '{{ with $missingByDefault }}true{{ end }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    # maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\{{ $packageName }}_{{ $publisherId }}\{{ $taskName }}
+                    valueName: LastDisabledTime
+                    dataType: REG_DWORD
+                    data: (Get-Date -Date ((Get-Date).DateTime) -UFormat %s)
+                    evaluateDataAsPowerShell: 'true'
+                    deleteOnRevert: 'true' # Users do not disable by default on clean installation
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    # maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\{{ $packageName }}_{{ $publisherId }}\{{ $taskName }}
+                    valueName: UserEnabledStartupOnce
+                    dataType: REG_DWORD
+                    data: "0"
+                    dataOnRevert: '{{ with $enabledByDefault }}0{{ end }}' # `0` for apps by default
+                    deleteOnRevert: '{{ with $missingByDefault }}true{{ end }}'
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    # maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
