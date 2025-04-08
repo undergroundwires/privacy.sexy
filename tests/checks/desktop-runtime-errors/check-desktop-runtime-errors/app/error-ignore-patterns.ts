@@ -29,7 +29,7 @@ export const STDERR_IGNORE_PATTERNS: readonly RegExp[] = [
   /*
     OS: Linux (GitHub Actions)
     Background:
-      Occur during Electron's GPU process initialization. Common in headless CI/CD environments.
+      These errors occur during during Electron's GPU process initialization. Common in headless CI/CD environments.
       Not indicative of a problem in typical desktop environments.
     Original logs:
       [3548:0828/162502.835833:ERROR:viz_main_impl.cc(186)] Exiting GPU process due to errors during initialization
@@ -38,4 +38,16 @@ export const STDERR_IGNORE_PATTERNS: readonly RegExp[] = [
   */
   /ERROR:viz_main_impl\.cc.*?Exiting GPU process due to errors during initialization/,
   /ERROR:command_buffer_proxy_impl\.cc.*?ContextResult::kTransientFailure: Failed to send GpuControl\.CreateCommandBuffer\./,
+
+  /*
+   OS: macOS (GitHub Actions)
+   Background:
+      Time Machine backup service XPC connection errors occur in CI environments.
+      These errors happen because Electron apps on macOS automatically attempt to
+      connect to system services even when they're not available in CI.
+   Original logs:
+      2025-04-07 09:31:01.530 privacy.sexy Helper[15420:39156] XPC error for connection com.apple.backupd.sandbox.xpc: Connection invalid
+      2025-04-07 09:31:01.530 privacy.sexy Helper[15420:39151] XPC error for connection com.apple.backupd.sandbox.xpc: Connection invalid
+  */
+  /privacy\.sexy Helper\[\d+:\d+\] XPC error for connection com\.apple\.backupd\.sandbox\.xpc: Connection invalid/,
 ];
