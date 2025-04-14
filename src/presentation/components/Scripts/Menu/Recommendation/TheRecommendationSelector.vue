@@ -81,12 +81,32 @@
         />
       </template>
     </TooltipWrapper>
+
+    <!-- Load from file -->
+    <TooltipWrapper>
+      <MenuOptionListItem
+        label="Import"
+        :enabled="!isImporting"
+        @click="loadFromFile"
+      />
+      <template #tooltip>
+        <RecommendationDocumentation
+          :privacy-rating="0"
+          description="Restores a previously saved script selection from a JSON file."
+          recommendation="..."
+          :considerations="[
+            'All current selections will be cleared before import',
+            'Only .json files exported by privacy.sexy are supported',
+          ]"
+        />
+      </template>
+    </TooltipWrapper>
   </MenuOptionList>
 </template>
 
 <script lang="ts">
 import {
-  defineComponent, computed,
+  defineComponent, computed, ref,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/Tooltip/TooltipWrapper.vue';
@@ -96,6 +116,12 @@ import MenuOptionListItem from '../MenuOptionListItem.vue';
 import { setCurrentRecommendationStatus, getCurrentRecommendationStatus } from './RecommendationStatusHandler';
 import { RecommendationStatusType } from './RecommendationStatusType';
 import RecommendationDocumentation from './RecommendationDocumentation.vue';
+
+interface SavedSelection {
+  version?: string;
+  timestamp?: string;
+  selectedScripts: string[];
+}
 
 export default defineComponent({
   components: {
@@ -109,6 +135,7 @@ export default defineComponent({
       currentSelection, modifyCurrentSelection,
     } = injectKey((keys) => keys.useUserSelectionState);
     const { currentState } = injectKey((keys) => keys.useCollectionState);
+    const { dialog } = injectKey((keys) => keys.useDialog);
 
     const currentCollection = computed<CategoryCollection>(() => currentState.value.collection);
 
@@ -122,6 +149,8 @@ export default defineComponent({
       },
     });
 
+    const isImporting = ref(false);
+
     function selectRecommendationStatusType(type: RecommendationStatusType) {
       if (currentRecommendationStatusType.value === type) {
         return;
@@ -134,10 +163,103 @@ export default defineComponent({
       });
     }
 
+    async function loadFromFile() {
+      if (isImporting.value) {
+        return;
+      }
+
+      try {
+        isImporting.value = true;
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+
+        const file = await new Promise<File>((resolve, reject) => {
+          input.onchange = (event) => {
+            const { files } = (event.target as HTMLInputElement);
+            if (files && files.length > 0) {
+              resolve(files[0]);
+            } else {
+              reject(new Error('No file selected'));
+            }
+          };
+          input.click();
+        });
+
+        const content = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = () => reject(new Error('Failed to read file'));
+          reader.readAsText(file);
+        });
+
+        let savedSelection: SavedSelection;
+        try {
+          savedSelection = JSON.parse(content) as SavedSelection;
+          if (!Array.isArray(savedSelection.selectedScripts)) {
+            throw new Error('Invalid file format: missing or invalid scripts array');
+          }
+        } catch (parseError) {
+          dialog.showError('Import Error', 'The selected file is not a valid selection file.');
+          return;
+        }
+
+        // Update the current selection state
+        await modifyCurrentSelection((selection) => {
+          // First deselect all scripts
+          selection.scripts.deselectAll();
+
+          // Validate and apply each script selection
+          const validScripts = savedSelection.selectedScripts.filter(
+            (scriptId) => {
+              try {
+                return currentCollection.value.getScript(scriptId) !== undefined;
+              } catch {
+                return false;
+              }
+            },
+          );
+
+          if (validScripts.length === 0) {
+            throw new Error('No valid scripts found in the imported selection');
+          }
+
+          if (validScripts.length !== savedSelection.selectedScripts.length) {
+            dialog.showError(
+              'Import Warning',
+              'Some scripts from the imported selection were not found in the current collection.',
+            );
+          }
+
+          // Apply valid script selections
+          validScripts.forEach((scriptId) => {
+            selection.scripts.processChanges({
+              changes: [{
+                scriptId,
+                newStatus: {
+                  isSelected: true,
+                  isReverted: false,
+                },
+              }],
+            });
+          });
+        });
+      } catch (error) {
+        if (error instanceof Error && error.message !== 'No file selected') {
+          dialog.showError('Import Error', `Failed to import selection: ${error.message}`);
+          console.error('Failed to load selection:', error);
+        }
+      } finally {
+        isImporting.value = false;
+      }
+    }
+
     return {
       RecommendationStatusType,
       currentRecommendationStatusType,
       selectRecommendationStatusType,
+      loadFromFile,
+      isImporting,
     };
   },
 });
