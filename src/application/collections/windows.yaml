@@ -2257,6 +2257,377 @@ actions:
                                 Remove-Item $_.Path -Recurse -Force
                             }
             -
+                category: Clear Outlook data
+                docs: |-
+                    This category helps protect your privacy by removing various types of data stored by
+                    Microsoft Outlook on your computer.
+
+                    Outlook comes preinstalled on many Windows computers or gets installed with updates [1] [2].
+                    Common privacy tools fail to properly wipe Outlook data, even when specifically configured to do so [4].
+                    Users attempting to remove sensitive emails would have a false sense of security while their communications remained recoverable [4].
+
+                    Even when you delete emails, this data often remains accessible to forensic analysis tools [4] [5] [6].
+                    Forensic investigators can still recover complete email messages from Outlook folders [4].
+                    Outlook creates temporary files in specialized folders which may contain email content and attachments that were opened but not necessarily saved elsewhere [5].
+                    Even after emails are deleted from the inbox, attachments and content may remain in temporary folders [5].
+                    Most of the data Outlook retains includes email attachments [5].
+                    Outlook tracks recently accessed files [5].
+                    Forensic analysis can reveal when specific emails were opened and which attachments were viewed or saved [5].
+
+                    Outlook data includes:
+
+                    - Nicknames for AutoComplete (displays names and email addresses as you start to type them) [7] [8] [9]
+                    - Personal folders, SharePoint lists, offline folders, and cached mode folders [7] [8]
+                    - RSS feeds and installed add-ins [7] [8]
+                    - Customized print settings, ribbon settings, and navigation bar customizations [7] [8]
+                    - Send/receive group settings and macros/VBA programs [7] [8]
+                    - Signatures, stationery, and templates [7] [8]
+                    - Dictionary and Outlook safe/blocked senders lists [7] [8]
+                    - Account profile information (email address, password, authentication token) [10]
+                    - Email data including sender/receiver addresses, subject, dates, body text, attachments, and headers [10]
+                    - All emails including deleted ones [11]
+                    - Outlook contacts, appointments, calendar events, tasks, notes, and journals [12]
+
+                    Outlook stores emails in special storage files that contain all your messages, contacts, calendar entries, tasks, and notes [6].
+                    When emails are deleted, they're moved to the "Deleted Items" folder [6].
+                    When the "Deleted Items" folder is emptied, emails are flagged as removed but remain in storage until the file is compacted [6].
+                    The storage file doesn't automatically reduce in size after deletion [6].
+                    Only file compaction truly removes deleted emails by moving active emails to the beginning of the file and truncating flagged/deleted emails [6].
+
+                    Forensic tools can recover emails from: intact storage files, password-protected files (even without knowing the password),
+                    corrupted files, the "Deleted Items" folder, flagged-as-deleted emails (before compaction),
+                    and potentially even emails from unallocated space after compaction [6].
+                    Password protection isn't effective against forensic analysis [6].
+
+                    Different versions of Outlook store data in different places [6].
+                    The new Outlook is web-based, syncing all your data to the cloud while keeping a local copy (cache) [6] [13] [14]. 
+                    Microsoft stores both email contents and non-content account information on a network of servers [3].
+                    Microsoft, not you, decides where your data is stored [3].
+                    Deleting emails from Outlook doesn't permanently remove them from the system [11].
+
+                    The Windows registry stores information about your Outlook usage, including unread message counts and when accounts were last checked [15]. 
+                    This means your Outlook activity leaves digital traces that can expose private communications and authentication credentials even
+                    when you believe your information is secure [15].
+
+                    Outlook creates several types of data that pose privacy risks:
+
+                    - Temporary files containing email content and opened attachments [5]
+                    - Logs that reveal your usage patterns [1] [2] [16]
+                    - Telemetry data about your system and behavior [2]
+                    - Local copies of cloud-based data [1] [13] [14]
+
+                    This category improves privacy by removing locally stored traces of your communications, preferences,
+                    and usage patterns that could be analyzed to reveal sensitive information.
+
+                    It improves security by removing email attachments that could contain malicious code [17].
+                    Email attachments in Outlook are a common way for malware to spread [17].
+                    Attackers can create hidden rules to automatically forward your emails without your knowledge [16].
+
+                    It improves system performance by clearing accumulated cached data and log files that can grow extremely large over time,
+                    sometimes reaching several gigabytes [18].
+
+                    Forensic tools can extract both email content and metadata about when emails were sent, received, and accessed [6] [11] [19].
+                    When draft emails are opened in Outlook, they're opened in draft mode, which alters metadata, potentially compromising data integrity [20].
+                    This means simply opening an email draft can change important information about when it was created or modified,
+                    which could become problematic if these emails are later used as evidence or in legal proceedings.
+                    It can also lead to accidental sending of confidential information if you're just trying to review content.
+
+                    However, this category cannot:
+
+                    - Remove data stored on Microsoft's cloud servers [1] [13] [14]
+                    - Clear entries in your Windows Search database that might contain copies of email content [11]
+                    - Affect your email data stored with your email provider
+
+                    > **Caution:**
+                    > After clearing Outlook data, you may need to sign in again, rebuild caches, and re-download content when you next use the application.
+
+                    [1]: https://web.archive.org/web/20250404225726/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install "Control installation and use of new Outlook - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20250414175604/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/virtualized-desktop-infrastructure "New Outlook for Windows for virtualized desktop infrastructure (VDI) - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20250415124829/https://globalfreedomofexpression.columbia.edu/cases/microsoft-v-united-states/ "Global Freedom of Expression | Microsoft v. United States - Global Freedom of Expression | globalfreedomofexpression.columbia.edu"
+                    [4]: https://web.archive.org/web/20250415125335/http://reports-archive.adm.cs.cmu.edu/anon/isri2005/CMU-ISRI-05-119.pdf "Counter-Forensic Privacy Tools: A Forensic Evaluation | reports-archive.adm.cs.cmu.edu"
+                    [5]: https://web.archive.org/web/20250415125404/http://www.csc.villanova.edu/~dprice/extra_handouts/sans_poster.pdf "Windows Artifact Analysis: Evidence of... | Sans | www.csc.villanova.edu"
+                    [6]: https://web.archive.org/web/20250415124914/http://www.csc.villanova.edu/~dprice/9010sp14/Slides/16_Email%20Analysis.pdf "Email Analysis | Villanova University – Department of Computing Sciences – D. Justin Price – Spring 2014 | www.csc.villanova.edu"
+                    [7]: https://web.archive.org/web/20250415003332/https://support.intermedia.com/app/articles/detail/a_id/25185/~/outlook-data-file-locations "Outlook Data File Locations | support.intermedia.com"
+                    [8]: https://web.archive.org/web/20250415005550/https://www.slipstick.com/outlook/config/outlook-2010-backup-and-dual-boot/ "Outlook Backup and Dual-Boot File Locations | www.slipstick.com"
+                    [9]: https://web.archive.org/web/20250415001646/https://learn.microsoft.com/en-us/outlook/troubleshoot/contacts/autocomplete-not-working-correctly-in-outlook-2010 "AutoComplete not working correctly - Outlook | Microsoft Learn | learn.microsoft.com"
+                    [10]: https://web.archive.org/web/20250323225044/https://www.nist.gov/system/files/documents/2022/10/26/Cloud%20Data%20Extraction%20Specification%20Test%20Assertions%20and%20Test%20Cases%20v1.pdf "Cloud & Remotely Stored Data Extraction (CDX) 4 Using Account Credentials: 5 Specification, Test Assertions, and Test Cases (Version 1) | www.nist.gov"
+                    [11]: https://web.archive.org/web/20250401023837/https://cfreds-archive.nist.gov/data_leakage_case/data-leakage-case.html "CFReDS - Data Leakage Case | cfreds-archive.nist.gov"
+                    [12]: https://web.archive.org/web/20250415131748/https://inspectr-project.eu/resources/public/INSPECTr_Public_Deliverable_D2.3.pdf "Intelligence Network & Secure Platform for Evidence Correlation and Transfer | D2.3 Reference Digital Forensics Domain Model | inspectr-project.eu"
+                    [13]: https://web.archive.org/web/20250407154509/https://www.xda-developers.com/privacy-implications-new-microsoft-outlook/ "Microsoft's new Outlook client quietly moves your email to the cloud | www.xda-developers.com"
+                    [14]: https://web.archive.org/web/20250407154537/https://proton.me/blog/outlook-is-microsofts-new-data-collection-service "Outlook is Microsoft’s new data collection service | Proton | proton.me"
+                    [15]: https://web.archive.org/web/20250415131631/https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=dc73ccb2b1def4afaa249335e88477d8b3ffbced "Forensic Analysis of the Windows Registry | Computer Forensics: Coursework 2 | Due Date 4th November | Peter Davies - 05004306 | MSc Information Security & Computer Crime | citeseerx.ist.psu.edu"
+                    [16]: https://web.archive.org/web/20250124001851/https://www.kadircirik.com/microsoft-outlook-forensic-analysis/ "Microsoft Outlook Forensic Analysis - Mehmet Kadir Cırık"
+                    [17]: https://web.archive.org/web/20250415131642/https://wpcdn.web.wsu.edu/wp-vcea/uploads/sites/3267/2022/05/Part2-DiskForensics.pdf "Disk Forensics | Montana University | wpcdn.web.wsu.edu"
+                    [18]: https://web.archive.org/web/20250414175449/https://answers.microsoft.com/en-us/outlook_com/forum/all/outlook-is-creating-huge-log-files-up-to-80gbs/2fc2816a-c6c9-4085-983e-a64a5431faaa "Outlook is creating Huge log files, up to 80gbs without logging - Microsoft Community | answers.microsoft.com"
+                    [19]: https://web.archive.org/web/20240229165109/https://cci.calpoly.edu/sites/default/files/2021-05/2019_windows_forensics_training_manual.pdf "Windows and Android Forensics | CCIC Training | Chapter 0: Preamble | Cassidy Elwell and James Poirier | May 2019 (Version 2) | California Cybersecurity Institute | cci.calpoly.edu"
+                    [20]: https://web.archive.org/web/20250415131835/https://judicature.duke.edu/articles/why-cant-i-just-review-it-in-outlook/ "Why Can’t I Just Review it in Outlook? | Judicature | judicature.duke.edu"
+                    [21]: https://web.archive.org/web/20250415131647/https://www.infosecinstitute.com/resources/digital-forensics/email-forensics-desktop-based-clients/ "Email forensics: desktop-based clients | Infosec | www.infosecinstitute.com"
+                children:
+                    -
+                        name: Clear Outlook logs and telemetry
+                        recommend: standard # No impact on user data/application functionality
+                        docs: |-
+                            This script removes Outlook diagnostic logs and telemetry data to enhance privacy without affecting performance.
+
+                            The diagnostic logs and telemetry data reveal your Outlook application usage patterns [1].
+                            These logs may grow extremely large over time, sometimes reaching several gigabytes in size [2] [3].
+                            
+                            These files are valuable in forensic analysis.
+                            They can be examined to study your behavior and potentially used as evidence about your activities [4].
+                            Microsoft uses this data for debugging and performance monitoring purposes [5].
+
+                            Removing this data improves your privacy by eliminating tracking information and frees up disk space.
+
+                            Unlike clearing caches, removing these logs has no impact on Outlook's performance or
+                            startup time [5].
+                            Your user data and application configuration including email, contacts, and settings will remain intact.
+
+                            ### Technical Details
+
+                            This script clears only the logs and telemetry data:
+
+                            | Location | Description | Content |
+                            | -------- | ----------- | ------- |
+                            | `%LOCALAPPDATA%\Microsoft\Olk\logs` [1] [3] [4] [5]   | Logs and Telemetry Cache [5]  | Diagnostics and performance logs [5] |
+                            | `%LOCALAPPDATA%\Microsoft\Olk\cache` [5]              | Logs and Telemetry Cache [5]  | Telemetry and diagnostic data cache [5] |
+
+                            [1]: https://web.archive.org/web/20250404225726/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install "Control installation and use of new Outlook - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20250414175449/https://answers.microsoft.com/en-us/outlook_com/forum/all/outlook-is-creating-huge-log-files-up-to-80gbs/2fc2816a-c6c9-4085-983e-a64a5431faaa "Outlook is creating Huge log files, up to 80gbs without logging - Microsoft Community | answers.microsoft.com"
+                            [3]: https://web.archive.org/web/20250414182414/https://techcommunity.microsoft.com/discussions/outlookgeneral/how-to-turn-off-logging-in-new-outlook/4097943 "How to Turn Off Logging in New Outlook | Microsoft Community Hub"
+                            [4]: https://web.archive.org/web/20250124001851/https://www.kadircirik.com/microsoft-outlook-forensic-analysis/ "Microsoft Outlook Forensic Analysis - Mehmet Kadir Cırık"
+                            [5]: https://web.archive.org/web/20250414175604/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/virtualized-desktop-infrastructure "New Outlook for Windows for virtualized desktop infrastructure (VDI) - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\logs'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\cache'
+                    -
+                        name: Clear Outlook caches
+                        recommend: strict # No impact on user data, slower application launch
+                        docs: |-
+                            This script clears Outlook's caches to protect your privacy by removing traces of your
+                            email activities within the application.
+                            
+                            The current version of Outlook (often called "New Outlook") uses web technologies that
+                            store cached content, web scripts, and browser storage data [1].
+                            A cache is a temporary storage area where the application saves copies of web content,
+                            images, and scripts to load them faster in future sessions.
+                            These caches contain traces of your email usage, including what content you've viewed
+                            and how you've interacted with Outlook.
+
+                            Clearing these caches helps prevent detailed analysis of your Outlook usage patterns.
+                            During forensic analysis, cached data can reveal detailed patterns of your email behavior and usage habits [2].
+
+                            This script does not affect your emails, contacts, or Outlook settings.
+                            It only removes temporary cached data that Outlook will recreate during the next launch.
+
+                            This script improves system performance by freeing up disk space used by cached files.
+
+                            After clearing these caches, Outlook rebuilds them during the next startup [1] [3].
+                            This results in slower initial application loads as resources need to be redownloaded [1].
+
+                            > **Caution:**
+                            > Outlook will launch slightly slower the first time after running this script as it rebuilds its caches.
+
+                            ### Technical Details
+
+                            This script clears the following web cache locations:
+
+                            | Folder Path | Outlook Version | Purpose | Impact |
+                            | ----------- | --------------- | ------- | ------ |
+                            | `%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\WebStorage` [1]                   | New Outlook [1]                       | Stores diagnostic and performance logs [1]    | Slower initial app launch [1] |
+                            | `%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\Service Worker\CacheStorage` [1]  | New Outlook [1]                       | Stores cached web/JS scripts [1]              | Slower initial app launch [1] |
+                            | `%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\Code Cache` [1]                   | New Outlook [1]                       | Stores cached web/JS scripts [1]              | Slower initial app launch [1] |
+                            | `%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\Cache` [1] [3]                    | New Outlook [1]                       | Caches network call contents [1]              | Resources need to be redownloaded [1] |
+                            | `%LOCALAPPDATA%\Microsoft\Outlook\HubAppFileCache` [4] [5]                        | Classic Outlook [4] [5]               | Information not yet synced to server [4]      | Temporary add-in data [5] |
+                            | `%LOCALAPPDATA%\Microsoft\Outlook\extend.dat` [6]                                 | Classic Outlook [6]                   | Installed Add-ins [6]                         | Slower initial app launch [6] |
+
+                            [1]: https://web.archive.org/web/20250414175604/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/virtualized-desktop-infrastructure "New Outlook for Windows for virtualized desktop infrastructure (VDI) - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20250414184849/https://blog.cyber5w.com/chromium_browsers_investigation "Chromium Based Browsers Investigation | blog.cyber5w.com"
+                            [3]: https://web.archive.org/web/20250414185403/https://office365itpros.com/2024/10/10/offline-access-new-outlook/ "The New Outlook Masters Offline Access | office365itpros.com"
+                            [4]: https://web.archive.org/web/20250415002325/https://its.uiowa.edu/services/microsoft-365-email-calendaring/how-clear-outlook-cache "How to Clear the Outlook Cache | Information Technology Services - The University of Iowa | its.uiowa.edu"
+                            [5]: https://web.archive.org/web/20250415001815/https://learn.microsoft.com/en-us/office/dev/add-ins/testing/clear-cache "Clear the Office cache - Office Add-ins | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20250415005550/https://www.slipstick.com/outlook/config/outlook-2010-backup-and-dual-boot/ "Outlook Backup and Dual-Boot File Locations | www.slipstick.com"
+                        call:
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\WebStorage'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\Service Worker\CacheStorage'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\Code Cache'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\Cache'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Outlook\HubAppFileCache'
+                            - 
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%LOCALAPPDATA%\Microsoft\Outlook\extend.dat'
+                    -
+                        name: Clear Outlook user data
+                        recommend: null # High impact, clears user settings/data
+                        docs: |-
+                            This script removes locally stored Outlook data from your computer, including web storage, 
+                            cached settings, and downloaded attachments.
+
+                            Outlook stores user settings both in the cloud and locally on your computer [1].
+                            While many settings automatically sync to Microsoft's servers, some computer-specific or Office-wide 
+                            settings remain local, such as those related to Windows, local files, or the Ribbon [1].
+
+                            This script improves privacy by removing locally cached settings that may contain personal
+                            communications and user preferences.
+                            The stored data may include sensitive information such as email content, contact details, calendar entries,
+                            and personal files from attachments.
+                            This local data may persist even after you've deleted emails from the server.
+                            This creates potential privacy risks if your device is accessed by others, shared, stolen, or compromised by malware.
+                            Additionally, these local caches may retain metadata about your communication patterns and
+                            contacts.
+
+                            It improves security by deleting attachment folders that may be infected by malware [2] [3].
+
+                            It improves system performance by clearing accumulated cached data that takes up disk space.
+
+                            However, it will lead to increased application launch time and require repeated sign-ins when 
+                            you next use Outlook [4].
+
+                            > **Caution:**
+                            > After running this script, you will need to re-download attachments and some personalized
+                            > Outlook settings will be reset to defaults.
+
+                            ### Technical Details
+
+                            This script clears the following user data locations:
+
+                            - **New Outlook:**
+                                - `%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\IndexedDB` [2] [4]:
+                                    IndexedDB is a storage system used to store structured data locally on your computer [5].
+                                    This enables Outlook to search through and access email data quickly, even when offline.
+                                - `%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\Local Storage` [4]:
+                                    Local Storage is used to store data with no expiration date [6].
+                                    This includes various preferences and cached information that persists between Outlook sessions.
+                                - `%LOCALAPPDATA%\Microsoft\Olk\Attachments` [4] [7]:
+                                    This is where Outlook downloads and stores email attachments on your computer [7].
+                                    Email attachments can contain malicious code and may become infected with malware,
+                                    potentially leading to system compromise, data theft, or malware propagation [3].
+                            - **Classic Outlook:**
+                                - `%LOCALAPPDATA%\Microsoft\Outlook\Offline Address Books` [8]
+                                - `%USERPROFILE%\Documents\Outlook Files` [9] [10]:
+                                    Personal Folders (.pst) for new profiles [9] [10].
+                                    PST files contain emails, contacts, calendar items, and other Outlook data for POP3 accounts [9].
+                                - `%LOCALAPPDATA%\Microsoft\Outlook\*.pst`:
+                                    Personal Folders (.pst) for legacy profiles and SharePoint lists [9] [10].
+                                    They include information about sent and received e-mails [11]
+                                - `%LOCALAPPDATA%\Microsoft\Outlook\*.ost` [9] [10]:
+                                    Offline Folders file (.ost) [9].
+                                    Offline and Cached mode folders used by Exchange server and the Outlook connector [10].	
+                                    These include e-mail data [11]
+                                - `%LOCALAPPDATA%\Microsoft\Outlook\RoamCache` [8] [9] [12]:
+                                    AutoComplete entries [9] [12].
+                                - `%APPDATA%\Microsoft\Outlook\OutlPrnt` [9] [10]:
+                                    Customized print settings [9] [10].
+                                - `%APPDATA%\Microsoft\Outlook\VbaProject.otm` [9]:
+                                    Macros and VBA programs [9] [10].
+                                - `%APPDATA%\Microsoft\Outlook\*.xml` [9] [10]:
+                                    Navigation bar customizations [9] [10].
+                                - `%APPDATA%\Microsoft\Outlook\*.srs` [9] [10]:
+                                    Send/Receive group settings [9] [10].
+                                - `%APPDATA%\Microsoft\Outlook\Signatures` [9] [10]
+                                - `%APPDATA%\Microsoft\Outlook\Stationery` [9] [10]
+                                - `%APPDATA%\Microsoft\Outlook\Templates` [9] [10]
+                                - `%APPDATA%\Microsoft\Outlook\Proof` [9] [10]
+
+                            [1]: https://web.archive.org/web/20250414192636/https://support.microsoft.com/en-us/office/information-about-store-my-outlook-settings-in-the-cloud-528d4012-9b72-4d00-8426-7b00d7d6ad01 "Information about Store my Outlook settings in the cloud - Microsoft Support | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20250414191140/https://community.lecrabeinfo.net/topic/18170-impossible-de-visualiser-fichiers-caches/ "IMPOSSIBLE DE VISUALISER FICHIERS CACHES - Windows 10 - Communauté du Crabe | community.lecrabeinfo.net"
+                            [3]: https://web.archive.org/web/20250414192722/https://emailsecurity.checkpoint.com/blog/latest-zero-click-attack-in-outlook-delivers-instant-malware "Latest Zero-Click Attack in Outlook Delivers Instant Malware | emailsecurity.checkpoint.com"
+                            [4]: https://web.archive.org/web/20250414175604/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/virtualized-desktop-infrastructure "New Outlook for Windows for virtualized desktop infrastructure (VDI) - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [5]: https://web.archive.org/web/20250414192203/https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API "IndexedDB API - Web APIs | MDN | developer.mozilla.org"
+                            [6]: https://web.archive.org/web/20250414192614/https://www.w3schools.com/html/html5_webstorage.asp "HTML Web Storage API | www.w3schools.com"
+                            [7]: https://web.archive.org/web/20250414192631/https://ittrip.xyz/soft/outlook/outlook-attachment-problem "新しいOutlookで「添付ファイルを開けない」時の解消法と注意点 | IT trip | ittrip.xyz"
+                            [8]: https://web.archive.org/web/20250415002325/https://its.uiowa.edu/services/microsoft-365-email-calendaring/how-clear-outlook-cache "How to Clear the Outlook Cache | Information Technology Services - The University of Iowa | its.uiowa.edu"
+                            [9]: https://web.archive.org/web/20250415003332/https://support.intermedia.com/app/articles/detail/a_id/25185/~/outlook-data-file-locations "Outlook Data File Locations | support.intermedia.com"
+                            [10]: https://web.archive.org/web/20250415005550/https://www.slipstick.com/outlook/config/outlook-2010-backup-and-dual-boot/ "Outlook Backup and Dual-Boot File Locations | www.slipstick.com"
+                            [11]: https://web.archive.org/web/20250415124209/https://www.forensafe.com/blogs/outlook.html "Investigating Outlook Windows Application | www.forensafe.com"
+                            [12]: https://web.archive.org/web/20250415001646/https://learn.microsoft.com/en-us/outlook/troubleshoot/contacts/autocomplete-not-working-correctly-in-outlook-2010 "AutoComplete not working correctly - Outlook | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\IndexedDB'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\EBWebView\Default\Local Storage'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Olk\Attachments'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%USERPROFILE%\Documents\Outlook Files'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Outlook\Offline Address Books'
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%LOCALAPPDATA%\Microsoft\Outlook\*.pst'
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%LOCALAPPDATA%\Microsoft\Outlook\*.ost'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Outlook\RoamCache'
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%APPDATA%\Microsoft\Outlook\OutlPrnt' # It's a single file without extension, not a directory
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%APPDATA%\Microsoft\Outlook\VbaProject.otm'
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%APPDATA%\Microsoft\Outlook\*.xml'
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%APPDATA%\Microsoft\Outlook\*.srs'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%APPDATA%\Microsoft\Outlook\Signatures'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%APPDATA%\Microsoft\Outlook\Stationery'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%APPDATA%\Microsoft\Outlook\Templates'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%APPDATA%\Microsoft\Outlook\Proof'
+            -
                 name: Minimize DISM "Reset Base" update data
                 recommend: standard
                 docs: |-
@@ -31952,15 +32323,51 @@ actions:
                                 packageName: Microsoft.MicrosoftStickyNotes # Get-AppxPackage Microsoft.MicrosoftStickyNotes
                                 publisherId: 8wekyb3d8bbwe
                     -
-                        name: Remove "Mail and Calendar" app
+                        name: Remove "Mail and Calendar" app (outdated)
+                        recommend: strict # Outdated
                         docs: |-
-                            [Microsoft Store Page](https://web.archive.org/web/20231004175316/https://apps.microsoft.com/store/detail/mail-and-calendar/9WZDNCRFHVQM)
+                            This script removes the older default email and calendar application from Windows.
 
-                            It's previously known as "Outlook Calendar and Mail" app [1].
+                            It's also known as:
+
+                            - Previously called "Outlook Calendar and Mail" app [1]
+                            - Technically called "Windows Communications Apps" [2]
+                            - Sometimes referred to as "Mail, Calendar, and People" [2] [3]
+
+                            Support for Windows Mail, Calendar, and People ended on December 31, 2024 [3].
+                            Microsoft has replaced it with the new Outlook app [3].
+
+                            The Mail and Calendar app lets you manage multiple email accounts, organize your calendar,
+                            and stay connected with contacts [4].
+                            It supports various email services including Office 365, Exchange, Outlook.com, Gmail, 
+                            and Yahoo [4].
+
+                            Some features include:
+
+                            - Word-like email composition with tables, pictures, and bullets [4]
+                            - Touch gestures for reading and organizing emails [4]
+                            - Navigation bar to switch between email and calendar [4]
+                            - Calendar with day, week, and month views [4]
+                            - Contact browsing and multiple attachment downloads [4]
+
+                            Removing this app improves your privacy by eliminating an application that sends data to Microsoft servers [5].
+                            Microsoft acknowledges in its Windows privacy guide that removing this app reduces data collection [5].
+
+                            This removal also enhances your security.
+                            Unsupported apps create security risks as they no longer receive updates for new vulnerabilities. 
+                            The app contains a security flaw that saves email attachments to your computer without you opening emails [6].
+                            Harmful files from phishing emails can be stored on your device even if you don't click anything [6]. 
+                            If you use the same Microsoft account on multiple devices, harmful files can spread to all through Microsoft's sync feature [6].
+                            This security issue has existed since at least 2020 and bypasses the traditional security advice 
+                            about "not clicking suspicious links" [6].
+
+                            Removing the app frees up storage space and reduces background processes, improving system performance.
+
+                            [Microsoft Store Page](https://web.archive.org/web/20231004175316/https://apps.microsoft.com/store/detail/mail-and-calendar/9WZDNCRFHVQM)
 
                             ### Overview of default preinstallation
 
-                            This app comes pre-installed on certain versions of Windows [1] [2] [3] [4] [5].
+                            This app comes pre-installed on certain versions of Windows [1] [7] [8] [9] [10].
 
                             | OS | Version | Existence |
                             | -- |:-------:|:---------:|
@@ -31971,12 +32378,18 @@ actions:
                             | Windows 11 | 21H2 | ✅ |
                             | Windows 11 | 22H2 | ✅ |
                             | Windows 11 | 23H2 | ✅ |
+                            | Windows 11 | 24H2 | ❌ |
 
                             [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                            [2]: https://web.archive.org/web/20231006175115/https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp "AppLocker CSP - Windows Client Management | Microsoft Learn"
-                            [3]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
-                            [4]: https://web.archive.org/web/20231230073627/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update "Keep removed apps from returning during an update - Windows Application Management | Microsoft Learn"
-                            [5]: https://web.archive.org/web/20240613063743/https://www.sita.co.za/sites/default/files/documents/Product_Certification/TASRR40_Windows_optimisation.pdf "List of installed apps: Windows 11 | TAS Research Report: Desktop Windows Optimisation | www.sita.co.za"
+                            [2]: https://web.archive.org/web/20250407103406/https://support.microsoft.com/en-us/topic/windows-communications-apps-update-for-windows-8-and-windows-rt-950fbfbd-0858-99d8-1e91-bc7eb44ceedc "Windows Communications Apps update for Windows 8 and Windows RT - Microsoft Support | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20250328110738/https://support.microsoft.com/en-us/office/outlook-for-windows-the-future-of-mail-calendar-and-people-on-windows-11-715fc27c-e0f4-4652-9174-47faa751b199 "Outlook for Windows: The Future of Mail, Calendar, and People on Windows 11 - Microsoft Support | support.microsoft.com"
+                            [4]: https://web.archive.org/web/20231004175316/https://apps.microsoft.com/store/detail/mail-and-calendar/9WZDNCRFHVQM "apps.microsoft.com | Mail and Calendar - Microsoft Store Apps"
+                            [5]: https://web.archive.org/web/20240217210611/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1809-endpoints "Connection endpoints for Windows 10, version 1809 - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20241109232320/https://cybershow.uk/blog/posts/ms-sync/ "Microsoft Windows 11 Caches Exploitable Malware | cybershow.uk"
+                            [7]: https://web.archive.org/web/20231006175115/https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp "AppLocker CSP - Windows Client Management | Microsoft Learn"
+                            [8]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                            [9]: https://web.archive.org/web/20231230073627/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update "Keep removed apps from returning during an update - Windows Application Management | Microsoft Learn"
+                            [10]: https://web.archive.org/web/20240613063743/https://www.sita.co.za/sites/default/files/documents/Product_Certification/TASRR40_Windows_optimisation.pdf "List of installed apps: Windows 11 | TAS Research Report: Desktop Windows Optimisation | www.sita.co.za"
                         call:
                             function: UninstallStoreApp
                             parameters:
@@ -38544,6 +38957,608 @@ actions:
                                     deleteOnRevert: 'true' # This key does not exist (tested since Windows 10 22H2, and Windows 11 23H2)
                             -
                                 function: ShowExplorerRestartSuggestion
+            -
+                category: Remove Outlook
+                docs: |-
+                    This category includes scripts to remove or disable Microsoft's new Outlook application,
+                    and prevent automatic migration or installation.
+
+                    The new Outlook application is known as:
+
+                    - "Outlook for Windows" [1] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11] [12]
+                    - "Outlook (new)" [1] [9]
+                    - "New Outlook" [1] [2] [3] [4] [6] [7] [8] [9] [10] [12] [13] [14]
+
+                    Outlook is the successor to the former Mail and Calendar apps [1] [3] [8] [12].
+                    It fundamentally changes how email is handled compared to previous versions.
+                    Unlike traditional email clients that process data locally, the new Outlook
+                    sends all email data to Microsoft's cloud servers [1] [3] [4] [5].
+
+                    The new Outlook raises significant privacy issues:
+
+                    - All emails are processed and stored on Microsoft's servers rather than your local device,
+                        even for non-Microsoft email accounts (Gmail, iCloud, Yahoo, etc.) [1] [2] [3] [4] [5] [11] [14]
+                    - When setting up any email account, your credentials are sent to Microsoft [1] [2] [4] [13]
+                    - For IMAP accounts, your email passwords are transferred to Microsoft [1] [2] [4] [13] [14]
+                    - All data remains in Microsoft's cloud even if you switch back to classic Outlook [1] [2] [4]
+                    - Microsoft's privacy policies allow them broad access to your data for "improving
+                        products and services" [1]
+                    - Microsoft shares user data with numerous third-party partners (hundreds of partners) [4]
+                    - Most emails sent through Outlook are not end-to-end encrypted, meaning Microsoft can access content [2] [4] [14]
+                    - It includes AI features (Copilot) [15] which allows Microsoft to scan your data for content moderation [16]
+
+                    When your emails are stored in Microsoft's cloud instead of your device, they become accessible to government surveillance,
+                    vulnerable to security breaches, targeted by hackers, and potentially exposed to Microsoft's partners [2].
+                    This means your personal communications and sensitive information (like financial details or private conversations) no longer
+                    remain exclusively under your control.
+                    Even if you've never done anything wrong, your private information can be accessed, analyzed, or leaked without your knowledge
+                    or consent—unlike emails stored locally on your computer.
+
+                    The new Outlook collects and processes:
+
+                    - Emails, calendars, and contacts from all connected accounts [1] [4] [13]
+                    - User interests and demographics to create personalized profiles [4] [5] [6]
+                    - Location data and device information [4] [6]
+                    - Usage patterns and interactions with the application [4]
+
+                    This data is used for:
+
+                    - Personalized advertising [4] [5]
+                    - Content personalization [4]
+                    - Performance measurement [4]
+                    - Audience insights [4]
+                    - Precise geolocation [4]
+                    - User identification through device scanning [4]
+
+                    The free version of the new Outlook includes advertisements that:
+
+                    - Appear alongside messages in your inbox [4] [5] [6]
+                    - Track users through specific identifiers and cookies [5] [6]
+                    - Share tracking data with Microsoft's third-party partners [5] [6]
+                    - May reappear during sessions even after dismissal [6]
+
+                    Government bodies have raised concerns about the new Outlook and Microsoft services:
+
+                    - The European Data Protection Supervisor (EDPS) found that the EU Commission violated GDPR regulations
+                        when using Microsoft 365 [17] [18]
+                    - The German Data Protection Conference determined in 2022 that Microsoft 365 was not GDPR-compliant [17]
+                    - The German Federal Commissioner for Data Protection called the data collection "alarming" [13]
+
+                    Microsoft distributes and promotes the new Outlook through:
+
+                    - Preinstallation on Windows systems [7]
+                    - Monthly security updates [3]
+                    - Start menu placement by default [1] [3] [7] [9] [14]
+                    - Automatic redirection from old Outlook [8]
+                    - Forced migration for Microsoft 365 users [10]
+
+                    The new Outlook requires extensive system permissions that increase security risks:
+
+                    - Access to all system resources on your device [5]
+                    - Ability to write registry entries and files that persist after uninstallation [5]
+                    - Direct management of other apps [5]
+                    - Unrestricted internet connection access [5]
+
+                    These broad permissions create security vulnerabilities by giving the application
+                    access to sensitive areas of your system.
+                    The application has had documented security vulnerabilities in the past [19].
+
+                    Removing or controlling the new Outlook:
+
+                    - Prevents Microsoft from collecting your email content, contacts, and credentials
+                    - Reduces tracking of your personal information and habits
+                    - Limits advertisement tracking
+                    - Reduces security risks by removing an application with extensive system privileges [5]
+                    - Allows you to choose when and if you transition to cloud-based email
+                    - May improve system performance by preventing resource-intensive web technologies
+                    - Protects your privacy by keeping email data local rather than in Microsoft's cloud
+                    - Prevents AI scanning of your data
+
+                    After applying scripts in this category, you can still choose to manually install and use
+                    the new Outlook if desired [9], making this an opt-in rather than opt-out choice.
+
+                    ### Technical Details
+
+                    The new Outlook is fundamentally different from previous versions:
+
+                    - It is a web application built with JavaScript/HTML/CSS [12] rather than a traditional program
+                    - The classic Outlook was a compiled 32/64-bit executable application [12]
+                    - The new version depends on Microsoft's cloud servers for all functionality [1] [2] [14]
+                    - Settings are synchronized to the cloud by default at hourly intervals [11]
+
+                    [1]: https://web.archive.org/web/20250407154509/https://www.xda-developers.com/privacy-implications-new-microsoft-outlook/ "Microsoft's new Outlook client quietly moves your email to the cloud | www.xda-developers.com"
+                    [2]: https://web.archive.org/web/20250407154441/https://tuta.com/blog/outlook-business-security-issue "New Outlook's security issues: Businesses should avoid switching! | Tuta | tuta.com"
+                    [3]: https://web.archive.org/web/20250404225726/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install "Control installation and use of new Outlook - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20250407154537/https://proton.me/blog/outlook-is-microsofts-new-data-collection-service "Outlook is Microsoft’s new data collection service | Proton | proton.me"
+                    [5]: https://apps.microsoft.com/detail/9nrx63209r7b?hl=en-US&gl=US "Outlook for Windows - Free download and install on Windows | Microsoft Store | apps.microsoft.com"
+                    [6]: https://web.archive.org/web/20250409105926/https://support.microsoft.com/en-us/office/about-ads-in-outlook-426f5993-75d8-4898-8f27-9ee0008692a0 "About ads in Outlook - Microsoft Support | support.microsoft.com"
+                    [7]: https://web.archive.org/web/20250414162007/https://techcommunity.microsoft.com/blog/outlook/the-new-outlook-for-windows-for-organization-admins/3929169 "The new Outlook for Windows for organization admins | Microsoft Community Hub | techcommunity.microsoft.com"
+                    [8]: https://web.archive.org/web/20250310052335/https://support.microsoft.com/en-us/office/toggle-out-of-the-new-outlook-for-windows-ec102b39-5727-418e-ae1f-a1805434640c "Toggle out of the new Outlook for Windows - Microsoft Support | support.microsoft.com"
+                    [9]: https://web.archive.org/web/20250409101200/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/deployment-new-outlook "Deployment overview for the new Outlook for Windows - Microsoft 365 Apps | Microsoft Learn"
+                    [10]: https://web.archive.org/web/20250409111925/https://techcommunity.microsoft.com/blog/outlook/new-outlook-for-windows-a-guide-to-product-availability/4078895/ "New Outlook for Windows: A Guide to Product Availability | Microsoft Community Hub | techcommunity.microsoft.com"
+                    [11]: https://web.archive.org/web/20250414192636/https://support.microsoft.com/en-us/office/information-about-store-my-outlook-settings-in-the-cloud-528d4012-9b72-4d00-8426-7b00d7d6ad01 "Information about Store my Outlook settings in the cloud - Microsoft Support | support.microsoft.com"
+                    [12]: https://web.archive.org/web/20250414223834/https://www.msxfaq.de/exchange/clients/new_outlook.htm "Das neue Outlook | www.msxfaq.de"
+                    [13]: https://web.archive.org/web/20250407155446/https://mailbox.org/en/post/warning-new-outlook-sends-passwords-mails-and-other-data-to-microsoft "Warning: New Outlook sends passwords, mails and other data to Microsoft | mailbox.org"
+                    [14]: https://web.archive.org/web/20250415092038/https://www.heise.de/news/Microsoft-krallt-sich-Zugangsdaten-Achtung-vorm-neuen-Outlook-9357691.html "Microsoft krallt sich Zugangsdaten: Achtung vor dem neuen Outlook | heise online"
+                    [15]: https://web.archive.org/web/20250414171958/https://www.windowslatest.com/2025/02/13/block-outlook-new-from-installing-with-windows-10-kb5051974/ "Block Outlook (new) from installing with Windows 10 KB5051974 | www.windowslatest.com"
+                    [16]: https://web.archive.org/web/20250414170901/https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy "Data, Privacy, and Security for Microsoft 365 Copilot | Microsoft Learn | learn.microsoft.com"
+                    [17]: https://web.archive.org/web/20250407154513/https://borncity.com/win/2024/03/12/eu-data-protection-authority-says-eu-commission-violates-gdpr-with-microsoft-365/ "EU data protection authority says: EU Commission violates GDPR with Microsoft 365Born's Tech and Windows World | borncity.com"
+                    [18]: https://web.archive.org/web/20250407154544/https://www.edps.europa.eu/press-publications/press-news/press-releases/2024/european-commissions-use-microsoft-365-infringes-data-protection-law-eu-institutions-and-bodies_en "European Commission’s use of Microsoft 365 infringes data protection law for EU institutions and bodies | European Data Protection Supervisor | www.edps.europa.eu"
+                    [19]: https://web.archive.org/web/20250415092541/https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=outlook "Security Update Guide - Microsoft Security Response Center | msrc.microsoft.com"
+                children:
+                    -
+                        name: Remove "Outlook for Windows" app
+                        recommend: strict # Strong privacy gains, but default e-mail client removal may disrupt workflows
+                        docs: |-
+                            This script removes the "Outlook for Windows" app from your system.
+
+                            This app is known as:
+
+                            - **Outlook for Windows** [1] [2] [3] [4] [5] [6] [7] [8] [9] [10]
+                            - **New Outlook** [2] [3] [5] [6] [7] [8] [9] [11] [12]
+                            - Simply **Outlook** [6] [12] [13]
+
+                            It allows users to manage multiple email accounts and calendars in one interface [11].
+                            It's built on top of outlook.com (the web client) and functions as a web app rather than a traditional desktop application [12].
+
+                            Microsoft distributes this app to all Windows editions through monthly security updates [2] [12].
+                            It also appears pinned to the Start menu by default [9].
+
+                            Outlook for Windows supports multiple email providers including Outlook.com, Gmail, Yahoo! Mail, and iCloud [11].
+                            It allows management of calendars from different accounts [11].
+                            It integrates with Microsoft ecosystem including OneDrive [11], Office apps [11], and Copilot AI [12] [13].
+                            It offers customization options, scheduling features, and automated assistance [11].
+
+                            This app replaces the older Windows Mail, Calendar, and People apps [2] [3] [5] [7] [11] [12].
+                            Any local emails, calendar events, and contacts stored in these older apps will remain exportable after removal [3].
+                            
+                            Microsoft collects your emails, calendar information, interests, and demographics to create a profile
+                            with your personally identifiable information [6].
+
+                            The free version of Outlook displays advertisements alongside messages in your inbox [6] [11].
+                            These ads appear every time you use the free version and may reappear even after dismissal [6].
+                            These advertisements track your activity using identifiers, cookies, and personalization techniques [6].
+                            The tracked data is shared with third-party companies that Microsoft partners with [6].
+
+                            The app comes with full Copilot integration, Microsoft's AI assistant [12] [13].
+
+                            Through Copilot, Microsoft collects and stores:
+
+                            - User prompts and Copilot's responses, including citations to information used [13]
+                            - Context from Microsoft Graph (emails, documents, chats) that users have permission to access [13]
+                            - Generated queries sent to plugins when enabled [13]
+
+                            Microsoft also scans your data for abuse monitoring purposes [13].
+
+                            Removing Outlook for Windows enhances your privacy by:
+
+                            - Eliminating ad tracking and data collection used for personalized advertisements [6]
+                            - Preventing Microsoft from collecting and profiling your email usage patterns [6]
+                            - Stopping collection of your prompts and data through Copilot integration [13]
+                            - Removing an application that has access to your personal communications and calendar
+
+                            This app requires extensive system privileges, including:
+
+                            - Access to all system resources [11]
+                            - Ability to write registry entries and files that remain after uninstallation [11]
+                            - Direct management of other apps [11]
+                            - Internet connection access [11]
+
+                            These broad permissions increase potential security vulnerabilities on your system.
+
+                            This application has had known vulnerabilities [4] [10].
+                            One vulnerability allowed attackers to steal Windows passwords by sending specially crafted emails [4] [10].
+                            While this specific issue was fixed through updates [4], it demonstrates how unused software can create security weaknesses on your system.
+
+                            Removing this app frees up system resources and reduces background processes.
+                            This improves system performance on devices with limited specifications.
+
+                            After removal, opening the Mail or Calendar apps may trigger reinstallation of the new Outlook app [2] [7] [8].
+
+                            [Microsoft Store Page](https://apps.microsoft.com/detail/9nrx63209r7b?hl=en-US&gl=US)
+
+                            > **Caution:**
+                            > Removing this app will disable the default email client functionality on your system.
+                            > If you need email functionality as an application, install an alternative email client before removing this app.
+
+                            ### Technical Details
+
+                            This script deletes the app with ID `Microsoft.OutlookForWindows` [1] [2] [3] [9] [10] [12].
+                            According to Microsoft documentation, on modern Windows releases, updates will not automatically reinstall this application once deleted [2].
+                            However, on older Windows versions, updates may reinstall it [2] [13].
+                            Other scripts address this issue.
+
+                            If you want to use this application later, you'll need to manually reinstall it through the Microsoft Store or a separate installer [3].
+
+                            ### Overview of default preinstallation
+
+                            This app comes pre-installed on certain versions of Windows: [1] [2] [3] [10] [12]
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ❌ |
+                            | Windows 10 | 20H2 | ❌ |
+                            | Windows 10 | 21H2 | ❌ |
+                            | Windows 10 | 22H2 | ❌ |
+                            | Windows 11 | 21H2 | ❌ |
+                            | Windows 11 | 22H2 | ❌ |
+                            | Windows 11 | 23H2 | ❌ |
+                            | Windows 11 | 24H2 | ✅ |
+
+                            [1]: https://web.archive.org/web/20250312200452/https://www.manelrodero.com/osd/windows11 "Windows 11 | www.manelrodero.com"
+                            [2]: https://web.archive.org/web/20250404225726/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install "Control installation and use of new Outlook - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20250409101200/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/deployment-new-outlook "Deployment overview for the new Outlook for Windows - Microsoft 365 Apps | Microsoft Learn"
+                            [4]: https://web.archive.org/web/20250409100754/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-20670 "Security Update Guide - Microsoft Security Response Center | msrc.microsoft.com"
+                            [5]: https://web.archive.org/web/20250328110738/https://support.microsoft.com/en-us/office/outlook-for-windows-the-future-of-mail-calendar-and-people-on-windows-11-715fc27c-e0f4-4652-9174-47faa751b199 "Outlook for Windows: The Future of Mail, Calendar, and People on Windows 11 - Microsoft Support | support.microsoft.com"
+                            [6]: https://web.archive.org/web/20250409105926/https://support.microsoft.com/en-us/office/about-ads-in-outlook-426f5993-75d8-4898-8f27-9ee0008692a0 "About ads in Outlook - Microsoft Support | support.microsoft.com"
+                            [7]: https://web.archive.org/web/20250310052335/https://support.microsoft.com/en-us/office/toggle-out-of-the-new-outlook-for-windows-ec102b39-5727-418e-ae1f-a1805434640c "Toggle out of the new Outlook for Windows - Microsoft Support | support.microsoft.com"
+                            [8]: https://web.archive.org/web/20250414125943/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/manage/admin-controlled-migration-policy "Policy for Admin-Controlled Migration to new Outlook for Windows - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [9]: https://web.archive.org/web/20250414162007/https://techcommunity.microsoft.com/blog/outlook/the-new-outlook-for-windows-for-organization-admins/3929169 "The new Outlook for Windows for organization admins | Microsoft Community Hub | techcommunity.microsoft.com"
+                            [10]: https://web.archive.org/web/20250406190831/https://www.grc.com/sn/sn-1009-notes.pdf "Security Now! #1009 - 01-21-25 Attacking TOTP | www.grc.com"
+                            [11]: https://apps.microsoft.com/detail/9nrx63209r7b?hl=en-US&gl=US "Outlook for Windows - Free download and install on Windows | Microsoft Store | apps.microsoft.com"
+                            [12]: https://web.archive.org/web/20250414171958/https://www.windowslatest.com/2025/02/13/block-outlook-new-from-installing-with-windows-10-kb5051974/ "Block Outlook (new) from installing with Windows 10 KB5051974 | www.windowslatest.com"
+                            [13]: https://web.archive.org/web/20250414170901/https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy "Data, Privacy, and Security for Microsoft 365 Copilot | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: UninstallStoreApp
+                            parameters:
+                                packageName: Microsoft.OutlookForWindows # Get-AppxPackage Microsoft.OutlookForWindows
+                                publisherId: 8wekyb3d8bbwe
+                    -
+                        name: Disable Outlook automatic installation
+                        recommend: strict # Discourages privacy-invasive software but may require manual email client setup
+                        docs: |-
+                            This script prevents Windows from automatically installing Microsoft Outlook on your computer.
+                            This script does not remove Outlook if it's already installed on your system.
+
+                            On modern Windows systems, the Outlook app is either preinstalled or automatically installed
+                            through Windows updates [1].
+                            This script blocks the automatic installation of Outlook by Windows updates, giving you more
+                            control over what software runs on your computer.
+
+                            It improves your privacy by preventing the installation of software that collects user data without explicit consent.
+                            Outlook collects your personal information—including emails, contacts, usage patterns, and system information [2].
+                            It shares this data with third-party organizations and uses it to display targeted advertisements [2].
+
+                            This script enhances user control by letting you decide whether and when to install Outlook,
+                            instead of having it forced onto your system automatically.
+
+                            It also improves system performance by preventing an additional application from consuming system
+                            resources like memory, disk space, and processing power when you don't need it.
+
+                            It increases security by reducing the attack surface of your system.
+                            Every installed application introduces potential vulnerabilities that may be exploited.
+                            Outlook is specifically known to have vulnerabilities in the past that are fixed via updates [3].
+                            By not installing unnecessary software, you decrease the number
+                            of potential security weaknesses on your computer.
+
+                            > **Caution:**
+                            > If you regularly use Outlook for email, you'll need to manually install it after running this script.
+                            > This script only prevents automatic installation, not manual installation.
+
+                            ### Technical Details
+
+                            This script soft deletes values in the `HKLM\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate` registry key [1] [4].
+                            This removes the **Windows orchestrator** entry to prevent reinstallation of Outlook [1].
+
+                            **Windows orchestrator** is a Windows feature that automatically installs pre-selected applications on new devices without user consent [5].
+                            This is the mechanism that forces Outlook installation, which this script prevents.
+
+                            For Windows 11 Version 23H2 and newer, removing this key is not necessary [1].
+                            This script explicitly configures Windows for backwards compatibility.
+
+                            This configuration prevents the installation of Outlook during the OoBE (Out of Box Experience) phase [4].
+                            OoBE is the initial setup phase of a Windows PC, when Microsoft automatically installs certain applications
+                            without asking for user consent [6].
+                            By modifying the Windows registry, this script blocks this automatic installation mechanism specifically for Outlook.
+
+                            The script also configures the `BlockedOobeUpdaters` value in the
+                            `HKLM\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate` registry key [1].
+                            This prevents Windows updates from reinstalling Outlook [1].
+
+                            Some community findings show that configuring the `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\OutlookUpdate`
+                            key can also prevent this issue [7].
+                            This script does not use this approach, sticking only to officially documented configurations by Microsoft.
+
+                            [1]: https://web.archive.org/web/20250404225726/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install#block-new-outlook-preinstall-on-windows "Control installation and use of new Outlook - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20250407154537/https://proton.me/blog/outlook-is-microsofts-new-data-collection-service "Outlook is Microsoft’s new data collection service | Proton | proton.me"
+                            [3]: https://web.archive.org/web/20250409100754/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2024-20670 "Security Update Guide - Microsoft Security Response Center | msrc.microsoft.com"
+                            [4]: https://web.archive.org/web/20250406133147/https://skanthak.hier-im-netz.de/ten.html "The 10 Commandments for Windows™ 10 (plus an 11th for Windows™ 11) | skanthak.hier-im-netz.de"
+                            [5]: https://web.archive.org/web/20250407155402/https://learn.microsoft.com/en-us/windows-hardware/drivers/devapps/register-an-oem-application-during-the-imaging-process "Register an OEM Application during the Imaging Process via Universal Orchestrator Framework - Windows drivers | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20231025220728/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/customize-oobe-in-windows-11 "Customize the Out of Box experience (OOBE) | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20250407154852/https://groups.google.com/g/de.comp.os.ms-windows.misc/c/4JNjdtLA9Z8/m/tFaYkNbqCAAJ "Automatische Installation von Outlook und DevHome verhindern | groups.google.com"
+                        call:
+                            -
+                                function: SoftDeleteRegistryKey
+                                parameters:
+                                    keyPath: HKLM\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate
+                                    # 🔍 Missing on Windows 10 Pro (≥ 22H2) | Multiple values  by default Windows 11 Pro (≥ 24H2)
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate
+                                    valueName: BlockedOobeUpdaters
+                                    dataType: REG_SZ
+                                    data: '["MS_Outlook"]'
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                    -
+                        name: Disable Outlook automatic migration
+                        recommend: strict # Discourages privacy-invasive software but may encourage using outdated software
+                        docs: |-
+                            This script disables automatic migration to the new Outlook for Windows.
+                            It prevents your user data from being transferred to Microsoft Cloud without explicit consent.
+
+                            The migration happens from older clients such as:
+
+                            - Classic Outlook (end of support: 2029 [1])
+                            - Mail app (Windows Mail and Calendar apps, end of support: 2024 [2])
+
+                            The new Outlook app is either preinstalled or installed via updates on modern Windows [3].
+
+                            By default, the automatic migration setting is uncontrolled, and users can manage it themselves [3].
+                            After running this script, automatic migration is turned off and users cannot change this setting [3] [4].
+
+                            The new Outlook app automatically transfers your personal data including email, calendar, and contact data to Microsoft's cloud [5].
+                            This script improves privacy by preventing this transfer.
+
+                            This script enhances user control by giving you the freedom to decide when or whether to make this transition rather
+                            than having it forced upon you during an update.
+                            By preventing automatic migration, you maintain decision-making power over your email workflow and data storage location.
+                            This allows you to research implications and prepare properly before potentially moving your emails, calendar events,
+                            and contacts to Microsoft's cloud servers.
+
+                            The script may also improve system performance by preventing the additional resource usage that the 
+                            new Outlook client requires.
+
+                            It increases security by limiting potential exposure of your data to cloud-based vulnerabilities, as 
+                            keeping data local rather than in the cloud reduces the potential attack surface for your personal information.
+                            However, it may reduce security by encouraging use of unsupported software which may have known vulnerabilities not patched.
+
+                            > **Caution:**
+                            > This should be considered a temporary measure if you need to continue using the older versions without support.
+
+                            ### Technical Details
+
+                            The migration process runs only once [4].
+                            Users who manually switch to the new Outlook won't be able to revert to classic Outlook afterward [4].
+
+                            This script configures the following registry values:
+
+                            - `HKCU\Software\Microsoft\Office\16.0\Outlook\Options\General!DoNewOutlookAutoMigration`
+                                to stop the migration flow [4]. 
+                            - `HKCU\Software\Policies\Microsoft\office\16.0\outlook\preferences!NewOutlookMigrationUserSetting`
+                                to prevent users from selecting automatic migration [6] [7].
+                                
+                            After running this script, users will still be able to toggle back to classic Outlook for
+                            Windows anytime if they manually switch to the new version [4].
+
+                            [1]: https://web.archive.org/web/20250409111925/https://techcommunity.microsoft.com/blog/outlook/new-outlook-for-windows-a-guide-to-product-availability/4078895/ "New Outlook for Windows: A Guide to Product Availability | Microsoft Community Hub | techcommunity.microsoft.com"
+                            [2]: https://web.archive.org/web/20250328110738/https://support.microsoft.com/en-us/office/outlook-for-windows-the-future-of-mail-calendar-and-people-on-windows-11-715fc27c-e0f4-4652-9174-47faa751b199 "Outlook for Windows: The Future of Mail, Calendar, and People on Windows 11 - Microsoft Support | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20250404225726/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install#configuring-the-policy-using-the-windows-registry "Control installation and use of new Outlook - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20250414125943/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/manage/admin-controlled-migration-policy "Policy for Admin-Controlled Migration to new Outlook for Windows - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20250407162349/https://www.askwoody.com/forums/topic/stopping-the-migration-to-outlook-new/ "Topic: Stopping the migration to Outlook (new) @ AskWoody | www.askwoody.com"
+                            [5]: https://web.archive.org/web/20250407162412/https://www.tuwien.at/en/all-news/news/kein-wechsel-auf-das-neue-outlook-empfohlen "No change to the “New Outlook” recommended | TU Wien"
+                            [7]: https://web.archive.org/web/20250407162616/https://eileenslounge.com/viewtopic.php?style=20&t=41708 "Not Switching To The New Outlook - Eileen's Lounge | eileenslounge.com"
+                        call:
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Office\16.0\Outlook\Options\General
+                                    valueName: DoNewOutlookAutoMigration
+                                    dataType: REG_DWORD
+                                    data: '0'
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Policies\Microsoft\office\16.0\outlook\preferences
+                                    valueName: NewOutlookMigrationUserSetting
+                                    dataType: REG_DWORD
+                                    data: '0'
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                    -
+                        name: Disable Outlook automatic redirection
+                        recommend: strict # Discourages privacy-invasive software but may encourage using outdated software
+                        docs: |-
+                            This script disables the automatic redirection from classic Outlook to the new Outlook for Windows.
+                            
+                            There are two versions of Outlook: the classic Outlook (sometimes called "Mail") which is no longer supported,
+                            and the new Outlook [1] [2].
+                            Microsoft automatically redirects you to the new Outlook when you try to launch classic Outlook [3].
+
+                            By disabling this automatic switch, you can use classic Outlook if you prefer its interface.
+                            You can have both versions pinned to the taskbar and run them at the same time [4].
+                            You can go back to classic Outlook for Windows by selecting the toggle in the new Outlook for Windows app [3].
+
+                            This script does not prevent you from using the new Outlook.
+                            It only stops automatic switching when you open the classic version.
+
+                            It improves user control over your system:
+
+                            - It prevents unexpected disruptions when you intend to use classic Outlook.
+                            - It lets you transition to the new Outlook on your own schedule rather than being forced.
+                            - It respects your personal preference and autonomy as a user.
+
+                            It enhances privacy by letting you choose which Outlook version collects and processes your personal information.
+                            The new Outlook features increased cloud integration and collects more telemetry data
+                            than the classic version [5] [6] [7].
+
+                            This data includes:
+
+                            - Passwords [5] [6] [7]
+                            - Emails [5] [6] [7]
+                            - Your interests [8]
+                            - Demographics [8]
+                            - Other personally identifiable information [8]
+
+                            The classic Outlook is no longer supported by Microsoft.
+                            It may contain unpatched security vulnerabilities.
+                            Using unsupported software may expose your system to security risks.
+
+                            > **Caution:**
+                            > Classic Outlook lacks security updates.
+                            > The new Outlook receives security updates but collects more of your data.
+
+                            ### Technical Details
+
+                            This script sets the registry value `UseNewOutlook` to `0` in
+                            `HKCU\Software\Microsoft\Office\16.0\Outlook\Preferences` to disable automatic redirection [3] [4].
+
+                            [1]: https://web.archive.org/web/20250328110738/https://support.microsoft.com/en-us/office/outlook-for-windows-the-future-of-mail-calendar-and-people-on-windows-11-715fc27c-e0f4-4652-9174-47faa751b199 "Outlook for Windows: The Future of Mail, Calendar, and People on Windows 11 - Microsoft Support | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20250407171200/https://support.microsoft.com/en-us/office/what-version-of-outlook-do-i-have-b3a9568c-edb5-42b9-9825-d48d82b2257c "What version of Outlook do I have? - Microsoft Support | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20250310052335/https://support.microsoft.com/en-us/office/toggle-out-of-the-new-outlook-for-windows-ec102b39-5727-418e-ae1f-a1805434640c "Toggle out of the new Outlook for Windows - Microsoft Support | support.microsoft.com"
+                            [4]: https://web.archive.org/web/20250407165810/https://www.slipstick.com/outlook/classic-outlook-not-new-outlook/ "Use Classic Outlook, not New Outlook | www.slipstick.com"
+                            [5]: https://web.archive.org/web/20250407154509/https://www.xda-developers.com/privacy-implications-new-microsoft-outlook/ "Microsoft's new Outlook client quietly moves your email to the cloud | www.xda-developers.com"
+                            [6]: https://web.archive.org/web/20250407155446/https://mailbox.org/en/post/warning-new-outlook-sends-passwords-mails-and-other-data-to-microsoft "Warning: New Outlook sends passwords, mails and other data to Microsoft | mailbox.org"
+                            [7]: https://web.archive.org/web/20250407154441/https://tuta.com/blog/outlook-business-security-issue "New Outlook's security issues: Businesses should avoid switching! | Tuta | tuta.com"
+                            [8]: https://web.archive.org/web/20250409105926/https://support.microsoft.com/en-us/office/about-ads-in-outlook-426f5993-75d8-4898-8f27-9ee0008692a0 "About ads in Outlook - Microsoft Support | support.microsoft.com"
+                        call:
+                            function: SetRegistryValue
+                            parameters:
+                                keyPath: HKCU\Software\Microsoft\Office\16.0\Outlook\Preferences
+                                valueName: UseNewOutlook
+                                dataType: REG_DWORD
+                                data: '0'
+                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                    -
+                        name: Remove "Try the new Outlook" toggle
+                        recommend: strict # Discourages privacy-invasive software but may encourage using outdated software
+                        docs: |-
+                            This script disables the "Try the new Outlook" toggle that appears in the classic Outlook application.
+
+                            The "Try the new Outlook" toggle appears in the upper right corner of the classic Outlook application [1].
+                            Clicking this toggle replaces the traditional Outlook application with the new web-based Outlook [1].
+                            The new Outlook is built on Outlook.com [1] and depends on the Microsoft Edge web browser [1] [2].
+
+                            By default, the "Try the new Outlook" toggle appears in all versions of classic Outlook [3] [4] [5].
+                            This script hides the toggle from appearing in classic Outlook for Windows [3] [6].
+
+                            This script enhances your privacy by preventing the switch to the new Outlook.
+                            The new Outlook specifically collects additional user data, including emails and passwords [2] [7] [8].
+
+                            This script also improves system performance by avoiding the new Outlook version.
+                            The new Outlook is a resource-intensive web-based application that uses web technologies (JavaScript/HTML/CSS) [2].
+                            Classic Outlook is more optimized (a compiled 32/64-bit executable) [2].
+
+                            This script only applies to classic Outlook desktop software (2016, 2019, 2021, and Outlook in Microsoft Office 365) [9].
+                            It does not work for Windows Mail [9].
+
+                            You need to restart Outlook after applying this change for it to take effect [10] [11].
+
+                            There is a trade-off to consider: while the new Outlook has privacy concerns, older versions are not as supported.
+                            End-of-support for Classic Outlook is 2029 [2] [12], and for Windows Mail and Calendar it is 2024 [2] [13].
+                            Using older software may introduce security risks over time, but the new Outlook presents more immediate privacy concerns.
+
+                            > **Caution:**
+                            > New Outlook threatens privacy now, while older versions (supported until 2024-2029) may pose security risks later.
+
+                            ### Technical Details
+
+                            This script sets registry values:
+
+                            - For regular users: `HKCU\Software\Microsoft\Office\16.0\Outlook\Options\General!HideNewOutlookToggle` [1] [2] [3] [4] [5] [6] [9] [10] [11]
+                            - For Group Policy (GPO): `HKCU\Software\Policies\Microsoft\Office\16.0\Outlook\Options!HideNewOutlookToggle` [2] [3]
+
+                            Setting both values creates a dual-layer protection.
+                            Group Policy (GPO) is a Windows feature that enforces settings and prevents them from being changed through regular methods.
+                            This approach ensures the "Try the new Outlook" toggle remains hidden even if you or another program attempts to re-enable it,
+                            providing stronger privacy protection than using just one registry setting alone.
+
+                            The value options are:
+
+                            - 0 - Disable policy (toggle is shown) [3] [4] [5]
+                            - 1 - Enable policy (toggle is hidden) [3] [4] [5]
+
+                            [1]: https://www.aroged.com/2025/02/18/office-how-to-remove-the-try-the-new-outlook-button/ "Office: How to Remove the Try the New Outlook button - Aroged | www.aroged.com"
+                            [2]: https://web.archive.org/web/20250414223834/https://www.msxfaq.de/exchange/clients/new_outlook.htm "Das neue Outlook | www.msxfaq.de"
+                            [3]: https://web.archive.org/web/20250407141317/https://learn.microsoft.com/en-us/exchange/clients-and-mobile-in-exchange-online/outlook-on-the-web/enable-disable-employee-access-new-outlook "Enable or disable access to Outlook for Windows | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20250414200942/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/troubleshoot/troubleshoot-deployment-new-outlook "Troubleshoot deployment issues in new Outlook - Microsoft 365 Apps | Microsoft Learn"
+                            [5]: https://web.archive.org/web/20250414201344/https://learn.microsoft.com/en-us/officeupdates/monthly-channel-archived "Archived Release notes for Current Channel releases - Office release notes | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20250404225726/https://learn.microsoft.com/en-us/microsoft-365-apps/outlook/get-started/control-install "Control installation and use of new Outlook - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20250407154537/https://proton.me/blog/outlook-is-microsofts-new-data-collection-service "Outlook is Microsoft’s new data collection service | Proton | proton.me"
+                            [8]: https://web.archive.org/web/20250407154441/https://tuta.com/blog/outlook-business-security-issue "New Outlook's security issues: Businesses should avoid switching! | Tuta | tuta.com"
+                            [9]: https://answers.microsoft.com/en-us/outlook_com/forum/all/how-to-get-rid-of-new-tool-bar-saying-try-the-new/91cfddc8-a9b5-4195-9df2-7768d05501bd "How to get rid of new tool bar saying: Try the new Outlook. - Microsoft Community | answers.microsoft.com"
+                            [10]: https://archive.today/2025.04.14-225137/https://www.vvave.net/archives/how-to-hide-outlook-classic-try-new-outlook-button.html "如何隐藏 Outlook 经典版“Try new Outlook”按钮 - VVavE | www.vvave.net"
+                            [11]: https://web.archive.org/web/20250414221027/https://old.reddit.com/r/sysadmin/comments/13cyetm/removehide_try_the_new_outlook_from_outlook/jjly2mi/ "Remove/Hide 'Try the new Outlook' from Outlook : sysadmin | old.reddit.com"
+                            [12]: https://web.archive.org/web/20250409111925/https://techcommunity.microsoft.com/blog/outlook/new-outlook-for-windows-a-guide-to-product-availability/4078895/ "New Outlook for Windows: A Guide to Product Availability | Microsoft Community Hub | techcommunity.microsoft.com"
+                            [13]: https://web.archive.org/web/20250328110738/https://support.microsoft.com/en-us/office/outlook-for-windows-the-future-of-mail-calendar-and-people-on-windows-11-715fc27c-e0f4-4652-9174-47faa751b199 "Outlook for Windows: The Future of Mail, Calendar, and People on Windows 11 - Microsoft Support | support.microsoft.com"
+                        call:
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Office\16.0\Outlook\Options\General
+                                    valueName: HideNewOutlookToggle
+                                    dataType: REG_DWORD
+                                    data: "1"
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Policies\Microsoft\Office\16.0\Outlook\Options
+                                    valueName: HideNewOutlookToggle
+                                    dataType: REG_DWORD
+                                    data: "1"
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                    -
+                        name: Disable Outlook preview prompts
+                        recommend: standard # Discourages privacy-invasive feature without affecting core functionality
+                        docs: |-
+                            This script disables notifications about testing new Outlook features.
+                            These are known as **Coming Soon** [1] [2] [3] or technically as **Preview Place** [3].
+
+                            These notifications appear in the top right of Outlook's title bar [4] [5] [6].
+                            They invite users to try upcoming features before they become the default experience [1] [2] [3] [4].
+                            This feature is available in Version 1806 or later of Microsoft 365 Apps for enterprise [2].
+
+                            The notification typically shows a message like "We've been making changes based on your feedback in Coming Soon.
+                            If you haven't tried it, now's the time to preview the updates before they become the default experience." [5].
+                            It includes a "Learn more" link and a "Got it" button, with a toggle switch labeled "Off" [5].
+
+                            This script improves privacy by preventing the data collection that happens when using preview features.
+                            Preview software actively gathers usage information and feedback to help Microsoft develop features before official release,
+                            which include additional data collection [7].
+
+                            After running this script, users will no longer receive prompts to try upcoming changes in Outlook [3].
+
+                            Microsoft acknowledges that preview features have limited functionality, lack full support, and may not be available in all regions [7].
+                            By declining to participate in these previews, you reduce your exposure to potential privacy and security risks associated with pre-release software.
+
+                            > **Caution:**
+                            > Disabling these prompts prevents access to early features, which may affect your ability to prepare for upcoming Outlook changes.
+
+                            ### Technical Details
+
+                            This script configures two registry values:
+
+                            - `HKCU\Software\Microsoft\Office\16.0\Outlook\Options\General!DisablePreviewPlace` [1] [2] [4] [6] [8]
+                            - `HKCU\Software\Microsoft\Office\16.0\Outlook\Preferences!EnablePreviewPlace` [3] [9]:
+                                This mimics toggling this feature off in the Outlook user interface. [3]
+
+                            [1]: https://web.archive.org/web/20241106021545/https://blackmanticore.com/aab530f69ed2894aa3b12f71a8a13589 "Turn off the new Outlook Experience (disable Coming Soon) | Black Manticore | blackmanticore.com"
+                            [2]: https://web.archive.org/web/20250415000241/https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/deploy-microsoft-365-apps-gcc-high-dod "Guidance for deploying Microsoft 365 Apps for enterprise in a GCC High or DoD environment - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20250414234223/https://old.reddit.com/r/Office365/comments/a1k1ia/option_to_control_the_coming_soon_on_the_office/ehshxbj/ "Hustle86 comments on Option to control the “Coming Soon” on the Office 365 Client | old.reddit.com"
+                            [4]: https://web.archive.org/web/20250414234538/https://www.outlook-stuff.com/news/1356-vorschaufunktion-in-kuerze-verfuegbar-von-outlook-365-deaktivieren.html "Vorschaufunktion \"In Kürze verfügbar\" von Outlook 365 deaktivieren - Tipps, Tricks und Tools für Microsoft Office Outlook | www.outlook-stuff.com"
+                            [5]: https://archive.ph/2025.04.15-000213/https://imgur.com/office-v1905-coming-soon-toggle-E5F84m5 "Office v1905 coming soon toggle | imgur.com"
+                            [6]: https://web.archive.org/web/20250414234359/https://digitalsorceress.com/b/2022-11-04_Annoying-Coming-Soon-in-Outlook "DigitalSorceress - Annoying Coming Soon in Outlook - 2022/11/04 | digitalsorceress.com"
+                            [7]: https://web.archive.org/web/20250414235734/https://learn.microsoft.com/en-us/dynamics365/sales/sales-previews-in-trial "What are preview features | Microsoft Learn | learn.microsoft.com"
+                            [8]: https://web.archive.org/web/20250414234243/https://support.microsoft.com/en-us/topic/turn-off-coming-soon-for-your-organization-0ac68b98-47e8-4756-a0d7-ebc7aa37018e "Turn off Coming Soon for your organization - Microsoft Support | support.microsoft.com"
+                            [9]: https://web.archive.org/web/20250414234338/https://forums.slipstick.com/threads/98939-navigation-pane-location-and-options/ "Navigation Pane Location And Options | Outlook Forums by Slipstick.com | forums.slipstick.com"
+                        call:
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Office\16.0\Outlook\Options\General
+                                    valueName: DisablePreviewPlace
+                                    dataType: REG_DWORD
+                                    data: "1"
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Office\16.0\Outlook\Preferences
+                                    valueName: EnablePreviewPlace
+                                    dataType: REG_DWORD
+                                    data: "0"
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 24H2)
     -
         category: Advanced settings
         children:
