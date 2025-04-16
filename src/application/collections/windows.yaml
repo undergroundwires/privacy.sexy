@@ -8737,8 +8737,8 @@ actions:
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: telemetry.enableTelemetry
-                                powerShellValue: $false
+                                settingName: telemetry.enableTelemetry
+                                powerShellValueExpression: $false
                     -
                         name: Disable Visual Studio Code crash reporting
                         docs: https://web.archive.org/web/20221029171138/https://code.visualstudio.com/docs/getstarted/telemetry
@@ -8746,8 +8746,8 @@ actions:
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: telemetry.enableCrashReporter
-                                powerShellValue: $false
+                                settingName: telemetry.enableCrashReporter
+                                powerShellValueExpression: $false
                     -
                         name: Disable online experiments by Microsoft in Visual Studio Code
                         docs: https://github.com/privacysexy-forks/vscode/blob/1aee0c194cff72d179b9f8ef324e47f34555a07d/src/vs/workbench/contrib/experiments/node/experimentService.ts#L173
@@ -8755,50 +8755,50 @@ actions:
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: workbench.enableExperiments
-                                powerShellValue: $false
+                                settingName: workbench.enableExperiments
+                                powerShellValueExpression: $false
                     -
                         name: Disable Visual Studio Code automatic updates in favor of manual updates
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: update.mode
-                                powerShellValue: "'manual'" # The double quotes around 'manual' is important for PowerShell to correctly interpret the value.
+                                settingName: update.mode
+                                powerShellValueExpression: "'manual'" # The double quotes around 'manual' is important for PowerShell to correctly interpret the value.
                     -
                         name: Disable fetching release notes from Microsoft servers after an update
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: update.showReleaseNotes
-                                powerShellValue: $false
+                                settingName: update.showReleaseNotes
+                                powerShellValueExpression: $false
                     -
                         name: Automatically check extensions from Microsoft online service
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: extensions.autoCheckUpdates
-                                powerShellValue: $false
+                                settingName: extensions.autoCheckUpdates
+                                powerShellValueExpression: $false
                     -
                         name: Fetch recommendations from Microsoft only on demand
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: extensions.showRecommendationsOnlyOnDemand
-                                powerShellValue: $true
+                                settingName: extensions.showRecommendationsOnlyOnDemand
+                                powerShellValueExpression: $true
                     -
                         name: Disable automatic fetching of remote repositories in Visual Studio Code
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: git.autofetch
-                                powerShellValue: $false
+                                settingName: git.autofetch
+                                powerShellValueExpression: $false
                     -
                         name: Disable fetching package information from NPM and Bower in Visual Studio Code
                         call:
                             function: SetVsCodeSetting
                             parameters:
-                                setting: npm.fetchOnlinePackageInfo
-                                powerShellValue: $false
+                                settingName: npm.fetchOnlinePackageInfo
+                                powerShellValueExpression: $false
             -
                 category: Disable Microsoft Office telemetry
                 docs: |-
@@ -12419,6 +12419,45 @@ actions:
                             dataType: REG_DWORD
                             data: "0"
                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) (CCleaner v6.23)
+            -
+                name: Disable WinGet telemetry
+                recommend: standard
+                docs: |-
+                  This script disables data collection in WinGet.
+  
+                    WinGet is the command line tool for the Windows Package Manager [1].
+                    It allows users to discover, install, upgrade, remove, and configure applications. [1]
+                    
+                    WinGet collects and sends data to Microsoft [2] [3].
+                    This data includes who you are [2], how you use the software [2] [3] [4] and other system-related
+                    diagnostics and error data [4].
+                    This telemetry can reveal details about your identity and software usage patterns [2] [3].
+
+                    By disabling WinGet telemetry, you keep gain control over your privacy by preventing 
+                    our application management activities from being shared with Microsoft.
+
+                    This action may also slightly improve system performance by reducing background
+                    processes that collect and transmit data.
+
+                    ### Technical Details
+
+                    This script sets the `telemetry.disable` configuration to `true` in WinGet settings [3].
+                    When enabled, this setting prevents WinGet from writing any Event Tracing for Windows (ETW) events
+                    that would normally be sent to Microsoft [3].
+                    ETW is the Windows system that collects information about your computer activity [5].
+                    While disabling telemetry stops data collection by the WinGet client itself, be aware that other
+                    features in the software may still collect data [2].
+
+                    [1]: https://web.archive.org/web/20231229091538/https://learn.microsoft.com/en-us/windows/package-manager/winget/ "Use the winget tool to install and manage applications | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20250415142429/https://github.com/privacysexy-forks/winget-cli/blob/master/PRIVACY.md "winget-cli/PRIVACY.md at master · privacysexy-forks/winget-cli | github.com"
+                    [3]: https://web.archive.org/web/20250415142419/https://github.com/privacysexy-forks/winget-cli/blob/master/doc/Settings.md#telemetry "winget-cli/doc/Settings.md at master · privacysexy-forks/winget-cli | github.com"
+                    [4]: https://web.archive.org/web/20250415142329/https://github.com/privacysexy-forks/winget-cli/blob/master/README.md#datatelemetry "winget-cli/README.md at master · privacysexy-forks/winget-cli | github.com"
+                    [5]: https://web.archive.org/web/20250415232421/https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/event-tracing-for-windows--etw- "Event Tracing for Windows (ETW) - Windows drivers | Microsoft Learn | learn.microsoft.com"
+                call:
+                    function: SetWinGetSetting
+                    parameters:
+                        settingName: telemetry.disable
+                        powerShellValueExpression: $true
     -
         category: Security improvements
         docs: |-
@@ -40270,76 +40309,121 @@ functions:
                             [Privileges]::RemovePrivilege('SeTakeOwnershipPrivilege') | Out-Null
                         {{ end }}
     -
+        name: SetJsonPropertyValue
+        parameters:
+            - name: jsonFilePath                # Path to JSON configuration file
+            - name: propertyKey                 # Property key to modify
+            - name: powerShellValueExpression   # Value to assign (PowerShell expression)
+            - name: deleteOnRevert              # Whether to delete the property on revert
+              optional: true
+        docs: |-
+            Updates a property in a specified a JSON configuration file.
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Set JSON property '{{ $propertyKey }}' in {{ $jsonFilePath }}
+                    revertCodeComment: |-
+                        {{ with $deleteOnRevert }}
+                            Delete JSON property '{{ $propertyKey }}' from {{ $jsonFilePath }}
+                        {{ end }}
+            -
+                function: RunPowerShell
+                parameters:
+                    code: |-
+                        $rawJsonFilePath = "{{ $jsonFilePath }}"
+                        $propertyKey = '{{ $propertyKey }}'
+                        $desiredValue = {{ $powerShellValueExpression }}
+                        $jsonFilePath = [System.Environment]::ExpandEnvironmentVariables($rawJsonFilePath)
+                        if (!(Test-Path $jsonFilePath -PathType Leaf)) {
+                            Write-Host "Skipping, JSON file not found at '$jsonFilePath'."
+                            exit 0
+                        }
+                        try {
+                            $fileContent = Get-Content $jsonFilePath -ErrorAction Stop
+                        } catch {
+                            throw "Failed to read the JSON file: '$jsonFilePath'. Error: $_"
+                        }
+                        if ([string]::IsNullOrWhiteSpace($fileContent)) {
+                            Write-Host "JSON file is empty. Treating it as default empty JSON object."
+                            $fileContent = "{}"
+                        }
+                        try {
+                            $json = $fileContent | ConvertFrom-Json
+                        } catch {
+                            throw "Failed to parse JSON in file: '$jsonFilePath'. Error: $_"
+                        }
+                        $currentValue = $json.$propertyKey
+                        if ($currentValue -eq $desiredValue) {
+                            Write-Host "Skipping, key '$propertyKey' already has value '$desiredValue'."
+                            exit 0
+                        }
+                        $json | Add-Member -Type NoteProperty -Name $propertyKey -Value $desiredValue -Force
+                        $json | ConvertTo-Json | Set-Content $jsonFilePath
+                        Write-Host "Successfully set '$propertyKey' in '$jsonFilePath'."
+                    revertCode: |-
+                        {{ with $deleteOnRevert }}
+                            $rawJsonFilePath = "{{ $jsonFilePath }}"
+                            $propertyKey = '{{ $propertyKey }}'
+                            $undesiredValue = {{ $powerShellValueExpression }}
+                            $jsonFilePath = [System.Environment]::ExpandEnvironmentVariables($rawJsonFilePath)
+                            if (!(Test-Path $jsonFilePath -PathType Leaf)) {
+                                Write-Host "Skipping, JSON file not found at '$jsonFilePath'."
+                                exit 0
+                            }
+                            try {
+                                $fileContent = Get-Content $jsonFilePath -ErrorAction Stop
+                            } catch {
+                                throw "Failed to read the JSON file: '$jsonFilePath'. Error: $_"
+                            }
+                            if ([string]::IsNullOrWhiteSpace($fileContent)) {
+                                Write-Host "Skipping, JSON file is empty at '$jsonFilePath'."
+                                exit 0
+                            }
+                            try {
+                                $json = $fileContent | ConvertFrom-Json
+                            } catch {
+                                throw "Failed to parse JSON in file '$jsonFilePath'. Error: $_"
+                            }
+                            if (!$json.PSObject.Properties[$propertyKey]) {
+                                Write-Host "Skipping, key '$propertyKey' does not exist in configuration."
+                                exit 0
+                            }
+                            if ($json.$propertyKey -ne $undesiredValue) {
+                                Write-Host "Skipping, key '$propertyKey' has value '$($json.$propertyKey)' instead of '$undesiredValue'."
+                                exit 0
+                            }
+                            $json.PSObject.Properties.Remove($propertyKey)
+                            $json | ConvertTo-Json | Set-Content $jsonFilePath
+                            Write-Host "Successfully removed '$propertyKey' from '$jsonFilePath'."
+                        {{ end }}
+    -
         name: SetVsCodeSetting
         parameters:
-            - name: setting
-            - name: powerShellValue
+            - name: settingName
+            - name: powerShellValueExpression
+        docs: |-
+            Updates a setting in Visual Studio Code's user configuration.
+
+            Modifies the setting in VSCode's settings.json file located at:
+            `%APPDATA%\Code\User\settings.json` [1].
+
+            Removes the setting during revert since default VSCode has no explicit settings.
+
+            [1]: https://web.archive.org/web/20250415234459/https://code.visualstudio.com/docs/configure/settings "User and workspace settings | code.visualstudio.com"
         call:
-            function: RunPowerShell
-            parameters:
-                code: |-
-                    $settingKey='{{ $setting }}'
-                    $settingValue={{ $powerShellValue }}
-                    $jsonFilePath = "$($env:APPDATA)\Code\User\settings.json"
-                    if (!(Test-Path $jsonFilePath -PathType Leaf)) {
-                        Write-Host "Skipping, no updates. Settings file was not at `"$jsonFilePath`"."
-                        exit 0
-                    }
-                    try {
-                        $fileContent = Get-Content $jsonFilePath -ErrorAction Stop
-                    } catch {
-                        throw "Error, failed to read the settings file: `"$jsonFilePath`". Error: $_"
-                    }
-                    if ([string]::IsNullOrWhiteSpace($fileContent)) {
-                        Write-Host "Settings file is empty. Treating it as default empty JSON object."
-                        $fileContent = "{}"
-                    }
-                    try {
-                        $json = $fileContent | ConvertFrom-Json
-                    } catch {
-                        throw "Error, invalid JSON format in the settings file: `"$jsonFilePath`". Error: $_"
-                    }
-                    $existingValue = $json.$settingKey
-                    if ($existingValue -eq $settingValue) {
-                        Write-Host "Skipping, `"$settingKey`" is already configured as `"$settingValue`"."
-                        exit 0
-                    }
-                    $json | Add-Member -Type NoteProperty -Name $settingKey -Value $settingValue -Force
-                    $json | ConvertTo-Json | Set-Content $jsonFilePath
-                    Write-Host "Successfully applied the setting to the file: `"$jsonFilePath`"."
-                revertCode: |-
-                    $settingKey='{{ $setting }}'
-                    $settingValue={{ $powerShellValue }}
-                    $jsonFilePath = "$($env:APPDATA)\Code\User\settings.json"
-                    if (!(Test-Path $jsonFilePath -PathType Leaf)) {
-                        Write-Host "Skipping, no need to revert because settings file is not found: `"$jsonFilePath`"."
-                        exit 0
-                    }
-                    try {
-                        $fileContent = Get-Content $jsonFilePath -ErrorAction Stop
-                    } catch {
-                        throw "Error, failed to read the settings file: `"$jsonFilePath`". Error: $_"
-                    }
-                    if ([string]::IsNullOrWhiteSpace($fileContent)) {
-                        Write-Host "Skipping, no need to revert because settings file is empty: `"$jsonFilePath`"."
-                        exit 0
-                    }
-                    try {
-                        $json = $fileContent | ConvertFrom-Json
-                    } catch {
-                        throw "Error, invalid JSON format in the settings file: `"$jsonFilePath`". Error: $_"
-                    }
-                    if (!$json.PSObject.Properties[$settingKey]) {
-                        Write-Host "Skipping, no need to revert because setting `"$settingKey`" does not exist."
-                        exit 0
-                    }
-                    if ($json.$settingKey -ne $settingValue) {
-                        Write-Host "Skipping, setting (`"$settingKey`") has different configuration than `"$settingValue`": `"$($json.$settingKey)`"."
-                        exit 0
-                    }
-                    $json.PSObject.Properties.Remove($settingKey)
-                    $json | ConvertTo-Json | Set-Content $jsonFilePath
-                    Write-Host "Successfully reverted the setting from file: `"$jsonFilePath`"."
+            -
+                function: Comment
+                parameters:
+                    codeComment: 'Set Visual Studio Code setting: {{ $settingName }}'
+                    revertCodeComment: 'Reset Visual Studio Code setting: {{ $settingName }}'
+            -
+                function: SetJsonPropertyValue
+                parameters:
+                    jsonFilePath: '%APPDATA%\Code\User\settings.json'
+                    propertyKey: '{{ $settingName }}'
+                    powerShellValueExpression: '{{ $powerShellValueExpression }}'
+                    deleteOnRevert: 'true' # Default VSCode has no explicit settings
     -
         name: RunPowerShell
         parameters:
@@ -44544,3 +44628,42 @@ functions:
                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since EdgeUpdate ≥ 1.3.187.41
                     minimumWindowsVersion: Windows11-FirstRelease # No TrustedInstaller is needed on Windows 10, but the functionality is missing so the script won't work.
                     elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ✅ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
+    -
+        name: SetWinGetSetting
+        parameters:
+            - name: settingName                 # JSON setting name to modify
+            - name: powerShellValueExpression   # PowerShell value to set
+        docs: |-
+            This function updates a setting in WinGet configuration files.
+
+            It modifies the setting in both possible WinGet settings locations:
+
+            - Packaged: `%LOCALAPPDATA%\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\settings.json` [1]
+            - Non-packaged: `%LOCALAPPDATA%\Microsoft\WinGet\Settings\settings.json` [1]
+
+            [1]: https://web.archive.org/web/20250415142419/https://github.com/privacysexy-forks/winget-cli/blob/master/doc/Settings.md#file-location "winget-cli/doc/Settings.md at master · privacysexy-forks/winget-cli | github.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                  codeComment: 'Set Microsoft Store (packaged) WinGet setting: {{ $settingName }}'
+                  revertCodeComment: 'Reset Microsoft Store (packaged) WinGet setting: {{ $settingName }}'
+            -
+                function: SetJsonPropertyValue
+                parameters:
+                    jsonFilePath: '%LOCALAPPDATA%\Packages\Microsoft.DesktopAppInstaller_8wekyb3d8bbwe\LocalState\settings.json'
+                    propertyKey: '{{ $settingName }}'
+                    powerShellValueExpression: '{{ $powerShellValueExpression }}'
+                    deleteOnRevert: 'true' # Default WinGet has no explicit settings
+            -
+                function: Comment
+                parameters:
+                  codeComment: 'Set standalone (non-packaged) WinGet setting: {{ $settingName }}'
+                  revertCodeComment: 'Reset standalone (non-packaged) WinGet setting: {{ $settingName }}'
+            -
+                function: SetJsonPropertyValue
+                parameters:
+                    jsonFilePath: '%LOCALAPPDATA%\Microsoft\WinGet\Settings\settings.json'
+                    propertyKey: '{{ $settingName }}'
+                    powerShellValueExpression: '{{ $powerShellValueExpression }}'
+                    deleteOnRevert: 'true' # Default WinGet has no explicit settings
