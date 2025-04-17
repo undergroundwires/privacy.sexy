@@ -12458,6 +12458,83 @@ actions:
                     parameters:
                         settingName: telemetry.disable
                         powerShellValueExpression: $true
+            -
+                name: Disable Accessibility Insights telemetry
+                recommend: standard # No functionality impact
+                docs: |-
+                    This script disables telemetry data collection in Accessibility Insights for Windows,
+                    preventing the application from sending your usage data to Microsoft.
+
+                    The application is commonly referred to as **Accessibility Insights** [1],
+                    with the full name being **Accessibility Insights for Windows** [1] [2].
+
+                    Accessibility Insights for Windows is a free, open-source Microsoft tool that helps developers find
+                    and fix accessibility issues in Windows applications [1] [2] [3] [4].
+                    It detects these issues early in the development cycle for quick resolution [4].
+                    The automated checks identify common problems in seconds, enabling developers to address
+                    issues before proceeding to tests that require human judgment [4].
+
+                    Key features of the tool include:
+
+                    - **FastPass**: Catches common accessibility issues in under 5 minutes [3]
+                    - **Live Inspect**: Verifies UI Automation properties [3]
+                    - **Color Contrast Analyzer**: Investigates contrast ratios [3]
+                    - **Visual helpers**: Spot accessibility errors with clear guidance [3]
+
+                    Accessibility Insights collects telemetry data [1] [2] [3] [5] [6] [7].
+                    By default, the application collects and sends data until you disable it (opt-out model) [2].
+                    The app collects anonymized data to identify the top accessibility issues found by users [5].
+
+                    The data is collected under Microsoft's privacy policy [5], including:
+
+                    - Your interactions with the application [8]
+                    - Device information and usage patterns [8]
+                    - Diagnostic data for troubleshooting [8]
+                    - Personal data provided directly or collected through product usage [8]
+                    - Feature usage information [8]
+
+                    Microsoft uses this data to:
+
+                    - Improve their products and services [5] [8]
+                    - Identify common accessibility issues [1] [5]
+                    - Analyze product performance [8]
+                    - Train AI models [8]
+                    - Conduct business analytics [8]
+
+                    This script improves privacy by preventing Accessibility Insights from collecting and
+                    transmitting your usage data to Microsoft.
+                    This reduces your digital footprint and limits the personal information Microsoft can gather.
+
+                    The script may improve system performance by eliminating background telemetry processes and
+                    traffic, freeing up system resources.
+
+                    ### Technical Details
+
+                    Accessibility Insights stores its configuration in a JSON file located at
+                    `%LOCALAPPDATA%\AccessibilityInsights\V1\Configurations\Configuration.json` [6].
+                    This script modifies the configuration file and sets the `EnableTelemetry` property to `false` [6].
+
+                    Tests confirm that Accessibility Insights creates the `Configuration.json` file only after
+                    the application has been launched at least once.
+
+                    While telemetry can also be disabled through the application's settings menu [6] [7],
+                    this script provides an automated way to disable it.
+
+                    [1]: https://web.archive.org/web/20250416102300/https://accessibilityinsights.io/docs/general/telemetry/ "Accessibility Insights and Telemetry | accessibilityinsights.io"
+                    [2]: https://web.archive.org/web/20250416102249/https://accessibilityinsights.io/docs/windows/overview/ "Accessibility Insights for Windows | accessibilityinsights.io"
+                    [3]: https://web.archive.org/web/20250416102509/https://accessibilityinsights.io/ "(Homepage) Accessibility Insights | accessibilityinsights.io"
+                    [4]: https://web.archive.org/web/20250416112034/https://opensource.microsoft.com/blog/2019/03/12/microsoft-open-sources-accessibility-insights/ "Microsoft open sources Accessibility Insights - Microsoft Open Source Blog"
+                    [5]: https://web.archive.org/web/20250416102452/https://github.com/privacysexy-forks/accessibility-insights-windows/blob/main/README.md "accessibility-insights-windows/README.md at main · privacysexy-forks/accessibility-insights-windows | github.com"
+                    [6]: https://web.archive.org/web/20250416102342/https://github.com/undergroundwires/privacy.sexy/issues/341 "Disable Telemetry for Microsoft's Accessibility Insights for Windows · Issue #341 · undergroundwires/privacy.sexy | github.com"
+                    [7]: https://web.archive.org/web/20250416102406/https://accessibilityinsights.io/docs/windows/reference/telemetry/ "Telemetry in Accessibility Insights for Windows | accessibilityinsights.io"
+                    [8]: https://web.archive.org/web/20250131090457/https://www.microsoft.com/en-US/privacy/privacystatement#mainotherimportantprivacyinformationmodule "Microsoft Privacy Statement – Microsoft privacy | www.microsoft.com"
+                call:
+                    function: SetJsonPropertyValue
+                    parameters:
+                        jsonFilePath: '%LOCALAPPDATA%\AccessibilityInsights\V1\Configurations\Configuration.json'
+                        propertyKey: EnableTelemetry
+                        powerShellValueExpression: $false
+                        deleteOnRevert: 'true' # Configuration file is only and always created after first application launch
     -
         category: Security improvements
         docs: |-
