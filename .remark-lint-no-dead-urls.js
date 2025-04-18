@@ -7,7 +7,7 @@ const PluginOptions = {
     'archive.ph',
     'scoop.sh',
     'localhost',
-    'archive.org',
+    'web.archive.org',
   ].map(buildUrlPattern),
 };
 
