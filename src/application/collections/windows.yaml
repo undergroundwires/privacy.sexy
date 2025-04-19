@@ -1269,7 +1269,56 @@ actions:
                             function: ClearDirectoryContents
                             parameters:
                                 directoryGlob: '%USERPROFILE%\.dotnet\TelemetryStorageService'
-            -
+                    -
+                        category: Clear Microsoft Teams data
+                        docs: |-
+                            TODO: Some logsaaaaaaaaaaaaa
+
+                            https://itsupportforsmallbusinessesinlondon.net/remove-microsoft-teams-account-windows/
+                        children:
+                            -
+                                name: Clear Microsoft Teams logs
+                                recommend: standard
+                                docs: |- # TODO: Revise, new app?
+                                    Microsoft Teams logs are stored in [1]:
+
+                                    - `%LocalAppData%\SquirrelTemp\SquirrelSetup.log`
+                                    - `%AppData%\Microsoft\Teams\logs.txt`
+
+                                    [1]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot-installation#troubleshoot-update-issues  "Troubleshoot Microsoft Teams installation and update issues on Windows - Microsoft Teams | Microsoft Learn"
+                                code: |-
+                                    del /f /q %LocalAppData%\SquirrelTemp\SquirrelSetup.log
+                                    del /f /q %AppData%\Microsoft\Teams\logs.txt
+                            -
+                                name: Clear temporary Teams installation files
+                                recommend: standard
+                                docs: |- # TODO: Revise, new app?
+                                    `%LocalAppData%\SquirrelTemp` is a temporary directory used by Teams installer
+                                    during installation phase [1].
+
+                                    [1]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot-installation#troubleshoot-update-issues  "Troubleshoot Microsoft Teams installation and update issues on Windows - Microsoft Teams | Microsoft Learn"
+                                code: |-
+                                    rmdir /s /q "%LocalAppData%\SquirrelTemp" 2>nul
+                            -
+                                name: Clear Teams cache
+                                recommend: strict
+                                docs:
+                                    - https://robdy.io/how-to-clear-teams-cache-with-powershell/
+                                    - https://learn.microsoft.com/en-us/microsoftteams/troubleshoot/teams-administration/clear-teams-cache
+                                    - https://techzone.omnissa.com/resource/microsoft-teams-optimization-horizon#microsoft-teams-application-may-not-have-the-correct-settings
+                                code: |-
+                                    $($env:LOCALAPPDATA)\Packages\MSTeams_8wekyb3d8bbwe\LocalCache\Microsoft\MSTeams
+                            -
+                                name: Clear Teams user settings and configurations
+                                recommend: null # Breaking
+                                docs: https://learn.microsoft.com/en-us/microsoftteams/new-teams-vdi-requirements-deploy#profile-and-cache-location-for-new-teams-client
+                                code: |-
+                                    C:\Users<username>\AppData\Local\Packages\MSTeams_8wekyb3d8bbwe\
+                                    C:\Users<username>\AppData\Local\Packages\MSTeams_8wekyb3d8bbwe\Settings\settings.dat
+                                    C:\Users<username>\AppData\Local\Publishers\8wekyb3d8bbwe\TeamsSharedConfig\app_switcher_settings.json
+                                    C:\Users<username>\AppData\Local\Publishers\8wekyb3d8bbwe\TeamsSharedConfig\tma_settings.json
+                            # TODO: other dirs from: https://learn.microsoft.com/en-us/microsoftteams/new-teams-vdi-requirements-deploy#recommended-for-exclusion
+            - 
                 category: Clear browser history
                 children:
                     -
@@ -35013,7 +35062,7 @@ actions:
                     [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
                 children:
                     -
-                        name: Kill OneDrive process
+                        name: Terminate OneDrive process
                         recommend: strict
                         docs: |-
                             It stops the execution of OneDrive.
@@ -37741,6 +37790,834 @@ actions:
                                     parameters:
                                         capabilityName: XPS.Viewer
             -
+                category: Remove Microsoft Teams
+                docs: |-
+                    Microsoft Teams, is previously known as **Chat** on Windows [1].
+
+                    It's known to be vulnerable to many vulnerabilities
+
+                    It has been a part of Windows since Windowss 11 [1].
+
+                    This application collects required data such as:
+                    - Software/hardware device, type and version [2],
+                    - Users location, country, and other connectivity data [2],
+                    - Your meetings and conversations chats [3],
+                    - Your profile data e.g. e-mail address, profile picture [3],
+                    - Call history, call quality data [3],
+                    - Support/feedback data [3],
+                    - Diagnostic and service data to determine usage [3],
+                    - Message sent and calendar created events [2],
+                    - Video calls, documents stored [2],
+                    - Errors with details [2].
+
+                    After opt-in it also collects [2]:
+                    - Device configuration and its network capabilities,
+                    - Health and performance of device and service,
+                    - Data about OS, device, applications and services,
+                    - Installed software and update information.
+
+                    It also synchronizes chat data with cloud servers [2]
+
+                    Other apps not preinstalled, therefore not deleted are:
+                    soft Teams app for Surface Hub (`Microsoft.MicrosoftTeamsforSurfaceHub_8wekyb3d8bbwe`)
+                    teams app for meeting rooms
+
+                    TODO: Explain teams has two versions, one out of Support, this category handles both.
+                    https://web.archive.org/web/20250413103538/https://learn.microsoft.com/en-us/microsoftteams/teams-classic-client-end-of-availability
+                    https://github.com/privacysexy-forks/MicrosoftTeams-msinternal/blob/master/README.md "MicrosoftTeams-msinternal/README.md at master · privacysexy-forks/MicrosoftTeams-msinternal | github.com"
+
+                    TODO: Privacy:
+                    [43]: https://web.archive.org/web/20241231073802/https://open.overheid.nl/documenten/ronl-06f045ed745d9540ec4262a6079e8e73ad262a43/pdf "DPIA on Microsoft Teams, OneDrive Sharepoint and Azure AD (June 2021) | open.overheid.nl"
+                    https://learn.microsoft.com/en-us/microsoftteams/privacy/location-of-data-in-teams
+                    https://learn.microsoft.com/en-us/microsoftteams/privacy/teams-privacy-feedback
+                    https://learn.microsoft.com/en-us/microsoftteams/privacy/policy-control-overview
+                    https://learn.microsoft.com/en-us/microsoftteams/privacy/policy-control-diagnostic-data-mobile
+                    https://learn.microsoft.com/en-us/microsoftteams/privacy/policy-control-diagnostic-data-desktop
+                    https://learn.microsoft.com/en-us/microsoftteams/privacy/teams-privacy-oce-overview
+                    https://learn.microsoft.com/en-us/microsoftteams/privacy/operator-connect-data-transfer
+                    https://learn.microsoft.com/en-us/microsoftteams/privacy/intelligent-recap
+
+                    Teams run in background: https://support.microsoft.com/en-us/office/change-settings-in-microsoft-teams-b506e8f1-1a96-4cf1-8c6b-b6ed4f424bc7
+
+                    [1]: https://techcommunity.microsoft.com/t5/microsoft-teams-blog/introducing-chat-from-microsoft-teams-on-windows-11-for-your/ba-p/2809877 "Introducing Chat from Microsoft Teams on Windows 11, for your personal accounts - Microsoft Tech Community | techcommunity.microsoft.com"
+                    [2]: https://web.archive.org/web/20250410113420/https://www.microsoft.com/en-us/privacy/data-collection-teams "Data collection summary for Teams | privacy.microsoft.com"
+                    [3]: https://learn.microsoft.com/en-us/microsoftteams/teams-privacy "Microsoft Teams Privacy - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20250414103251/https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=microsoft+teams "CVE - Search Results | cve.mitre.org"
+                children:
+                    -
+                        name: Terminate Teams processes
+                        docs: |-
+                            This script terminates all running Microsoft Teams processes on your system.
+
+                            Microsoft Teams is a collaboration platform developed by Microsoft that provides team communication,
+                            video meetings, file sharing, and application integration in a shared workspace [1] [2] [3].
+
+                            Microsoft Teams is pre-installed with Windows by default [11] [12] [13] [14].
+                            By default, Teams automatically starts when you log in to your computer [4].
+                            When Teams runs, it launches several processes to handle its operations [5] [6] [7] [8] [9].
+                            A process is a running instance of a program on your computer [10].
+                            Terminating or "killing" a process immediately stops it from running - similar to force-closing
+                            an application instead of using the normal exit option.
+
+                            Teams uses Microsoft Edge WebView2 technology [8] [9] [11] [15] [16] [17].
+                            WebView2 technology allows Teams to display its interface [9].
+                            It embeds web technologies (HTML, CSS, and JavaScript) in the native app [18].
+                            Stopping these processes is necessary before removing Teams from your system [19].
+
+                            This script temporarily improves your privacy by:
+
+                            - Stopping the currently running Teams processes that collect usage data and telemetry [20]
+                            - Interrupting active data transmission about your activities to Microsoft's servers [20]
+                            - Preventing Microsoft from collecting identifiable information like usernames, email addresses,
+                                and usage patterns even at the lowest telemetry setting [20]
+                            - Blocking administrator tracking of your Teams usage, messages, calls, and meeting participation [20]
+                            - Cutting off current network connections until Teams is launched again
+
+                            This script improves your security by:
+
+                            - Reducing attack surface from exposed Teams executables,
+                                which are known to be vulnerable to attacks that may persist [21] [22] [23]
+                            - Preventing exploitation of known Teams vulnerabilities including DLL hijacking [24] and proxy execution [25]
+                            - Mitigating security issues in older Teams versions where application files could be replaced with
+                                malicious versions [22]
+                            - Addressing the security risk from Microsoft's recommendation to exclude Teams.exe from antivirus [22] [26]
+
+                            This script improves your system performance by freeing up hardware resources consumed by Teams:
+
+                            - Teams uses WebView2 which runs web code rather than native code [27],
+                                consuming more resources than native applications
+                            - Teams increases CPU [27] [28] [29] and memory [27] usage, potentially causing freezes/crashes [29]
+
+                            This script only terminates currently running Teams processes.
+                            It does not prevent Teams from starting again at login or when manually launched.
+
+                            > **Caution**:
+                            > Terminating Teams processes will immediately end any active meetings, calls, or chat sessions.
+                            > Any unsaved work or messages being composed may be lost.
+                            > Consider saving your work before running this script
+
+                            ### Technical Details
+
+                            Teams comes in multiple versions, each with unique processes, installation paths,
+                            and installation methods.
+
+                            Here are the main processes associated with different versions:
+
+                            | Executable | Process Name |
+                            | ---------- | ------------ |
+                            | `ms-teams.exe`    | Microsoft Teams (Teams 2.X [17] [30], New Teams [5] [7] [16] [17] [26] [31] [32] [33] [34], Work [35], work or school [35])  |
+                            | `msteams.exe`     | Microsoft Teams (Personal [1] [19] [36], 2.0 [15], Chat [37]) |
+                            | `teams.exe`       | Teams 1.X [6], Classic Teams [2] [8] [16] [26] [32] [33] [34] [38], Office 365 Teams [11] [12] |
+
+                            These processes are hidden from users by default [39].
+
+                            Microsoft Teams can be installed using different methods:
+
+                            | Executable | Installation Method |
+                            | ---------- | ------------------- |
+                            | `ms-teams.exe`    | `MSTeams` package [5] [30] [31] [35] [39] |
+                            | `msteams.exe`     | `MicrosoftTeams` package [1] [19] [24] [36] [37] [40] |
+                            | `teams.exe`       | Standalone installer [2] [12] [28] [41] |
+
+                            Teams executables are located in different folders depending on version and installation method:
+
+                            | Executable | Installation Path |
+                            | ---------- | ------------------- |
+                            | `ms-teams.exe`    | `%PROGRAMFILES%\WindowsApps\MSTeams_<AppVersion>_<CPUArchitecture>__8wekyb3d8bbwe\ms-teams.exe` [5] [7] [17] [26] [31] [35] |
+                            | `msteams.exe`     | `%PROGRAMFILES%\WindowsApps\microsoftteams_<AppVersion>_<CPUArchitecture>__8wekyb3d8bbwe\msteams.exe` [1] [11] [24] [31] [40] |
+                            | `teams.exe`       | `%LOCALAPPDATA%\Microsoft\Teams\Current\Teams.exe` [2] [6] [22] [26] [27] [38] [41] |
+
+                            Teams folders are hidden and protected by design for security reasons [39].
+
+                            In some specific cases (when installed using machine-wide installer), the older Teams version (`teams.exe`)
+                            is installed at `%PROGRAMFILES(X86)%\Microsoft\Teams\current\Teams.exe` [28] [42].
+                            The older Teams installer has the same process name: `Teams.exe` [42] [43].
+
+                            Helper executables for modern Teams:
+
+                            - `msedgewebview2.exe` [9] [17] [26]:
+                                Responsible for displaying chat messages and other UI elements [9].
+                                When terminated, it prevents Teams from showing new messages while appearing to still run [9].
+                            - `ms-teamsupdate.exe` [7] [15] [17] [26] [31]:
+                                Handles the update process for Teams.
+                                The main Teams app (`ms-teams.exe`) launches this process automatically at startup to check for updates [7].
+                                It connects to Microsoft's servers and downloads MSIX packages when updates are available [7].
+                            - `teamsbootstrapper.exe` [17] [42]:
+                                Used for installing the Teams MSIX package on target computers. [42]
+                            - `ms-teams_autostarter.exe` [26]:
+                                Manages automatic startup
+
+                            This script will stop the above processes.
+                            It will NOT terminate:
+
+                            - Other processes that belong to older Teams versions such as
+                                `update.exe` [26] [41] and `squirrel.exe` [26] due to their generic naming which
+                                could affect non-Teams applications.
+                            - `MsTeamsVdi.exe` as this process runs on the endpoint (client-side),  not the virtual machine [5].
+                            - `Microsoft.SkypeRoomSystem.exe` which belongs to Microsoft Teams Rooms [34],
+                                that is not supported by this script.
+
+                            [1]: https://web.archive.org/web/20250417143125/https://www.file.net/process/msteams.exe.html "msteams.exe Windows process - What is it? | www.file.net"
+                            [2]: https://web.archive.org/web/20250417144650/https://www.file.net/process/teams.exe.html "Teams.exe Windows process - What is it? | www.file.net"
+                            [3]: https://web.archive.org/web/20250417155824/https://support.microsoft.com/en-us/topic/what-is-microsoft-teams-3de4d369-0167-8def-b93b-0eb5286d7a29 "What is Microsoft Teams? - Microsoft Support | support.microsoft.com"
+                            [4]: https://web.archive.org/web/20220310145649/https://docs.microsoft.com/en-us/MicrosoftTeams/scripts/powershell-script-teams-reset-autostart "PowerShell script sample - Reset the autostart setting in Teams - Microsoft Teams | Microsoft Learn | docs.microsoft.com"
+                            [5]: https://web.archive.org/web/20250329210425/https://learn.microsoft.com/en-us/microsoftteams/vdi-2 "New VDI solution for Teams - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20250417151713/https://helgeklein.com/blog/identifying-ms-teams-application-instances-counting-app-starts/ "Identifying MS Teams Application Instances & Counting App Starts • Helge Klein | helgeklein.com"
+                            [7]: https://web.archive.org/web/20250417152741/https://www.panagenda.com/blog/how-a-microsoft-teams-update-reaches-an-end-user/ "How a Microsoft Teams Update reaches an End User - panagenda | panagenda | www.panagenda.com"
+                            [8]: https://web.archive.org/web/20250417154033/https://knowledge.broadcom.com/external/article/279669/new-version-of-desktop-microsoft-teams-a.html "New version of Desktop Microsoft Teams Application is not triggering DLP response Rules. | knowledge.broadcom.com"
+                            [9]: https://web.archive.org/web/20250417155716/https://kreepblog.fly.dev/friendlyfire-bof-selective-process-freezing/ "FriendlyFire BOF: Selective Process Freezing | kreepblog.fly.dev"
+                            [10]: https://web.archive.org/web/20250417203733/https://learn.microsoft.com/en-us/windows/win32/procthread/processes-and-threads "Processes and Threads - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                            [11]: https://web.archive.org/web/20250417150616/https://community.spiceworks.com/t/msteams-exe-not-teams-exe-and-one-drive-blocking-and-permanent-no-run-state/949484 "MSTEAMS.exe (Not Teams.exe) and one drive blocking and permanent no-run state - Collaboration - Spiceworks Community | community.spiceworks.com"
+                            [12]: https://web.archive.org/web/20250417151713/https://help.uillinois.edu/TDClient/37/uic/KB/PrintArticle?ID=753 "How do I install Office 365 using Device Based Activation? | help.uillinois.edu"
+                            [13]: https://web.archive.org/web/20250312200452/https://www.manelrodero.com/osd/windows11 "Windows 11 | www.manelrodero.com"
+                            [14]: https://web.archive.org/web/20250417205802/https://blogs.windows.com/windows-insider/2024/03/13/announcing-windows-11-insider-preview-build-26080-canary-and-dev-channels/ "Announcing Windows 11 Insider Preview Build 26080 (Canary and Dev Channels) | Windows Insider Blog | blogs.windows.com"
+                            [15]: https://archive.ph/2025.04.17-144513/https://dev.to/noseratio/some-thoughts-on-the-new-microsoft-teams-2-0-architecture-webview2-reactjs-1gf1 "Some thoughts on the new Microsoft Teams 2.0 architecture (WebView2/ReactJS) - DEV Community | dev.to"
+                            [16]: https://web.archive.org/web/20250417153454/https://www.controlupcommunity.com/how-to-determine-which-version-of-ms-teams-users-are-using/ "How to Determine Which Version of MS Teams Users Are Using? | ControlUp Community | www.controlupcommunity.com"
+                            [17]: https://web.archive.org/web/20250417154426/https://www.deyda.net/index.php/en/2024/05/17/install-new-microsoft-teams-version-2-in-citrix/ "Install new Microsoft Teams (version 2) in Citrix – Deyda.net | www.deyda.net"
+                            [18]: https://web.archive.org/web/20240623112820/https://learn.microsoft.com/en-us/microsoft-edge/webview2/ "Introduction to Microsoft Edge WebView2 - Microsoft Edge Developer documentation | Microsoft Learn | learn.microsoft.com"
+                            [19]: https://web.archive.org/web/20250417150629/https://thenewnumber2.com/2022/11/28/intune-proactive-remediation/ "Intune Proactive Remediation – thenewnumber2.com | thenewnumber2.com"
+                            [20]: https://web.archive.org/web/20241231073802/https://open.overheid.nl/documenten/ronl-06f045ed745d9540ec4262a6079e8e73ad262a43/pdf "DPIA on Microsoft Teams, OneDrive Sharepoint and Azure AD (June 2021) | open.overheid.nl"
+                            [21]: https://web.archive.org/web/20250414103251/https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=microsoft+teams "CVE - Search Results | cve.mitre.org"
+                            [22]: https://web.archive.org/web/20250417162745/https://l--k.uk/2022/01/16/microsoft-teams-and-other-electron-apps-as-lolbins/ "Microsoft Teams and other Electron Apps as LOLbins – L<<K | l--k.uk"
+                            [23]: https://web.archive.org/web/20250417163353/https://www.bui.co/bui-cyber-research-resolving-a-vulnerability-in-outdated-versions-of-microsoft-teams/ "BUI Cyber Research: Microsoft Teams Vulnerability Fix - BUI | www.bui.co"
+                            [24]: https://web.archive.org/web/20250417151732/https://hijacklibs.net/entries/microsoft/built-in/netprofm.html "netprofm.dll | HijackLibs | hijacklibs.net"
+                            [25]: https://web.archive.org/web/20250417150647/https://detection.fyi/sigmahq/sigma/windows/process_creation/proc_creation_win_susp_electron_execution_proxy/ "Potentially Suspicious Electron Application CommandLine | Detection.FYI | detection.fyi"
+                            [27]: https://web.archive.org/web/20250417162132/https://blog.rmilne.ca/2020/11/09/microsoft-teams-high-cpu-using-hardware-acceleration-with-the-microsoft-teams-client-to-lower-cpu-load/ "Microsoft Teams High CPU – Using Hardware Acceleration with the Microsoft Teams Client To Lower CPU Load - 250 Hello | blog.rmilne.ca"
+                            [28]: https://web.archive.org/web/20250417191435/https://www.techtarget.com/searchvirtualdesktop/tip/How-to-set-up-Microsoft-Teams-on-Windows-Virtual-Desktop "How to set up Microsoft Teams on WVD | TechTarget | www.techtarget.com"
+                            [29]: https://web.archive.org/web/20241206150534/https://docs.nexthink.com/platform/library-packs/collaboration-and-productivity-applications/microsoft-teams-stability-and-compliance/usage-guide-microsoft-teams-stability-and-compliance "Usage guide: Microsoft Teams - Stability and compliance | Nexthink Documentation | docs.nexthink.com"
+                            [30]: https://web.archive.org/web/20250417151253/https://old.reddit.com/r/Citrix/comments/1fyxlgb/msteamsexe_new_teams_client_parameter_is_incorrect/ "ms-teams.exe (new teams client): parameter is incorrect : Citrix | old.reddit.com"
+                            [31]: https://web.archive.org/web/20250115181621/https://learn.microsoft.com/en-us/microsoftteams/new-teams-deployment-checklist "Deployment checklist for new Teams client - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [32]: https://web.archive.org/web/20250417153749/https://johndeletre.blog/en/2024/02/adjust-your-qos/ "Adjust your QoS > JD. Blog | johndeletre.blog"
+                            [33]: https://web.archive.org/web/20250417160457/https://learn.microsoft.com/en-us/microsoftteams/qos-in-teams-clients "Implement Quality of Service (QoS) in Microsoft Teams desktop clients on Windows - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [34]: https://web.archive.org/web/20250417160837/https://teamsstuff.net/2018/02/20/powershell-script-to-create-qos-group-policy-objects-for-teams/ "Create QoS Group Policy Objects for Microsoft Teams using PowerShell! Now includes New Teams client and Microsoft Teams Rooms!! – Teams Stuff | teamsstuff.net"
+                            [35]: https://web.archive.org/web/20250417151721/https://www.processchecker.com/file/ms-teams.exe.html "What is ms-teams.exe ? ms-teams.exe info | www.processchecker.com"
+                            [36]: https://web.archive.org/web/20250413124035/https://azuretothemax.net/2023/03/07/windows-11-automating-the-removal-of-personal-teams-with-intune/ "Windows 11: Automating the Removal of Personal Teams with Intune – Getting the Most Out of Azure | azuretothemax.net"
+                            [37]: https://web.archive.org/web/20250417150614/https://www.asus.com/support/faq/1048909/ "[Notebook/Desktop/AIO] Troubleshooting - \"Chat\" program (Microsoft Teams) is unable to run or An error message “msteams.exe - Bad Image” appeared | Official Support | ASUS Global | www.asus.com"
+                            [38]: https://web.archive.org/web/20250310170502/https://learn.microsoft.com/en-us/microsoftteams/client-firewall-script "Sample script - Microsoft Teams firewall PowerShell script - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [39]: https://web.archive.org/web/20250417153222/https://en.ittrip.xyz/ms-office/teams/teams-file-loc "Microsoft Teams File Location: How to Find the Hidden ms-teams.exe | IT trip | en.ittrip.xyz"
+                            [26]: https://web.archive.org/web/20250319092814/https://learn.microsoft.com/en-us/microsoftteams/troubleshoot/teams-administration/include-exclude-teams-from-antivirus-dlp "How to include or exclude Teams from antivirus or DLP applications - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [40]: https://archive.ph/2025.04.14-105235/http://windowfin.com/bbs/board.php?bo_table=windowfin&wr_id=915481 "What is msteams.exe? Microsoft Teams File Information. ID:0915481 | windowfin.com"
+                            [41]: https://web.archive.org/web/20250417161816/https://lazyadmin.nl/office-365/deploying-microsoft-teams-client/ "Install or Deploy Microsoft Teams — LazyAdmin | lazyadmin.nl"
+                            [42]: https://web.archive.org/web/20250213193747/https://www.tbone.se/2024/03/13/deploy-new-teams-with-intune/ "Deploy New Teams with Intune - Mr T-Bone´s Blog | www.tbone.se"
+                            [43]: https://web.archive.org/web/20250417191710/https://wpkg.org/Microsoft_Teams "Microsoft Teams - WPKG | Open Source Software Deployment and Distribution | wpkg.org"
+                        call:
+                            -
+                                function: TerminateRunningProcess
+                                parameters:
+                                    executableNameWithExtension: Teams.exe # Classic Teams (1.X)
+                            -
+                                function: TerminateRunningProcess
+                                parameters:
+                                    executableNameWithExtension: msteams.exe # Microsoft Teams (Personal)
+                            -
+                                function: TerminateRunningProcess
+                                parameters:
+                                    executableNameWithExtension: ms-teams.exe # Microsoft Teams (2.X) - Main executable
+                            -
+                                function: TerminateRunningProcess
+                                parameters:
+                                    executableNameWithExtension: msedgewebview2.exe # Microsoft Teams (2.X) - WebView2 engine for Teams UI rendering
+                            -
+                                function: TerminateRunningProcess
+                                parameters:
+                                    executableNameWithExtension: ms-teamsupdate.exe # Microsoft Teams (2.X) - Teams update service process
+                            -
+                                function: TerminateRunningProcess
+                                parameters:
+                                    executableNameWithExtension: ms-teams_autostarter.exe # Microsoft Teams (2.X) - Teams automatic startup manager
+                            -
+                                function: TerminateRunningProcess
+                                parameters:
+                                    executableNameWithExtension: teamsbootstrapper.exe # Used for Teams MSIX installation
+                    - # TODO: Analyze docs a few times, move to bottom
+                        name: >-
+                            Remove "Meet Now" from taskbar
+                            (outdated)
+                        recommend: strict
+                        docs: |-
+                            This script removes the "Meet Now" icon from the Windows 10 taskbar notification area.
+
+                            "Meet Now" is a feature introduced in Windows 10's May 2020 Update [1].
+                            It integrates Skype into the taskbar [1] [2] [3].
+                            It appears as a small video camera icon in the notification area [3].
+                            Notification area is sometimes referred to as **system control area** [4].
+                            It allows users to quickly create or join virtual meetings without requiring all
+                            participants to have Skype accounts [3] [5].
+
+                            This feature is Windows 10 only and does not exist on Windows 11 [6].
+                            Therefore, this script is only applicable to Windows 10 systems.
+                            On Windows 10, Meet Now icon is displayed in the system notification area by default [3] [4].
+
+                            The feature enables users to:
+
+                            - Create personalized meeting links that can be shared with others [1] [3] [5]
+                            - Allow participants to join meetings via web browsers without Skype installation [3] [5]
+                            - Access standard video conferencing controls during calls [3] [5]
+
+                            Since May 2025, Skype is being retired and replaced by Microsoft Teams [7].
+                            After this date, Meet Now redirects to Microsoft Teams [7].
+
+                            This script improves your privacy by removing a feature connected to services with
+                            significant privacy concerns:
+
+                            - Skype:
+                                - A proprietary closed-source software with no plans to become open-source [8] [9]
+                                - Evasive about whether they monitor communications [10]
+                                - Sends network traffic even when turned off [9]
+                                - Records activity history, which may reveal personal information [11]
+                                - Retains chat history and recordings after calls end [5]
+                            - Microsoft Teams
+                                - Sends extensive data to Microsoft including device information, usage details, and software inventory [12]
+                                - Allows for administrators to access text conversations and recorded calls [13]
+                                - Includes productivity tracking tools that can monitor employee activities [13]
+
+                            This script improves your security by reducing the attack surface.
+                            Both Skype [14] and Microsoft Teams [15] have documented security vulnerabilities
+                            Removing unused services minimizes potential exploitation paths.
+
+                            Removing the Meet Now icon only hides the shortcut but doesn't uninstall
+                            the underlying services.
+                            Both Teams [16] and Skype [17] run in background automatically without user consent.
+                            For significant performance or privacy benefits, disable or uninstall Skype and Teams separately.
+
+                            ### Technical Details
+
+                            The Meet Now button in the Windows 10 taskbar will not be available if you are signed in to a PC with an Azure Active Directory (AAD)
+                            account and/or on the Windows 10 Enterprise edition [2].
+
+                            The Meet Now button is not available on Windows 11 [6] or if you are signed in with an Azure Active Directory
+                            (AAD) account or using Windows 10 Enterprise edition [2].
+                            This script has no effect for thi cases.
+
+                            [1]: https://web.archive.org/web/20250311094702/https://www.windowscentral.com/how-disable-meet-now-feature-windows-10 "How to disable the Meet Now feature on Windows 10 | Windows Central | www.windowscentral.com"
+                            [2]: https://web.archive.org/web/20250414100242/https://support.microsoft.com/en-us/skype/how-do-i-use-skype-s-meet-now-from-my-windows-10-taskbar-or-outlook-com-3bdebac0-3008-4c28-bdc8-6253d8680f40 "How do I use Skype's Meet Now from my Windows 10 taskbar or Outlook.com? - Microsoft Support | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20250414100351/https://www.howtogeek.com/704215/how-to-hide-or-disable-meet-now-in-windows-10/ "How to Hide or Disable \"Meet Now\" on Windows 10 | www.howtogeek.com"
+                            [4]: https://web.archive.org/web/20250311094146/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TaskBar2::HideSCAMeetNow "Remove the Meet Now icon | admx.help"
+                            [5]: https://web.archive.org/web/20250414103636/https://support.microsoft.com/en-us/skype/what-is-meet-now-and-how-do-i-use-it-in-skype-9b721076-fcdf-437b-89a4-d2c8c959ac6b "What is Meet Now and how do I use it in Skype? - Microsoft Support | support.microsoft.com"
+                            [6]: https://web.archive.org/web/20250414102746/https://support.microsoft.com/en-us/topic/navigate-and-explore-the-windows-taskbar-2b024363-851c-4d23-bb0d-800b58d194b2#id0ebd=windows_11 "Navigate and explore the Windows taskbar - Microsoft Support | support.microsoft.com"
+                            [7]: https://web.archive.org/web/20250414100128/https://support.microsoft.com/en-us/skype/skype-is-retiring-in-may-2025-what-you-need-to-know-2a7d2501-427f-485e-8be0-2068a9f90472 "Skype is retiring in May 2025: What you need to know - Microsoft Support | support.microsoft.com"
+                            [8]: https://web.archive.org/web/20250414102118/https://www.theregister.com/2004/06/15/voip_and_skype "VoIP suffers identity crisis • The Register | www.theregister.com"
+                            [9]: https://web.archive.org/web/20250403002612/https://www.blackhat.com/presentations/bh-europe-06/bh-eu-06-biondi/bh-eu-06-biondi-up.pdf "Silver Needle in the Skype | www.blackhat.com"
+                            [10]: https://web.archive.org/web/20250414101809/https://www.zdnet.de/39151472/telefonieren-uebers-internet-wie-sicher-ist-skype-wirklich/ "Telefonieren übers Internet: Wie sicher ist Skype wirklich? | www.zdnet.de"
+                            [11]: https://web.archive.org/web/20250414101411/https://www.csie.ntu.edu.tw/~acpang/course/voip_2005/report/510_2_OSI_Skype6.pdf "VoIP and Skype Security By Simson L. Garfinkel | www.csie.ntu.edu.tw"
+                            [12]: https://web.archive.org/web/20250410113420/https://www.microsoft.com/en-us/privacy/data-collection-teams "Data collection summary for Teams | privacy.microsoft.com"
+                            [13]: https://web.archive.org/web/20250321012130/https://www.monitask.com/en/blog/how-does-microsoft-teams-track-activity "How Does Microsoft Teams Track Activity? | Monitask | www.monitask.com"
+                            [14]: https://web.archive.org/web/20250414100631/https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=skype "CVE - Search Results | cve.mitre.org"
+                            [15]: https://web.archive.org/web/20250414103251/https://cve.mitre.org/cgi-bin/cvekey.cgi?keyword=microsoft+teams "CVE - Search Results | cve.mitre.org"
+                            [16]: https://web.archive.org/web/20250418114504/https://support.microsoft.com/en-us/office/change-settings-in-microsoft-teams-b506e8f1-1a96-4cf1-8c6b-b6ed4f424bc7 "Change settings in Microsoft Teams - Microsoft Support | support.microsoft.com"
+                            [17]: https://web.archive.org/web/20250418120756/https://www.techbout.com/stop-skype-from-running-in-background-windows-10-22066/ "How to Stop Skype from Running in Background - Techbout | www.techbout.com"
+                        call:
+                            function: SetRegistryValue
+                            parameters:
+                                keyPath: HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
+                                valueName: HideSCAMeetNow
+                                dataType: REG_DWORD
+                                data: '1'
+                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                                maximumWindowsVersion: Windows10-MostRecent # Missing on Windows 11
+                    -
+                        name: Remove "Chat" from taskbar
+                        recommend: strict
+                        docs: |- # TODO: Done, just revise
+                            This script...
+
+                            Chat icon is essentially shortcut for Microsoft Teams [5].
+
+                            By default Chat icon will be configured according to the defaults for your Windows edition [5].
+
+                            Since Windows 23H2, chat icon has been removed [4].
+                            So this script is only relevant for older versions of Windows.
+
+                            This script improves your privacy by...
+
+                            This script improves your security by...
+
+                            This script improves your system performance by...
+
+                            HOwever, this script may ....
+
+                            > **Caution:** Explain impact in TLDR for easier scannability, 1 sentence, KISS/DRY, for non tech-savvy
+
+                            ### Techhnical Details
+
+                            To control visibility of Chat in taskbar can be controlled by setting `TaskbarMn` two values [1] [2]:
+                            1. 0 = Hidden
+                            2. 1 = Visible
+
+                            Windows 11 (tested since 21H2) comes with `1` as default value after default installation.
+                            Since Windows 11 23H2, this value does not exists.
+
+                            The visibility can further be controlled using group policy [3] [5].
+                            In this case `ChatIcon` value can be set accordingly [3] [5]:
+
+                            | Registry Value | Name | Description |
+                            | -------------- | ---- | ----------- |
+                            | `1` | Show        | The Chat icon will be displayed on the taskbar by default. Users can show or hide it in Settings |
+                            | `2` | Hide        | The Chat icon will be hidden by default. Users can show or hide it in Settings |
+                            | `3` | Disabled    | The Chat icon won't be displayed, and users can't show or hide it in Settings |
+
+                            Setting value `2` on the group policy does not hide it as the default user choice is set as "Visible" after
+                            the installation. Setting `3` works after reboot.
+                            This key does not exist after fresh Windows installation by default.
+
+                            [1]: https://web.archive.org/web/20250410113552/https://gal.vin/posts/2021/w11-21h2-customisation/#disable-chat-in-the-taskbar "Windows 11 21H2 Customisation - Mike Galvin - Technical Consultant | gal.vin"
+                            [2]: https://web.archive.org/web/20250410113709/https://www.ghacks.net/2021/10/22/how-to-remove-chat-in-windows-11/ "How to remove Chat in Windows 11 and its slider button - gHacks Tech News | ghacks.net"
+                            [3]: https://web.archive.org/web/20250108133111/https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.TaskBar2::ConfigureChatIcon "Configures the Chat icon on the taskbar | admx.help"
+                            [4]: https://web.archive.org/web/20250410113606/https://www.ghacks.net/2023/06/15/teams-chat-taskbar-integration-is-being-removed-from-windows-11/ "Teams Chat taskbar integration is being removed from Windows 11- gHacks Tech News"
+                            [5]: https://web.archive.org/web/20250410113539/https://techcommunity.microsoft.com/blog/microsoftteamsblog/introducing-chat-from-microsoft-teams-on-windows-11-for-your-personal-accounts/2809877 "Introducing Chat from Microsoft Teams on Windows 11, for your personal accounts | Microsoft Community Hub | techcommunity.microsoft.com"
+                            [6]: https://web.archive.org/web/20240119153212/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#configurechaticon "Experience Policy CSP | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+                                    valueName: TaskbarMn
+                                    dataType: REG_DWORD
+                                    data: "0"
+                                    dataOnRevert: '1' # 1 only on 21H2 + 22H2? Test this agin
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\Software\Policies\Microsoft\Windows\Windows Chat
+                                    valueName: ChatIcon
+                                    dataType: REG_DWORD
+                                    data: "3"
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 21H2)
+                            -
+                                function: ShowExplorerRestartSuggestion
+                    -
+                        name: Disable Teams auto-start
+                        # TODO: prevent rtunning autostarter.exe?
+                        docs: |- # TODO: Research done except `desktop-config.json > openAtLogin: false`
+                            This script disables...
+
+                            Teams on Windows start automatically during different scenarios, all disabled by this script.
+
+                            It starts automatically for the user post-installation [11].
+                            This script prevents Teams from starting automatically when the user logs into the device [11].
+
+                            Once a user signs in to Teams for the first time, Teams is configured to start automatically
+                            the next time the user logs into the device [11].
+                            Default Teams installation start team on system startup [1].
+                            This installer runs runs every time the user logs on [2].
+
+                            The user can configure Teams to not start automatically by configuring user settings within Teams
+                            or by clearing the Open Teams on startup check box on the sign in screen for Teams [11].
+                            This feature is controlled using **Auto-start application** setting toggle on Teams interface [3].
+
+                            This script does not prevent an icon for Microsoft Teams still appears on the user's desktop [11].
+                            Despite enabling this policy setting so that Teams doesn't start automatically, an icon for Microsoft
+                            Teams still appears on the user's desktop [11].
+                            
+                            Hoewever, Teams installation with no auto start switch has issues in many levels where it's
+                            not honoring the switch [4].
+                            Even though it installs and won’t auto launch for the first time, when the user logs off and log back in,
+                            it auto launches [4].
+
+                            On every start Teams checks for and installs new updates for the Microsoft Teams collaboration and
+                            messaging app [6].
+                            This mechanism is historically known to have a vulnerability that allows any user 
+                            o insert malicious code into the application; gifting control while escalating privileges [8].
+
+                            This script improves your privacy by...
+
+                            This script improves your security by...
+                            Reduced attack surface, no longer vulnerable to attacks.
+                            Using unsupported software not good.
+                            
+                            This script improves your system performance by...
+                            Citrix recommends it for optimizing system performance [9].
+
+                            HOwever, this script may reduce your security by missing out of updates.
+
+                            > **Caution:** Explain missing updates can have security issues in TLDR, 1 sentence, KISS/DRY, for non tech-savvy
+
+                            ### Technical Details
+
+                            - Classic Teams:
+                                - This is achieved through `HKCU\Software\Microsoft\Windows\CurrentVersion\Run!com.squirrel.Teams.Teams
+                                    registry key that will be deleted by this script [1] [3] [9].
+                                    Registrying key in `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` makes the program run
+                                    every time the user logs on [2].
+                                    The default value is: %LOCALAPPDATA%\Microsoft\Teams\Update.exe --processStart "Teams.exe" --process-start-args "--system-initiated"` [1] [6].
+                                - This file Checks for and installs new updates for the Microsoft Teams collaboration and messaging app [6].
+                                    You can try deleting it for that user, but next time the user open Teams, it re-creates the entry [4].
+                                - It also comes as preinstalled on certain versions of Windows 11.
+                                    Tests shows that this entry exists since Windows11 21H2 (first release of Windows 11),
+                                    but removed since Windows 11 23H2 [7].
+                                    This key is registered both when Teams is installed regardless of Windows version [3].
+                                - This config applies to older Teams client using [10].
+                                    Older Teams is also known as **classic teams** and not new Teams client [5].
+                                    This client has reached end of support in October 1, 2024 [5].
+                            - New Teams:
+                                - Startup item for UWP apps:
+                                    | Name | Package | Task Name |
+                                    | ---- | ------- | ---------- |
+                                    | Teams for home [13] or unified edition | `MSTeams_8wekyb3d8bbwe` [10] [12] [13] | `TeamsTfwStartupTask` [10] [12] [13] |
+                                    | Teams for work or school [13] | `MicrosoftTeams_8wekyb3d8bbwe` [13] | `TeamsStartupTask` [13] |
+                                - `HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Teams!PreventFirstLaunchAfterInstall` [11]
+                                    Configures Teams to no longer automatically start after installation [11].
+                                    Prevent Teams from starting automatically [11].
+                                    It's a policy setting [11].
+                                - `HKLM\SOFTWARE\Microsoft\Teams!disableAutoUpdate` To prevent new Teams from autoupdating [12].
+                                    Supported only by new Teams builds higher than 23306.3314.2555.9628 [12].
+
+                            TODO: Modfiy desktop-config.json to set `openAtLogin: false` [1]
+                            TODO: First refactor `SetVsCodeSetting` so it can set any JSON config, there was a commit about it.
+
+                            [1]: https://web.archive.org/web/20220310145649/https://docs.microsoft.com/en-us/MicrosoftTeams/scripts/powershell-script-teams-reset-autostart "PowerShell script sample - Reset the autostart setting in Teams - Microsoft Teams | Microsoft Learn | docs.microsoft.com"
+                            [2]: https://web.archive.org/web/20240803130719/https://learn.microsoft.com/en-us/windows/win32/setupapi/run-and-runonce-registry-keys "Run and RunOnce Registry Keys - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20250413102404/https://itexperience.net/disable-start-microsoft-teams-automatically/ "Disable start Microsoft Teams automatically - itexperience.net | itexperience.net"
+                            [4]: https://web.archive.org/web/20250413103507/https://emsroute.com/2019/06/12/my-take-on-ms-teams-with-noautostarttrue-parameter/ "Stop MS Teams Auto Starting – EMS Route | emsroute.com"
+                            [5]: https://web.archive.org/web/20250413103538/https://learn.microsoft.com/en-us/microsoftteams/teams-classic-client-end-of-availability "End of availability for classic Teams client - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20250413103428/https://www.bleepingcomputer.com/startups/40044/Update.exe/ "com.squirrel.Teams.Teams - Update.exe - Program Information | www.bleepingcomputer.com"
+                            [7]: https://web.archive.org/web/20250413104259/https://www.edugeek.net/forums/topic/215613-windows-11-amp-teams/ "Windows 11 & Teams? - Windows 11 - EduGeek.net | www.edugeek.net"¨
+                            [8]: https://web.archive.org/web/20250413104054/https://www.techmonitor.ai/technology/cybersecurity/microsoft-teams-vulnerability?cf-view "Squirrel Exploit Leaves Microsoft Teams Vulnerable to Privilege Escalation | www.techmonitor.ai"
+                            [9]: https://archive.ph/2025.04.13-110203/https://support.citrix.com/s/article/CTX269677-prevent-microsoft-teams-application-from-starting-up-automatically?language=en_US "Prevent Microsoft Teams application from starting up automatically |support.citrix.com"
+                            [10]: https://web.archive.org/web/20250413105237/https://www.boonict.nl/disable-auto-start-new-teams-in-intune/ "Disable Auto Start New Teams in Intune | www.boonict.nl"
+                            [11]: https://web.archive.org/web/20250413112447/https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/teams-install#use-group-policy-to-prevent-microsoft-teams-from-starting-automatically-after-installation#use-group-policy-to-prevent-microsoft-teams-from-starting-automatically-after-installation "Deploy Microsoft Teams with Microsoft 365 Apps - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [12]: https://web.archive.org/web/20250414105736/https://learn.microsoft.com/en-us/microsoftteams/new-teams-vdi-requirements-deploy#new-teams-auto-start "New Microsoft Teams for Virtualized Desktop Infrastructure (VDI) - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [13]: https://superuser.com/questions/1537229/re-enable-microsoft-teams-on-startup/1767207#1767207 "windows 10 - Re-enable Microsoft Teams on startup - Super User | superuser.com"
+                        call:
+                            -
+                                function: DeleteRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+                                    valueName: com.squirrel.Teams.Teams
+                                    dataTypeOnRevert: REG_SZ
+                                    dataOnRevert: >-
+                                        %LOCALAPPDATA%\Microsoft\Teams\Update.exe
+                                        --processStart "Teams.exe"
+                                        --process-start-args "--system-initiated"
+                                    # Enable this script only on Windows where Teams comes preinstalled
+                                    # This way, running "revert" mode on this script will not cause side effects
+                                    # on modern Windows
+                                    minimumWindowsVersion: Windows11-FirstRelease
+                                    maximumWindowsVersion: Windows11-22H2
+                            -
+                                function: DisableStoreAppAutoStart
+                                parameters:     
+                                    packageName: MSTeams
+                                    publisherId: 8wekyb3d8bbwe
+                                    taskName: TeamsTfwStartupTask
+                                    enabledByDefault: 'true' # reg query "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MSTeams_8wekyb3d8bbwe\TeamsTfwStartupTask"
+                            -
+                                function: DisableStoreAppAutoStart
+                                parameters:     
+                                    packageName: MicrosoftTeams
+                                    publisherId: 8wekyb3d8bbwe
+                                    taskName: TeamsStartupTask
+                                    missingByDefault: 'true' # reg query "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\MicrosoftTeams_8wekyb3d8bbwe\TeamsStartupTask"
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\Teams
+                                    valueName: PreventFirstLaunchAfterInstall
+                                    dataType: REG_DWORD
+                                    data: '1'
+                                    deleteOnRevert: 'true'
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\SOFTWARE\Microsoft\Teams
+                                    valueName: disableAutoUpdate
+                                    dataType: REG_DWORD
+                                    data: '1'
+                                    deleteOnRevert: 'true' # Missing by default on Windows 11 24H2
+                    -
+                        name: Remove "Microsoft Teams" app
+                        docs: |- # TODO: No research
+                            This script removes...
+
+                            This script improves your privacy by..
+
+                            It also increases system performance by...
+
+                            It increases security by reducing attack surface (REPHRASE THIS TO BE MORE CONTEXTUAL; IN WHAT WHY; WHAT IT IS; MORE NON_TECH FIRENDLY)
+
+                            HOwever, this script may ....
+
+                            > **Caution:** TODO: Explain side effects of removing this app for non-technical, KISS and DRY, single sentence summary, simple.
+
+                            TODO: Test: `explorer.exe shell:appsFolder\MSTeams_8wekyb3d8bbwe!App`
+
+                            It runs in background: https://support.microsoft.com/en-us/office/change-settings-in-microsoft-teams-b506e8f1-1a96-4cf1-8c6b-b6ed4f424bc7
+
+                            ### Technical Details
+
+                            This app (`MSTeams_8wekyb3d8bbwe`) is also called "Teams 2.1" [2].
+                            It's based on based on Microsoft Edge WebView2 [2].
+                            It's successor of "Teams 2.0" (`MicrosoftTeams_8wekyb3d8bbwe`) [2]
+
+                            TODO: Does teams for work become unified client later?
+
+                            ### Overview of default preinstallation
+
+                            This app comes pre-installed on certain versions of Windows [1] [3].
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ❌ |
+                            | Windows 10 | 20H2 | ❌ |
+                            | Windows 10 | 21H2 | ❌ |
+                            | Windows 10 | 22H2 | ❌ |
+                            | Windows 11 | 21H2 | ❌ |
+                            | Windows 11 | 22H2 | ❌ |
+                            | Windows 11 | 23H2 | ❌ |
+                            | Windows 11 | 24H2 | ✅ |
+
+                            [1]: https://web.archive.org/web/20250312200452/https://www.manelrodero.com/osd/windows11 "Windows 11 | www.manelrodero.com"
+                            [2]: https://web.archive.org/web/20250417205923/https://github.com/privacysexy-forks/MicrosoftTeams-msinternal/blob/master/README.md "MicrosoftTeams-msinternal/README.md at master · privacysexy-forks/MicrosoftTeams-msinternal | github.com"
+                            [3]: https://web.archive.org/web/20250417205802/https://blogs.windows.com/windows-insider/2024/03/13/announcing-windows-11-insider-preview-build-26080-canary-and-dev-channels/ "Announcing Windows 11 Insider Preview Build 26080 (Canary and Dev Channels) | Windows Insider Blog | blogs.windows.com"
+                        call:
+                            function: UninstallStoreApp
+                            parameters:
+                                packageName: MSTeams # Get-AppxPackage MSTeams
+                                publisherId: 8wekyb3d8bbwe
+                    -
+                        name: >-
+                            Remove "Microsoft Teams (Personal)" app
+                            (outdated)
+                        docs: |- # TODO: Research incomplete
+                            This script removes...
+
+                            Since Windows 10 21H2 for Windows 10 and 22H2 for Windows 11, Microsoft does not include this
+                            store app in the default installation.
+
+                            Deleting the application does not guarantee that Teams app for personal use is deleted, because
+                            it is not installed as store app but through another installer [1].
+                            On Windows 10, store Teams app are used for personal or work and school accounts [1].
+                            On Windows 11, store Teams app is only used for work and school accounts [1].
+
+                            This script improves your privacy by...
+
+                            It increases security by reducing attack surface (REPHRASE THIS TO BE MORE CONTEXTUAL; IN WHAT WHY; WHAT IT IS; MORE NON_TECH FIRENDLY)
+
+                            This script improves your system performance by...
+
+                            HOwever, this script may ....
+
+                            > **Caution:** Explain impact in TLDR for easier scannability, 1 sentence, KISS/DRY, for non tech-savvy
+
+                            See also: [Microsoft Teams | Microsoft Store page](https://apps.microsoft.com/store/detail/microsoft-teams/XP8BT8DW290MPQ)
+
+                            ### Technical Details
+
+                            This app (`MicrosoftTeams_8wekyb3d8bbwe`) is also called "Teams 2.0" [2].
+                            It's replaced by the new unified Teams client, Teams 2.1 (`MSTeams_8wekyb3d8bbwe`) [2]
+                            It's based on Microsoft Edge WebView2 [2].
+
+                            ### Overview of default preinstallation
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ❌ |
+                            | Windows 10 | 20H2 | ❌ |
+                            | Windows 10 | 21H2 | ❌ |
+                            | Windows 10 | 22H2 | ❌ |
+                            | Windows 11 | 21H2 | ❌ |
+                            | Windows 11 | 22H2 | ❌ |
+                            | Windows 11 | 23H2 | ❌ (Community reports ✅ [3]) |
+                            | Windows 11 | 24H2 | ❌ |
+
+                            [1]: https://apps.microsoft.com/store/detail/microsoft-teams/XP8BT8DW290MPQ "Microsoft Teams - Microsoft Store Apps | apps.microsoft.com"
+                            [2]: https://github.com/privacysexy-forks/MicrosoftTeams-msinternal/blob/master/README.md "MicrosoftTeams-msinternal/README.md at master · privacysexy-forks/MicrosoftTeams-msinternal | github.com"
+                            [3]: https://github.com/undergroundwires/privacy.sexy/issues/279
+                        call:
+                            function: UninstallStoreApp
+                            parameters:
+                                # More info     : Get-AppxPackage MicrosoftTeams
+                                packageName: MicrosoftTeams
+                                publisherId: 8wekyb3d8bbwe
+                    -
+                        name: Remove Teams (Classic)
+                        docs: |- # TODO: Research incomplete
+                            This script...
+
+                            Teams updater (`Update.exe`) is Microsoft Teams updater that handles update tasks such as
+                            downloading, extracting and installing packages [1]. It is stored in
+                            `%LocalAppData%\Microsoft\Teams` folder [1].
+
+                            When uninstalling Teams, the folder %userprofile%\appdata\Microsoft\Teams\ and the file update.exe aren't removed [2]
+
+                            This script improves your privacy by...
+
+                            This script improves your security by...
+
+                            This script improves your system performance by...
+
+                            HOwever, this script may ....
+
+                            > **Caution:** Explain impact in TLDR for easier scannability, 1 sentence, KISS/DRY, for non tech-savvy
+
+                            [1]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot-installation#troubleshoot-update-issues "Troubleshoot Microsoft Teams installation and update issues on Windows - Microsoft Teams | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20250417161816/https://lazyadmin.nl/office-365/deploying-microsoft-teams-client/ "Install or Deploy Microsoft Teams — LazyAdmin | lazyadmin.nl"
+                        code: |-
+                            if exist "%LOCALAPPDATA%\Microsoft\Teams\Update.exe" (
+                                "%LOCALAPPDATA%\Microsoft\Teams\Update.exe" --uninstall
+                            ) else (
+                                echo Updater cannot be found, Teams may already have been uninstalled or never installed.
+                            )
+                        revertCode: |-
+                            if exist "%LOCALAPPDATA%\Microsoft\Teams\Update.exe" (
+                                "%LOCALAPPDATA%\Microsoft\Teams\Update.exe"
+                            ) else (
+                                echo Failed to run updater because it is missing 2>nul
+                            )
+                    -
+                        name: Delete Teams application data # TODO: Move to teams cleanup?
+                        docs: |- # TODO: Research incomplete
+                            This script...
+
+                            This script improves your privacy by...
+
+                            This script improves your security by...
+
+                            This script improves your system performance by...
+                            Citrix recommends removing Teams on its optimization guide [4].
+
+                            HOwever, this script may ....
+
+                            > **Caution:** Explain impact in TLDR for easier scannability, 1 sentence, KISS/DRY, for non tech-savvy
+
+                            ### Technical Details
+
+                            This script clears all application folders related to Teams (Classic):
+
+                            - `%LOCALAPPDATA%\SquirrelTemp` [1] [4]
+                            - `%APPDATA%\Microsoft\Teams` [1] [4]
+                            - `%LOCALAPPDATA%\Microsoft\Teams` [1] [4]
+                            - `%LOCALAPPDATA%\Microsoft\TeamsMeetingAddin` [2] [4]
+                            - `%LOCALAPPDATA%\Microsoft\TeamsPresenceAddin` [4]
+
+                            It also clears registry keys used by Teams (Classic) [3]:
+
+                            - `HKCU\Software\Microsoft\Office\Teams`,
+                            - `HKCU\Software\Microsoft\Office\Outlook\Addins\TeamsAddin.FastConnect`.
+
+                            [1]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot-installation#troubleshoot-update-issues "Troubleshoot Microsoft Teams installation and update issues on Windows - Microsoft Teams | Microsoft Learn"
+                            [2]: https://learn.microsoft.com/en-us/microsoftteams/get-clients?tabs=Windows "Get clients for Microsoft Teams - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20220310145649/https://docs.microsoft.com/en-us/MicrosoftTeams/scripts/powershell-script-teams-reset-autostart "PowerShell script sample - Reset the autostart setting in Teams - Microsoft Teams | Microsoft Learn | docs.microsoft.com"
+                            [4]: https://web.archive.org/web/20250413113751/https://docs.citrix.com/en-us/citrix-virtual-apps-desktops/multimedia/opt-ms-teams.html "Optimization for Microsoft Teams (Classic) | Citrix Virtual Apps and Desktops 7 2411"
+
+                            TODO: https://support.crsnetworks.ca/hc/en-us/articles/360002880151-Microsoft-Teams-Install-Guide
+                        call:
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\SquirrelTemp'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%APPDATA%\Microsoft\Teams'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\Teams'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\TeamsMeetingAddin'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\TeamsPresenceAddin'
+                            -
+                                function: DeleteRegistryKey
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Office\Teams
+                            -
+                                function: DeleteRegistryKey
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Office\Outlook\Addins\TeamsAddin.FastConnect
+                    -
+                        name: Disable Teams automatic installation
+                        docs: |- # TODO: Research done
+                            This script...
+
+                            Teams is either preinstalled on Windows [3]
+
+                            It prevents the install of the consumer Microsoft Teams client [2].
+                            By default, Windows Perform auto-install based on default policies for the OS you're installing [2].
+
+                            This includes automatic installation when:
+
+                            - New installations of Microsoft 365 Apps [5]
+                            - Updates to existing installations of Microsoft 365 Apps [5]
+                            - Users installing Microsoft 365 Apps for themselves from the Office 365 portal [5]
+                            - An Online Repair of an existing installation of Microsoft 365 Apps [5]
+
+                            This script improves your privacy by...
+
+                            This script improves your security by...
+
+                            This script improves your system performance by...
+
+                            HOwever, this script may ....
+
+                            > **Caution:** Explain impact in TLDR for easier scannability, 1 sentence, KISS/DRY, for non tech-savvy
+
+                            ### Technical Details
+
+                            This script configures new and older Teams clients.
+                            
+                            - Older client:
+                                This scripts configures `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Communications!ConfigureChatAutoInstall` [1] [4].
+                                This configuratin applies only to older Teams app (not new Store app) [1].
+                                It sets it to False to prevent perform install [2].
+                                However editing this key requires higher privileges [4], that the system elevates to.
+                                Potential options [2]:
+                                - **Not set**: Perform auto-install based on default policies for the OS you're installing [2]
+                                - **True:** Always perform install regardless of default policies [2]
+                                - **False:** Never perform install regardless of default policies [2]
+                                Since Windows 11 23H2, Chat application has been removed [3].
+                            - New client:
+                                - This scripts configures `HKLM\Software\Policies\Microsoft\Office\16.0\Common\OfficeUpdate!PreventTeamsInstall` [5].
+                                    - This Prevents installation of Teams for Windows Version 1905 and later [5] during:
+                                        - New installations of Microsoft 365 Apps [5]
+                                        - Updates to existing installations of Microsoft 365 Apps [5]
+                                        - Users installing Microsoft 365 Apps for themselves from the Office 365 portal [5]
+                                        - An Online Repair of an existing installation of Microsoft 365 Apps [5]
+                                - It configures `HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration!O365ProPlusRetail.ExcludedApps` [6] [7]
+                                    - This prevens installation of Teams using Office 365 ProPlus using the Office Deployment Tool (ODT) [6]
+                                    - Users can still then manually download the app themselves if they want to use it, but it doesn't autoinstall [7].
+                                    - Although this just prevents new installs - if it's already present this won't help [7].
+
+                            [1]: https://web.archive.org/web/20250413124035/https://azuretothemax.net/2023/03/07/windows-11-automating-the-removal-of-personal-teams-with-intune/ "Windows 11: Automating the Removal of Personal Teams with Intune – Getting the Most Out of Azure | azuretothemax.net"
+                            [2]: https://web.archive.org/web/20250314085824/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-shell-setup-configurechatautoinstall "ConfigureChatAutoInstall | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20250410113606/https://www.ghacks.net/2023/06/15/teams-chat-taskbar-integration-is-being-removed-from-windows-11/ "Teams Chat taskbar integration is being removed from Windows 11- gHacks Tech News"
+                            [4]: https://web.archive.org/web/20250410132843/https://oofhours.com/2022/09/08/getting-rid-of-teams-consumer-revisited/ "Getting rid of Teams (consumer), revisited – Out of Office Hours | oofhours.com"
+                            [5]: https://web.archive.org/web/20250413112447/https://learn.microsoft.com/en-us/microsoft-365-apps/deploy/teams-install#use-group-policy-to-prevent-microsoft-teams-from-starting-automatically-after-installation#use-group-policy-to-prevent-microsoft-teams-from-starting-automatically-after-installation "Deploy Microsoft Teams with Microsoft 365 Apps - Microsoft 365 Apps | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20250414122905/https://techcommunity.microsoft.com/blog/microsoft_365blog/excluding-and-re-including-applications-within-the-office-365-proplus-suite/1250367 "Excluding and re-including applications within the Office 365 ProPlus Suite | Microsoft Community Hub | techcommunity.microsoft.com"
+                            [7]: https://old.reddit.com/r/sysadmin/comments/ctuiwh/exclude_microsoft_teams_from_office_365_proplus/exogq4h/ "dukeofwesselton comments on Exclude Microsoft Teams from Office 365 ProPlus - Exisiting and New Installations | old.reddit.com"
+                        call:
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Communications
+                                    valueName: ConfigureChatAutoInstall
+                                    dataType: REG_DWORD
+                                    data: "0"
+                                    deleteOnRevert: 'true' # Missing on W11 24H2 TODO: Not tested
+                                    # TODO: Requires permissions?
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\Software\Policies\Microsoft\Office\16.0\Common\OfficeUpdate
+                                    valueName: PreventTeamsInstall
+                                    dataType: REG_DWORD
+                                    data: "1"
+                                    deleteOnRevert: 'true' # Missing on W11 24H2 TODO: Not tested
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration
+                                    valueName: O365ProPlusRetail.ExcludedApps # TODO: Check outlook, use same way so we can add with Comma
+                                    dataType: REG_SZ
+                                    data: teams
+                                    deleteOnRevert: 'true' # Missing on W11 24H2 TODO: Not tested
+            -
                 category: Remove Widgets
                 docs: |-
                     Windows 11 adds a new taskbar flyout named "Widgets", which displays a panel with Microsoft Start, a news aggregator
@@ -37822,20 +38699,6 @@ actions:
                             parameters:
                                 packageName: MicrosoftWindows.Client.WebExperience # Get-AppxPackage MicrosoftWindows.Client.WebExperience
                                 publisherId: cw5n1h2txyewy
-            -
-                name: Remove "Meet Now" icon from taskbar
-                recommend: strict
-                docs: # Skype feature, introduced in 20H2, KB4580364 update
-                    - https://web.archive.org/web/20250311094146/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TaskBar2::HideSCAMeetNow
-                    - https://web.archive.org/web/20250311094702/https://www.windowscentral.com/how-disable-meet-now-feature-windows-10
-                call:
-                    function: SetRegistryValue
-                    parameters:
-                        keyPath: HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer
-                        valueName: HideSCAMeetNow
-                        dataType: REG_DWORD
-                        data: '1'
-                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
             -
                 category: Remove Windows Copilot
                 docs: |-
@@ -41403,6 +42266,8 @@ functions:
               optional: true
             - name: minimumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
               optional: true
+            - name: maximumWindowsVersion       # See `RunPowerShellWithWindowsVersionConstraints`
+              optional: true
         docs: |-
             This function creates or modifies a registry entry at a specified path.
 
@@ -41427,6 +42292,7 @@ functions:
                 parameters:
                     setupCodeUnelevated: '{{ with $setupCode }}{{ . }}{{ end }}'
                     minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+                    maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                     elevateToTrustedInstaller: '{{ with $elevateToTrustedInstaller }}true{{ end }}'
                     # Marked: refactor-with-variables
                     #   - Logic for `evaluateDataAsPowerShell` is same as in `DeleteRegistryValue`
@@ -43529,3 +44395,106 @@ functions:
                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2) | Tested since EdgeUpdate ≥ 1.3.187.41
                     minimumWindowsVersion: Windows11-FirstRelease # No TrustedInstaller is needed on Windows 10, but the functionality is missing so the script won't work.
                     elevateToTrustedInstaller: 'true' # Without TrustedInstaller: ✅ Windows 10 Pro (>= 20H2) | ❌ Windows 11 Pro (>= 23H2)
+    -
+        # TODO: Query all windows versions, run powershell and add missing stuff in separate commit
+        name: DisableStoreAppAutoStart
+        parameters:
+            - name: packageName
+            - name: publisherId
+            - name: taskName
+            - name: enabledByDefault
+              optional: true
+            - name: missingByDefault
+              optional: true
+        # Marked refactor-with-if-syntax:
+        #   `enabledByDefault` and `disabledByDefault` can be merged
+        docs: |- # TODO: revise docs
+            This function disables startup items of an UWP app [1].
+
+            These startup items are registered using a special mechanims, not visible via conventional ways [1].
+
+            This function disables them using registry entries.
+
+            You can find all entries using:
+
+            ```ps1
+            $basePath = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData"
+            $results = @()
+            if (Test-Path $basePath) {
+                Get-ChildItem -Path $basePath -ErrorAction SilentlyContinue | ForEach-Object {
+                    $packagePath = $_.PSPath
+                    $packageDir = $_.PSChildName
+                    if ($packageDir -match "(.+)_(.+)") {
+                        $packageName = $matches[1]
+                        $publisherId = $matches[2]
+                    } else {
+                        $packageName = $packageDir
+                        $publisherId = "Unknown"
+                    }
+                    Get-ChildItem -Path $packagePath -ErrorAction SilentlyContinue | ForEach-Object {
+                        $subkeyPath = $_.PSPath
+                        $subkeyName = $_.PSChildName
+                        $properties = Get-ItemProperty -Path $subkeyPath -Name "State" -ErrorAction SilentlyContinue
+                        $hasState = $properties -ne $null -and $properties.State -ne $null
+                        if ($hasState) {
+                            $fullPath = "$subkeyPath\State"
+                            $fullPath = $fullPath.Replace("Microsoft.PowerShell.Core\Registry::", "")
+                            $fullPath = $fullPath.Replace("HKCU:", "HKCU")
+                            $results += [PSCustomObject]@{
+                                FullPath = $fullPath
+                                PackageName = $packageName
+                                PublisherId = $publisherId
+                                TaskName = $subkeyName
+                            }
+                        }
+                    }
+                }
+            }
+            $results | Format-Table -AutoSize PackageName, PublisherId, TaskName, FullPath
+            ```
+
+            ### Technical Details
+
+            It sets `State` to `Disabled`.
+            The default is Disabled, so in the normal case, the user must run the app at least once explicitly [3].
+            Here are the possible values for the `State` [2] [3]:
+
+            | Value | Name | Description |
+            | ----- | ---- | ----------- |
+            | `0`   | Disabled          | The task is disabled. |
+            | `1`   | DisabledByUser    | The task was disabled by the user. It can only be re-enabled by the user. |
+            | `2`   | Enabled           | The task is enabled. |
+            | `3`   | DisabledByPolicy	| The task is disabled by the administrator or group policy. Platforms that don't support startup tasks also report DisabledByPolicy. |
+            | `4`   | EnabledByPolicy   | The task is enabled by the administrator or group policy. |
+            
+            [1]: https://web.archive.org/web/20250414111920/https://stackoverflow.com/questions/63746294/how-to-use-powershell-to-manage-startup-items-of-uwp-app-in-windwos-10/63759561#63759561 "c# - How to use powershell to manage startup items of uwp app in windwos 10? - Stack Overflow | stackoverflow.com"
+            [2]: https://web.archive.org/web/20250414111811/https://learn.microsoft.com/en-us/uwp/api/windows.applicationmodel.startuptaskstate?view=winrt-19041 "StartupTaskState Enum (Windows.ApplicationModel) - Windows apps | Microsoft Learn | learn.microsoft.com"
+            [3]: https://web.archive.org/web/20190629014652/https://windowsadmins.com/configure-your-app-to-start-at-log-in/ "Configure your app to start at log-in - Windows Admins | windowsadmins.com"
+        call:
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\{{ $packageName }}_{{ $publisherId }}\{{ $taskName }}
+                    valueName: State
+                    dataType: REG_DWORD
+                    data: "0" # Options: 0: Disabled | 1: DisabledByUser | 2: EnabledByUser | 3: DisabledByPolicy | 4: EnabledByPolicy
+                    dataOnRevert: '{{ with $enabledByDefault }}true{{ end }}'
+                    deleteOnRevert: '{{ with $missingByDefault }}true{{ end }}'
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\{{ $packageName }}_{{ $publisherId }}\{{ $taskName }}
+                    valueName: LastDisabledTime
+                    dataType: REG_DWORD
+                    data: (Get-Date -Date ((Get-Date).DateTime) -UFormat %s)
+                    evaluateDataAsPowerShell: 'true'
+                    deleteOnRevert: 'true' # Users do not disable by default on clean installation
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\{{ $packageName }}_{{ $publisherId }}\{{ $taskName }}
+                    valueName: UserEnabledStartupOnce
+                    dataType: REG_DWORD
+                    data: "0"
+                    dataOnRevert: '{{ with $enabledByDefault }}0{{ end }}' # `0` for apps by default
+                    deleteOnRevert: '{{ with $missingByDefault }}true{{ end }}'
