@@ -86,7 +86,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, computed,
+  defineComponent, computed, onMounted, watch,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/Tooltip/TooltipWrapper.vue';
@@ -132,7 +132,44 @@ export default defineComponent({
           collection: currentCollection.value,
         });
       });
+      updateQueryParam(type);
     }
+
+    function updateQueryParam(type: RecommendationStatusType) {
+      const url = new URL(window.location.href);
+      const presetValue = RecommendationStatusType[type].toLowerCase();
+      url.searchParams.set('preset', presetValue);
+      window.history.pushState({}, '', url);
+    }
+
+    function getRecommendationFromQueryParam(): RecommendationStatusType | undefined {
+      const url = new URL(window.location.href);
+      const preset = url.searchParams.get('preset');
+      if (preset) {
+        const typeKey = Object.keys(RecommendationStatusType)
+          .find((key) => key.toLowerCase() === preset.toLowerCase());
+        return typeKey ? RecommendationStatusType[typeKey as keyof typeof RecommendationStatusType] : undefined;
+      }
+      return undefined;
+    }
+
+    onMounted(() => {
+      const typeFromQuery = getRecommendationFromQueryParam();
+      if (typeFromQuery !== undefined && typeFromQuery !== currentRecommendationStatusType.value) {
+        selectRecommendationStatusType(typeFromQuery);
+      }
+    });
+
+    watch(currentRecommendationStatusType, (newType) => {
+      updateQueryParam(newType);
+    });
+
+    window.addEventListener('popstate', () => {
+      const typeFromQuery = getRecommendationFromQueryParam();
+      if (typeFromQuery !== undefined && typeFromQuery !== currentRecommendationStatusType.value) {
+        selectRecommendationStatusType(typeFromQuery);
+      }
+    });
 
     return {
       RecommendationStatusType,

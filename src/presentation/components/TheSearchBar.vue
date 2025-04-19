@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, watch, computed,
+  defineComponent, ref, watch, computed, onMounted,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
@@ -41,7 +41,10 @@ export default defineComponent({
 
     const searchQuery = ref<string | undefined>();
 
-    watch(searchQuery, (newFilter) => updateFilter(newFilter));
+    watch(searchQuery, (newFilter) => {
+      updateFilter(newFilter);
+      updateQueryParam(newFilter);
+    });
 
     function updateFilter(newFilter: string | undefined) {
       modifyCurrentState((state) => {
@@ -53,7 +56,31 @@ export default defineComponent({
         }
       });
     }
-
+    function updateQueryParam(query: string | undefined) {
+      const url = new URL(window.location.href);
+      if (query) {
+        url.searchParams.set('q', query);
+      } else {
+        url.searchParams.delete('q');
+      }
+      window.history.pushState({}, '', url);
+    }
+    // Read the 'q' parameter from the URL when the component is mounted
+    onMounted(() => {
+      const url = new URL(window.location.href);
+      const queryParam = url.searchParams.get('q');
+      if (queryParam) {
+        searchQuery.value = queryParam;
+        updateFilter(queryParam);
+      }
+    });
+    // Handle browser back/forward navigation
+    window.addEventListener('popstate', () => {
+      const url = new URL(window.location.href);
+      const queryParam = url.searchParams.get('q');
+      searchQuery.value = queryParam || undefined;
+      updateFilter(searchQuery.value);
+    });
     onStateChange((newState) => {
       updateFromInitialFilter(newState.filter.currentFilter);
       events.unsubscribeAllAndRegister([
