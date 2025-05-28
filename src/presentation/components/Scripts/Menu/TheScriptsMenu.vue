@@ -5,11 +5,17 @@
       <TheRevertSelector class="scripts-menu-item" />
     </div>
     <TheOsChanger class="scripts-menu-item" />
-    <TheViewChanger
-      v-if="!isSearching"
-      class="scripts-menu-item"
-      @view-changed="$emit('viewChanged', $event)"
-    />
+    <div class="scripts-menu-item scripts-menu-rows scripts-menu-rows-end">
+      <TheThemeChanger
+        class="scripts-menu-item"
+        @theme-changed="updateTheme($event)"
+      />
+      <TheViewChanger
+        v-if="!isSearching"
+        class="scripts-menu-item"
+        @view-changed="$emit('viewChanged', $event)"
+      />
+    </div>
   </div>
 </template>
 
@@ -19,7 +25,9 @@ import { injectKey } from '@/presentation/injectionSymbols';
 import type { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
 import type { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
+import TheThemeChanger from './Theme/TheThemeChanger.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
+import { ThemeType } from './Theme/ThemeType';
 import { ViewType } from './View/ViewType';
 import TheRecommendationSelector from './Recommendation/TheRecommendationSelector.vue';
 import TheRevertSelector from './Revert/TheRevertSelector.vue';
@@ -28,15 +36,17 @@ export default defineComponent({
   components: {
     TheRecommendationSelector,
     TheOsChanger,
+    TheThemeChanger,
     TheViewChanger,
     TheRevertSelector,
   },
   emits: {
     /* eslint-disable @typescript-eslint/no-unused-vars */
+    themeChanged: (themeType: ThemeType) => true,
     viewChanged: (viewType: ViewType) => true,
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
-  setup() {
+  setup(_, { emit }) {
     const { onStateChange } = injectKey((keys) => keys.useCollectionState);
     const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
@@ -59,8 +69,34 @@ export default defineComponent({
       });
     }
 
+    function updateTheme(themeType: ThemeType) {
+      emit('themeChanged', themeType);
+
+      const meta = document.querySelector('meta[name="color-scheme"]');
+      if (!meta) return;
+
+      switch (themeType) {
+        case ThemeType.System: {
+          meta.setAttribute('content', 'light dark');
+          return;
+        }
+        case ThemeType.Light: {
+          meta.setAttribute('content', 'light');
+          return;
+        }
+        case ThemeType.Dark: {
+          meta.setAttribute('content', 'dark');
+          return;
+        }
+        default: {
+          throw new Error(`Unsupported theme type: ${themeType}`);
+        }
+      }
+    }
+
     return {
       isSearching,
+      updateTheme,
     };
   },
 });
@@ -105,6 +141,9 @@ $responsive-alignment-breakpoint: $media-screen-medium-width;
     flex-direction: column;
     align-items: flex-start;
     row-gap: $spacing-relative-x-small;
+  }
+  .scripts-menu-rows-end {
+    align-items: flex-end;
   }
 }
 </style>

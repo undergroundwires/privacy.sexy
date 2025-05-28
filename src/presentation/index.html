@@ -13,6 +13,8 @@
   <meta name="description"
     content="Discover privacy.sexy, the privacy tool to maximize your privacy and security on Windows, macOS, and Linux. Easily use best practices to prevent tracking and make your life secure and private — because privacy is sexy." />
   <meta name="robots" content="index,follow" />
+  <!-- The content of this tag will be altered at runtime -->
+  <meta name="color-scheme" content="light dark" />
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
 
@@ -75,7 +77,7 @@
         --splash-color-text: #3a65ab;
         --splash-color-background: #fff;
         --splash-color-spinner-filled: #3a65ab;
-        --splash-color-spinner-empty: rgb(159.4192139738, 183.4541484716, 222.5807860262);
+        --splash-color-spinner-empty: #9fb7df;
         --splash-size-logo: min(80px, calc(100vw/5));
         --splash-size-spinner: calc(var(--splash-size-logo) * 1.75);
         --splash-font-size-large: 21px;
@@ -91,6 +93,13 @@
         --splash-animation-duration-all-fadeout: 1.5s;
         --splash-animation-duration-text-fadeout: 0.4s;
         --splash-animation-delay-long-load-message: 15s;
+
+        @media(prefers-color-scheme: dark) {
+          --splash-color-text: #9fb7df;
+          --splash-color-background: #07070f;
+          --splash-color-spinner-empty: #3a65ab;
+          --splash-color-spinner-filled: #9fb7df;
+        }
       }
 
       .splash-screen,

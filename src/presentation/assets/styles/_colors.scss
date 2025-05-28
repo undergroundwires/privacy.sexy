@@ -1,45 +1,31 @@
-/*
-    Colors used throughout the application
-    Inspired by the material color system (https://material.io/design/color/the-color-system.html, https://material.io/develop/web/theming/color).
-    Colors are named according to the Vue Design System guidelines (https://github.com/viljamis/vue-design-system/wiki/Naming-of-Things#naming-colors):
-        - Default: The default base color is `color-{name}`.
-        - Darker than default: Shades are named as `color-{name}-dark`, `color-{name}-darker`, or `color-{name}-darkest`.
-        - Lighter than default: Tints are named as `color-{name}-light`, `color-{name}-lighter`, or `color-{name}-lightest`.
-*/
-@use 'sass:color';
+@use './colors/light' as light;
+@use './colors/dark' as dark;
 
-// --- Primary | The color displayed most frequently across screens and components
-$color-primary              : #3a65ab;
-$color-primary-light        : color.adjust($color-primary, $lightness: 30%);
-$color-primary-dark         : color.adjust($color-primary, $lightness: -18%);
-$color-primary-darker       : color.adjust($color-primary, $lightness: -32%);
-$color-primary-darkest      : color.adjust($color-primary, $lightness: -44%);
-// Text/iconography color that is usable on top of primary color
-$color-on-primary           : #e4f1fe;
+$color-primary              : light-dark(light.$color-primary, dark.$color-primary);
+$color-primary-light        : light-dark(light.$color-primary-light, dark.$color-primary-light);
+$color-primary-dark         : light-dark(light.$color-primary-dark, dark.$color-primary-dark);
+$color-primary-darker       : light-dark(light.$color-primary-darker, dark.$color-primary-darker);
+$color-primary-darkest      : light-dark(light.$color-primary-darkest, dark.$color-primary-darkest);
 
-// --- Secondary | Accent color, should be applied sparingly to accent select parts of UI
-$color-secondary            : #00D1AD;
-$color-secondary-light      : color.adjust($color-secondary, $lightness: 48%);
-// Text/iconography color that is usable on top of secondary color
-$color-on-secondary         : #005051;
+$color-on-primary           : light-dark(light.$color-on-primary, dark.$color-on-primary);
 
-// --- Surface | Affect surfaces of components, such as cards, sheets, and menus.
-$color-surface              : #fff;
-// Text/iconography color that is usable on surface
-$color-on-surface           : #4d5156;
+$color-secondary            : light-dark(light.$color-secondary, dark.$color-secondary);
+$color-secondary-light      : light-dark(light.$color-secondary-light, dark.$color-secondary-light);
 
-// Background | Appears behind scrollable content.
-$color-background           : #e6ecf4;
+$color-on-secondary         : light-dark(light.$color-on-secondary, dark.$color-on-secondary);
 
-$color-success  : #4CAF50;
-$color-danger   : #F44336;
-$color-caution  : #FFC107;
+$color-surface              : light-dark(light.$color-surface, dark.$color-surface);
 
-/*
-    Application-specific colors:
-    These are tailored to the specific needs of the application and derived from the above theme colors.
-    Use these colors to ensure consistent styling across components. When adding new colors, reference existing theme colors.
-    This approach maintains a cohesive look and feel and simplifies theme adjustments.
-*/
-$color-scripts-bg: $color-primary-darker;
-$color-highlight: $color-primary;
+$color-on-surface           : light-dark(light.$color-on-surface, dark.$color-on-surface);
+
+$color-background           : light-dark(light.$color-background, dark.$color-background);
+
+$color-success              : light-dark(light.$color-success, dark.$color-success);
+$color-danger               : light-dark(light.$color-danger, dark.$color-danger);
+$color-caution              : light-dark(light.$color-caution, dark.$color-caution);
+
+$color-scripts-bg           : light-dark(light.$color-scripts-bg, dark.$color-scripts-bg);
+$color-highlight            : light-dark(light.$color-highlight, dark.$color-highlight);
+$color-modal-background     : light-dark(light.$color-modal-background, dark.$color-modal-background);
+$color-modal-shadow         : light-dark(light.$color-modal-shadow, dark.$color-modal-shadow);
+$color-code-highlight       : light-dark(light.$color-code-highlight, dark.$color-code-highlight);

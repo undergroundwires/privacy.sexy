@@ -1,20 +1,26 @@
+import { ThemeType } from '@/presentation/components/Scripts/Menu/Theme/ThemeType';
 import ace, { AceRange } from './ace-importer';
 import type { CodeEditorFactory, SupportedSyntaxLanguage } from '../CodeEditorFactory';
 
-const CodeEditorTheme = 'xcode';
+const CodeEditorThemeLight = 'xcode';
+const CodeEditorThemeDark = 'twilight';
 
 export const initializeAceEditor: CodeEditorFactory = (options) => {
   const editor = ace.edit(options.editorContainerElementId);
   const mode = getAceModeName(options.language);
   editor.getSession().setMode(`ace/mode/${mode}`);
-  editor.setTheme(`ace/theme/${CodeEditorTheme}`);
+  editor.setTheme(getAceThemePath(ThemeType.System));
   editor.setReadOnly(true);
   editor.setAutoScrollEditorIntoView(true);
   editor.setShowPrintMargin(false); // Hide the vertical line
   editor.getSession().setUseWrapMode(true); // Make code readable on mobile
   hideActiveLineAndCursorUntilInteraction(editor);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ({ matches: isDark }) => {
+    editor.setTheme(getAceThemePath(isDark ? ThemeType.Dark : ThemeType.Light));
+  }, { passive: true });
   return {
     setContent: (content) => editor.setValue(content, 1),
+    setTheme: (themeTheme: ThemeType) => editor.setTheme(getAceThemePath(themeTheme)),
     destroy: () => editor.destroy(),
     scrollToLine: (lineNumber) => {
       const column = editor.session.getLine(lineNumber).length;
@@ -87,4 +93,15 @@ function setCursorVisibility(
   //   ✅ .ace_hidden-cursors { opacity: 0; }: Hides cursor when not focused
   //      Pros: Works more automatically
   //      Cons: Provides less control over visibility toggling
+}
+
+function getAceThemePath(themeTheme: ThemeType): string {
+  if (themeTheme === ThemeType.System) {
+    themeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? ThemeType.Dark : ThemeType.Light;
+  }
+
+  if (themeTheme === ThemeType.Light) return `ace/theme/${CodeEditorThemeLight}`;
+  if (themeTheme === ThemeType.Dark) return `ace/theme/${CodeEditorThemeDark}`;
+
+  throw new Error(`Unsupported theme type: ${themeTheme}`);
 }

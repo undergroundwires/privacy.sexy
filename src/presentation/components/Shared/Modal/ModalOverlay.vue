@@ -48,7 +48,6 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 
 $modal-overlay-transition-duration: 50ms;
-$modal-overlay-color-background: $color-on-surface;
 
 .modal-overlay-background {
   position: fixed;
@@ -57,7 +56,7 @@ $modal-overlay-color-background: $color-on-surface;
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba($modal-overlay-color-background, 0.3);
+  background: color-mix(in srgb, $color-modal-background, transparent 70%);
   opacity: 1;
 }
 

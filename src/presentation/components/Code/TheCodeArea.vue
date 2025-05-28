@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, onUnmounted, onMounted, ref,
+  defineComponent, onUnmounted, onMounted, ref, type PropType, watch,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
@@ -25,6 +25,7 @@ import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
+import { ThemeType } from '@/presentation/components/Scripts/Menu/Theme/ThemeType';
 import { initializeAceEditor } from './Ace/AceCodeEditorFactory';
 import type { SupportedSyntaxLanguage, CodeEditor, CodeEditorStyleHandle } from './CodeEditorFactory';
 
@@ -35,7 +36,13 @@ export default defineComponent({
   directives: {
     NonCollapsing,
   },
-  setup() {
+  props: {
+    currentTheme: {
+      type: Number as PropType<ThemeType>,
+      required: true,
+    },
+  },
+  setup(props) {
     const { onStateChange, currentState } = injectKey((keys) => keys.useCollectionState);
     const { projectDetails } = injectKey((keys) => keys.useApplication);
     const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
@@ -54,6 +61,9 @@ export default defineComponent({
       onStateChange((newState) => {
         handleNewState(newState);
       }, { immediate: true });
+      watch(() => props.currentTheme, (newTheme) => {
+        editor?.setTheme(newTheme);
+      });
     });
 
     function handleNewState(newState: IReadOnlyCategoryCollectionState) {
@@ -176,7 +186,7 @@ function getDefaultCode(language: ScriptLanguage, project: ProjectDetails): stri
     font-size: $font-size-absolute-small;
     font-family: $font-family-monospace;
     &__highlight {
-      background-color: $color-secondary-light;
+      background-color: $color-code-highlight;
       position: absolute;
     }
   }

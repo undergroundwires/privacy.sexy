@@ -1,3 +1,5 @@
+import type { ThemeType } from '@/presentation/components/Scripts/Menu/Theme/ThemeType';
+
 /**
  * Abstraction layer for code editor functionality.
  * Allows for flexible integration and easy switching of third-party editor implementations.
@@ -16,6 +18,7 @@ export type SupportedSyntaxLanguage = 'batchfile' | 'shellscript';
 export interface CodeEditor {
   destroy(): void;
   setContent(content: string): void;
+  setTheme(themeTheme: ThemeType): void;
   scrollToLine(lineNumber: number): void;
   updateSize(): void;
   applyStyleToLineRange(

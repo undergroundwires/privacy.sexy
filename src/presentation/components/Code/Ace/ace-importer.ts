@@ -5,7 +5,8 @@ import ace, { Range } from 'ace-builds';
   when built with Vite (`npm run build`).
 */
 
-import 'ace-builds/src-noconflict/theme-xcode';
+import 'ace-builds/src-noconflict/theme-xcode'; // light
+import 'ace-builds/src-noconflict/theme-twilight'; // dark
 import 'ace-builds/src-noconflict/mode-batchfile';
 import 'ace-builds/src-noconflict/mode-sh';
 

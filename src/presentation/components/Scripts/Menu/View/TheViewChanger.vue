@@ -59,9 +59,4 @@ export default defineComponent({
     };
   },
 });
-
-interface IViewOption {
-  readonly type: ViewType;
-  readonly displayName: string;
-}
 </script>

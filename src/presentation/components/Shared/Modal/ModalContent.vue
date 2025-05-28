@@ -101,7 +101,7 @@ $modal-content-offset-upward: $spacing-absolute-x-large;
 
   background-color: $color-surface;
   border-radius: 3px;
-  box-shadow: 0 20px 60px -2px $color-on-surface;
+  box-shadow: 0 20px 60px -2px $color-modal-shadow;
 
   @include scrollable;
 }

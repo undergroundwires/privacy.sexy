@@ -83,7 +83,7 @@ $viewport-edge-offset: $spacing-absolute-large; // close to Chromium gutter widt
   top: $viewport-edge-offset;
   right: max(v-bind(scrollbarGutterWidth), $viewport-edge-offset);
 
-  background-color: rgba($color-on-surface, 0.5);
+  background-color: color-mix(in srgb, $color-on-surface, transparent);
   color: $color-on-primary;
   padding: $spacing-absolute-medium;
   z-index: 10000;

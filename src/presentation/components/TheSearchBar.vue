@@ -113,7 +113,7 @@ export default defineComponent({
   color: $color-primary;
   font-size: $font-size-absolute-normal;
   &:focus {
-    color: $color-primary-darker;
+    color: light-dark($color-primary-darker, $color-primary-light);
   }
 }
 
