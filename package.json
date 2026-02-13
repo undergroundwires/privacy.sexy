@@ -42,7 +42,7 @@
     "electron-progressbar": "^2.2.1",
     "electron-updater": "^6.3.9",
     "file-saver": "^2.0.5",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.1.1",
     "vue": "^3.5.13"
   },
   "devDependencies": {
