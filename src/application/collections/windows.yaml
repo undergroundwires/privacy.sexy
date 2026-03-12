@@ -2723,25 +2723,61 @@ actions:
                     parameters:
                         directoryGlob: '%SYSTEMDRIVE%\Windows.old'
                         grantPermissions: 'true'
+            -
+                name: Remove duplicate drives in File Explorer
+                recommend: standard
+                docs: |-
+                    This script removes the redundant "Drives" group from the File Explorer navigation pane.
+                    
+                    In Windows 11, removable drives often appear twice: once under "This PC" and again under a separate
+                    "Drives" section. This setting eliminates the duplicate entry by removing the registry key that creates it.
+                    
+                    After applying, drives will only be displayed under "This PC" for a cleaner, less cluttered interface.
+                    
+                    This change improves usability by reducing visual clutter without affecting actual drive functionality.
+                    All drives remain fully accessible from the "This PC" section.
+                call:
+                    -
+                        function: Comment
+                        parameters:
+                            codeComment: Remove duplicate drives registry key
+                    -
+                        function: RunPowerShell
+                        parameters:
+                            code: |-
+                                $path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83}"
+                                if (Test-Path $path) {
+                                    Remove-Item -Path $path -Force -Recurse -ErrorAction SilentlyContinue
+                                    Write-Host "✅ Duplicate drives removed from File Explorer"
+                                } else {
+                                    Write-Host "ℹ️ Duplicate drives already removed or not present"
+                                }
+                            revertCode: |-
+                                $path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\DelegateFolders\{F5FB2C77-0E2F-4A16-A381-3E560C68BC83}"
+                                if (-not (Test-Path $path)) {
+                                    New-Item -Path $path -Force -ErrorAction SilentlyContinue | Out-Null
+                                    Write-Host "✅ Duplicate drives restored to File Explorer"
+                                } else {
+                                    Write-Host "ℹ️ Duplicate drives already present"
+                                }
     -
         category: Disable OS data collection
         children:
             -
-                name: Disable Recall
+                name: Disable Recall completely
                 recommend: strict
                 docs: |-
-                    This script disables the Recall feature to address serious privacy concerns.
-
-                    Recall is an AI feature introduced in Windows 11 on Copilot+ PCs [1] [2] [3] [4] [5].
-                    It is designed to capture and store snapshots of your screen and analyze them [1] [2] [3] [4] [5] [6] [7].
-                    This feature allows users to browse and search their past activities, such as images and text [1] [2] [3] [4] [5] [6] [7].
-
+                    This script completely disables and removes the Recall feature...
+    
+                    Recall is an AI feature introduced in Windows 11 on Copilot+ PCs. [1] [2] [3] [4] [5]
+                    "It is designed to capture and store snapshots of your screen and analyze them. [1] [2] [3] [4] [5] [6] [7]"
+                    "This feature allows users to browse and search their past activities, such as images and text. [1] [2] [3] [4] [5] [6] [7]"
+    
                     Recall includes a component called 'screenray'.
-                    This component analyzes the snapshot's contents and lets you interact with elements within it [3] [5] [6].
-                    This script will also disable the screenray feature [6].
-
-                    This feature is enabled by default, so Windows will capture and store screen snapshots [2] [5] [6].
-                    They remain on your computer for months by default [4].
+                    "This component analyzes the snapshot's contents and lets you interact with elements within it. [3] [5] [6]"
+    
+                    This feature is enabled by default, so Windows will capture and store screen snapshots. [2] [5] [6]
+                    "They remain on your computer for months by default [4] and can occupy up to 25 GB of disk space."
 
                     Recall captures frequent screenshots, as frequent as multiple times during a minute [1] [2] [4].
                     These screenshots may include all visible content such as app data, websites, images, and documents [2] [5].
@@ -2777,10 +2813,15 @@ actions:
                       Language models susceptibility to attacks like prompt engineering underlines its security risks [8].
                       More about security vulnerabilities: [Attacks on language models](https://erkinekici.com/articles/attacks-on-language-models/).
 
-                    This script configures the `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot!DisableAIDataAnalysis` registry key [6].
+                    This script goes beyond simple registry changes by:
+
+                    1. Configuring all relevant WindowsAI policies with the correct registry path
+                    2. Removing local snapshot files stored on disk
+                    3. Uninstalling Recall as an optional Windows feature
+                    4. Preventing future reinstalls via Windows Update
 
                     By running this script, you enhance your privacy by preventing the storage and analysis of snapshots on your device [6],
-                    thereby mitigating the associated risks.
+                    removing existing data, and blocking future installations.
 
                     [1]: https://web.archive.org/web/20240523143034/https://support.microsoft.com/en-us/windows/retrace-your-steps-with-recall-aa03f8a0-a78b-4b3e-b0a1-2eb8ac48701c "Retrace your steps with Recall - Microsoft Support | support.microsoft.com"
                     [2]: https://web.archive.org/web/20240523143048/https://support.microsoft.com/en-us/windows/privacy-and-control-over-your-recall-experience-d404f672-7647-41e5-886c-a3c59680af15 "Privacy and control over your Recall experience - Microsoft Support | support.microsoft.com"
@@ -2791,13 +2832,83 @@ actions:
                     [7]: https://web.archive.org/web/20240523155006/https://www.bbc.com/news/articles/cpwwqp6nx14o "Microsoft Copilot+ Recall feature 'privacy nightmare' | www.bbc.com"
                     [8]: https://erkinekici.com/articles/attacks-on-language-models/ "Attacks on language models :: Erkin Ekici | erkinekici.com"
                 call:
-                    function: SetRegistryValue
-                    parameters:
-                        keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot
-                        valueName: DisableAIDataAnalysis
-                        dataType: REG_DWORD
-                        data: "1"
-                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                    -
+                        function: Comment
+                        parameters:
+                            codeComment: Disable Recall via correct WindowsAI policies
+                    -
+                        function: SetRegistryValue
+                        parameters:
+                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI
+                            valueName: DisableAIDataAnalysis
+                            dataType: REG_DWORD
+                            data: "1"
+                            deleteOnRevert: 'true'
+                    -
+                        function: SetRegistryValue
+                        parameters:
+                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI
+                            valueName: AllowRecallEnablement
+                            dataType: REG_DWORD
+                            data: "0"
+                            deleteOnRevert: 'true'
+                    -
+                        function: SetRegistryValue
+                        parameters:
+                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsAI
+                            valueName: TurnOffSavingSnapshots
+                            dataType: REG_DWORD
+                            data: "1"
+                            deleteOnRevert: 'true'
+                    -
+                        function: Comment
+                        parameters:
+                            codeComment: Remove local snapshot files to free up disk space
+                    -
+                        function: RunPowerShell
+                        parameters:
+                            code: |-
+                                $recallPath = "$env:LOCALAPPDATA\CoreAIPlatform.00\UKP"
+                                if (Test-Path $recallPath) {
+                                    Write-Host "Removing Recall snapshot files..."
+                                    takeown /f "$recallPath" /r /d y 2>$null
+                                    icacls "$recallPath" /grant Administrators:F /t /q 2>$null
+                                    Remove-Item -Path $recallPath -Recurse -Force -ErrorAction SilentlyContinue
+                                    Write-Host "Recall snapshot files removed."
+                                } else {
+                                    Write-Host "No Recall snapshot files found."
+                                }
+                            revertCode: '# No revert for file deletion'
+                    -
+                        function: Comment
+                        parameters:
+                            codeComment: Uninstall Recall as an optional Windows feature
+                    -
+                        function: RunPowerShell
+                        parameters:
+                            code: |-
+                                $feature = Get-WindowsOptionalFeature -Online -FeatureName "Recall" -ErrorAction SilentlyContinue
+                                if ($feature -and $feature.State -eq "Enabled") {
+                                    Write-Host "Uninstalling Recall optional feature..."
+                                    Disable-WindowsOptionalFeature -Online -FeatureName "Recall" -NoRestart
+                                    Write-Host "Recall optional feature uninstalled."
+                                } else {
+                                    Write-Host "Recall optional feature not found or already disabled."
+                                }
+                            revertCode: |-
+                                Enable-WindowsOptionalFeature -Online -FeatureName "Recall" -NoRestart
+                    -
+                        function: Comment
+                        parameters:
+                            codeComment: Prevent future reinstalls via Windows Update
+                    -
+                        function: SetRegistryValue
+                        parameters:
+                            keyPath: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata
+                            valueName: PreventAIPackageReinstall
+                            dataType: REG_DWORD
+                            data: "1"
+                            deleteOnRevert: 'true'
             -
                 category: Disable app access to personal information
                 docs: |- # refactor-with-variables: Same • App Access Caution

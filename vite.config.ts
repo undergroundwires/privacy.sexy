@@ -15,6 +15,8 @@ export function createVueConfig(options?: {
   readonly supportLegacyBrowsers: boolean,
 }): UserConfig {
   return {
+    // CAMBIA ESTO:
+    base: './', 
     root: WEB_DIRECTORY,
     build: {
       outDir: resolve(getSelfDirectoryAbsolutePath(), distDirs.web),
@@ -23,11 +25,12 @@ export function createVueConfig(options?: {
       vue(),
       ViteYaml(),
       ...[options?.supportLegacyBrowsers ? legacy() : undefined],
-      ViteMinifyPlugin(getStaticHtmlMinificationOptions()), // Minifies index.html
+      ViteMinifyPlugin(getStaticHtmlMinificationOptions()),
     ],
+    // ... el resto de tu configuración se queda igual
     esbuild: {
       supported: {
-        'top-level-await': true, // Exclude browsers not supporting top-level-await
+        'top-level-await': true,
       },
     },
     define: {
