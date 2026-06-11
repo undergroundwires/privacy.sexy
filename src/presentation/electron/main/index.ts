@@ -121,9 +121,20 @@ async function checkForUpdates() {
 
 function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
   window.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
+    if (isAllowedExternalUrl(url)) {
+      shell.openExternal(url);
+    }
     return { action: 'deny' };
   });
+}
+
+function isAllowedExternalUrl(url: string): boolean {
+  try {
+    const { protocol: urlProtocol } = new URL(url);
+    return ['https:', 'http:', 'mailto:'].includes(urlProtocol);
+  } catch {
+    return false;
+  }
 }
 
 function getWindowSize(idealWidth: number, idealHeight: number) {
