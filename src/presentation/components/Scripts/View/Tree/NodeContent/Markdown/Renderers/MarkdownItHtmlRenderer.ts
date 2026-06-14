@@ -10,7 +10,7 @@ export class MarkdownItHtmlRenderer implements MarkdownRenderer {
       breaks: false, // Disables conversion of single newlines (`\n`) to HTML breaks (`<br>`).
     });
     configureLinksToOpenInNewTab(markdownParser);
-    return markdownParser.render(markdownContent);
+    return hardenRenderedAnchors(markdownParser.render(markdownContent));
   }
 }
 
@@ -38,3 +38,57 @@ const AnchorAttributesForExternalLinks: Record<string, string> = {
   target: '_blank',
   rel: 'noopener noreferrer',
 } as const;
+
+const SupportedExternalProtocols = ['https:', 'http:', 'mailto:'] as const;
+
+function hardenRenderedAnchors(renderedHtml: string): string {
+  return renderedHtml.replaceAll(/<a\b[^>]*>/g, (anchorTag) => {
+    let hardenedTag = setOrAppendAttribute(
+      anchorTag,
+      'target',
+      AnchorAttributesForExternalLinks.target,
+    );
+    hardenedTag = setOrAppendAttribute(
+      hardenedTag,
+      'rel',
+      AnchorAttributesForExternalLinks.rel,
+    );
+    return removeUnsafeHref(hardenedTag);
+  });
+}
+
+function setOrAppendAttribute(anchorTag: string, attributeName: string, attributeValue: string): string {
+  const attributeRegex = new RegExp(`\\s${attributeName}=(["']).*?\\1`, 'i');
+  const normalizedAttribute = ` ${attributeName}="${attributeValue}"`;
+  if (attributeRegex.test(anchorTag)) {
+    return anchorTag.replace(attributeRegex, normalizedAttribute);
+  }
+  return anchorTag.replace('<a', `<a${normalizedAttribute}`);
+}
+
+function removeUnsafeHref(anchorTag: string): string {
+  const hrefMatch = anchorTag.match(/\shref=(["'])(.*?)\1/i);
+  if (!hrefMatch) {
+    return anchorTag;
+  }
+  const hrefValue = hrefMatch[2];
+  if (isSafeHref(hrefValue)) {
+    return anchorTag;
+  }
+  return anchorTag.replace(hrefMatch[0], '');
+}
+
+function isSafeHref(hrefValue: string): boolean {
+  if (!hrefValue) {
+    return false;
+  }
+  if (hrefValue.startsWith('#') || hrefValue.startsWith('/')) {
+    return true;
+  }
+  try {
+    const { protocol } = new URL(hrefValue);
+    return SupportedExternalProtocols.includes(protocol as typeof SupportedExternalProtocols[number]);
+  } catch {
+    return false;
+  }
+}
