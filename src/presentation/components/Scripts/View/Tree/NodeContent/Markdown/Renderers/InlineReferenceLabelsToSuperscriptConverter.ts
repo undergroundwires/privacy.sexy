@@ -1,5 +1,10 @@
 import type { MarkdownRenderer } from '../MarkdownRenderer';
 
+export const TrustedSuperscriptPlaceholder = {
+  opening: 'PSEXY_SUP_OPEN',
+  closing: 'PSEXY_SUP_CLOSE',
+} as const;
+
 export class InlineReferenceLabelsToSuperscriptConverter implements MarkdownRenderer {
   public render(markdownContent: string): string {
     return convertInlineReferenceLabelsToSuperscript(markdownContent);
@@ -14,7 +19,7 @@ function convertInlineReferenceLabelsToSuperscript(content: string): string {
     if (!isInlineReferenceLabel(label, content, offset)) {
       return `[${label}]`;
     }
-    return `<sup>[${label}]</sup>`;
+    return `${TrustedSuperscriptPlaceholder.opening}[${label}]${TrustedSuperscriptPlaceholder.closing}`;
   });
 }
 

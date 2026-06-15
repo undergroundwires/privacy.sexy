@@ -70,7 +70,7 @@ describe('MarkdownItHtmlRenderer', () => {
       const totalBrElements = html.getElementsByTagName('br').length;
       expect(totalBrElements).to.equal(0);
     });
-    it('hardens raw HTML anchors with default attributes', () => {
+    it('escapes raw HTML instead of rendering it', () => {
       // arrange
       const markdown = '<a href="https://undergroundwires.dev" target="_self" rel="nofollow">URL</a>';
 
@@ -78,41 +78,26 @@ describe('MarkdownItHtmlRenderer', () => {
       const renderedOutput = renderMarkdownUsingRenderer(MarkdownItHtmlRenderer, markdown);
 
       // assert
-      assertAnchorElementAttribute({
-        renderedOutput,
-        attributeName: 'target',
-        expectedValue: '_blank',
-        markdownContent: markdown,
-      });
-      assertAnchorElementAttribute({
-        renderedOutput,
-        attributeName: 'rel',
-        expectedValue: 'noopener noreferrer',
-        markdownContent: markdown,
-      });
+      const html = parseHtml(renderedOutput);
+      expect(html.getElementsByTagName('a').length).to.equal(0);
+      expect(html.body.textContent).to.contain('URL');
+      expect(renderedOutput).to.contain('&lt;a href=');
     });
-    it('removes unsafe href values from raw HTML anchors', () => {
+    it('escapes dangerous raw HTML elements', () => {
       // arrange
-      const markdown = '<a href="javascript:alert(1)">Unsafe URL</a>';
+      const markdown = '<img src="x" onerror="alert(1)">';
 
       // act
       const renderedOutput = renderMarkdownUsingRenderer(MarkdownItHtmlRenderer, markdown);
 
       // assert
       const html = parseHtml(renderedOutput);
-      const aElement = html.getElementsByTagName('a')[0];
-      expectExists(aElement, formatAssertionMessage([
-        'Missing expected `<a>` element',
+      expect(html.getElementsByTagName('img').length).to.equal(0, formatAssertionMessage([
+        'Expected raw HTML image tags to be escaped rather than rendered',
         `Markdown input to render: ${markdown}`,
         `Actual render output: ${renderedOutput}`,
       ]));
-      const href = aElement.getAttribute('href');
-      expect(href).to.equal(null, formatAssertionMessage([
-        'Expected unsafe href to be removed',
-        `Actual href: ${href}`,
-        `Markdown input to render: ${markdown}`,
-        `Actual render output:\n${renderedOutput}`,
-      ]));
+      expect(renderedOutput).to.contain('&lt;img');
     });
   });
 });
