@@ -42,7 +42,7 @@
     "electron-progressbar": "^2.2.1",
     "electron-updater": "^6.3.9",
     "file-saver": "^2.0.5",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.2.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {
@@ -70,7 +70,7 @@
     "eslint-plugin-vuejs-accessibility": "^2.4.1",
     "jsdom": "^26.0.0",
     "markdownlint-cli": "^0.44.0",
-    "postcss": "~8.5.3",
+    "postcss": "~8.5.15",
     "remark-cli": "^12.0.1",
     "remark-lint-no-dead-urls": "^2.0.1",
     "remark-preset-lint-consistent": "^6.0.1",
