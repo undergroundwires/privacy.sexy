@@ -103,6 +103,9 @@
   "optionalDependencies": {
     "dmg-license": "^1.0.11"
   },
+  "overrides": {
+    "js-yaml": "4.2.0"
+  },
   "//optionalDependencies": {
     "dmg-license": "Required by `electron-builder` for DMG builds on macOS, https://github.com/electron-userland/electron-builder/issues/6489, https://github.com/electron-userland/electron-builder/issues/6520"
   }
