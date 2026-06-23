@@ -104,6 +104,8 @@
     "dmg-license": "^1.0.11"
   },
   "overrides": {
+    "@xmldom/xmldom": "^0.8.13",
+    "ajv": "^6.14.0",
     "js-yaml": "4.2.0"
   },
   "//optionalDependencies": {
