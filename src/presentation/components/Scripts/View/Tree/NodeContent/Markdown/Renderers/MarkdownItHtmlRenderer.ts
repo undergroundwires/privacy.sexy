@@ -1,16 +1,19 @@
 import MarkdownIt from 'markdown-it';
 import type { MarkdownRenderer } from '../MarkdownRenderer';
 import type { RenderRule } from 'markdown-it/lib/renderer.mjs'; // eslint-disable-line import/extensions
+import { TrustedSuperscriptPlaceholder } from './InlineReferenceLabelsToSuperscriptConverter';
 
 export class MarkdownItHtmlRenderer implements MarkdownRenderer {
   public render(markdownContent: string): string {
     const markdownParser = new MarkdownIt({
-      html: true, // Enable HTML tags in source to allow other custom rendering logic.
+      // Raw HTML is rendered with `v-html` inside an Electron renderer process.
+      // Keep it disabled so repository-authored markdown cannot inject executable DOM.
+      html: false,
       linkify: false, // Disables auto-linking; handled manually for custom formatting.
       breaks: false, // Disables conversion of single newlines (`\n`) to HTML breaks (`<br>`).
     });
     configureLinksToOpenInNewTab(markdownParser);
-    return markdownParser.render(markdownContent);
+    return restoreTrustedSuperscriptTags(markdownParser.render(markdownContent));
   }
 }
 
@@ -38,3 +41,9 @@ const AnchorAttributesForExternalLinks: Record<string, string> = {
   target: '_blank',
   rel: 'noopener noreferrer',
 } as const;
+
+function restoreTrustedSuperscriptTags(renderedHtml: string): string {
+  return renderedHtml
+    .replaceAll(TrustedSuperscriptPlaceholder.opening, '<sup>')
+    .replaceAll(TrustedSuperscriptPlaceholder.closing, '</sup>');
+}

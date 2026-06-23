@@ -70,6 +70,35 @@ describe('MarkdownItHtmlRenderer', () => {
       const totalBrElements = html.getElementsByTagName('br').length;
       expect(totalBrElements).to.equal(0);
     });
+    it('escapes raw HTML instead of rendering it', () => {
+      // arrange
+      const markdown = '<a href="https://undergroundwires.dev" target="_self" rel="nofollow">URL</a>';
+
+      // act
+      const renderedOutput = renderMarkdownUsingRenderer(MarkdownItHtmlRenderer, markdown);
+
+      // assert
+      const html = parseHtml(renderedOutput);
+      expect(html.getElementsByTagName('a').length).to.equal(0);
+      expect(html.body.textContent).to.contain('URL');
+      expect(renderedOutput).to.contain('&lt;a href=');
+    });
+    it('escapes dangerous raw HTML elements', () => {
+      // arrange
+      const markdown = '<img src="x" onerror="alert(1)">';
+
+      // act
+      const renderedOutput = renderMarkdownUsingRenderer(MarkdownItHtmlRenderer, markdown);
+
+      // assert
+      const html = parseHtml(renderedOutput);
+      expect(html.getElementsByTagName('img').length).to.equal(0, formatAssertionMessage([
+        'Expected raw HTML image tags to be escaped rather than rendered',
+        `Markdown input to render: ${markdown}`,
+        `Actual render output: ${renderedOutput}`,
+      ]));
+      expect(renderedOutput).to.contain('&lt;img');
+    });
   });
 });
 
