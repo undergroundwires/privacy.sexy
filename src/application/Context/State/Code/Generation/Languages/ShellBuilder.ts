@@ -6,7 +6,7 @@ export class ShellBuilder extends CodeBuilder {
   }
 
   protected writeStandardOut(text: string): string {
-    return `echo '${escapeForEcho(text)}'`;
+    return `printf '%s\\n' '${escapeForShellString(text)}'`;
   }
 
   protected getNewLineTerminator(): string {
@@ -14,7 +14,7 @@ export class ShellBuilder extends CodeBuilder {
   }
 }
 
-function escapeForEcho(text: string) {
+function escapeForShellString(text: string): string {
   return text
     .replace(/'/g, '\'\\\'\'');
 }

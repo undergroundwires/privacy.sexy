@@ -25,7 +25,11 @@ scripting:
         )
         :: Initialize environment
         setlocal EnableExtensions DisableDelayedExpansion
+        echo(
+        echo(privacy.sexy - Running selected actions
+        echo(Review each action below for errors or warnings.
     endCode: |-
+        echo(
         :: Pause the script to view the final state
         pause
         :: Restore previous environment settings
@@ -2119,7 +2123,7 @@ actions:
                             REM https://social.technet.microsoft.com/Forums/en-US/f6788f7d-7d04-41f1-a64e-3af9f700e4bd/failed-to-clear-log-microsoftwindowsliveidoperational-access-is-denied?forum=win10itprogeneral
                             wevtutil sl Microsoft-Windows-LiveId/Operational /ca:O:BAG:SYD:(A;;0x1;;;SY)(A;;0x5;;;BA)(A;;0x1;;;LA)
                             for /f "tokens=*" %%i in ('wevtutil.exe el') DO (
-                                echo Deleting event log: "%%i"
+                                echo Deleting event log: "%%i" >nul
                                 wevtutil.exe cl "%%i"
                             )
                     -
@@ -2183,11 +2187,11 @@ actions:
                             }
                             $credentialEntries = @($cmdkeyListOutput | Select-String 'Target')
                             if (-not $credentialEntries) {
-                                Write-Host 'Skipping: No credentials found for deletion.'
+                                Write-Verbose 'Skipping: No credentials found for deletion.'
                                 exit 0
                             }
                             $allCredentialsDeletedSuccessfully = $true
-                            Write-Host "Total of $($credentialEntries.Length) credential(s) found. Initiating deletion..."
+                            Write-Verbose "Total of $($credentialEntries.Length) credential(s) found. Initiating deletion..."
                             foreach ($credentialEntry in $credentialEntries) {
                                 if ($credentialEntry -notmatch 'Target:(.+)') {
                                     Write-Error "Failed to parse credential from output: $credentialEntry"
@@ -2195,19 +2199,20 @@ actions:
                                     continue
                                 }
                                 $credentialTargetName = $matches[1].Trim()
-                                Write-Host "Deleting credential: `"$credentialTargetName`"..."
-                                & $cmdkeyPath /delete:$credentialTargetName
-                                if ($LASTEXITCODE -ne 0) {
-                                    Write-Error "Failed to delete credential '$credentialTargetName'. `cmdkey` returned exit code: $LASTEXITCODE."
+                                Write-Verbose "Deleting credential: `"$credentialTargetName`"..."
+                                $deleteOutput = @(& $cmdkeyPath /delete:$credentialTargetName 2>&1)
+                                $deleteExit = $LASTEXITCODE
+                                if ($deleteExit -ne 0) {
+                                    Write-Error "Failed to delete credential '$credentialTargetName'. `cmdkey` returned exit code: $deleteExit. Details: $($deleteOutput -join [Environment]::NewLine)"
                                     $allCredentialsDeletedSuccessfully = $false
                                 } else {
-                                    Write-Host "Successfully deleted credential: `"$credentialTargetName`"."
+                                    Write-Verbose "Successfully deleted credential: `"$credentialTargetName`"."
                                 }
                             }
                             if (-not $allCredentialsDeletedSuccessfully) {
                                 Write-Warning 'Failed to delete some credentials. Please check the error messages above.'
                             } else {
-                                Write-Host "Successfully deleted all $($credentialEntries.Length) credential(s)."
+                                Write-Host "Credential cleanup finished: deleted=$($credentialEntries.Length)."
                             }
             -
                 name: Remove the controversial `default0` user
@@ -2222,7 +2227,7 @@ actions:
                         code: |-
                             $bin = (New-Object -ComObject Shell.Application).NameSpace(10)
                             $bin.items() | ForEach {
-                                Write-Host "Deleting $($_.Name) from Recycle Bin"
+                                Write-Verbose "Deleting $($_.Name) from Recycle Bin"
                                 Remove-Item $_.Path -Recurse -Force
                             }
             -
@@ -13349,12 +13354,12 @@ actions:
                                                 code: |-
                                                     $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
                                                     Get-ChildItem $key | ForEach {
-                                                        Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2 -Verbose
+                                                        Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2
                                                     }
                                                 revertCode: |-
                                                     $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
                                                     Get-ChildItem $key | ForEach {
-                                                        Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
+                                                        Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0
                                                     }
                                     -
                                         name: Disable insecure "SSL 2.0" protocol
@@ -21635,7 +21640,7 @@ actions:
                                             }
                                             $message=netsh advfirewall set allprofiles state off 2>&1
                                             if($?) {
-                                                Write-Host "Successfully disabled firewall."
+                                                Write-Verbose "Successfully disabled firewall."
                                             } else {
                                                 if($message -like '*Firewall service*') {
                                                     Write-Warning 'Cannot use CLI because MpsSvc or MpsDrv is not running. Try to enable them (revert) -> reboot -> re-run this?'
@@ -21649,7 +21654,7 @@ actions:
                                             }
                                             $message=netsh advfirewall set allprofiles state on 2>&1
                                             if($?) {
-                                                Write-Host "Successfully enabled firewall."
+                                                Write-Verbose "Successfully enabled firewall."
                                             } else {
                                                 if($message -like '*Firewall service*') {
                                                     Write-Warning 'Cannot use CLI because MpsSvc or MpsDrv is not running. Try to enable them (revert) -> reboot -> re-run this?'
@@ -35575,6 +35580,249 @@ actions:
                                 )
                             )
                     -
+                        name: Completely remove OneDrive application and shell integration
+                        recommend: strict
+                        docs: |-
+                            This script performs a more comprehensive removal than the official OneDrive uninstaller alone.
+
+                            It removes both per-user and per-machine OneDrive installations, including installations under
+                            `%LOCALAPPDATA%`, `%PROGRAMFILES%`, and `%PROGRAMFILES(X86)%` [1] [2]. Per-machine uninstallers
+                            are run with the `/allusers` switch [1] [2].
+
+                            Before uninstalling the application, the script unregisters `FileSyncShell` DLLs with
+                            `regsvr32 /u /s` [3]. It also removes orphaned OneDrive COM class registrations, Explorer
+                            namespace entries, shell-extension approvals, updater services, scheduled tasks, startup entries,
+                            environment variables, shortcuts, stale uninstall records, application files, and caches.
+
+                            This script intentionally preserves `%USERPROFILE%\OneDrive*` synchronized data folders. Use the
+                            separate **Remove OneDrive user data and synced folders** option only after verifying that Windows
+                            user shell folders such as Desktop and Documents no longer point into OneDrive.
+
+                            Restart Windows after running this script so Explorer releases any shell-extension DLLs that were
+                            already loaded. This removal cannot be automatically reverted; reinstall OneDrive to restore it.
+
+                            [1]: https://learn.microsoft.com/en-us/sharepoint/per-machine-installation "Install the sync app per-machine (Windows) | Microsoft Learn"
+                            [2]: https://learn.microsoft.com/en-us/answers/questions/5389256/help-onedrive-uninstalled-onedrive-path-returns-to "OneDrive uninstall script guidance | Microsoft Q&A"
+                            [3]: https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/regsvr32 "regsvr32 | Microsoft Learn"
+                        call:
+                            -
+                                function: TerminateRunningProcess
+                                parameters:
+                                    executableNameWithExtension: OneDrive.exe
+                            -
+                                function: RunPowerShell
+                                parameters:
+                                    codeComment: Unregister OneDrive shell extensions and remove shell registrations
+                                    code: |-
+                                        $oneDriveRoots = @(
+                                            "$env:LOCALAPPDATA\Microsoft\OneDrive"
+                                            "$env:ProgramFiles\Microsoft OneDrive"
+                                            "${env:ProgramFiles(x86)}\Microsoft OneDrive"
+                                        ) | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Container) }
+                                        $shellDlls = @($oneDriveRoots | ForEach-Object {
+                                            Get-ChildItem -LiteralPath $_ -Filter 'FileSyncShell*.dll' -File -Recurse -Force -ErrorAction SilentlyContinue
+                                        } | Sort-Object -Property FullName -Unique)
+                                        foreach ($dll in $shellDlls) {
+                                            $regsvr32 = if ([Environment]::Is64BitOperatingSystem -and $dll.Name -notmatch '64') {
+                                                "$env:SystemRoot\SysWOW64\regsvr32.exe"
+                                            } else {
+                                                "$env:SystemRoot\System32\regsvr32.exe"
+                                            }
+                                            Write-Verbose "Unregistering OneDrive shell extension: $($dll.FullName)"
+                                            & $regsvr32 /u /s $dll.FullName
+                                            if ($LASTEXITCODE -ne 0) {
+                                                Write-Warning "Shell extension unregister returned exit code $LASTEXITCODE for: $($dll.FullName)"
+                                            }
+                                        }
+                                        $oneDriveClassIds = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+                                        $null = $oneDriveClassIds.Add('{018D5C66-4533-4307-9B53-224DE2ED1FE6}')
+                                        $classRoots = @(
+                                            'HKLM:\SOFTWARE\Classes\CLSID'
+                                            'HKLM:\SOFTWARE\Classes\Wow6432Node\CLSID'
+                                            'HKCU:\Software\Classes\CLSID'
+                                            'HKCU:\Software\Classes\Wow6432Node\CLSID'
+                                        )
+                                        foreach ($classRoot in $classRoots) {
+                                            if (-not (Test-Path -LiteralPath $classRoot)) { continue }
+                                            foreach ($classKey in Get-ChildItem -LiteralPath $classRoot -ErrorAction SilentlyContinue) {
+                                                $serverKey = Join-Path $classKey.PSPath 'InprocServer32'
+                                                $serverPath = if (Test-Path -LiteralPath $serverKey) { (Get-Item -LiteralPath $serverKey).GetValue('') } else { $null }
+                                                if ([string]$serverPath -match 'Microsoft OneDrive|FileSyncShell') {
+                                                    $null = $oneDriveClassIds.Add($classKey.PSChildName)
+                                                }
+                                            }
+                                        }
+                                        foreach ($classRoot in $classRoots) {
+                                            foreach ($classId in $oneDriveClassIds) {
+                                                $classKey = Join-Path $classRoot $classId
+                                                if (Test-Path -LiteralPath $classKey) {
+                                                    Write-Verbose "Removing OneDrive COM registration: $classKey"
+                                                    Remove-Item -LiteralPath $classKey -Recurse -Force -ErrorAction Continue
+                                                }
+                                            }
+                                        }
+                                        $approvedRoots = @(
+                                            'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved'
+                                            'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved'
+                                            'HKCU:\Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved'
+                                        )
+                                        foreach ($approvedRoot in $approvedRoots) {
+                                            if (-not (Test-Path -LiteralPath $approvedRoot)) { continue }
+                                            foreach ($classId in $oneDriveClassIds) {
+                                                Remove-ItemProperty -LiteralPath $approvedRoot -Name $classId -Force -ErrorAction SilentlyContinue
+                                            }
+                                        }
+                                        $namespaceRoots = @(
+                                            'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace'
+                                            'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace'
+                                            'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace'
+                                            'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\MyComputer\NameSpace'
+                                        )
+                                        foreach ($namespaceRoot in $namespaceRoots) {
+                                            if (-not (Test-Path -LiteralPath $namespaceRoot)) { continue }
+                                            foreach ($namespaceKey in Get-ChildItem -LiteralPath $namespaceRoot -ErrorAction SilentlyContinue) {
+                                                $nodeName = $namespaceKey.GetValue('')
+                                                if ($oneDriveClassIds.Contains($namespaceKey.PSChildName) -or [string]$nodeName -match '^OneDrive(?:\s*-.*)?$') {
+                                                    Write-Verbose "Removing OneDrive Explorer namespace registration: $($namespaceKey.PSPath)"
+                                                    Remove-Item -LiteralPath $namespaceKey.PSPath -Recurse -Force -ErrorAction Continue
+                                                }
+                                            }
+                                        }
+                            -
+                                function: RunPowerShell
+                                parameters:
+                                    codeComment: Run per-user and per-machine OneDrive uninstallers
+                                    code: |-
+                                        $installLocations = @(
+                                            @{ Root = "$env:LOCALAPPDATA\Microsoft\OneDrive"; AllUsers = $false }
+                                            @{ Root = "$env:ProgramFiles\Microsoft OneDrive"; AllUsers = $true }
+                                            @{ Root = "${env:ProgramFiles(x86)}\Microsoft OneDrive"; AllUsers = $true }
+                                        )
+                                        $executedInstallers = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+                                        foreach ($location in $installLocations) {
+                                            if (-not $location.Root -or -not (Test-Path -LiteralPath $location.Root -PathType Container)) { continue }
+                                            $installers = @(
+                                                Get-Item -LiteralPath (Join-Path $location.Root 'OneDriveSetup.exe') -ErrorAction SilentlyContinue
+                                                Get-ChildItem -Path (Join-Path $location.Root '*\OneDriveSetup.exe') -File -Force -ErrorAction SilentlyContinue
+                                            ) | Where-Object { $_ } | Sort-Object -Property LastWriteTime -Descending
+                                            $installer = $installers | Select-Object -First 1
+                                            if (-not $installer -or -not $executedInstallers.Add($installer.FullName)) { continue }
+                                            $arguments = @('/uninstall')
+                                            if ($location.AllUsers) { $arguments += '/allusers' }
+                                            Write-Verbose "Running OneDrive uninstaller: $($installer.FullName) $($arguments -join ' ')"
+                                            $process = Start-Process -FilePath $installer.FullName -ArgumentList $arguments -Wait -PassThru
+                                            if ($process.ExitCode -ne 0) {
+                                                Write-Warning "OneDrive uninstaller returned exit code $($process.ExitCode): $($installer.FullName)"
+                                            }
+                                        }
+                                        $inboxInstallers = @(
+                                            "$env:SystemRoot\System32\OneDriveSetup.exe"
+                                            "$env:SystemRoot\SysWOW64\OneDriveSetup.exe"
+                                        )
+                                        foreach ($installerPath in $inboxInstallers) {
+                                            if (-not (Test-Path -LiteralPath $installerPath -PathType Leaf) -or -not $executedInstallers.Add($installerPath)) { continue }
+                                            Write-Verbose "Running Windows inbox OneDrive uninstaller: $installerPath"
+                                            $process = Start-Process -FilePath $installerPath -ArgumentList '/uninstall' -Wait -PassThru
+                                            if ($process.ExitCode -ne 0) {
+                                                Write-Warning "OneDrive uninstaller returned exit code $($process.ExitCode): $installerPath"
+                                            }
+                                        }
+                            -
+                                function: RunPowerShell
+                                parameters:
+                                    codeComment: Remove OneDrive services, tasks, registry state, and shortcuts
+                                    code: |-
+                                        $tasks = @(Get-ScheduledTask -ErrorAction SilentlyContinue | Where-Object { $_.TaskName -like 'OneDrive*' })
+                                        foreach ($task in $tasks) {
+                                            Write-Verbose "Removing OneDrive scheduled task: $($task.TaskPath)$($task.TaskName)"
+                                            $task | Unregister-ScheduledTask -Confirm:$false -ErrorAction Continue
+                                        }
+                                        $services = @(Get-CimInstance Win32_Service -ErrorAction SilentlyContinue | Where-Object { ($_.Name -match '^OneDrive') -or ($_.DisplayName -match '^OneDrive') -or ($_.PathName -match 'Microsoft OneDrive') })
+                                        foreach ($service in $services) {
+                                            Write-Verbose "Removing OneDrive service: $($service.Name)"
+                                            & "$env:SystemRoot\System32\sc.exe" stop $service.Name 2>&1 | ForEach-Object { Write-Verbose $_ }
+                                            & "$env:SystemRoot\System32\sc.exe" delete $service.Name 2>&1 | ForEach-Object { Write-Verbose $_ }
+                                        }
+                                        $uninstallRoots = @(
+                                            'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+                                            'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall'
+                                            'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
+                                        )
+                                        foreach ($uninstallRoot in $uninstallRoots) {
+                                            if (-not (Test-Path -LiteralPath $uninstallRoot)) { continue }
+                                            foreach ($uninstallKey in Get-ChildItem -LiteralPath $uninstallRoot -ErrorAction SilentlyContinue) {
+                                                $displayName = (Get-ItemProperty -LiteralPath $uninstallKey.PSPath -ErrorAction SilentlyContinue).DisplayName
+                                                if ($displayName -eq 'Microsoft OneDrive') {
+                                                    Write-Verbose "Removing stale OneDrive uninstall registration: $($uninstallKey.PSPath)"
+                                                    Remove-Item -LiteralPath $uninstallKey.PSPath -Recurse -Force -ErrorAction Continue
+                                                }
+                                            }
+                                        }
+                                        $registryKeys = @(
+                                            'HKCU:\Software\Microsoft\OneDrive'
+                                            'HKLM:\SOFTWARE\Microsoft\OneDrive'
+                                            'HKLM:\SOFTWARE\WOW6432Node\Microsoft\OneDrive'
+                                        )
+                                        foreach ($registryKey in $registryKeys) {
+                                            if (Test-Path -LiteralPath $registryKey) {
+                                                Write-Verbose "Removing OneDrive registry state: $registryKey"
+                                                Remove-Item -LiteralPath $registryKey -Recurse -Force -ErrorAction Continue
+                                            }
+                                        }
+                                        $policyKey = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive'
+                                        New-Item -Path $policyKey -Force -ErrorAction Stop | Out-Null
+                                        Set-ItemProperty -LiteralPath $policyKey -Name 'DisableFileSyncNGSC' -Type DWord -Value 1 -Force -ErrorAction Stop
+                                        Set-ItemProperty -LiteralPath $policyKey -Name 'DisableFileSync' -Type DWord -Value 1 -Force -ErrorAction Stop
+                                        $runKeys = @(
+                                            'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+                                            'HKLM:\Software\Microsoft\Windows\CurrentVersion\Run'
+                                            'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Run'
+                                        )
+                                        foreach ($runKey in $runKeys) {
+                                            foreach ($valueName in @('OneDrive', 'OneDriveSetup')) {
+                                                Remove-ItemProperty -LiteralPath $runKey -Name $valueName -Force -ErrorAction SilentlyContinue
+                                            }
+                                        }
+                                        foreach ($valueName in @('OneDrive', 'OneDriveConsumer', 'OneDriveCommercial')) {
+                                            Remove-ItemProperty -LiteralPath 'HKCU:\Environment' -Name $valueName -Force -ErrorAction SilentlyContinue
+                                        }
+                                        $shortcuts = @(
+                                            "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
+                                            "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Microsoft OneDrive.lnk"
+                                            "$env:USERPROFILE\Links\OneDrive.lnk"
+                                            "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
+                                        )
+                                        foreach ($shortcut in $shortcuts) {
+                                            if (Test-Path -LiteralPath $shortcut -PathType Leaf) {
+                                                Remove-Item -LiteralPath $shortcut -Force -ErrorAction Continue
+                                            }
+                                        }
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\OneDrive'
+                                    grantPermissions: 'true'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%PROGRAMDATA%\Microsoft OneDrive'
+                                    grantPermissions: 'true'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%PROGRAMFILES%\Microsoft OneDrive'
+                                    grantPermissions: 'true'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%PROGRAMFILES(X86)%\Microsoft OneDrive'
+                                    grantPermissions: 'true'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%SYSTEMDRIVE%\OneDriveTemp'
+                                    grantPermissions: 'true'
+                    -
                         name: Remove OneDrive user data and synced folders
                         recommend: strict
                         docs: |-
@@ -35641,7 +35889,7 @@ actions:
                                         try {
                                             $userShellFoldersRegistryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
                                             if (-not (Test-Path $userShellFoldersRegistryPath)) {
-                                                Write-Output "Skipping verification: The registry path for user shell folders is missing: `"$userShellFoldersRegistryPath`""
+                                                Write-Warning "Skipping verification: The registry path for user shell folders is missing: `"$userShellFoldersRegistryPath`""
                                                 break;
                                             }
                                             $userShellFoldersRegistryKeys = Get-ItemProperty -Path $userShellFoldersRegistryPath
@@ -35650,13 +35898,13 @@ actions:
                                                 Write-Warning "Skipping verification: No entries found for user shell folders in the registry: `"$userShellFoldersRegistryPath`""
                                                 break;
                                             }
-                                            Write-Output "Initiating verification: Checking if any of the ${userShellFoldersEntries.Count} user shell folders point to the OneDrive user folder pattern ($oneDriveUserFolderPattern)."
+                                            Write-Verbose "Initiating verification: Checking if any of the ${userShellFoldersEntries.Count} user shell folders point to the OneDrive user folder pattern ($oneDriveUserFolderPattern)."
                                             $userShellFoldersInOneDrive = @()
                                             foreach ($registryEntry in $userShellFoldersEntries) {
                                                 $userShellFolderName = $registryEntry.Name
                                                 $userShellFolderPath = $registryEntry.Value
                                                 if (!$userShellFolderPath) {
-                                                    Write-Output "Skipping: The user shell folder `"$userShellFolderName`" does not have a defined path."
+                                                    Write-Verbose "Skipping: The user shell folder `"$userShellFolderName`" does not have a defined path."
                                                     continue
                                                 }
                                                 $expandedUserShellFolderPath = [System.Environment]::ExpandEnvironmentVariables($userShellFolderPath)
@@ -35674,7 +35922,7 @@ actions:
                                                 Write-Warning $warningMessage
                                                 exit 0
                                             }
-                                            Write-Output "Successfully verified that none of the $($userShellFoldersEntries.Count) user shell folders point to the OneDrive user folder pattern."
+                                            Write-Verbose "Successfully verified that none of the $($userShellFoldersEntries.Count) user shell folders point to the OneDrive user folder pattern."
                                             break;
                                         } catch {
                                             Write-Warning "An error occurred during verification of user shell folders. Skipping prevent potential issues. Error: $($_.Exception.Message)"
@@ -35789,7 +36037,7 @@ actions:
                                             $leftnavNodeName = $_."(default)";
                                         if (($leftnavNodeName -eq "OneDrive") -Or ($leftnavNodeName -eq "OneDrive - Personal")) {
                                                 if (Test-Path $_.pspath) {
-                                                    Write-Host "Deleting $($_.pspath)."
+                                                    Write-Verbose "Deleting $($_.pspath)."
                                                     Remove-Item $_.pspath;
                                                 }
                                             }
@@ -36076,19 +36324,19 @@ actions:
                                     code: |-
                                         $installers = (Get-ChildItem "$($env:ProgramFiles)*\Microsoft\Edge\Application\*\Installer\setup.exe")
                                         if (!$installers) {
-                                            Write-Host 'Installer not found. Microsoft Edge may already be uninstalled.'
+                                            Write-Verbose 'Installer not found. Microsoft Edge may already be uninstalled.'
                                         } else {
                                             foreach ($installer in $installers) {
                                                 $uninstallerPath = $installer.FullName
                                                 if (-Not (Test-Path "$uninstallerPath")) {
-                                                    Write-Host "Installer not found at `"$uninstallerPath`". Microsoft Edge may already be uninstalled."
+                                                    Write-Verbose "Installer not found at `"$uninstallerPath`". Microsoft Edge may already be uninstalled."
                                                     continue
                                                 }
                                                 $installerArguments = @("--uninstall", "--system-level", "--verbose-logging", "--force-uninstall")
-                                                Write-Output "Uninstalling through uninstaller: $uninstallerPath"
+                                                Write-Verbose "Uninstalling through uninstaller: $uninstallerPath"
                                                 $process = Start-Process -FilePath "$uninstallerPath" -ArgumentList $installerArguments -Wait -PassThru
                                                 if ($process.ExitCode -eq 0 -or $process.ExitCode -eq 19) {
-                                                    Write-Host "Successfully uninstalled Edge."
+                                                    Write-Verbose "Successfully uninstalled Edge."
                                                 } else {
                                                     Write-Error "Failed to uninstall, uninstaller failed with exit code $($process.ExitCode)."
                                                 }
@@ -36098,19 +36346,19 @@ actions:
                                     revertCode: |-
                                         $edgeExePath = Get-ChildItem -Path "$($env:ProgramFiles)*\Microsoft\Edge\Application" -Filter 'msedge.exe' -Recurse
                                         if ($edgeExePath) {
-                                            Write-Host 'Microsoft Edge is already installed. Skipping reinstallation.'
+                                            Write-Verbose 'Microsoft Edge is already installed. Skipping reinstallation.'
                                             Exit 0
                                         }
-                                        Write-Host 'Downloading Microsoft Edge...'
+                                        Write-Verbose 'Downloading Microsoft Edge...'
                                         $edgeInstallerUrl = 'https://c2rsetup.officeapps.live.com/c2r/downloadEdge.aspx?platform=Default&Channel=Stable&language=en'
                                         $downloadPath = "$($env:TEMP)\MicrosoftEdgeSetup.exe"
                                         Invoke-WebRequest -Uri "$edgeInstallerUrl" -OutFile "$downloadPath"
                                         $installerArguments = @('/install', '/silent')
-                                        Write-Host 'Installing Microsoft Edge...'
+                                        Write-Verbose 'Installing Microsoft Edge...'
                                         $process = Start-Process -FilePath "$downloadPath" -ArgumentList "$installerArguments" -Wait -PassThru
                                         Remove-Item -Path $downloadPath -Force
                                         if ($process.ExitCode -eq 0) {
-                                            Write-Host 'Successfully reinstalled Microsoft Edge.'
+                                            Write-Verbose 'Successfully reinstalled Microsoft Edge.'
                                         } else {
                                             Write-Error "Failed to reinstall Microsoft Edge. Installer failed with exit code $($process.ExitCode)."
                                         }
@@ -39763,15 +40011,15 @@ functions:
                             -Online `
                             -ErrorAction Stop
                         if (-Not $feature) {
-                            Write-Output "Skipping: The feature `"$featureName`" is not found. No action required."
+                            Write-Verbose "Skipping: The feature `"$featureName`" is not found. No action required."
                             Exit 0
                         }
                         if ($feature.State -eq [Microsoft.Dism.Commands.FeatureState]::Disabled) {
-                            Write-Output "Skipping: The feature `"$featureName`" is already disabled. No action required."
+                            Write-Verbose "Skipping: The feature `"$featureName`" is already disabled. No action required."
                             Exit 0
                         }
                         try {
-                            Write-Host "Disabling feature: `"$featureName`"."
+                            Write-Verbose "Disabling feature: `"$featureName`"."
                             Disable-WindowsOptionalFeature `
                                 -FeatureName "$featureName" `
                                 -Online `
@@ -39784,7 +40032,7 @@ functions:
                             Write-Error "Failed to disable the feature `"$featureName`": $($_.Exception.Message)"
                             Exit 1
                         }
-                        Write-Output "Successfully disabled the feature `"$featureName`"."
+                        Write-Verbose "Successfully disabled the feature `"$featureName`"."
                         Exit 0
                     revertCode: |-
                         $featureName = '{{ $featureName }}'
@@ -39796,22 +40044,22 @@ functions:
                             -ErrorAction Stop
                         if (-Not $feature) {
                             if ($ignoreMissingOnRevert) {
-                                Write-Output "Skipping: The feature `"$featureName`" is not found. No action required."
+                                Write-Verbose "Skipping: The feature `"$featureName`" is not found. No action required."
                                 Exit 0
                             }
                             Write-Error "Failed to revert changes to the feature `"$featureName`". The feature is not found."
                             Exit 1
                         }
                         if ($feature.State -eq [Microsoft.Dism.Commands.FeatureState]::Enabled) {
-                            Write-Output "Skipping: The feature `"$featureName`" is already enabled. No action required."
+                            Write-Verbose "Skipping: The feature `"$featureName`" is already enabled. No action required."
                             Exit 0
                         }
                         if ($disabledByDefault) {
-                            Write-Output "Skipping: The feature `"$featureName`" is already disabled and this is the default configuration."
+                            Write-Verbose "Skipping: The feature `"$featureName`" is already disabled and this is the default configuration."
                             Exit 0
                         }
                         try {
-                            Write-Host "Enabling feature: `"$featureName`"."
+                            Write-Verbose "Enabling feature: `"$featureName`"."
                             Enable-WindowsOptionalFeature `
                                 -FeatureName "$featureName" `
                                 -Online `
@@ -39824,7 +40072,7 @@ functions:
                             Write-Error "Failed to enable feature `"$featureName`": $($_.Exception.Message)"
                             Exit 1
                         }
-                        Write-Output "Successfully enabled the feature `"$featureName`"."
+                        Write-Verbose "Successfully enabled the feature `"$featureName`"."
                         Exit 0
     -
         name: UninstallStoreApp
@@ -39865,18 +40113,18 @@ functions:
                         $packageName='{{ $packageName }}'
                         $publisherId='{{ $publisherId }}'
                         if (Get-AppxPackage -Name $packageName) {
-                            Write-Host "Skipping, `"$packageName`" is already installed for the current user."
+                            Write-Verbose "Skipping, `"$packageName`" is already installed for the current user."
                             exit 0
                         }
-                        Write-Host "Starting the installation process for `"$packageName`"..."
+                        Write-Verbose "Starting the installation process for `"$packageName`"..."
                         # Attempt installation using the manifest file
-                        Write-Host "Checking if `"$packageName`" is installed on another user profile..."
+                        Write-Verbose "Checking if `"$packageName`" is installed on another user profile..."
                         $packages = @(Get-AppxPackage -AllUsers $packageName)
                         if (!$packages) {
-                            Write-Host "`"$packageName`" is not installed on any other user profiles."
+                            Write-Verbose "`"$packageName`" is not installed on any other user profiles."
                         } else {
                             foreach ($package in $packages) {
-                                Write-Host "Found package `"$($package.PackageFullName)`"."
+                                Write-Verbose "Found package `"$($package.PackageFullName)`"."
                                 $installationDir = $package.InstallLocation
                                 if ([string]::IsNullOrWhiteSpace($installationDir)) {
                                     Write-Warning "Installation directory for `"$packageName`" is not found or invalid."
@@ -39885,17 +40133,17 @@ functions:
                                 $manifestPath = Join-Path -Path $installationDir -ChildPath 'AppxManifest.xml'
                                 try {
                                     if (-Not (Test-Path "$manifestPath")) {
-                                        Write-Host "Manifest file not found for `"$packageName`" on another user profile: `"$manifestPath`"."
+                                        Write-Verbose "Manifest file not found for `"$packageName`" on another user profile: `"$manifestPath`"."
                                         continue
                                     }
                                 } catch {
                                     Write-Warning "An error occurred while checking for the manifest file: $($_.Exception.Message)"
                                     continue
                                 }
-                                Write-Host "Manifest file located. Trying to install using the manifest: `"$manifestPath`"..."
+                                Write-Verbose "Manifest file located. Trying to install using the manifest: `"$manifestPath`"..."
                                 try {
                                     Add-AppxPackage -DisableDevelopmentMode -Register "$manifestPath" -ErrorAction Stop
-                                    Write-Host "Successfully installed `"$packageName`" using its manifest file."
+                                    Write-Verbose "Successfully installed `"$packageName`" using its manifest file."
                                     exit 0
                                 } catch {
                                     Write-Warning "Error installing from manifest: $($_.Exception.Message)"
@@ -39904,10 +40152,10 @@ functions:
                         }
                         # Attempt installation using the package family name
                         $packageFamilyName = "$($packageName)_$($publisherId)"
-                        Write-Host "Trying to install `"$packageName`" using its package family name: `"$packageFamilyName`" from system installation..."
+                        Write-Verbose "Trying to install `"$packageName`" using its package family name: `"$packageFamilyName`" from system installation..."
                         try {
                             Add-AppxPackage -RegisterByFamilyName -MainPackage $packageFamilyName -ErrorAction Stop
-                            Write-Host "Successfully installed `"$packageName`" using its package family name."
+                            Write-Verbose "Successfully installed `"$packageName`" using its package family name."
                             exit 0
                         } catch {
                             Write-Warning "Error installing using package family name: $($_.Exception.Message)"
@@ -40227,27 +40475,27 @@ functions:
                     #   Granting permission is identical to `DisableScheduledTask`.
                     duringIteration: |-
                         if (Test-Path -Path $path -PathType Container) {
-                            Write-Host "Skipping folder (not its contents): `"$path`"."
+                            Write-Verbose "Skipping folder (not its contents): `"$path`"."
                             $skippedCount++
                             continue
                         }
                         if($revert -eq $true) {
                             if (-not $path.EndsWith('.OLD')) {
-                                Write-Host "Skipping non-backup file: `"$path`"."
+                                Write-Verbose "Skipping non-backup file: `"$path`"."
                                 $skippedCount++
                                 continue
                             }
                         } else {
                             if ($path.EndsWith('.OLD')) {
-                                Write-Host "Skipping backup file: `"$path`"."
+                                Write-Verbose "Skipping backup file: `"$path`"."
                                 $skippedCount++
                                 continue
                             }
                         }
                         $originalFilePath = $path
-                        Write-Host "Processing file: `"$originalFilePath`"."
+                        Write-Verbose "Processing file: `"$originalFilePath`"."
                         if (-Not (Test-Path $originalFilePath)) {
-                            Write-Host "Skipping, file `"$originalFilePath`" not found."
+                            Write-Verbose "Skipping, file `"$originalFilePath`" not found."
                             $skippedCount++
                             exit 0
                         }
@@ -40271,7 +40519,7 @@ functions:
                         }
                         try {
                             Move-Item -LiteralPath "$($originalFilePath)" -Destination "$newFilePath" -Force -ErrorAction Stop
-                            Write-Host "Successfully processed `"$originalFilePath`"."
+                            Write-Verbose "Successfully processed `"$originalFilePath`"."
                             $renamedCount++
                             {{ with $grantPermissions }}
                                 if ($accessGranted) {
@@ -40334,7 +40582,7 @@ functions:
                         $desiredValue = {{ $powerShellValueExpression }}
                         $jsonFilePath = [System.Environment]::ExpandEnvironmentVariables($rawJsonFilePath)
                         if (!(Test-Path $jsonFilePath -PathType Leaf)) {
-                            Write-Host "Skipping, JSON file not found at '$jsonFilePath'."
+                            Write-Verbose "Skipping, JSON file not found at '$jsonFilePath'."
                             exit 0
                         }
                         try {
@@ -40343,7 +40591,7 @@ functions:
                             throw "Failed to read the JSON file: '$jsonFilePath'. Error: $_"
                         }
                         if ([string]::IsNullOrWhiteSpace($fileContent)) {
-                            Write-Host "JSON file is empty. Treating it as default empty JSON object."
+                            Write-Verbose "JSON file is empty. Treating it as default empty JSON object."
                             $fileContent = "{}"
                         }
                         try {
@@ -40353,12 +40601,12 @@ functions:
                         }
                         $currentValue = $json.$propertyKey
                         if ($currentValue -eq $desiredValue) {
-                            Write-Host "Skipping, key '$propertyKey' already has value '$desiredValue'."
+                            Write-Verbose "Skipping, key '$propertyKey' already has value '$desiredValue'."
                             exit 0
                         }
                         $json | Add-Member -Type NoteProperty -Name $propertyKey -Value $desiredValue -Force
                         $json | ConvertTo-Json | Set-Content $jsonFilePath
-                        Write-Host "Successfully set '$propertyKey' in '$jsonFilePath'."
+                        Write-Verbose "Successfully set '$propertyKey' in '$jsonFilePath'."
                     revertCode: |-
                         {{ with $deleteOnRevert }}
                             $rawJsonFilePath = "{{ $jsonFilePath }}"
@@ -40366,7 +40614,7 @@ functions:
                             $undesiredValue = {{ $powerShellValueExpression }}
                             $jsonFilePath = [System.Environment]::ExpandEnvironmentVariables($rawJsonFilePath)
                             if (!(Test-Path $jsonFilePath -PathType Leaf)) {
-                                Write-Host "Skipping, JSON file not found at '$jsonFilePath'."
+                                Write-Verbose "Skipping, JSON file not found at '$jsonFilePath'."
                                 exit 0
                             }
                             try {
@@ -40375,7 +40623,7 @@ functions:
                                 throw "Failed to read the JSON file: '$jsonFilePath'. Error: $_"
                             }
                             if ([string]::IsNullOrWhiteSpace($fileContent)) {
-                                Write-Host "Skipping, JSON file is empty at '$jsonFilePath'."
+                                Write-Verbose "Skipping, JSON file is empty at '$jsonFilePath'."
                                 exit 0
                             }
                             try {
@@ -40384,16 +40632,16 @@ functions:
                                 throw "Failed to parse JSON in file '$jsonFilePath'. Error: $_"
                             }
                             if (!$json.PSObject.Properties[$propertyKey]) {
-                                Write-Host "Skipping, key '$propertyKey' does not exist in configuration."
+                                Write-Verbose "Skipping, key '$propertyKey' does not exist in configuration."
                                 exit 0
                             }
                             if ($json.$propertyKey -ne $undesiredValue) {
-                                Write-Host "Skipping, key '$propertyKey' has value '$($json.$propertyKey)' instead of '$undesiredValue'."
+                                Write-Verbose "Skipping, key '$propertyKey' has value '$($json.$propertyKey)' instead of '$undesiredValue'."
                                 exit 0
                             }
                             $json.PSObject.Properties.Remove($propertyKey)
                             $json | ConvertTo-Json | Set-Content $jsonFilePath
-                            Write-Host "Successfully removed '$propertyKey' from '$jsonFilePath'."
+                            Write-Verbose "Successfully removed '$propertyKey' from '$jsonFilePath'."
                         {{ end }}
     -
         name: SetVsCodeSetting
@@ -40599,7 +40847,7 @@ functions:
                                 ($scheduleService = New-Object -ComObject Schedule.Service).Connect()
                                 $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $principalName) | Out-Null
                                 $timeout = (Get-Date).AddMinutes(5)
-                                Write-Host "Running as $principalName"
+                                Write-Verbose "Running as $principalName"
                                 while ((Get-ScheduledTaskInfo $taskName).LastTaskResult -eq 267009) {
                                     Start-Sleep -Milliseconds 200
                                     if ((Get-Date) -gt $timeout) {
@@ -40691,16 +40939,16 @@ functions:
                         # -- 1. Skip if service does not exist
                         $service = Get-Service -Name $serviceQuery -ErrorAction SilentlyContinue
                         if(!$service) {
-                            Write-Host "Service query `"$serviceQuery`" did not yield any results, no need to disable it."
+                            Write-Verbose "Service query `"$serviceQuery`" did not yield any results, no need to disable it."
                             Exit 0
                         }
                         $serviceName = $service.Name
-                        Write-Host "Disabling service: `"$serviceName`"."
+                        Write-Verbose "Disabling service: `"$serviceName`"."
                         # -- 2. Stop if running
                         if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                            Write-Host "`"$serviceName`" is running, attempting to stop it."
+                            Write-Verbose "`"$serviceName`" is running, attempting to stop it."
                             try {
-                                Write-Host "Stopping the service `"$serviceName`"."
+                                Write-Verbose "Stopping the service `"$serviceName`"."
                                 $stopParams = @{ `
                                     Name = $ServiceName
                                     Force = $true
@@ -40710,7 +40958,7 @@ functions:
                                     $stopParams['NoWait'] = $true
                                 }
                                 Stop-Service @stopParams
-                                Write-Host "Stopped `"$serviceName`" successfully."
+                                Write-Verbose "Stopped `"$serviceName`" successfully."
                             } catch {
                                 if ($_.FullyQualifiedErrorId -eq 'CouldNotStopService,Microsoft.PowerShell.Commands.StopServiceCommand') {
                                     Write-Warning "The service `"$serviceName`" does not accept a stop command and may need to be stopped manually or on reboot."
@@ -40719,17 +40967,17 @@ functions:
                                 }
                             }
                         } else {
-                            Write-Host "`"$serviceName`" is not running, no need to stop."
+                            Write-Verbose "`"$serviceName`" is not running, no need to stop."
                         }
                         # -- 3. Skip if service info is not found in registry
                         $registryKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$serviceName"
                         if (-Not (Test-Path $registryKey)) {
-                            Write-Host "`"$registryKey`" is not found in registry, cannot enable it."
+                            Write-Verbose "`"$registryKey`" is not found in registry, cannot enable it."
                             Exit 0
                         }
                         # -- 4. Skip if already disabled
                         if( $(Get-ItemProperty -Path "$registryKey").Start -eq 4) {
-                            Write-Host "`"$serviceName`" is already disabled from start, no further action is needed."
+                            Write-Verbose "`"$serviceName`" is already disabled from start, no further action is needed."
                             Exit 0
                         }
                         # -- 5. Disable service
@@ -40739,7 +40987,7 @@ functions:
                                 -Name "Start" `
                                 -Value 4 `
                                 -ErrorAction Stop
-                            Write-Host 'Successfully disabled the service. It will not start automatically on next boot.'
+                            Write-Verbose 'Successfully disabled the service. It will not start automatically on next boot.'
                         } catch {
                             Write-Error "Failed to disable the service. Error: $($_.Exception.Message)"
                             Exit 1
@@ -40754,7 +41002,7 @@ functions:
                             Exit 1
                         }
                         $serviceName = $service.Name
-                        Write-Host "Restoring registry settings for service `"$serviceName`" to default startup mode `"$defaultStartupMode`"."
+                        Write-Verbose "Restoring registry settings for service `"$serviceName`" to default startup mode `"$defaultStartupMode`"."
                         # -- 2. Skip if service info is not found in registry
                         $registryKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$serviceName"
                         if (-Not (Test-Path $registryKey)) {
@@ -40774,7 +41022,7 @@ functions:
                             }
                         }
                         if ($(Get-ItemProperty -Path "$registryKey").Start -eq $defaultStartupRegValue) {
-                            Write-Host "`"$serviceName`" is has already default startup mode: `"$defaultStartupMode`"."
+                            Write-Verbose "`"$serviceName`" is has already default startup mode: `"$defaultStartupMode`"."
                         } else {
                             try {
                                 Set-ItemProperty $registryKey -Name Start -Value $defaultStartupRegValue -Force
@@ -40787,15 +41035,15 @@ functions:
                         # -- 4. Start if not running (must be enabled first)
                         if ($defaultStartupMode -eq 'Automatic' -or $defaultStartupMode -eq 'Boot' -or $defaultStartupMode -eq 'System') {
                             if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                                Write-Host "`"$serviceName`" is not running, trying to start it."
+                                Write-Verbose "`"$serviceName`" is not running, trying to start it."
                                 try {
                                     Start-Service -Name $serviceName -ErrorAction Stop
-                                    Write-Host 'Service started successfully.'
+                                    Write-Verbose 'Service started successfully.'
                                 } catch {
                                     Write-Warning "Failed to restart service. It will be started after reboot. Error: $($_.Exception.Message)"
                                 }
                             } else {
-                                Write-Host "`"$serviceName`" is already running, no need to start."
+                                Write-Verbose "`"$serviceName`" is already running, no need to start."
                             }
                         }
     -
@@ -40835,7 +41083,7 @@ functions:
                     $propertyName = '{{ $property }}'
                     $value = {{ $value }}
                     if((Get-MpPreference -ErrorAction Ignore).$propertyName -eq $value) {
-                        Write-Host "Skipping. `"$propertyName`" is already `"$value`" as desired."
+                        Write-Verbose "Skipping. `"$propertyName`" is already `"$value`" as desired."
                         exit 0
                     }
                     $command = Get-Command 'Set-MpPreference' -ErrorAction Ignore
@@ -40844,19 +41092,19 @@ functions:
                         exit 0
                     }
                     if(!$command.Parameters.Keys.Contains($propertyName)) {
-                        Write-Host "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
+                                Write-Warning "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
                         exit 0
                     }
                     try {
                         Set-MpPreference -Force -{{ $property }} $value -ErrorAction Stop
-                        Write-Host "Successfully set `"$propertyName`" to `"$value`"."
+                        Write-Verbose "Successfully set `"$propertyName`" to `"$value`"."
                         exit 0
                     } catch {
                         if ( $_.FullyQualifiedErrorId -like '*0x800106ba*') {
                             Write-Warning "Cannot $($command.Name): Defender service (WinDefend) is not running. Try to enable it (revert) and re-run this?"
                             exit 0
                         } elseif (($_ | Out-String) -like '*Cannot convert*') {
-                            Write-Host "Skipping. Argument `"$value`" for property `"$propertyName`" is not supported for `"$($command.Name)`"."
+                            Write-Warning "Skipping. Argument `"$value`" for property `"$propertyName`" is not supported for `"$($command.Name)`"."
                             exit 0
                         } else {
                             Write-Error "Failed to set using $($command.Name): $_"
@@ -40885,7 +41133,7 @@ functions:
                     # ------ Set-MpPreference ------
                     if(($setDefaultOnWindows10 -and (Test-IsWindows10)) -or ($setDefaultOnWindows11 -and (Test-IsWindows11))) {
                         if((Get-MpPreference -ErrorAction Ignore).$propertyName -eq $defaultValue) {
-                            Write-Host "Skipping. `"$propertyName`" is already configured as desired `"$defaultValue`"."
+                            Write-Verbose "Skipping. `"$propertyName`" is already configured as desired `"$defaultValue`"."
                             exit 0
                         }
                         $command = Get-Command 'Set-MpPreference' -ErrorAction Ignore
@@ -40894,12 +41142,12 @@ functions:
                             exit 1
                         }
                         if(!$command.Parameters.Keys.Contains($propertyName)) {
-                            Write-Host "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
+                            Write-Warning "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
                             exit 0
                         }
                         try {
                             Invoke-Expression "$($command.Name) -Force -$propertyName `$defaultValue -ErrorAction Stop"
-                            Write-Host "Successfully restored `"$propertyName`" to its default `"$defaultValue`"."
+                            Write-Verbose "Successfully restored `"$propertyName`" to its default `"$defaultValue`"."
                             exit 0
                         } catch {
                             if ($_.FullyQualifiedErrorId -like '*0x800106ba*') {
@@ -40917,12 +41165,12 @@ functions:
                         exit 1
                     }
                     if(!$command.Parameters.Keys.Contains($propertyName)) {
-                        Write-Host "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
+                        Write-Warning "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
                         exit 0
                     }
                     try {
                         Invoke-Expression "$($command.Name) -Force -$propertyName -ErrorAction Stop"
-                        Write-Host "Successfully restored `"$propertyName`" to its default."
+                        Write-Verbose "Successfully restored `"$propertyName`" to its default."
                         exit 0
                     } catch {
                         if ($_.FullyQualifiedErrorId -like '*0x800106ba*') {
@@ -40957,17 +41205,17 @@ functions:
                     #   - Get-StateFilePath is same: State file naming must be inconsistent with `StartService`
                     code: |-
                         $serviceName = '{{ $serviceName }}'
-                        Write-Host "Stopping service: `"$serviceName`"."
+                        Write-Verbose "Stopping service: `"$serviceName`"."
                         $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
                         if (!$service) {
-                            Write-Host "Skipping, service `"$serviceName`" could not be not found, no need to stop it."
+                            Write-Verbose "Skipping, service `"$serviceName`" could not be not found, no need to stop it."
                             exit 0
                         }
                         if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                            Write-Host "Skipping, `"$serviceName`" is not running, no need to stop."
+                            Write-Verbose "Skipping, `"$serviceName`" is not running, no need to stop."
                             exit 0
                         }
-                        Write-Host "`"$serviceName`" is running, stopping it."
+                        Write-Verbose "`"$serviceName`" is running, stopping it."
                         try {
                             $service | Stop-Service -Force -ErrorAction Stop
                             {{ with $waitUntilStopped }}
@@ -40976,7 +41224,7 @@ functions:
                         } catch {
                             throw "Failed to stop the service `"$serviceName`": $_"
                         }
-                        Write-Host "Successfully stopped the service: `"$serviceName`"."
+                        Write-Verbose "Successfully stopped the service: `"$serviceName`"."
                         {{ with $createStateFile }}
                             function Get-StateFilePath($BaseName, $Suffix) {
                                 $escapedBaseName = $BaseName.Split([IO.Path]::GetInvalidFileNameChars()) -Join '_'
@@ -41062,13 +41310,13 @@ functions:
                                 $firstFilePath = $files[0].FullName
                                 try {
                                     Remove-Item -Path $firstFilePath -Force -ErrorAction Stop
-                                    Write-Host 'The service is expected to be started.'
+                                    Write-Verbose 'The service is expected to be started.'
                                 } catch {
                                     Write-Warning "Failed to delete the service state file `"$firstFilePath`": $_"
                                 }
                             }
                             if ($files.Count -ne 1) { # Not the last file requiring restart
-                                Write-Host 'Skipping starting the service: It was not running before.'
+                                Write-Verbose 'Skipping starting the service: It was not running before.'
                                 exit 0
                             }
                         {{ end }}
@@ -41077,13 +41325,13 @@ functions:
                             throw "Failed to start service `"$serviceName`": Service not found."
                         }
                         if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                            Write-Host "Skipping, `"$serviceName`" is already running, no need to start."
+                            Write-Verbose "Skipping, `"$serviceName`" is already running, no need to start."
                             exit 0
                         }
-                        Write-Host "`"$serviceName`" is not running, starting it."
+                        Write-Verbose "`"$serviceName`" is not running, starting it."
                         try {
                             $service | Start-Service -ErrorAction Stop
-                            Write-Host "Successfully started the service: `"$serviceName`"."
+                            Write-Verbose "Successfully started the service: `"$serviceName`"."
                         } catch {
                             Write-Warning "Failed to start the service: `"$serviceName`"."
                             exit 1
@@ -41123,24 +41371,24 @@ functions:
                     maximumWindowsVersion: '{{ with $maximumWindowsVersion }}{{ . }}{{ end }}'
                     code: |-
                         $serviceName = '{{ $serviceName }}'
-                        Write-Host "Disabling service: `"$serviceName`"."
+                        Write-Verbose "Disabling service: `"$serviceName`"."
                         # -- 1. Skip if service does not exist
                         $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
                         if(!$service) {
-                            Write-Host "Service `"$serviceName`" could not be not found, no need to disable it."
+                            Write-Verbose "Service `"$serviceName`" could not be not found, no need to disable it."
                             Exit 0
                         }
                         # -- 2. Stop if running
                         if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                            Write-Host "`"$serviceName`" is running, stopping it."
+                            Write-Verbose "`"$serviceName`" is running, stopping it."
                             try {
                                 Stop-Service -Name "$serviceName" -Force -ErrorAction Stop
-                                Write-Host "Stopped `"$serviceName`" successfully."
+                                Write-Verbose "Stopped `"$serviceName`" successfully."
                             } catch {
                                 Write-Warning "Could not stop `"$serviceName`", it will be stopped after reboot: $_"
                             }
                         } else {
-                            Write-Host "`"$serviceName`" is not running, no need to stop."
+                            Write-Verbose "`"$serviceName`" is not running, no need to stop."
                         }
                         # -- 3. Skip if already disabled
                         $startupType = $service.StartType # Does not work before .NET 4.6.1
@@ -41151,13 +41399,13 @@ functions:
                             }
                         }
                         if ($startupType -eq 'Disabled') {
-                            Write-Host "$serviceName is already disabled, no further action is needed"
+                            Write-Verbose "$serviceName is already disabled, no further action is needed"
                             Exit 0
                         }
                         # -- 4. Disable service
                         try {
                             Set-Service -Name "$serviceName" -StartupType Disabled -Confirm:$false -ErrorAction Stop
-                            Write-Host "Disabled `"$serviceName`" successfully."
+                            Write-Verbose "Disabled `"$serviceName`" successfully."
                         } catch {
                             Write-Error "Could not disable `"$serviceName`": $_"
                         }
@@ -41165,12 +41413,12 @@ functions:
                         $serviceName = '{{ $serviceName }}'
                         $defaultStartupMode = '{{ $defaultStartupMode }}'
                         $ignoreMissingOnRevert = {{ with $ignoreMissingOnRevert }} $true # {{ end }} $false
-                        Write-Host "Reverting service `"$serviceName`" start to `"$defaultStartupMode`"."
+                        Write-Verbose "Reverting service `"$serviceName`" start to `"$defaultStartupMode`"."
                         # -- 1. Skip if service does not exist
                         $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
                         if (!$service) {
                             if ($ignoreMissingOnRevert) {
-                                Write-Output "Skipping: The service `"$serviceName`" is not found. No action required."
+                                Write-Verbose "Skipping: The service `"$serviceName`" is not found. No action required."
                                 Exit 0
                             }
                             Write-Warning "Failed to revert changes to the service `"$serviceName`". The service is not found."
@@ -41185,7 +41433,7 @@ functions:
                             }
                         }
                         if ($startupType -eq "$defaultStartupMode") {
-                            Write-Host "`"$serviceName`" has already expected startup mode: `"$defaultStartupMode`". No action required."
+                            Write-Verbose "`"$serviceName`" has already expected startup mode: `"$defaultStartupMode`". No action required."
                         } else {
                             try {
                                 Set-Service -Name "$serviceName" -StartupType "$defaultStartupMode" -Confirm:$false -ErrorAction Stop
@@ -41198,15 +41446,15 @@ functions:
                         # -- 4. Start if not running (must be enabled first)
                         if ($defaultStartupMode -eq 'Automatic' -or $defaultStartupMode -eq 'Boot' -or $defaultStartupMode -eq 'System') {
                             if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                                Write-Host "`"$serviceName`" is not running, starting it."
+                                Write-Verbose "`"$serviceName`" is not running, starting it."
                                 try {
                                     Start-Service $serviceName -ErrorAction Stop
-                                    Write-Host "Started `"$serviceName`" successfully."
+                                    Write-Verbose "Started `"$serviceName`" successfully."
                                 } catch {
                                     Write-Warning "Failed to start `"$serviceName`", requires restart, it will be started after reboot.`r`n$_"
                                 }
                             } else {
-                                Write-Host "`"$serviceName`" is already running, no need to start."
+                                Write-Verbose "`"$serviceName`" is already running, no need to start."
                             }
                         }
     -
@@ -41262,12 +41510,12 @@ functions:
                     )
                     foreach ($shortcut in $shortcuts) {
                         if (-Not (Test-Path $shortcut.Path)) {
-                            Write-Host "Skipping, shortcut does not exist: `"$($shortcut.Path)`"."
+                            Write-Verbose "Skipping, shortcut does not exist: `"$($shortcut.Path)`"."
                             continue
                         }
                         try {
                             Remove-Item -Path $shortcut.Path -Force -ErrorAction Stop
-                            Write-Output "Successfully removed shortcut: `"$($shortcut.Path)`"."
+                            Write-Verbose "Successfully removed shortcut: `"$($shortcut.Path)`"."
                         } catch {
                             Write-Error "Encountered an issue while attempting to remove shortcut at: `"$($shortcut.Path)`"."
                         }
@@ -41289,18 +41537,18 @@ functions:
                     }
                     foreach ($shortcut in $shortcuts) {
                         if (-Not $shortcut.Revert) {
-                            Write-Host "Skipping, revert operation is not needed for: `"$($shortcut.Path)`"."
+                            Write-Verbose "Skipping, revert operation is not needed for: `"$($shortcut.Path)`"."
                             continue
                         }
                         if (Test-Path $shortcut.Path) {
-                            Write-Host "Shortcut already exists, skipping: `"$($shortcut.Path)`"."
+                            Write-Verbose "Shortcut already exists, skipping: `"$($shortcut.Path)`"."
                             continue
                         }
                         try {
                             $shellShortcut = $wscriptShell.CreateShortcut($shortcut.Path)
                             $shellShortcut.TargetPath = $expandedTargetFilePath
                             $shellShortcut.Save()
-                            Write-Output "Successfully created shortcut at `"$($shortcut.Path)`"."
+                            Write-Verbose "Successfully created shortcut at `"$($shortcut.Path)`"."
                         } catch {
                             Write-Error "An error occurred while creating the shortcut at `"$($shortcut.Path)`"."
                         }
@@ -41357,13 +41605,13 @@ functions:
                 code: |-
                     $pathGlobPattern = "{{ $pathGlob }}"
                     $expandedPath = [System.Environment]::ExpandEnvironmentVariables($pathGlobPattern)
-                    Write-Host "Searching for items matching pattern: `"$($expandedPath)`"."
+                    Write-Verbose "Searching for items matching pattern: `"$($expandedPath)`"."
                     {{ with $beforeIteration }}
                         {{ . }}
                     {{ end }}
                     $foundAbsolutePaths = @()
                     {{ with $recurse }}
-                        Write-Host 'Iterating files and directories recursively.'
+                        Write-Verbose 'Iterating files and directories recursively.'
                         try {
                             $foundAbsolutePaths += @(
                                 Get-ChildItem -Path $expandedPath -Force -Recurse -ErrorAction Stop | Select-Object -ExpandProperty FullName
@@ -41383,10 +41631,10 @@ functions:
                         | Select-Object -Unique                 `
                         | Sort-Object -Property { $_.Length } -Descending
                     if (!$foundAbsolutePaths) {
-                        Write-Host 'Skipping, no items available.'
+                        Write-Verbose 'Skipping, no items available.'
                         exit 0
                     }
-                    Write-Host "Initiating processing of $($foundAbsolutePaths.Count) items from `"$expandedPath`"."
+                    Write-Verbose "Initiating processing of $($foundAbsolutePaths.Count) items from `"$expandedPath`"."
                     foreach ($path in $foundAbsolutePaths) {
                         {{ $duringIteration }}
                     }
@@ -41403,13 +41651,13 @@ functions:
                         $revert = $true
                         $pathGlobPattern = "{{ . }}"
                         $expandedPath = [System.Environment]::ExpandEnvironmentVariables($pathGlobPattern)
-                        Write-Host "Searching for items matching pattern: `"$($expandedPath)`"."
+                        Write-Verbose "Searching for items matching pattern: `"$($expandedPath)`"."
                         {{ with $beforeIteration }}
                             {{ . }}
                         {{ end }}
                         $foundAbsolutePaths = @()
                         {{ with $recurse }}
-                            Write-Host 'Iterating files and directories recursively.'
+                            Write-Verbose 'Iterating files and directories recursively.'
                             try {
                                 $foundAbsolutePaths += @(
                                     Get-ChildItem -Path $expandedPath -Force -Recurse -ErrorAction Stop | Select-Object -ExpandProperty FullName
@@ -41429,10 +41677,10 @@ functions:
                             | Select-Object -Unique                 `
                             | Sort-Object -Property { $_.Length } -Descending
                         if (!$foundAbsolutePaths) {
-                            Write-Host 'Skipping, no items available.'
+                            Write-Verbose 'Skipping, no items available.'
                             exit 0
                         }
-                        Write-Host "Initiating processing of $($foundAbsolutePaths.Count) items from `"$expandedPath`"."
+                        Write-Verbose "Initiating processing of $($foundAbsolutePaths.Count) items from `"$expandedPath`"."
                         foreach ($path in $foundAbsolutePaths) {
                             {{ $duringIteration }}
                         }
@@ -41485,15 +41733,20 @@ functions:
                             if ($failure.Exception.GetBaseException() -isnot [UnauthorizedAccessException] -and $failure.CategoryInfo.Category -ne 'PermissionDenied') { return $false }
                             if (-not $repairAttempted.Add($target)) { return $false }
                             try {
-                                Write-Host "Checking permission-repair target: $target"
+                                Write-Verbose "Checking permission-repair target: $target"
                                 if ([IO.File]::GetAttributes($target) -band [IO.FileAttributes]::ReparsePoint) { return $false }
-                                Write-Host "Taking ownership of denied item: $target"
-                                '' | & "$env:SystemRoot\System32\takeown.exe" /f $target /a 2>&1 | ForEach-Object { Write-Host $_ }
+                                Write-Verbose "Taking ownership of denied item: $target"
+                                $takeOwnershipOutput = @('' | & "$env:SystemRoot\System32\takeown.exe" /f $target /a 2>&1)
                                 $ownerExit = $LASTEXITCODE
-                                Write-Host "Granting access to denied item: $target (takeown exit: $ownerExit)"
-                                '' | & "$env:SystemRoot\System32\icacls.exe" $target /grant '*S-1-5-32-544:F' /l 2>&1 | ForEach-Object { Write-Host $_ }
+                                if ($ownerExit -ne 0) {
+                                    Write-Warning "takeown.exe failed for $target with exit code $($ownerExit): $($takeOwnershipOutput -join [Environment]::NewLine)"
+                                }
+                                Write-Verbose "Granting access to denied item: $target"
+                                $icaclsOutput = @('' | & "$env:SystemRoot\System32\icacls.exe" $target /grant '*S-1-5-32-544:F' /l 2>&1)
                                 $aclExit = $LASTEXITCODE
-                                Write-Host "Permission repair finished: $target (icacls exit: $aclExit)"
+                                if ($aclExit -ne 0) {
+                                    Write-Warning "icacls.exe failed for $target with exit code $($aclExit): $($icaclsOutput -join [Environment]::NewLine)"
+                                }
                                 return ($aclExit -eq 0)
                             } catch [System.Management.Automation.PipelineStoppedException] { throw
                             } catch {
@@ -41508,13 +41761,13 @@ functions:
                     $keepRoot = $recurse -and $expandedPath.EndsWith('\*')
                     $rootPattern = $expandedPath
                     if ($keepRoot) { $rootPattern = $expandedPath.Substring(0, $expandedPath.Length - 1) }
-                    Write-Host "Resolving cleanup roots: $rootPattern"
+                    Write-Verbose "Resolving cleanup roots: $rootPattern"
                     $lookupErrors = @()
                     $roots = @(Get-Item -Path $rootPattern -Force -ErrorAction SilentlyContinue -ErrorVariable lookupErrors)
                     foreach ($failure in $lookupErrors) {
                         if ($failure.Exception -is [System.Management.Automation.ItemNotFoundException]) {
                             $absentCount++
-                            Write-Host "Already absent: $rootPattern"
+                            Write-Verbose "Already absent: $rootPattern"
                         } else { $failedCount++; Write-Warning "Root lookup failed: $rootPattern : $failure" }
                     }
                     foreach ($root in $roots) {
@@ -41524,7 +41777,7 @@ functions:
                         try {
                             $ancestor = $rootPath
                             while ($ancestor) {
-                                Write-Host "Checking root/ancestor: $ancestor"
+                                Write-Verbose "Checking root/ancestor: $ancestor"
                                 if ([IO.File]::GetAttributes($ancestor) -band [IO.FileAttributes]::ReparsePoint) {
                                     $linkCount++; $blocked = $true
                                     Write-Warning "Retaining root through reparse point: $ancestor"
@@ -41539,10 +41792,10 @@ functions:
                         while ($pending.Count -gt 0) {
                             $frame = $pending.Pop()
                             $path = $frame.Path
-                            Write-Host "Inspecting: $path"
+                            Write-Verbose "Inspecting: $path"
                             try { $item = Get-Item -LiteralPath $path -Force -ErrorAction Stop
                             } catch [System.Management.Automation.ItemNotFoundException] {
-                                $absentCount++; Write-Host "Already absent: $path"; continue
+                                $absentCount++; Write-Verbose "Already absent: $path"; continue
                             } catch [System.Management.Automation.PipelineStoppedException] { throw
                             } catch { $failedCount++; Write-Warning "Inspection failed: $path : $_"; continue }
                             if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) {
@@ -41552,7 +41805,7 @@ functions:
                                 $listed = $false
                                 for ($attempt = 0; $attempt -lt 2; $attempt++) {
                                     try {
-                                        Write-Host "Enumerating directory: $path"
+                                        Write-Verbose "Enumerating directory: $path"
                                         $children = @(Get-ChildItem -LiteralPath $path -Force -ErrorAction Stop)
                                         $listed = $true
                                         break
@@ -41574,18 +41827,18 @@ functions:
                             {{ with $duringIteration }}{{ . }}{{ end }}
                             for ($attempt = 0; $attempt -lt 2; $attempt++) {
                                 try {
-                                    Write-Host "Deleting: $path"
+                                    Write-Verbose "Deleting: $path"
                                     $attributes = [IO.File]::GetAttributes($path)
                                     if ($attributes -band [IO.FileAttributes]::ReparsePoint) { $linkCount++; Write-Warning "Retaining changed reparse point: $path"; break }
                                     if ($attributes -band [IO.FileAttributes]::ReadOnly) { [IO.File]::SetAttributes($path, $attributes -band (-bnot [IO.FileAttributes]::ReadOnly)) }
                                     if ($item.PSIsContainer) { [IO.Directory]::Delete($path, $false) } else { [IO.File]::Delete($path) }
                                     $deletedCount++
-                                    Write-Host "Deleted ($deletedCount): $path"
+                                    Write-Verbose "Deleted ($deletedCount): $path"
                                     break
                                 } catch [System.Management.Automation.PipelineStoppedException] { throw
                                 } catch {
                                     $cause = $_.Exception.GetBaseException()
-                                    if ($cause -is [IO.FileNotFoundException] -or $cause -is [IO.DirectoryNotFoundException]) { $absentCount++; Write-Host "Already absent: $path"; break }
+                                    if ($cause -is [IO.FileNotFoundException] -or $cause -is [IO.DirectoryNotFoundException]) { $absentCount++; Write-Verbose "Already absent: $path"; break }
                                     {{ with $grantPermissions }}if ($attempt -eq 0 -and (Repair-CleanupAccess $path $_)) { continue }{{ end }}
                                     $failedCount++; Write-Warning "Deletion failed; no subtree retry: $path : $_"
                                     break
@@ -41630,7 +41883,7 @@ functions:
                     pathGlob: >-
                         $($directoryGlob = '{{ $directoryGlob }}'; if ($directoryGlob.EndsWith('\*')) { $directoryGlob } elseif ($directoryGlob.EndsWith('\')) { "$($directoryGlob)*" } else { "$($directoryGlob)\*" } )
                     grantPermissions: '{{ with $grantPermissions }}true{{ end }}'
-                    recurse: 'true' # Logs every deleted file name
+                    recurse: 'true'
     -
         name: DeleteDirectory
         # 💡 Purpose:
@@ -41664,7 +41917,7 @@ functions:
                     pathGlob: >-
                         $($directoryGlob = '{{ $directoryGlob }}'; if (-Not $directoryGlob.EndsWith('\')) { $directoryGlob += '\' }; $directoryGlob )
                     grantPermissions: '{{ with $grantPermissions }}true{{ end }}'
-                    recurse: 'true' # Logs every deleted file name
+                    recurse: 'true'
                     beforeIteration: '{{ with $beforeIteration }}{{ . }}{{ end }}'
                     duringIteration: '{{ with $duringIteration }}{{ . }}{{ end }}'
     -
@@ -41691,13 +41944,13 @@ functions:
                         $skippedCount = 0
                     duringIteration: |-
                         if ($item.PSIsContainer) {
-                            Write-Host "Skipping, the path is not a file but a folder: $($path)."
+                            Write-Verbose "Skipping, the path is not a file but a folder: $($path)."
                             $skippedCount++
                             continue
                         }
                     afterIteration: |-
                         if ($skippedCount -gt 0) {
-                            Write-Host "Skipped $($skippedCount) items."
+                            Write-Verbose "Skipped $($skippedCount) items."
                         }
     -
         name: DeleteFilesFromFirefoxProfiles
@@ -41740,17 +41993,17 @@ functions:
                     code: |-
                         $taskPathPattern='{{ $taskPathPattern }}'
                         $taskNamePattern='{{ $taskNamePattern }}'
-                        Write-Output "Disabling tasks matching pattern `"$taskNamePattern`"." 
+                        Write-Verbose "Disabling tasks matching pattern `"$taskNamePattern`"." 
                         $tasks = @(Get-ScheduledTask -TaskPath $taskPathPattern -TaskName $taskNamePattern -ErrorAction Ignore)
                         if (-Not $tasks) {
-                            Write-Output "Skipping, no tasks matching pattern `"$taskNamePattern`" found, no action needed."
+                            Write-Verbose "Skipping, no tasks matching pattern `"$taskNamePattern`" found, no action needed."
                             exit 0
                         }
                         $operationFailed = $false
                         foreach ($task in $tasks) {
                             $taskName = $task.TaskName
                             if ($task.State -eq [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Disabled) {
-                                Write-Output "Skipping, task `"$taskName`" is already disabled, no action needed."
+                                Write-Verbose "Skipping, task `"$taskName`" is already disabled, no action needed."
                                 continue
                             }
                             {{ with $grantPermissions }}
@@ -41770,7 +42023,7 @@ functions:
                                     )
                                     $modifiedAcl.SetAccessRule($taskFileAccessRule)
                                     Set-Acl -Path $taskFilePath -AclObject $modifiedAcl -ErrorAction Stop
-                                    Write-Host "Successfully granted permissions for `"$taskFullPath`" ."
+                                    Write-Verbose "Successfully granted permissions for `"$taskFullPath`" ."
                                     $accessGranted = $true
                                 } catch {
                                     Write-Warning "Failed to grant access to `"$taskFullPath`": $($_.Exception.Message)"
@@ -41778,7 +42031,7 @@ functions:
                             {{ end }}
                             try {
                                 $task | Disable-ScheduledTask -ErrorAction Stop | Out-Null
-                                Write-Output "Successfully disabled task `"$taskName`"."
+                                Write-Verbose "Successfully disabled task `"$taskName`"."
                             } catch {
                                 Write-Error "Failed to disable task `"$taskName`": $($_.Exception.Message)"
                                 $operationFailed = $true
@@ -41787,7 +42040,7 @@ functions:
                                 if ($accessGranted) {
                                     try {
                                         Set-Acl -Path $taskFilePath -AclObject $originalAcl -ErrorAction Stop
-                                        Write-Host "Successfully restored permissions for `"$taskFullPath`" ."
+                                        Write-Verbose "Successfully restored permissions for `"$taskFullPath`" ."
                                     } catch {
                                         Write-Warning "Failed to restore access on `"$taskFilePath`": $($_.Exception.Message)"
                                     }
@@ -41795,7 +42048,7 @@ functions:
                             {{ end }}
                         }
                         if ($operationFailed) {
-                            Write-Output 'Failed to disable some tasks. Check error messages above.'
+                            Write-Warning 'Failed to disable some tasks. Check error messages above.'
                             exit 1
                         }
                     # Not failing if tasks cannot be found because all tasks disabled by privacy.sexy do not exist in all Windows versions by default.
@@ -41803,7 +42056,7 @@ functions:
                         $taskPathPattern='{{ $taskPathPattern }}'
                         $taskNamePattern='{{ $taskNamePattern }}'
                         $shouldDisable = {{ with $disableOnRevert }} $true # {{ end }} $false
-                        Write-Output "Enabling tasks matching pattern `"$taskNamePattern`"." 
+                        Write-Verbose "Enabling tasks matching pattern `"$taskNamePattern`"." 
                         $tasks = @(Get-ScheduledTask -TaskPath $taskPathPattern -TaskName $taskNamePattern -ErrorAction Ignore)
                         if (-Not $tasks) {
                             Write-Warning (                                                             `
@@ -41817,13 +42070,13 @@ functions:
                             $taskName = $task.TaskName
                             if ($shouldDisable) {
                                 if ($task.State -eq [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Disabled) {
-                                    Write-Output "Skipping, task `"$taskName`" is already disabled, no action needed."
+                                    Write-Verbose "Skipping, task `"$taskName`" is already disabled, no action needed."
                                     continue
                                 }
                             } else {
                                 if (($task.State -ne [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Disabled) `
                                     -and ($task.State -ne [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Unknown)) {
-                                    Write-Output "Skipping, task `"$taskName`" is already enabled, no action needed."
+                                    Write-Verbose "Skipping, task `"$taskName`" is already enabled, no action needed."
                                     continue
                                 }
                             }
@@ -41844,7 +42097,7 @@ functions:
                                     )
                                     $modifiedAcl.SetAccessRule($taskFileAccessRule)
                                     Set-Acl -Path $taskFilePath -AclObject $modifiedAcl -ErrorAction Stop
-                                    Write-Host "Successfully granted permissions for `"$taskFullPath`" ."
+                                    Write-Verbose "Successfully granted permissions for `"$taskFullPath`" ."
                                     $accessGranted = $true
                                 } catch {
                                     Write-Warning "Failed to grant access to `"$taskFullPath`": $($_.Exception.Message)"
@@ -41853,10 +42106,10 @@ functions:
                             try {
                                 if ($shouldDisable) {
                                     $task | Disable-ScheduledTask -ErrorAction Stop | Out-Null
-                                    Write-Output "Successfully disabled task `"$taskName`"."
+                                    Write-Verbose "Successfully disabled task `"$taskName`"."
                                 } else {
                                     $task | Enable-ScheduledTask -ErrorAction Stop | Out-Null
-                                    Write-Output "Successfully enabled task `"$taskName`"."
+                                    Write-Verbose "Successfully enabled task `"$taskName`"."
                                 }
                             } catch {
                                 Write-Error "Failed to restore task `"$taskName`": $($_.Exception.Message)"
@@ -41866,7 +42119,7 @@ functions:
                                 if ($accessGranted) {
                                     try {
                                         Set-Acl -Path $taskFilePath -AclObject $originalAcl -ErrorAction Stop
-                                        Write-Host "Successfully restored permissions for `"$taskFullPath`" ."
+                                        Write-Verbose "Successfully restored permissions for `"$taskFullPath`" ."
                                     } catch {
                                         Write-Warning "Failed to restore access on `"$taskFilePath`": $($_.Exception.Message)"
                                     }
@@ -41874,7 +42127,7 @@ functions:
                             {{ end }}
                         }
                         if ($operationFailed) {
-                            Write-Output 'Failed to restore some tasks. Check error messages above.'
+                            Write-Warning 'Failed to restore some tasks. Check error messages above.'
                             exit 1
                         }
     -
@@ -41910,12 +42163,12 @@ functions:
                             $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
                         {{ end }}
                         if (Test-Path $registryPath) {
-                            Write-Host "Skipping, no action needed, registry path `"$registryPath`" already exists."
+                            Write-Verbose "Skipping, no action needed, registry path `"$registryPath`" already exists."
                             exit 0
                         }
                         try {
                             New-Item -Path $registryPath -Force -ErrorAction Stop | Out-Null
-                            Write-Host "Successfully created the registry key at path `"$registryPath`"."
+                            Write-Verbose "Successfully created the registry key at path `"$registryPath`"."
                         } catch {
                             Write-Error "Failed to create the registry key at path `"$registryPath`": $($_.Exception.Message)"
                         }
@@ -41928,9 +42181,9 @@ functions:
                                 $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
                                 $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
                             {{ end }}
-                            Write-Host "Removing registry key at `"$registryPath`"."
+                            Write-Verbose "Removing registry key at `"$registryPath`"."
                             if (-not (Test-Path -LiteralPath $registryPath)) {
-                                Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                                Write-Verbose "Skipping, no action needed, registry key `"$registryPath`" does not exist."
                                 exit 0
                             }
                             try {
@@ -41939,7 +42192,7 @@ functions:
                                     -Force `
                                     -ErrorAction Stop `
                                     | Out-Null
-                                Write-Host "Successfully removed the registry key at path `"$registryPath`"."
+                                Write-Verbose "Successfully removed the registry key at path `"$registryPath`"."
                             } catch {
                                 Write-Error "Failed to remove the registry key at path `"$registryPath`": $($_.Exception.Message)"
                             }
@@ -41988,9 +42241,9 @@ functions:
                             $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
                             $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
                         {{ end }}
-                        Write-Host "Removing registry key at `"$registryPath`"."
+                        Write-Verbose "Removing registry key at `"$registryPath`"."
                         if (-not (Test-Path -LiteralPath $registryPath)) {
-                            Write-Host "Skipping, no action needed, registry key `"$registryPath`" does not exist."
+                            Write-Verbose "Skipping, no action needed, registry key `"$registryPath`" does not exist."
                             exit 0
                         }
                         try {
@@ -41999,7 +42252,7 @@ functions:
                                 -Force `
                                 -ErrorAction Stop `
                                 | Out-Null
-                            Write-Host "Successfully removed the registry key at path `"$registryPath`"."
+                            Write-Verbose "Successfully removed the registry key at path `"$registryPath`"."
                         } catch {
                             Write-Error "Failed to remove the registry key at path `"$registryPath`": $($_.Exception.Message)"
                         }
@@ -42012,9 +42265,9 @@ functions:
                                 $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
                                 $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
                             {{ end }}
-                            Write-Host "Restoring registry key at `"$registryPath`"."
+                            Write-Verbose "Restoring registry key at `"$registryPath`"."
                             if (Test-Path -LiteralPath $registryPath) {
-                                Write-Host "Skipping, no action needed, registry key `"$registryPath`" already exists."
+                                Write-Verbose "Skipping, no action needed, registry key `"$registryPath`" already exists."
                                 Exit 0
                             }
                             try {
@@ -42022,7 +42275,7 @@ functions:
                                     -Path $registryPath `
                                     -Force -ErrorAction Stop `
                                     | Out-Null
-                                Write-Host "Successfully created the registry key at path `"$registryPath`"."
+                                Write-Verbose "Successfully created the registry key at path `"$registryPath`"."
                             } catch {
                                 Write-Error "Failed to create registry key `"$registryPath`": $($_.Exception.Message)"
                                 Exit 1
@@ -42088,17 +42341,17 @@ functions:
                         exit 1
                     }
                     if (-Not $isHostsFilePresent) {
-                        Write-Output "Creating a new hosts file at $hostsFilePath."
+                        Write-Verbose "Creating a new hosts file at $hostsFilePath."
                         try {
                             New-Item -Path $hostsFilePath -ItemType File -Force -ErrorAction Stop | Out-Null
-                            Write-Output "Successfully created the hosts file."
+                            Write-Verbose "Successfully created the hosts file."
                         } catch {
                             Write-Error "Failed to create the hosts file. Error: $_"
                             exit 1
                         }
                     }
                     foreach ($blockingEntry in $blockingHostsEntries) {
-                        Write-Output "Processing addition for $($blockingEntry.AddressType) entry."
+                        Write-Verbose "Processing addition for $($blockingEntry.AddressType) entry."
                         try {
                             $hostsFileContents = Get-Content `
                                 -Path "$hostsFilePath" `
@@ -42111,7 +42364,7 @@ functions:
                         }
                         $hostsEntryLine = "$($blockingEntry.IPAddress)`t$domain $([char]35) $comment"
                         if ((-Not [String]::IsNullOrWhiteSpace($hostsFileContents)) -And ($hostsFileContents.Contains($hostsEntryLine))) {
-                            Write-Output 'Skipping, entry already exists.'
+                            Write-Verbose 'Skipping, entry already exists.'
                             continue
                         }
                         try {
@@ -42120,7 +42373,7 @@ functions:
                                 -Value $hostsEntryLine `
                                 -Encoding $hostsFileEncoding `
                                 -ErrorAction Stop
-                            Write-Output 'Successfully added the entry.'
+                            Write-Verbose 'Successfully added the entry.'
                         } catch {
                             Write-Error "Failed to add the entry. Error: $_"
                             continue
@@ -42157,11 +42410,11 @@ functions:
                         exit 1
                     }
                     if (-Not $isHostsFilePresent) {
-                        Write-Output 'Skipping, the hosts file does not exist.'
+                        Write-Verbose 'Skipping, the hosts file does not exist.'
                         exit 0
                     }
                     foreach ($blockingEntry in $blockingHostsEntries) {
-                        Write-Output "Processing removal for $($blockingEntry.AddressType) entry."
+                        Write-Verbose "Processing removal for $($blockingEntry.AddressType) entry."
                         try {
                             $hostsFileContents = [System.IO.File]::ReadAllText($hostsFilePath, $hostsFileEncoding)
                         } catch {
@@ -42170,14 +42423,14 @@ functions:
                         }
                         $hostsEntryLine = "$($blockingEntry.IPAddress)`t$domain $([char]35) $comment"
                         if ([String]::IsNullOrWhiteSpace($hostsFileContents) -Or (-Not $hostsFileContents.Contains($hostsEntryLine))) {
-                            Write-Output 'Skipping, entry not found.'
+                            Write-Verbose 'Skipping, entry not found.'
                             continue
                         }
                         $hostsEntryRemovalPattern = [regex]::Escape($hostsEntryLine) + "(\r?\n)?"
                         $hostsFileContentAfterRemoval = $hostsFileContents -Replace $hostsEntryRemovalPattern, ""
                         try {
                             [System.IO.File]::WriteAllText($hostsFilePath, $hostsFileContentAfterRemoval, $hostsFileEncoding)
-                            Write-Output 'Successfully removed the entry.'
+                            Write-Verbose 'Successfully removed the entry.'
                         } catch {
                             Write-Error "Failed to remove the entry. Error: $_"
                             continue
@@ -42220,7 +42473,7 @@ functions:
                     #   Only run if `ignoreServerSide !== false`, then use `SetRegistryValue`
                     setupCode: |-
                         {{ with $ignoreServerSide }}
-                            Write-Host 'Skipping server-side configuration. This setting is not managed by this mechanism. No action needed.'
+                            Write-Verbose 'Skipping server-side configuration. This setting is not managed by this mechanism. No action needed.'
                             Exit 0
                         {{ end }}
             -
@@ -42308,11 +42561,11 @@ functions:
                             | Select-Object -ExpandProperty "$propertyName"
                         if ($disabledKeys) {
                             if ($disabledKeys.Contains($keyToDisableInUppercase)) {
-                                Write-Host "Skipping: Key `"$keyToDisableInUppercase`" is already disabled. All disabled keys: `"$disabledKeys`". No action needed."
+                                Write-Verbose "Skipping: Key `"$keyToDisableInUppercase`" is already disabled. All disabled keys: `"$disabledKeys`". No action needed."
                                 exit 0
                             }
                             $newKeysToDisable = "$($disabledKeys)$($keyToDisableInUppercase)"
-                            Write-Host "Some keys are already disabled: `"$disabledKeys`", but not `"$keyToDisableInUppercase`", disabling it too, new disabled keys: `"$newKeysToDisable`"."
+                            Write-Verbose "Some keys are already disabled: `"$disabledKeys`", but not `"$keyToDisableInUppercase`", disabling it too, new disabled keys: `"$newKeysToDisable`"."
                             try {
                                 Set-ItemProperty `
                                     -Path $registryPath `
@@ -42320,14 +42573,14 @@ functions:
                                     -Value "$newKeysToDisable" `
                                     -Force `
                                     -ErrorAction Stop
-                                Write-Host "Successfully disabled,`"$keyToDisableInUppercase`", all disabled keys: `"$newKeysToDisable`"."
+                                Write-Verbose "Successfully disabled,`"$keyToDisableInUppercase`", all disabled keys: `"$newKeysToDisable`"."
                                 Exit 0
                             } catch {
                                 Write-Error "Failed to disable `"$newKeysToDisable`": $_"
                                 Exit 1
                             }
                         } else {
-                            Write-Host "No keys has been disabled before, disabling: `"$keyToDisableInUppercase`"."
+                            Write-Verbose "No keys has been disabled before, disabling: `"$keyToDisableInUppercase`"."
                             try {
                                 Set-ItemProperty `
                                     -Path $registryPath `
@@ -42335,7 +42588,7 @@ functions:
                                     -Value "$keyToDisableInUppercase" `
                                     -Force `
                                     -ErrorAction Stop
-                                Write-Host "Successfully disabled `"$keyToDisableInUppercase`"."
+                                Write-Verbose "Successfully disabled `"$keyToDisableInUppercase`"."
                                 Exit 0
                             } catch {
                                 Write-Error "Failed to disable `"$keyToDisableInUppercase`": $_"
@@ -42353,23 +42606,23 @@ functions:
                             -ErrorAction SilentlyContinue `
                             | Select-Object -ExpandProperty "$propertyName"
                         if (-Not $disabledKeys) {
-                            Write-Host "Skipping: No keys has been disabled before, no need to restore `"$keyToRestoreInUppercase`"."
+                            Write-Verbose "Skipping: No keys has been disabled before, no need to restore `"$keyToRestoreInUppercase`"."
                             Exit 0
                         }
                         if (-Not $disabledKeys.Contains($keyToRestoreInUppercase)) {
-                            Write-Host "Skipping: Key `"$keyToRestoreInUppercase`" is not disabled. All disabled keys: `"$disabledKeys`". No action needed."
+                            Write-Verbose "Skipping: Key `"$keyToRestoreInUppercase`" is not disabled. All disabled keys: `"$disabledKeys`". No action needed."
                             Exit 0
                         }
                         $newKeysToDisable = $disabledKeys.Replace($keyToRestoreInUppercase, "")
                         if (-Not $newKeysToDisable) {
-                            Write-Host "Removing all entries from the disabled keys as the last key `"$keyToRestoreInUppercase`" is being restored."
+                            Write-Verbose "Removing all entries from the disabled keys as the last key `"$keyToRestoreInUppercase`" is being restored."
                             try {
                                 Remove-ItemProperty `
                                     -Path $registryPath `
                                     -Name $propertyName `
                                     -Force `
                                     -ErrorAction Stop
-                                Write-Host "Successfully removed the `"$propertyName`" property from the registry, no disabled keys remain."
+                                Write-Verbose "Successfully removed the `"$propertyName`" property from the registry, no disabled keys remain."
                                 Exit 0
                             } catch {
                                 Write-Error "Failed to remove the empty `"$propertyName`" property from the registry: $_"
@@ -42377,14 +42630,14 @@ functions:
                             }
                         }
                         try {
-                            Write-Host "Restoring `"$keyToRestoreInUppercase`", all disabled keys: `"$disabledKeys`", new disabled keys: `"$newKeysToDisable`"."
+                            Write-Verbose "Restoring `"$keyToRestoreInUppercase`", all disabled keys: `"$disabledKeys`", new disabled keys: `"$newKeysToDisable`"."
                             Set-ItemProperty `
                                 -Path $registryPath `
                                 -Name $propertyName `
                                 -Value "$newKeysToDisable" `
                                 -Force `
                                 -ErrorAction Stop
-                            Write-Host "Successfully restored `"$keyToRestoreInUppercase`", disabled keys now: `"$newKeysToDisable`"."
+                            Write-Verbose "Successfully restored `"$keyToRestoreInUppercase`", disabled keys now: `"$newKeysToDisable`"."
                             Exit 0
                         } catch {
                             Write-Error "Failed to restore `"$keysToDisable`": $_"
@@ -42863,7 +43116,7 @@ functions:
                                     | Where-Object { $_.Value -eq $executableFilename }
                                 if ($existingBlockingRuleForExecutable) {
                                     $existingBlockingRuleIndexForExecutable = $existingBlockingRuleForExecutable.Name
-                                    Write-Output "Skipping, no action needed: '$executableFilename' is already blocked under rule index `"$existingBlockingRuleIndexForExecutable`"."
+                                    Write-Verbose "Skipping, no action needed: '$executableFilename' is already blocked under rule index `"$existingBlockingRuleIndexForExecutable`"."
                                     exit 0
                                 }
                                 $occupiedRuleIndexes = $existingBlockEntries.PSObject.Properties `
@@ -42875,7 +43128,7 @@ functions:
                                     }
                                 }
                             }
-                            Write-Output "Adding block rule for `"$executableFilename`" under rule index `"$nextFreeRuleIndex`"."
+                            Write-Verbose "Adding block rule for `"$executableFilename`" under rule index `"$nextFreeRuleIndex`"."
                             if (!(Test-Path $registryPathForDisallowRun)) {
                                 New-Item `
                                     -Path "$registryPathForDisallowRun" `
@@ -42890,7 +43143,7 @@ functions:
                                 -Value "$executableFilename" ` `
                                 -ErrorAction Stop `
                                 | Out-Null
-                            Write-Output "Successfully blocked `"$executableFilename`" with rule index `"$nextFreeRuleIndex`"."
+                            Write-Verbose "Successfully blocked `"$executableFilename`" with rule index `"$nextFreeRuleIndex`"."
                         } catch {
                             Write-Error "Failed to block `"$executableFilename`": $_"
                             Exit 1
@@ -42903,7 +43156,7 @@ functions:
                                 -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun' `
                                 -ErrorAction Ignore
                             if (-Not $blockEntries) {
-                                Write-Output "Skipping, no action needed: No block rules exist, `"$executableFilename`" is not blocked."
+                                Write-Verbose "Skipping, no action needed: No block rules exist, `"$executableFilename`" is not blocked."
                                 exit 0
                             }
                             $blockingRulesForExecutable = @(
@@ -42911,18 +43164,18 @@ functions:
                                     | Where-Object { $_.Value -eq $executableFilename }
                             )
                             if (-Not $blockingRulesForExecutable) {
-                                Write-Output "Skipping, no action needed: `"$executableFilename`" is not currently blocked."
+                                Write-Verbose "Skipping, no action needed: `"$executableFilename`" is not currently blocked."
                                 exit 0
                             }
                             foreach ($blockingRuleForExecutable in $blockingRulesForExecutable) {
                                 $blockingRuleIndexForExecutable = $blockingRuleForExecutable.Name
-                                Write-Output "Removing rule `"$blockingRuleIndexForExecutable`" that blocks `"$executableFilename`"."
+                                Write-Verbose "Removing rule `"$blockingRuleIndexForExecutable`" that blocks `"$executableFilename`"."
                                 Remove-ItemProperty `
                                     -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun' `
                                     -Name "$blockingRuleIndexForExecutable" `
                                     -Force `
                                     -ErrorAction Stop
-                                Write-Output "Successfully revoked blocking of `$executableFilename` under rule `"$blockingRuleIndexForExecutable`"."
+                                Write-Verbose "Successfully revoked blocking of `$executableFilename` under rule `"$blockingRuleIndexForExecutable`"."
                             }
                         } catch {
                             Write-Error "Failed to revoke blocking of `"$executableFilename`": $_"
@@ -42941,7 +43194,7 @@ functions:
                                 -ErrorAction Ignore `
                                 | Select -ExpandProperty DisallowRun
                             if ([string]::IsNullOrEmpty($currentDisallowRunPolicyValue)) {
-                                Write-Output "Creating DisallowRun policy at `"$fileExplorerDisallowRunRegistryPath`"."
+                                Write-Verbose "Creating DisallowRun policy at `"$fileExplorerDisallowRunRegistryPath`"."
                                 if (!(Test-Path $fileExplorerDisallowRunRegistryPath)) {
                                 New-Item `
                                     -Path "$fileExplorerDisallowRunRegistryPath" `
@@ -42957,14 +43210,14 @@ functions:
                                     -Force `
                                     -ErrorAction Stop `
                                     | Out-Null
-                                Write-Output 'Successfully activated DisallowRun policy.'
+                                Write-Verbose 'Successfully activated DisallowRun policy.'
                                 Exit 0
                             }
                             if ($currentDisallowRunPolicyValue -eq 1) {
-                                Write-Output 'Skipping, no action needed: DisallowRun policy is already in place.'
+                                Write-Verbose 'Skipping, no action needed: DisallowRun policy is already in place.'
                                 Exit 0
                             }
-                            Write-Output 'Updating DisallowRun policy from unexpected value `"$currentDisallowRunPolicyValue`" to `"1`".'
+                            Write-Warning 'Updating DisallowRun policy from unexpected value `"$currentDisallowRunPolicyValue`" to `"1`".'
                             Set-ItemProperty `
                                 -Path "$fileExplorerDisallowRunRegistryPath" `
                                 -Name 'DisallowRun' `
@@ -42973,7 +43226,7 @@ functions:
                                 -Force `
                                 -ErrorAction Stop `
                                 | Out-Null
-                            Write-Output 'Successfully activated DisallowRun policy.'
+                            Write-Verbose 'Successfully activated DisallowRun policy.'
                         } catch {
                             Write-Error "Failed to activate DisallowRun policy: $_"
                             Exit 1
@@ -42987,27 +43240,27 @@ functions:
                                 -ErrorAction Ignore `
                                 | Select-Object -ExpandProperty 'DisallowRun'
                             if ([string]::IsNullOrEmpty($currentDisallowRunPolicyValue)) {
-                                Write-Output 'Skipping, no action needed: DisallowRun policy is not active.'
+                                Write-Verbose 'Skipping, no action needed: DisallowRun policy is not active.'
                                 Exit 0
                             }
                             if ($currentDisallowRunPolicyValue -ne 1) {
-                                Write-Output "Skipping, DisallowRun policy is not configured by privacy.sexy, unexpected value: `"$currentDisallowRunPolicyValue`"."
+                                Write-Warning "Skipping, DisallowRun policy is not configured by privacy.sexy, unexpected value: `"$currentDisallowRunPolicyValue`"."
                                 Exit 0
                             }
                             $remainingBlockingRules = Get-ItemProperty `
                                 -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun' `
                                 -ErrorAction Ignore
                             if ($remainingBlockingRules) {
-                                Write-Output 'Skipping deactivating DisallowRun policy, there are still active rules.'
+                                Write-Warning 'Skipping deactivating DisallowRun policy, there are still active rules.'
                                 Exit 0
                             }
-                            Write-Output 'No remaining rules, deleting DisallowRun policy.'
+                            Write-Verbose 'No remaining rules, deleting DisallowRun policy.'
                             Remove-ItemProperty `
                                 -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' `
                                 -Name 'DisallowRun' `
                                 -Force `
                                 -ErrorAction Stop
-                            Write-Output 'Successfully restored DisallowRun policy.'
+                            Write-Verbose 'Successfully restored DisallowRun policy.'
                         } catch {
                             Write-Error "Failed to restore DisallowRun policy: $_"
                             Exit 1
@@ -43045,14 +43298,14 @@ functions:
                     $filePath = '{{ $placeholderFilePath }}'
                     $expandedFilePath = [System.Environment]::ExpandEnvironmentVariables($filePath)
                     $placeholderText = 'privacy.sexy placeholder'
-                    Write-Output "Creating placeholder file at `"$expandedFilePath`"."
+                    Write-Verbose "Creating placeholder file at `"$expandedFilePath`"."
                     $parentDirectory = [System.IO.Path]::GetDirectoryName($expandedFilePath)
                     if (Test-Path $expandedFilePath -PathType Leaf) {
-                        Write-Host "Skipping file creation as `"$expandedFilePath`" already exists."
+                        Write-Verbose "Skipping file creation as `"$expandedFilePath`" already exists."
                         Exit 0
                     }
                     if (Test-Path $parentDirectory -PathType Container) {
-                        Write-Host "Skipping parent directory creation as `"$parentDirectory`" already exists."
+                        Write-Verbose "Skipping parent directory creation as `"$parentDirectory`" already exists."
                     } else {
                         try {
                             New-Item `
@@ -43061,7 +43314,7 @@ functions:
                                 -Force `
                                 -ErrorAction Stop `
                                 | Out-Null
-                            Write-Output "Successfully created directory for placeholder file at `"$parentDirectory`"."
+                            Write-Verbose "Successfully created directory for placeholder file at `"$parentDirectory`"."
                         }  catch {
                             Write-Error "Failed to create directory for placeholder at `"$parentDirectory`": $_"
                             Exit 1
@@ -43075,7 +43328,7 @@ functions:
                             -Force `
                             -ErrorAction Stop `
                             | Out-Null
-                        Write-Host "Successfully created a placeholder file at `"$expandedFilePath`"."
+                        Write-Verbose "Successfully created a placeholder file at `"$expandedFilePath`"."
                     } catch {
                         Write-Error "Failed to create placeholder file at `"$expandedFilePath`": $_"
                         Exit 1
@@ -43085,24 +43338,24 @@ functions:
                     $filePath = '{{ $placeholderFilePath }}'
                     $expandedFilePath = [System.Environment]::ExpandEnvironmentVariables($filePath)
                     $placeholderText = 'privacy.sexy placeholder'
-                    Write-Output "Attempting to remove placeholder file at `"$expandedFilePath`"."
+                    Write-Verbose "Attempting to remove placeholder file at `"$expandedFilePath`"."
                     if (-Not (Test-Path $expandedFilePath -PathType Leaf)) {
-                        Write-Host "Skipping file removal as `"$expandedFilePath`" does not exist, no action needed."
+                        Write-Verbose "Skipping file removal as `"$expandedFilePath`" does not exist, no action needed."
                         Exit 0
                     }
                     $currentContent = Get-Content $expandedFilePath `
                         -ErrorAction SilentlyContinue
                     if ($currentContent -ne $placeholderText) {
-                        Write-Output "Skipping removal as the file at `"$expandedFilePath`" was not created by privacy.sexy."
+                        Write-Verbose "Skipping removal as the file at `"$expandedFilePath`" was not created by privacy.sexy."
                         Exit 0
                     }
-                    Write-Output "File contents match the placeholder content. Proceeding to remove the file."
+                    Write-Verbose "File contents match the placeholder content. Proceeding to remove the file."
                     try {
                         Remove-Item `
                             -Path $expandedFilePath `
                             -Force `
                             -ErrorAction Stop
-                        Write-Host "Successfully removed the placeholder file at `"$expandedFilePath`"."
+                        Write-Verbose "Successfully removed the placeholder file at `"$expandedFilePath`"."
                     } catch {
                         Write-Error "Failed to delete the placeholder file at `"$expandedFilePath`": $_"
                         Exit 1
@@ -43450,39 +43703,39 @@ functions:
                         function Clear-RegistryKeyValues {
                             try {
                                 $currentRegistryKeyPath = $args[0]
-                                Write-Output "Clearing registry values from `"$currentRegistryKeyPath`"."
+                                Write-Verbose "Clearing registry values from `"$currentRegistryKeyPath`"."
                                 $formattedRegistryKeyPath = $currentRegistryKeyPath -replace '^([^\\]+)', '$1:'
                                 if (-Not (Test-Path -LiteralPath $formattedRegistryKeyPath)) {
-                                    Write-Output "Skipping: Registry key not found: `"$formattedRegistryKeyPath`"."
+                                    Write-Verbose "Skipping: Registry key not found: `"$formattedRegistryKeyPath`"."
                                     return
                                 }
                                 $directValueNames=(Get-Item -LiteralPath $formattedRegistryKeyPath -ErrorAction Stop | Select-Object -ExpandProperty Property)
                                 if (-Not $directValueNames) {
-                                    Write-Output 'Skipping: Registry key has no direct values.'
+                                    Write-Verbose 'Skipping: Registry key has no direct values.'
                                 } else {
                                     foreach ($valueName in $directValueNames) {
                                         Remove-ItemProperty `
                                             -LiteralPath $formattedRegistryKeyPath `
                                             -Name $valueName `
                                             -ErrorAction Stop
-                                        Write-Output "Successfully deleted value: `"$valueName`" from `"$formattedRegistryKeyPath`"."
+                                        Write-Verbose "Successfully deleted value: `"$valueName`" from `"$formattedRegistryKeyPath`"."
                                     }
-                                    Write-Output "Successfully cleared all direct values in `"$formattedRegistryKeyPath`"."
+                                    Write-Verbose "Successfully cleared all direct values in `"$formattedRegistryKeyPath`"."
                                 }
                                 {{ with $deleteSubkeyValuesRecursively }}
-                                    Write-Output "Iterating subkeys recursively: `"$formattedRegistryKeyPath`"."
+                                    Write-Verbose "Iterating subkeys recursively: `"$formattedRegistryKeyPath`"."
                                     $subKeys = Get-ChildItem -LiteralPath $formattedRegistryKeyPath -ErrorAction Stop
                                     if (!$subKeys) {
-                                        Write-Output 'Skipping: no subkeys available.'
+                                        Write-Verbose 'Skipping: no subkeys available.'
                                         return
                                     }
                                     foreach ($subKey in $subKeys) {
                                         $subkeyName = $($subKey.PSChildName)
-                                        Write-Output "Processing subkey: `"$subkeyName`""
+                                        Write-Verbose "Processing subkey: `"$subkeyName`""
                                         $subkeyPath = Join-Path -Path $currentRegistryKeyPath -ChildPath $subkeyName
                                         Clear-RegistryKeyValues $subkeyPath
                                     }
-                                    Write-Output "Successfully cleared all subkeys in `"$formattedRegistryKeyPath`"."
+                                    Write-Verbose "Successfully cleared all subkeys in `"$formattedRegistryKeyPath`"."
                                 {{ end }}
                             } catch {
                                 Write-Error "Failed to clear registry values in `"$formattedRegistryKeyPath`". Error: $_"
@@ -43550,28 +43803,28 @@ functions:
                         $valueName = '{{ $valueName }}'
                         $hive = $keyName.Split('\')[0]
                         $path = "$($hive):$($keyName.Substring($hive.Length))"
-                        Write-Host "Removing the registry value '$valueName' from '$path'."
+                        Write-Verbose "Removing the registry value '$valueName' from '$path'."
                         if (-Not (Test-Path -LiteralPath $path)) {
-                            Write-Host 'Skipping, no action needed, registry key does not exist.'
+                            Write-Verbose 'Skipping, no action needed, registry key does not exist.'
                             Exit 0
                         }
                         $existingValueNames = (Get-ItemProperty -LiteralPath $path).PSObject.Properties.Name
                         if (-Not ($existingValueNames -Contains $valueName)) {
-                            Write-Host 'Skipping, no action needed, registry value does not exist.'
+                            Write-Verbose 'Skipping, no action needed, registry value does not exist.'
                             Exit 0
                         }
                         {{ with $matchDataBeforeDelete }}
                             $expectedData = '{{ . }}'
                             $currentData = Get-ItemProperty -LiteralPath $path -Name $valueName | Select-Object -ExpandProperty $valueName
                             if ($currentData -ne $expectedData) {
-                                Write-Host "Skipping, no action needed, current data '$currentData' is not same as '$expectedData'."
+                                Write-Verbose "Skipping, no action needed, current data '$currentData' is not same as '$expectedData'."
                                 Exit 0
                             }
                         {{ end }}
                         {{ with $grantPermissions }} Grant-Permissions {{ end }}
                         try {
                             if ($valueName -ieq '(default)') {
-                                Write-Host 'Removing the default value.'
+                                Write-Verbose 'Removing the default value.'
                                 $(Get-Item -LiteralPath $path).OpenSubKey('', $true).DeleteValue('')
                             } else {
                                 Remove-ItemProperty `
@@ -43580,7 +43833,7 @@ functions:
                                     -Force `
                                     -ErrorAction Stop
                             }
-                            Write-Host 'Successfully removed the registry value.'
+                            Write-Verbose 'Successfully removed the registry value.'
                         } catch {
                             Write-Error "Failed to remove the registry value: $($_.Exception.Message)"
                         } {{ with $grantPermissions }} finally { Revoke-Permissions } {{ end }}
@@ -43594,7 +43847,7 @@ functions:
                             $value = '{{ $valueName }}'
                             $hive = $rawPath.Split('\')[0]
                             $path = "$($hive):$($rawPath.Substring($hive.Length))"
-                            Write-Host "Restoring value '$value' at '$path' with type '$rawType' and value '$data'."
+                            Write-Verbose "Restoring value '$value' at '$path' with type '$rawType' and value '$data'."
                             if (-Not $rawType) {
                                 throw "Internal privacy$([char]0x002E)sexy error: Data type is not provided for data '$data'."
                             }
@@ -43604,7 +43857,7 @@ functions:
                                         -Path $path `
                                         -Force -ErrorAction Stop `
                                         | Out-Null
-                                    Write-Host 'Successfully created registry key.'
+                                    Write-Verbose 'Successfully created registry key.'
                                 } catch {
                                     throw "Failed to create registry key: $($_.Exception.Message)"
                                 }
@@ -43615,7 +43868,7 @@ functions:
                                 -ErrorAction SilentlyContinue `
                                 | Select-Object -ExpandProperty $value
                             if ($currentData -eq $data) {
-                                Write-Host 'Skipping, no changes required, the registry data is already as expected.'
+                                Write-Verbose 'Skipping, no changes required, the registry data is already as expected.'
                                 Exit 0
                             }
                             {{ with $grantPermissions }} Grant-Permissions {{ end }}
@@ -43636,7 +43889,7 @@ functions:
                                     -Type $type `
                                     -Force `
                                     -ErrorAction Stop
-                                Write-Host 'Successfully restored the registry value.'
+                                Write-Verbose 'Successfully restored the registry value.'
                             } catch {
                                 throw "Failed to restore the value: $($_.Exception.Message)"
                             } {{ with $grantPermissions }} finally { Revoke-Permissions } {{ end }}
@@ -43645,20 +43898,20 @@ functions:
                             $valueName = '{{ $valueName }}'
                             $hive = $keyName.Split('\')[0]
                             $path = "$($hive):$($keyName.Substring($hive.Length))"
-                            Write-Host "Removing the registry value '$valueName' from '$path'."
+                            Write-Verbose "Removing the registry value '$valueName' from '$path'."
                             if (-Not (Test-Path -LiteralPath $path)) {
-                                Write-Host 'Skipping, no action needed, registry key does not exist.'
+                                Write-Verbose 'Skipping, no action needed, registry key does not exist.'
                                 Exit 0
                             }
                             $existingValueNames = (Get-ItemProperty -LiteralPath $path).PSObject.Properties.Name
                             if (-Not ($existingValueNames -Contains $valueName)) {
-                                Write-Host 'Skipping, no action needed, registry value does not exist.'
+                                Write-Verbose 'Skipping, no action needed, registry value does not exist.'
                                 Exit 0
                             }
                             {{ with $grantPermissions }} Grant-Permissions {{ end }}
                             try {
                                 if ($valueName -ieq '(default)') {
-                                    Write-Host 'Removing the default value.'
+                                    Write-Verbose 'Removing the default value.'
                                     $(Get-Item -LiteralPath $path).OpenSubKey('', $true).DeleteValue('')
                                 } else {
                                     Remove-ItemProperty `
@@ -43667,7 +43920,7 @@ functions:
                                         -Force `
                                         -ErrorAction Stop
                                 }
-                                Write-Host 'Successfully removed the registry value.'
+                                Write-Verbose 'Successfully removed the registry value.'
                             } catch {
                                 Write-Error "Failed to remove the registry value: $($_.Exception.Message)"
                             } {{ with $grantPermissions }} finally { Revoke-Permissions } {{ end }}
@@ -43718,7 +43971,7 @@ functions:
                                 return $key
                             }
                             function Grant-Permissions {
-                                Write-Host "Granting permissions to '$RawRegistryPath' registry key."
+                                Write-Verbose "Granting permissions to '$RawRegistryPath' registry key."
                                 $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544'
                                 $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
                                 try {
@@ -43732,7 +43985,7 @@ functions:
                                         $acl.SetOwner($adminAccount)
                                         $subkey.SetAccessControl($acl)
                                         $subkey.Close()
-                                        Write-Host "Successfully took ownership from '$($owner.Value)'."
+                                        Write-Verbose "Successfully took ownership from '$($owner.Value)'."
                                     }
                                 } catch {
                                     Write-Warning "Failed to take ownership. Error: $($_.Exception.Message)"
@@ -43746,7 +43999,7 @@ functions:
                                         $_.AccessControlType -eq [System.Security.AccessControl.AccessControlType]::Allow `
                                     }
                                     if (-Not $adminFullControlExists) {
-                                        Write-Host 'Granting full control to administrators.'
+                                        Write-Verbose 'Granting full control to administrators.'
                                         $fullControlRule = New-Object System.Security.AccessControl.RegistryAccessRule( `
                                             $adminAccount, `
                                             [System.Security.AccessControl.RegistryRights]::FullControl, `
@@ -43761,7 +44014,7 @@ functions:
                                     }
                                     $denyRules = @($acl.Access.Where({ $_.AccessControlType -eq 'Deny' }))
                                     foreach ($denyRule in $denyRules) {
-                                        Write-Host "Removing a deny rule for '$($denyRule.IdentityReference)'."
+                                        Write-Verbose "Removing a deny rule for '$($denyRule.IdentityReference)'."
                                         if ($acl.RemoveAccessRule($denyRule)) {
                                             $AclChanges.RemovedRules += $denyRule
                                         } else {
@@ -43769,21 +44022,21 @@ functions:
                                         }
                                     }
                                     if (-Not (Test-AccessModified)) {
-                                        Write-Host 'No access modifications were necessary.'
+                                        Write-Verbose 'No access modifications were necessary.'
                                         $subkey.Close()
                                     } else {
                                         $subkey.SetAccessControl($acl)
                                         $subkey.Close()
-                                        Write-Host 'Successfully applied new access rules.'
+                                        Write-Verbose 'Successfully applied new access rules.'
                                     }
                                 } catch {
                                     Write-Warning "Failed to modify access. Error: $($_.Exception.Message)"
                                 }
                             }
                             function Revoke-Permissions {
-                                Write-Host "Restoring permissions: '$RawRegistryPath'."
+                                Write-Verbose "Restoring permissions: '$RawRegistryPath'."
                                 if (-Not (Test-AccessModified)) {
-                                    Write-Host 'Skipping revoking permissions, they were not granted.'
+                                    Write-Verbose 'Skipping revoking permissions, they were not granted.'
                                     return
                                 } else {
                                     try {
@@ -43793,26 +44046,26 @@ functions:
                                         )
                                         $acl = $subkey.GetAccessControl()
                                         if ($AclChanges.PreviousOwner) {
-                                            Write-Host 'Restoring owner.'
+                                            Write-Verbose 'Restoring owner.'
                                             $acl.SetOwner($AclChanges.PreviousOwner)
                                         }
                                         foreach ($rule in $AclChanges.AddedRules) {
-                                            Write-Host "Removing rule for '$($rule.IdentityReference)'."
+                                            Write-Verbose "Removing rule for '$($rule.IdentityReference)'."
                                             if (-Not $acl.RemoveAccessRule($rule)) {
                                                 Write-Warning 'Failed to remove the rule.'
                                             }
                                         }
                                         foreach ($rule in $AclChanges.RemovedRules) {
                                             $acl.AddAccessRule($rule)
-                                            Write-Host "Adding a rule for '$($rule.IdentityReference)'."
+                                            Write-Verbose "Adding a rule for '$($rule.IdentityReference)'."
                                         }
                                         if ($AclChanges.InheritanceDisabled) {
                                             $acl.SetAccessRuleProtection($true, $true)
-                                            Write-Host 'Restoring inheritance.'
+                                            Write-Verbose 'Restoring inheritance.'
                                         }
                                         $subkey.SetAccessControl($acl)
                                         $subkey.Close()
-                                        Write-Host 'Successfully restored permissions.'
+                                        Write-Verbose 'Successfully restored permissions.'
                                     } catch {
                                         Write-Warning "Failed to restore permissions. Error: $($_.Exception.Message)"
                                     }
@@ -44468,25 +44721,25 @@ functions:
                         $global:skip = 0
                         $global:fail = 0
                         function Rename-KeyTree($Path) {
-                            Write-Host "Processing key: $Path"
+                            Write-Verbose "Processing key: $Path"
                             if (-Not (Test-Path -LiteralPath $Path)) {
-                                Write-Host 'Skipping: Key does not exist.'
+                                Write-Verbose 'Skipping: Key does not exist.'
                                 $global:skip++
                                 return
                             }
                             $values = (Get-Item -LiteralPath $Path -ErrorAction Stop | Select-Object -ExpandProperty Property)
                             foreach ($value in $values) {
-                                Write-Host "Renaming '$value'"
+                                Write-Verbose "Renaming '$value'"
                                 if ($value.EndsWith($suffix)) {
-                                    Write-Host 'Skipping: Has suffix.'
+                                    Write-Verbose 'Skipping: Has suffix.'
                                     $global:skip++
                                     continue
                                 }
                                 $backupName = $value + $suffix
-                                Write-Host "Renaming to '$backupName'."
+                                Write-Verbose "Renaming to '$backupName'."
                                 try {
                                     Rename-ItemProperty -LiteralPath $Path -Name $value -NewName $backupName -ErrorAction Stop
-                                    Write-Host 'Successfully renamed.'
+                                    Write-Verbose 'Successfully renamed.'
                                     $global:ok++
                                 } catch {
                                     Write-Warning "Failed to rename value: $_"
@@ -44497,19 +44750,19 @@ functions:
                             foreach ($key in $subkeys) {
                                 Rename-KeyTree $key.PSPath
                             }
-                            Write-Host "Renaming key '$Path'."
+                            Write-Verbose "Renaming key '$Path'."
                             if ($Path.EndsWith($suffix)) {
-                                Write-Host 'Skipping: Has suffix.'
+                                Write-Verbose 'Skipping: Has suffix.'
                                 $global:skip++
                             } else {
                                 $backupPath = $Path + $suffix
                                 while (Test-Path -LiteralPath $backupPath) {
                                     $backupPath += $suffix
                                 }
-                                Write-Host "Renaming to '$backupPath'."
+                                Write-Verbose "Renaming to '$backupPath'."
                                 try {
                                     Rename-KeyWithAcl -Old $Path -New $backupPath -ErrorAction Stop
-                                    Write-Host 'Successfully renamed.'
+                                    Write-Verbose 'Successfully renamed.'
                                     $global:ok++
                                 } catch {
                                     Write-Warning "Failed to rename: $_"
@@ -44517,18 +44770,18 @@ functions:
                                 }
                             }
                         }
-                        Write-Host "Soft deleting registry key '$rawPath' recursively."
+                        Write-Verbose "Soft deleting registry key '$rawPath' recursively."
                         $hive = $rawPath.Split('\')[0]
                         $path = $hive + ':' + $rawPath.Substring($hive.Length)
                         Rename-KeyTree $path
                         $totalItems = $global:ok + $global:skip + $global:fail
                         Write-Host "Total items: $totalItems, Renamed: $global:ok, Skipped: $global:skip, Failed: $global:fail"
                         if (($totalItems -eq 0) -or ($totalItems -eq $global:skip)) {
-                            Write-Host 'No items were processed. The operation had no effect.'
+                            Write-Verbose 'No items were processed. The operation had no effect.'
                         } elseif ($global:fail -eq $totalItems) {
                             throw "Operation failed. All $global:fail items could not be processed."
                         } elseif ($global:ok) {
-                            Write-Host "Successfully processed $global:ok item(s)."
+                            Write-Verbose "Successfully processed $global:ok item(s)."
                         }
                     revertCode: |-
                         $rawPath='{{ $keyPath }}'
@@ -44544,22 +44797,22 @@ functions:
                         function Restore-KeyTree($Path) {
                             $dest = Get-Real $Path
                             $src = $Path
-                            Write-Host "Restoring key: '$dest' from '$src'"
+                            Write-Verbose "Restoring key: '$dest' from '$src'"
                             if (-Not $src.EndsWith($suffix)) {
                                 $src += $suffix
                                 if (-Not (Test-Path -LiteralPath $src)) {
-                                    Write-Host 'Skipping: No data.'
+                                    Write-Verbose 'Skipping: No data.'
                                     Restore-Children $dest
                                     return
                                 }
                             }
                             if (Test-Path -LiteralPath $dest) {
-                                Write-Host 'Skipping to avoid data loss. Key already exists.'
-                                Write-Warning "Manual intervention may be required to fully restore from '$src'."
+                                Write-Warning 'Data-loss protection: key already exists.'
+                                Write-Warning "Manual intervention required to restore '$src'."
                             } else {
                                 try {
                                     Rename-KeyWithAcl -Old $src -New $dest -ErrorAction Stop
-                                    Write-Host 'Successfully restored.'
+                                    Write-Verbose 'Successfully restored.'
                                     $global:ok++
                                 } catch {
                                     Write-Warning "Failed: $_"
@@ -44569,25 +44822,25 @@ functions:
                             Restore-Children $dest
                         }
                         function Restore-Children($Path) {
-                            Write-Host "Restoring values in '$Path'"
+                            Write-Verbose "Restoring values in '$Path'"
                             if (-Not (Test-Path -LiteralPath $Path)) {
-                                Write-Host 'Skipping: Key does not exist. No action needed.'
+                                Write-Verbose 'Skipping: Key does not exist. No action needed.'
                                 return
                             }
                             $values = ( `
                                 Get-Item -LiteralPath $Path -ErrorAction Stop | Select-Object -ExpandProperty Property `
                             )
                             foreach ($value in $values) {
-                                Write-Host "Restoring value '$value'"
+                                Write-Verbose "Restoring value '$value'"
                                 if (-Not $value.EndsWith($suffix)) {
-                                    Write-Host 'Skipping: No action needed.'
+                                    Write-Verbose 'Skipping: No action needed.'
                                     continue
                                 }
                                 $real = Get-Real $value
-                                Write-Host "Renaming to '$real'."
+                                Write-Verbose "Renaming to '$real'."
                                 try {
                                     Rename-ItemProperty -LiteralPath $Path -Name $value -NewName $real -ErrorAction Stop
-                                    Write-Host 'Successfully restored.'
+                                    Write-Verbose 'Successfully restored.'
                                     $global:ok++
                                 } catch {
                                     Write-Warning "Failed: $_"
@@ -44599,7 +44852,7 @@ functions:
                                 Restore-KeyTree $key.PSPath
                             }
                         }
-                        Write-Host "Restoring registry key '$rawPath' recursively."
+                        Write-Verbose "Restoring registry key '$rawPath' recursively."
                         $hive = $rawPath.Split('\')[0]
                         $path = $hive + ':' + $rawPath.Substring($hive.Length)
                         Restore-KeyTree $path

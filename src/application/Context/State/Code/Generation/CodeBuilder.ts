@@ -34,12 +34,16 @@ export abstract class CodeBuilder implements ICodeBuilder {
     return this;
   }
 
+  public appendStandardOutLine(text: string): CodeBuilder {
+    return this.appendLine(this.writeStandardOut(text));
+  }
+
   public appendFunction(name: string, code: string): CodeBuilder {
     if (!name) { throw new Error('name cannot be empty or null'); }
     if (!code) { throw new Error('code cannot be empty or null'); }
     return this
       .appendCommentLineWithHyphensAround(name)
-      .appendLine(this.writeStandardOut(`--- ${name}`))
+      .appendStandardOutLine(name)
       .appendLine(code)
       .appendTrailingHyphensCommentLine();
   }

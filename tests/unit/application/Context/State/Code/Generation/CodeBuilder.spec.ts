@@ -23,7 +23,7 @@ describe('CodeBuilder', () => {
     }
 
     protected writeStandardOut(text: string): string {
-      return text;
+      return `stdout: ${text}`;
     }
 
     protected getNewLineTerminator(): string {
@@ -103,6 +103,16 @@ describe('CodeBuilder', () => {
       });
     });
   });
+  describe('appendStandardOutLine', () => {
+    it('uses the standard output writer for literal empty text', () => {
+      // arrange
+      const sut = new CodeBuilderConcrete();
+      // act
+      const actual = sut.appendStandardOutLine('').toString();
+      // assert
+      expect(actual).to.equal('stdout: ');
+    });
+  });
   it('appendFunction', () => {
     // arrange
     const sut = new CodeBuilderConcrete();
@@ -114,6 +124,24 @@ describe('CodeBuilder', () => {
     const result = sut.toString();
     expect(result).to.include(functionName);
     expect(result).to.include(code);
+  });
+  it('appendFunction writes one standard output line before the function code', () => {
+    // arrange
+    const sut = new CodeBuilderConcrete();
+    const functionName = 'expected-function-name';
+    const code = 'expected-code';
+    const separator = '-'.repeat(58);
+    // act
+    const result = sut
+      .appendFunction(functionName, code)
+      .toString();
+    // assert
+    const lines = splitTextIntoLines(result);
+    expect(lines.slice(3)).to.deep.equal([
+      `stdout: ${functionName}`,
+      code,
+      `// ${separator}`,
+    ]);
   });
   it('appendTrailingHyphensCommentLine', () => {
     // arrange

@@ -73,8 +73,8 @@ describe('Windows cleanup generation', () => {
     expect(code).toContain("'*S-1-5-32-544:F'");
     expect(code).not.toMatch(/takeown[^;\n]* \/r\b/i);
     expect(code).not.toMatch(/icacls[^;\n]* \/t\b/i);
-    expect(code).not.toContain('$takeOwnershipOutput =');
-    expect(code).not.toContain('$icaclsOutput =');
+    expect(code).toContain('$takeOwnershipOutput = @(');
+    expect(code).toContain('$icaclsOutput = @(');
   });
 
   it('does not change permissions when permission granting was not selected', () => {
@@ -92,11 +92,11 @@ describe('Windows cleanup generation', () => {
     expect(code).not.toContain('Test-Path');
   });
 
-  it('reports the current path before directory enumeration and deletion', () => {
+  it('keeps per-path cleanup progress in the verbose stream', () => {
     const code = compileCleanup('DeleteDirectory', { directoryGlob: 'C:\\Fixture\\Cache' });
 
-    expect(code).toMatch(/Write-Host "[^";]*\$path"; \$children = @\(Get-ChildItem/);
-    expect(code).toMatch(/Write-Host "[^";]*\$path"; \$attributes = \[IO.File\]::GetAttributes/);
+    expect(code).toMatch(/Write-Verbose "[^";]*\$path"; \$children = @\(Get-ChildItem/);
+    expect(code).toMatch(/Write-Verbose "[^";]*\$path"; \$attributes = \[IO.File\]::GetAttributes/);
   });
 
   it.each([
@@ -143,6 +143,29 @@ describe('Windows cleanup generation', () => {
     expect(code).toContain('$failedCount');
     expect(code).toContain('$absentCount');
     expect(code).toContain('$linkCount');
+  });
+
+  it('generates comprehensive OneDrive application and shell removal', () => {
+    const script = collection.getScript('Completely remove OneDrive application and shell integration');
+    const code = script.code.execute.replaceAll('"^""', '"');
+
+    expect(script.code.revert).toBeFalsy();
+    expect(code).toContain('FileSyncShell*.dll');
+    expect(code).toContain('regsvr32.exe');
+    expect(code).toContain('/u /s');
+    expect(code).toContain("'/allusers'");
+    expect(code).toContain("$_.TaskName -like 'OneDrive*'");
+    expect(code).toContain('Unregister-ScheduledTask');
+    expect(code).toContain('sc.exe');
+    expect(code).toContain("$displayName -eq 'Microsoft OneDrive'");
+    expect(code).toMatch(/%PROGRAMFILES\(X86\)%.*Microsoft.*OneDrive/);
+    expect(code).not.toContain('%USERPROFILE%\\OneDrive*');
+
+    const output = new UserScriptGenerator().buildCode(
+      [new UserSelectedScript(script, false)],
+      collection.scriptMetadata,
+    );
+    expect(Math.max(...output.code.split(/\r?\n/).map((line) => line.length))).toBeLessThanOrEqual(8191);
   });
 });
 

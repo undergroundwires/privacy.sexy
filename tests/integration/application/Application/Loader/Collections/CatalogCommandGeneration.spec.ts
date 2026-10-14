@@ -86,7 +86,7 @@ describe('Catalog command generation regressions', () => {
     expect(code.execute).toContain('"$HOME/.cache/epiphany/"*');
     expect(code.execute).toContain('"$HOME/snap/epiphany/common/.cache/"*');
     expect(code.execute).not.toContain('~/~/');
-    expect(code.execute).not.toContain('rm -rfv /.cache');
+    expect(code.execute).not.toMatch(/\brm\s+-\w*\s+\/\.cache/);
   });
 
   it('enumerates root cache entries after elevation, not relative to the working directory', () => {
@@ -94,8 +94,8 @@ describe('Catalog command generation regressions', () => {
     const { code } = collection.getScript('Clear user-specific cache');
 
     expect(code.execute).toContain('sudo find /root/.cache -mindepth 1 -maxdepth 1');
-    expect(code.execute).toContain('-exec rm -rfv -- {} +');
-    expect(code.execute).not.toContain('rm -rfv root/');
+    expect(code.execute).toContain('-exec rm -rf -- {} +');
+    expect(code.execute).not.toMatch(/\brm\s+-\w*\s+root\//);
   });
 
   it('initializes the cron target in a standalone revert', () => {
@@ -123,7 +123,7 @@ describe('Catalog command generation regressions', () => {
     const collection = application.getCollection(OperatingSystem.macOS);
     const { code } = collection.getScript('Clear Homebrew cache');
 
-    expect(code.execute).toContain('rm -rfv -- "$(brew --cache)"');
+    expect(code.execute).toContain('rm -rf -- "$(brew --cache)"');
   });
 
   it.each([false, true])('disables field splitting locally for macOS glob deletion (sudo=%s)', (elevated) => {
@@ -145,7 +145,7 @@ describe('Catalog command generation regressions', () => {
     });
 
     expect(code.execute).toMatch(/\(\s*IFS=\s*\n/);
-    expect(code.execute).toContain('rm -rfv -- $glob_pattern');
+    expect(code.execute).toContain('rm -rf -- $glob_pattern');
     expect(code.execute.trim()).toMatch(/\)$/);
   });
 
@@ -171,6 +171,9 @@ describe('Catalog command generation regressions', () => {
     expect(code.execute).toMatch(/table_name\s*=\s*'moz_cookies'/);
     expect(code.execute).toContain('conn.commit()');
     expect(code.execute).toContain('with closing(sqlite3.connect(file)) as conn:');
-    expect(code.execute.indexOf('conn.commit()')).toBeLessThan(code.execute.indexOf('total_deleted ='));
+    expect(code.execute).toContain('deleted_row_count += cursor.rowcount');
+    expect(code.execute.indexOf('conn.commit()'))
+      .toBeLessThan(code.execute.indexOf('deleted_row_count += cursor.rowcount'));
+    expect(code.execute).toContain('\n  except sqlite3.Error as e:\n    print(');
   });
 });

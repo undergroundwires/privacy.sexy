@@ -17,8 +17,11 @@ scripting:
             )
             exit 0
         fi
+        printf '%s\n' ''
+        printf '%s\n' 'privacy.sexy - Running selected actions'
+        printf '%s\n' 'Review each action below for errors or warnings.'
     endCode: |-
-        echo 'Your privacy and security is now hardened 🎉💪'
+        printf '%s\n' ''
         echo 'Press any key to exit.'
         read -n 1 -s
 actions:
@@ -40,24 +43,24 @@ actions:
                 name: Clear CUPS printer job cache
                 recommend: strict
                 code: |-
-                    sudo rm -rfv /var/spool/cups/c0*
-                    sudo rm -rfv /var/spool/cups/tmp/*
-                    sudo rm -rfv /var/spool/cups/cache/job.cache*
+                    sudo rm -rf /var/spool/cups/c0*
+                    sudo rm -rf /var/spool/cups/tmp/*
+                    sudo rm -rf /var/spool/cups/cache/job.cache*
             -
                 name: Empty trash on all volumes
                 recommend: strict
                 code: |-
                     # on all mounted volumes
-                    sudo rm -rfv /Volumes/*/.Trashes/* &>/dev/null
+                    sudo rm -rf /Volumes/*/.Trashes/*
                     # on main HDD
-                    sudo rm -rfv ~/.Trash/* &>/dev/null
+                    sudo rm -rf ~/.Trash/*
             -
                 name: Clear system cache
                 recommend: strict
                 code: |-
-                    sudo rm -rfv /Library/Caches/* &>/dev/null
-                    sudo rm -rfv /System/Library/Caches/* &>/dev/null
-                    sudo rm -rfv ~/Library/Caches/* &>/dev/null
+                    sudo rm -rf /Library/Caches/*
+                    sudo rm -rf /System/Library/Caches/*
+                    sudo rm -rf ~/Library/Caches/*
             -
                 category: Clear system and app logs
                 docs: |-
@@ -450,11 +453,11 @@ actions:
                             -
                                 name: Clear Chrome browsing history
                                 code: |-
-                                    rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/History &>/dev/null
-                                    rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/History-journal &>/dev/null
+                                    rm -rf ~/Library/Application\ Support/Google/Chrome/Default/History
+                                    rm -rf ~/Library/Application\ Support/Google/Chrome/Default/History-journal
                             -
                                 name: Clear Chrome cache
-                                code: sudo rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/Application\ Cache/* &>/dev/null
+                                code: sudo rm -rf ~/Library/Application\ Support/Google/Chrome/Default/Application\ Cache/*
                     -
                         category: Clear Safari history
                         children:
@@ -503,11 +506,11 @@ actions:
                                         docs:
                                           - https://web.archive.org/web/20250313121423/https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                           - https://archive.ph/2024.03.14-100910/https://www.reddit.com/r/apple/comments/18lp92/your_apple_computer_keeps_a_screen_shot_of_nearly/?rdt=59921
-                                        code: rm -rfv ~/Library/Caches/com.apple.Safari/Webpage\ Previews
+                                        code: rm -rf ~/Library/Caches/com.apple.Safari/Webpage\ Previews
                             -
                                 name: Clear Safari history copy
                                 docs: https://web.archive.org/web/20250313122349/https://forensicsfromthesausagefactory.blogspot.com/2010/06/safari-history-spotlight-webhistory.html
-                                code: rm -rfv ~/Library/Caches/Metadata/Safari/History
+                                code: rm -rf ~/Library/Caches/Metadata/Safari/History
                             -
                                 name: Clear search term history embedded in Safari preferences
                                 docs: https://web.archive.org/web/20241001141605/https://krypted.com/mac-os-x/clearing-recent-searches-in-safari-4/
@@ -540,56 +543,56 @@ actions:
                                 name: Clear Firefox cache
                                 code: |-
                                     sudo rm -rf ~/Library/Caches/Mozilla/
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/netpredictions.sqlite
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/netpredictions.sqlite
                             -
                                 name: Clear Firefox form history
                                 code: |-
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/formhistory.sqlite
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/formhistory.dat
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/formhistory.sqlite
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/formhistory.dat
                             -
                                 name: Clear Firefox site preferences
-                                code: rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/content-prefs.sqlite
+                                code: rm -f ~/Library/Application\ Support/Firefox/Profiles/*/content-prefs.sqlite
                             -
                                 name: Clear Firefox session restore data (loads after the browser closes or crashes)
                                 code: |-
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionCheckpoints.json
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore*.js*
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore.bak*
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/previous.js*
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/recovery.js*
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/recovery.bak*
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/previous.bak*
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/upgrade.js*-20*
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/sessionCheckpoints.json
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore*.js*
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore.bak*
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/previous.js*
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/recovery.js*
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/recovery.bak*
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/previous.bak*
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/upgrade.js*-20*
                             -
                                 name: Clear Firefox passwords
                                 docs: https://web.archive.org/web/20210425202923/http://kb.mozillazine.org/Password_Manager
                                 code: |-
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons.txt
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons2.txt
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons3.txt
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons.sqlite
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/logins.json
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/signons.txt
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/signons2.txt
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/signons3.txt
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/signons.sqlite
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/logins.json
                             -
                                 name: Clear Firefox HTML5 cookies
-                                code: rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/webappsstore.sqlite
+                                code: rm -f ~/Library/Application\ Support/Firefox/Profiles/*/webappsstore.sqlite
                             -
                                 name: Clear Firefox crash reports
                                 code: |-
-                                    rm -rfv ~/Library/Application\ Support/Firefox/Crash\ Reports/
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/minidumps/*.dmp
+                                    rm -rf ~/Library/Application\ Support/Firefox/Crash\ Reports/
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/minidumps/*.dmp
                             -
                                 name: Clear Firefox backup files
                                 code: |-
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/bookmarkbackups/*.json
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/bookmarkbackups/*.jsonlz4
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/bookmarkbackups/*.json
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/bookmarkbackups/*.jsonlz4
                             -
                                 name: Clear Firefox cookies
                                 code: |-
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.txt
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite-shm
-                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite-wal
-                                    rm -rfv ~/Library/Application\ Support/Firefox/Profiles/*/storage/default/http*
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/cookies.txt
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite-shm
+                                    rm -f ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite-wal
+                                    rm -rf ~/Library/Application\ Support/Firefox/Profiles/*/storage/default/http*
             -
                 category: Clear third-party application data
                 children:
@@ -659,49 +662,85 @@ actions:
                     -
                         name: Clear Adobe cache
                         recommend: standard
-                        code: sudo rm -rfv ~/Library/Application\ Support/Adobe/Common/Media\ Cache\ Files/* &>/dev/null
+                        code: sudo rm -rf ~/Library/Application\ Support/Adobe/Common/Media\ Cache\ Files/*
                     -
                         name: Clear Gradle cache
                         recommend: strict
                         code: |-
                             if [ -d "$HOME/.gradle/caches" ]; then
-                                rm -rfv -- "$HOME/.gradle/caches/" &> /dev/null
+                                rm -rf -- "$HOME/.gradle/caches/"
                             fi
                     -
                         name: Clear Dropbox cache
                         recommend: standard
                         code: |-
                             if [ -d "$HOME/Dropbox/.dropbox.cache" ]; then
-                                sudo rm -rfv -- "$HOME/Dropbox/.dropbox.cache/"* &>/dev/null
+                                sudo rm -rf -- "$HOME/Dropbox/.dropbox.cache/"*
                             fi
                     -
                         name: Clear Google Drive File Stream cache
                         recommend: standard
                         code: |-
                             killall "Google Drive File Stream"
-                            rm -rfv ~/Library/Application\ Support/Google/DriveFS/[0-9a-zA-Z]*/content_cache &>/dev/null
+                            rm -rf ~/Library/Application\ Support/Google/DriveFS/[0-9a-zA-Z]*/content_cache
                     -
                         name: Clear Composer cache
                         recommend: strict
                         code: |-
                             if type "composer" &> /dev/null; then
-                                composer clearcache &> /dev/null
+                                (
+                                    output_file="$(mktemp)" || exit 1
+                                    trap 'rm -f "$output_file"' EXIT
+                                    composer clearcache > "$output_file"
+                                    command_status=$?
+                                    if [ "$command_status" -ne 0 ]; then
+                                        cat "$output_file"
+                                    fi
+                                    exit "$command_status"
+                                )
                             fi
                     -
                         name: Clear Homebrew cache
                         recommend: strict
                         code: |-
                             if type "brew" &>/dev/null; then
-                                brew cleanup -s &>/dev/null
-                                rm -rfv -- "$(brew --cache)" &>/dev/null
-                                brew tap --repair &>/dev/null
+                                (
+                                    brew_cleanup_output_file="$(mktemp)" || exit 1
+                                    trap 'rm -f "$brew_cleanup_output_file"' EXIT
+                                    brew cleanup -s > "$brew_cleanup_output_file"
+                                    brew_cleanup_status=$?
+                                    if [ "$brew_cleanup_status" -ne 0 ]; then
+                                        cat "$brew_cleanup_output_file"
+                                    fi
+                                    exit "$brew_cleanup_status"
+                                )
+                                rm -rf -- "$(brew --cache)"
+                                (
+                                    brew_repair_output_file="$(mktemp)" || exit 1
+                                    trap 'rm -f "$brew_repair_output_file"' EXIT
+                                    brew tap --repair > "$brew_repair_output_file"
+                                    brew_repair_status=$?
+                                    if [ "$brew_repair_status" -ne 0 ]; then
+                                        cat "$brew_repair_output_file"
+                                    fi
+                                    exit "$brew_repair_status"
+                                )
                             fi
                     -
                         name: Clear old Ruby gem versions
                         recommend: strict
                         code: |-
                             if type "gem" &> /dev/null; then
-                                gem cleanup &>/dev/null
+                                (
+                                    output_file="$(mktemp)" || exit 1
+                                    trap 'rm -f "$output_file"' EXIT
+                                    gem cleanup > "$output_file"
+                                    command_status=$?
+                                    if [ "$command_status" -ne 0 ]; then
+                                        cat "$output_file"
+                                    fi
+                                    exit "$command_status"
+                                )
                             fi
                     -
                         name: Clear unused Docker data
@@ -741,29 +780,55 @@ actions:
                             [1]: https://web.archive.org/web/20230810171526/https://docs.docker.com/engine/reference/commandline/system_prune/ "docker system prune | Docker Documentation"
                         code: |-
                             if type "docker" &> /dev/null; then
-                                docker system prune -af
+                                (
+                                    output_file="$(mktemp)" || exit 1
+                                    trap 'rm -f "$output_file"' EXIT
+                                    docker system prune -af > "$output_file"
+                                    command_status=$?
+                                    if [ "$command_status" -ne 0 ]; then
+                                        cat "$output_file"
+                                    fi
+                                    exit "$command_status"
+                                )
                             fi
                     -
                         name: Clear Pyenv-Virtualenv cache
                         recommend: strict
                         code: |-
                             if [ "$PYENV_VIRTUALENV_CACHE_PATH" ]; then
-                                rm -rfv $PYENV_VIRTUALENV_CACHE_PATH &>/dev/null
+                                rm -rf $PYENV_VIRTUALENV_CACHE_PATH
                             fi
                     -
                         name: Clear NPM cache
                         recommend: strict
                         code: |-
                             if type "npm" &> /dev/null; then
-                                npm cache clean --force
+                                (
+                                    output_file="$(mktemp)" || exit 1
+                                    trap 'rm -f "$output_file"' EXIT
+                                    npm cache clean --force > "$output_file"
+                                    command_status=$?
+                                    if [ "$command_status" -ne 0 ]; then
+                                        cat "$output_file"
+                                    fi
+                                    exit "$command_status"
+                                )
                             fi
                     -
                         name: Clear Yarn cache
                         recommend: strict
                         code: |-
                             if type "yarn" &> /dev/null; then
-                                echo 'Cleanup Yarn Cache...'
-                                yarn cache clean --force
+                                (
+                                    output_file="$(mktemp)" || exit 1
+                                    trap 'rm -f "$output_file"' EXIT
+                                    yarn cache clean --force > "$output_file"
+                                    command_status=$?
+                                    if [ "$command_status" -ne 0 ]; then
+                                        cat "$output_file"
+                                    fi
+                                    exit "$command_status"
+                                )
                             fi
             -
                 category: Clear iOS usage data
@@ -771,7 +836,7 @@ actions:
                     -
                         name: Clear iOS app copies from iTunes
                         recommend: strict
-                        code: rm -rfv ~/Music/iTunes/iTunes\ Media/Mobile\ Applications/* &>/dev/null
+                        code: rm -rf ~/Music/iTunes/iTunes\ Media/Mobile\ Applications/*
                     -
                         name: Clear iOS photo cache
                         recommend: standard
@@ -779,7 +844,7 @@ actions:
                     -
                         name: Clear iOS Device Backups
                         recommend: strict
-                        code: rm -rfv ~/Library/Application\ Support/MobileSync/Backup/* &>/dev/null
+                        code: rm -rf ~/Library/Application\ Support/MobileSync/Backup/*
                     -
                         name: Clear iOS simulators
                         recommend: strict
@@ -799,14 +864,14 @@ actions:
                             sudo defaults delete /Users/$USER/Library/Preferences/com.apple.iPod.plist Devices
                             sudo defaults delete /Library/Preferences/com.apple.iPod.plist "conn:128:Last Connect"
                             sudo defaults delete /Library/Preferences/com.apple.iPod.plist Devices
-                            sudo rm -rfv /var/db/lockdown/*
+                            sudo rm -rf /var/db/lockdown/*
             -
                 name: Clear Xcode's derived data and archives
                 recommend: strict
                 code: |-
-                    rm -rfv ~/Library/Developer/Xcode/DerivedData/* &>/dev/null
-                    rm -rfv ~/Library/Developer/Xcode/Archives/* &>/dev/null
-                    rm -rfv ~/Library/Developer/Xcode/iOS Device Logs/* &>/dev/null
+                    rm -rf ~/Library/Developer/Xcode/DerivedData/*
+                    rm -rf ~/Library/Developer/Xcode/Archives/*
+                    rm -rf ~/Library/Developer/Xcode/iOS Device Logs/*
             -
                 name: Clear DNS cache
                 recommend: standard
@@ -1198,8 +1263,16 @@ actions:
                 code: |-
                     googleUpdateFile=~/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/ksinstall
                     if [ -f "$googleUpdateFile" ]; then
-                        $googleUpdateFile --nuke
-                        echo 'Uninstalled Google update'
+                        (
+                            output_file="$(mktemp)" || exit 1
+                            trap 'rm -f "$output_file"' EXIT
+                            $googleUpdateFile --nuke > "$output_file"
+                            command_status=$?
+                            if [ "$command_status" -ne 0 ]; then
+                                cat "$output_file"
+                            fi
+                            exit "$command_status"
+                        )
                     else
                         echo 'Google update file does not exist'
                     fi
@@ -2179,29 +2252,21 @@ actions:
                                     db_file=~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
                                     db_query='delete from LSQuarantineEvent'
                                     if [ -f "$db_file" ]; then
-                                        echo "Database exists at \"$db_file\""
                                         if ls -lO "$db_file" | grep --silent 'schg'; then
                                             sudo chflags noschg "$db_file"
-                                            echo "Found and removed system immutable flag"
                                             has_system_immutable_flag=true
                                         fi
                                         if ls -lO "$db_file" | grep --silent 'uchg'; then
                                             sudo chflags nouchg "$db_file"
-                                            echo "Found and removed user immutable flag"
                                             has_user_immutable_flag=true
                                         fi
                                         sqlite3 "$db_file" "$db_query"
-                                        echo "Executed the query \"$db_query\""
                                         if [ "$has_system_immutable_flag" = true ] ; then
                                             sudo chflags schg "$db_file"
-                                            echo "Added system immutable flag back"
                                         fi
                                         if [ "$has_user_immutable_flag" = true ] ; then
                                             sudo chflags uchg "$db_file"
-                                            echo "Added user immutable flag back"
                                         fi
-                                    else
-                                        echo "No action needed, database does not exist at \"$db_file\""
                                     fi
                             -
                                 name: Clear File Quarantine attribute from downloaded files
@@ -2215,13 +2280,9 @@ actions:
                                                         attr="com.apple.quarantine"
                                                         file="{}"
                                                         if [[ $(xattr "$file") = *$attr* ]]; then
-                                                            if xattr -d "$attr" "$file" 2>/dev/null; then
-                                                                echo "🧹 Cleaned attribute from \"$file\""
-                                                            else
+                                                            if ! xattr -d "$attr" "$file" 2>/dev/null; then
                                                                 >&2 echo "❌ Failed to clean attribute from \"$file\""
                                                             fi
-                                                        else
-                                                            echo "No attribute in \"$file\""
                                                         fi
                                                     '       \
                                                 {} \;
@@ -2239,15 +2300,11 @@ actions:
                                     file_to_lock=~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
                                     if [ -f "$file_to_lock" ]; then
                                         sudo chflags schg "$file_to_lock"
-                                        echo "Made file immutable at \"$file_to_lock\""
-                                    else
-                                        echo "No action is needed, file does not exist at \"$file_to_lock\""
                                     fi
                                 revertCode: |-
                                     file_to_lock=~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
                                     if [ -f "$file_to_lock" ]; then
                                         sudo chflags noschg "$file_to_lock"
-                                        echo "Successfully reverted immutability from \"$file_to_lock\""
                                     else
                                         >&2 echo "Cannot revert immutability, file does not exist at\"$file_to_lock\""
                                     fi
@@ -2537,9 +2594,6 @@ functions:
                 touch "$profile_file"
                 if ! grep -q "$command" "${profile_file}"; then
                     echo "$command" >> "$profile_file"
-                    echo "[$profile_file] Configured"
-                else
-                    echo "[$profile_file] No need for any action, already configured"
                 fi
             done
         revertCode: |-
@@ -2549,9 +2603,6 @@ functions:
             do
                 if grep -q "$command" "${profile_file}" 2>/dev/null; then
                     sed -i '' "/$command/d" "$profile_file"
-                    echo "[$profile_file] Reverted configuration"
-                else
-                    echo "[$profile_file] No need for any action, configuration does not exist"
                 fi
             done
     -
@@ -2596,9 +2647,7 @@ functions:
                         reset_output=$(tccutil reset "$serviceId" 2>&1)
                         reset_exit_code=$?
                     }
-                    if [ $reset_exit_code -eq 0 ]; then
-                        echo "Successfully reset permissions for \"${serviceId}\"."
-                    elif [ $reset_exit_code -eq 70 ]; then
+                    if [ $reset_exit_code -eq 70 ]; then
                         echo "Skipping, service ID \"${serviceId}\" is not supported on your operating system version."
                     elif [ $reset_exit_code -ne 0 ]; then
                         >&2 echo "Failed to reset permissions for \"${serviceId}\". Exit code: $reset_exit_code."
@@ -2673,7 +2722,7 @@ functions:
                     glob_pattern="{{ $pathGlob }}"
                     (
                         IFS=
-                        {{ with $grantPermissions }}sudo{{ end }} rm -{{ with $recurse }}r{{end}}fv -- $glob_pattern
+                        {{ with $grantPermissions }}sudo{{ end }} rm -{{ with $recurse }}r{{end}}f -- $glob_pattern
                     )
     -
         name: DeleteFiles

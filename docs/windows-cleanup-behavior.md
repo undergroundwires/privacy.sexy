@@ -29,21 +29,24 @@ The permanent-deletion engine now:
 - Uses literal paths after glob resolution. Brackets in discovered filenames are not interpreted again as wildcards.
 - Deletes files individually and deletes directories only if empty, using file/directory-specific APIs.
   There is no recursive fallback or retry-until-empty loop.
-- Reports the phase and path before inspection, enumeration, deletion, and permission repair.
-  The last line identifies the outstanding operation, not proof that it is making progress.
+- Sends routine path-level progress for inspection, enumeration, deletion, and permission repair to the PowerShell verbose stream.
+  The normal output remains compact; PowerShell hosts that enable the verbose stream can show this troubleshooting detail.
 - Reports separate deleted, already-absent, deliberately preserved, reparse-point, and failure counts.
   Failed operations or skipped reparse points produce an explicit incomplete-cleanup warning.
 
 File-only cleanup still excludes directories. The OneDrive preservation callback still retains files and nonempty
 directories; its emptiness check now considers immediate children, including hidden/system items, without a recursive scan.
-Reversible `SoftDeleteFiles` and its existing `IterateGlob` implementation are unchanged.
+Reversible `SoftDeleteFiles` and `IterateGlob` retain their traversal and restoration behavior;
+their routine progress messages now use the verbose stream.
 
 ## Permission repair is cause-based, not time-based
 
 When `grantPermissions` is selected, a recognized access-denied error may cause one nonrecursive
 `takeown` and `icacls` repair pair for that path. Only then can the failed operation be attempted once more.
 The path is marked as attempted before invoking either utility.
-Native output is streamed and exit codes are reported. Piped input ends at EOF rather than leaving an interactive input source.
+Native output is captured on each call. A nonzero `takeown.exe` or `icacls.exe` exit code reports the tool, path,
+exit code, and captured native details; successful native calls remain quiet. Piped input ends at EOF rather than
+leaving an interactive input source.
 
 There are no recursive `/r` or `/t` sweeps, localized `choice` probes, ACL resets, or repairs of unrelated ancestors.
 Without `grantPermissions`, ownership and ACLs are not changed. Read-only attributes may still be cleared for deletion,
@@ -82,17 +85,18 @@ Cancellation does not roll back deleted files or guarantee that later service-re
 Local validation is deliberately non-executing:
 
 - Generation regressions cover traversal shape, root retention, file-only exclusion, callbacks,
-  permission opt-in, literal paths, phase output, absence of timers, and complete downloadable artifacts.
+  permission opt-in, literal paths, quiet routine output, retained failure/reparse diagnostics, absence of timers,
+  and complete downloadable artifacts.
 - All catalogs are compiled by the actual application loader, including the guarded OneDrive caller.
-- Generated PowerShell is parsed as text, never invoked. Windows PowerShell 5.1.26100.9444 parsed
+- In the earlier syntax validation, generated PowerShell was parsed as text, never invoked. Windows PowerShell 5.1.26100.9444 parsed
   4,965 command bodies without syntax errors, including 135 emitted cleanup calls.
-- The longest generated cleanup command was 7,847 characters, below the existing 8,191-character batch-line limit.
+- Before the quiet-output changes, the longest generated cleanup command was 7,847 characters, below the existing 8,191-character batch-line limit.
   This is measured before `cmd.exe` expands environment variables; unusually long expanded paths remain unverified.
 
-These local checks do not prove filesystem or ACL behavior. A subsequent authorized Windows 11 VM run
+These local checks do not prove filesystem or ACL behavior. The historical authorized Windows 11 VM run
 passed all 21 fixture cases, including deep/wide trees, explicit denies, successful and unsuccessful permission repair,
 locked files, links and ancestor junctions, changing trees, and preservation callbacks.
-See the [VM validation report](windows-cleanup-vm-validation.md) for measured results and limitations.
+It predates the quiet-output changes. See the [VM validation report](windows-cleanup-vm-validation.md) for measured results and limitations.
 Cancellation, genuinely stalled OS calls, other Windows builds, and real Windows Update service workflows remain unverified.
 Do not perform destructive runtime tests on a personal installation.
 

@@ -22,10 +22,15 @@ export class UserScriptGenerator implements IUserScriptGenerator {
     }
     let builder = this.codeBuilderFactory.create(scriptMetadata.language);
     builder = initializeCode(scriptMetadata.startCode, builder);
-    const scriptPositions = selectedScripts.reduce((result, selection) => {
-      return appendSelection(selection, result, builder);
+    const scriptPositions = selectedScripts.reduce((result, selection, index) => {
+      return appendSelection(
+        selection,
+        result,
+        builder,
+        getProgressName(selection, index + 1, selectedScripts.length),
+      );
     }, new Map<SelectedScript, ICodePosition>());
-    const code = finalizeCode(builder, scriptMetadata.endCode);
+    const code = finalizeCode(builder, scriptMetadata.endCode, selectedScripts.length);
     return { code, scriptPositions };
   }
 }
@@ -39,7 +44,12 @@ function initializeCode(startCode: string, builder: ICodeBuilder): ICodeBuilder 
     .appendLine();
 }
 
-function finalizeCode(builder: ICodeBuilder, endCode: string): string {
+function finalizeCode(builder: ICodeBuilder, endCode: string, selectedActionCount: number): string {
+  builder
+    .appendStandardOutLine('')
+    .appendStandardOutLine(
+      `Reached the end of ${selectedActionCount} selected actions. Review warnings/errors above.`,
+    );
   if (!endCode) {
     return builder.toString();
   }
@@ -52,10 +62,11 @@ function appendSelection(
   selection: SelectedScript,
   scriptPositions: Map<SelectedScript, ICodePosition>,
   builder: ICodeBuilder,
+  progressName: string,
 ): Map<SelectedScript, ICodePosition> {
   // Start from next line because first line will be empty to separate scripts
   const startPosition = builder.currentLine + 1;
-  appendCode(selection, builder);
+  appendCode(selection, builder, progressName);
   const endPosition = builder.currentLine - 1;
   builder.appendLine();
   const position = new CodePosition(startPosition, endPosition);
@@ -63,13 +74,17 @@ function appendSelection(
   return scriptPositions;
 }
 
-function appendCode(selection: SelectedScript, builder: ICodeBuilder): ICodeBuilder {
-  const { script } = selection;
-  const name = selection.revert ? `${script.name} (revert)` : script.name;
+function appendCode(selection: SelectedScript, builder: ICodeBuilder, name: string): ICodeBuilder {
   const scriptCode = getSelectedCode(selection);
   return builder
     .appendLine()
     .appendFunction(name, scriptCode);
+}
+
+function getProgressName(selection: SelectedScript, index: number, total: number): string {
+  const { name } = selection.script;
+  const actionName = selection.revert ? `${name} (revert)` : name;
+  return `[${index}/${total}] ${actionName}`;
 }
 
 function getSelectedCode(selection: SelectedScript): string {
