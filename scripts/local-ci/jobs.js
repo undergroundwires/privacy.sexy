@@ -46,8 +46,6 @@ export const PREPARE_STEPS = [
   'git init -q && git add -A && git -c user.name=local-ci -c user.email=local-ci@localhost commit -q -m "local-ci snapshot"',
   'git remote add origin "$ORIGIN_URL"', // remark-validate-links resolves repository links through it
   'npm ci --engine-strict --strict-peer-deps',
-  // Electron downloads lazily on first import; parallel vitest workers would race to extract it.
-  'node node_modules/electron/install.js',
 ];
 
 export const JOBS = [

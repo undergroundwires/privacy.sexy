@@ -10,6 +10,7 @@ import { getAliases, getClientEnvironmentVariables, getSelfDirectoryAbsolutePath
 
 const WEB_DIRECTORY = resolve(getSelfDirectoryAbsolutePath(), 'src/presentation');
 const TEST_INITIALIZATION_FILE = resolve(getSelfDirectoryAbsolutePath(), 'tests/shared/bootstrap/setup.ts');
+const ELECTRON_BINARY_INSTALLATION_FILE = resolve(getSelfDirectoryAbsolutePath(), 'tests/shared/bootstrap/InstallElectronBinary.ts');
 
 export function createVueConfig(options?: {
   readonly supportLegacyBrowsers: boolean,
@@ -55,9 +56,19 @@ export function createVueConfig(options?: {
   };
 }
 
-export default defineConfig(createVueConfig({
+const defaultConfig = createVueConfig({
   supportLegacyBrowsers: true,
-}));
+});
+
+// Kept out of `createVueConfig` so the safe test profile, which must not load Electron,
+// never inherits it.
+export default defineConfig({
+  ...defaultConfig,
+  test: {
+    ...defaultConfig.test,
+    globalSetup: [ELECTRON_BINARY_INSTALLATION_FILE],
+  },
+});
 
 function getStaticHtmlMinificationOptions(): Parameters<typeof ViteMinifyPlugin>[0] {
   return {
