@@ -10,7 +10,7 @@
       src="https://undergroundwires.dev/img/badges/donate/flat.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">
+  <a href="./CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">
     <img
       alt="contributions are welcome"
       src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"
@@ -20,92 +20,6 @@
     <img
       alt="Maintainability"
       src="https://api.codeclimate.com/v1/badges/3a70b7ef602e2264342c/maintainability"
-    />
-  </a>
-  <!-- Tests -->
-  <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.unit.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Unit tests status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/unit-tests/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.integration.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Integration tests status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/integration-tests/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.e2e.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="E2E tests status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/e2e-tests/badge.svg"
-    />
-  </a>
-  <!-- Security checks -->
-  <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.sast.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Status of dependency security checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.security.sast/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.dependencies.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Status of Static Analysis Security Testing (SAST)"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.security.dependencies/badge.svg"
-    />
-  </a>
-  <!-- Checks -->
-  <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.quality.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Status of quality checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.quality/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Status of build checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.build/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.desktop-runtime-errors.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Status of runtime error checks for the desktop application"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.desktop-runtime-errors/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.scripts.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Status of script checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.scripts/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.external-urls.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Status of external URL checks"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.external-urls/badge.svg"
-    />
-  </a>
-  <!-- Release -->
-  <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.git.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Git release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-git/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.site.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Site release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-site/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.desktop.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Desktop application release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-desktop/badge.svg"
     />
   </a>
   <!-- Others -->
@@ -118,6 +32,12 @@
   </a>
 </p>
 <!-- markdownlint-restore -->
+
+## About this fork
+
+This is the maintained fork of [undergroundwires/privacy.sexy](https://github.com/undergroundwires/privacy.sexy), which is no longer actively maintained.
+Development continues at [sm18lr88/privacy.sexy](https://github.com/sm18lr88/privacy.sexy).
+GitHub Actions is disabled here; the same checks run locally in Docker with `npm run ci:local` (see [CI/CD guide](./docs/ci-cd.md#local-ci)).
 
 ## Overview
 
@@ -199,7 +119,7 @@ For common contributor tasks, start with:
 
 - [Development guide](./docs/development.md): setup, safe local validation, and development commands.
 - [Test guide](./docs/tests.md): test suites and their scope.
-- [CI/CD guide](./docs/ci-cd.md): automated checks and release pipelines.
+- [CI/CD guide](./docs/ci-cd.md): local Docker CI (`npm run ci:local`) and release pipelines.
 - [Maintenance assessment](./docs/maintenance-assessment.md): verified maintenance work and remaining release gates.
 
 Check [architecture.md](./docs/architecture.md) for an overview of design and how different parts and layers work together. You can refer to [application.md](./docs/application.md) for a closer look at application layer codebase and [presentation.md](./docs/presentation.md) for code related to GUI layer. [collection-files.md](./docs/collection-files.md) explains the YAML files that are the core of the application and [templating.md](./docs/templating.md) documents how to use templating language in those files. In [ci-cd.md](./docs/ci-cd.md), you can read more about the pipelines that automates maintenance tasks and ensures you get what see.
