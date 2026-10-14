@@ -27,6 +27,7 @@
     "check:desktop": "vitest run --dir tests/checks/desktop-runtime-errors --environment node",
     "check:external-urls": "vitest run --dir tests/checks/external-urls --environment node",
     "check:verify-build-artifacts": "node scripts/verify-build-artifacts",
+    "ci:local": "node scripts/local-ci/run.js",
     "electron:dev": "electron-vite dev",
     "electron:preview": "electron-vite preview",
     "electron:prebuild": "electron-vite build",

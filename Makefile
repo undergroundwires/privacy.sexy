@@ -2,7 +2,7 @@
 
 NPM ?= npm
 
-.PHONY: help test-fast test lint coverage build check
+.PHONY: help test-fast test lint coverage build check ci-local
 
 help:
 	@echo "test-fast  - Unit tests with non-executing boundaries"
@@ -11,6 +11,7 @@ help:
 	@echo "coverage   - Safe tests with production-source V8 coverage"
 	@echo "build      - Type-check and build the web application"
 	@echo "check      - Type-check, lint, safe tests, and web build"
+	@echo "ci-local   - GitHub workflow checks in Docker (Linux legs)"
 
 test-fast:
 	$(NPM) run test:fast
@@ -29,3 +30,6 @@ build:
 
 check:
 	$(NPM) run check:quality
+
+ci-local:
+	$(NPM) run ci:local
