@@ -16,8 +16,8 @@ describe('RendererApiProvider', () => {
       readonly expectedValue: unknown;
     }
     const testScenarios: Record<
-    PropertyKeys<Required<WindowVariables>>,
-    WindowVariableTestCase> = {
+      PropertyKeys<Required<WindowVariables>>,
+      WindowVariableTestCase> = {
       isRunningAsDesktopApplication: {
         description: 'returns true',
         setupContext: (context) => context,

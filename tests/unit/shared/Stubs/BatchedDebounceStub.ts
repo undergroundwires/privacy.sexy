@@ -1,7 +1,5 @@
-import { batchedDebounce } from '@/application/Common/Timing/BatchedDebounce';
-
 export class BatchedDebounceStub<T> {
-  public readonly callHistory = new Array<Parameters<typeof batchedDebounce>>();
+  public readonly callHistory = new Array<BatchedDebounceInitialization<T>>();
 
   public readonly collectedArgs = new Array<T>();
 
@@ -10,7 +8,7 @@ export class BatchedDebounceStub<T> {
   public func = (
     callback: (batches: readonly T[]) => void,
     waitInMs: number,
-  ): ReturnType<typeof batchedDebounce> => {
+  ): (arg: T) => void => {
     this.callHistory.push([callback, waitInMs]);
     return (arg: T) => {
       this.collectedArgs.push(arg);
@@ -31,3 +29,8 @@ export class BatchedDebounceStub<T> {
       .forEach((callback) => callback(this.collectedArgs));
   }
 }
+
+type BatchedDebounceInitialization<T> = readonly [
+  callback: (batches: readonly T[]) => void,
+  waitInMs: number,
+];

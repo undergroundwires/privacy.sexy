@@ -187,8 +187,7 @@ class TestContext {
 
   private logger: Logger = new LoggerStub();
 
-  private directoryProvider
-  : ApplicationDirectoryProvider = new ApplicationDirectoryProviderStub();
+  private directoryProvider: ApplicationDirectoryProvider = new ApplicationDirectoryProviderStub();
 
   private fileSystem: FileSystemOperations = new FileSystemOperationsStub();
 

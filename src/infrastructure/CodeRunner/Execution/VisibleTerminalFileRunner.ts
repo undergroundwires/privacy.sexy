@@ -1,4 +1,5 @@
 import type { Logger } from '@/application/Common/Log/Logger';
+import { ensureError } from '@/application/Common/CustomError';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { OsSpecificTerminalLaunchCommandFactory } from './CommandDefinition/Factory/OsSpecificTerminalLaunchCommandFactory';
 import { ExecutableFileShellCommandDefinitionRunner } from './CommandDefinition/Runner/ExecutableFileShellCommandDefinitionRunner';
@@ -11,9 +12,9 @@ export class VisibleTerminalFileRunner implements ScriptFileExecutor {
   constructor(
     private readonly logger: Logger = ElectronLogger,
     private readonly commandFactory: CommandDefinitionFactory
-    = new OsSpecificTerminalLaunchCommandFactory(),
+      = new OsSpecificTerminalLaunchCommandFactory(),
     private readonly commandRunner: CommandDefinitionRunner
-    = new ExecutableFileShellCommandDefinitionRunner(),
+      = new ExecutableFileShellCommandDefinitionRunner(),
   ) { }
 
   public async executeScriptFile(
@@ -37,7 +38,7 @@ export class VisibleTerminalFileRunner implements ScriptFileExecutor {
           success: false,
           error: {
             type: 'UnsupportedPlatform',
-            message: `Error finding command: ${error.message}`,
+            message: `Error finding command: ${ensureError(error).message}`,
           },
         };
       }
@@ -51,7 +52,7 @@ export class VisibleTerminalFileRunner implements ScriptFileExecutor {
         success: false,
         error: {
           type: 'FileExecutionError',
-          message: `Unexpected error: ${error.message}`,
+          message: `Unexpected error: ${ensureError(error).message}`,
         },
       };
     }

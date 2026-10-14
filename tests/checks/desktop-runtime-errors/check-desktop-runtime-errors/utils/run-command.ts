@@ -17,7 +17,7 @@ export function runCommand(
       ...(options ?? {}),
     };
 
-    exec(command, options, (error, stdout, stderr) => {
+    exec(command, { ...options, encoding: 'utf8' }, (error, stdout, stderr) => {
       let errorText: string | undefined;
       if (error || stderr?.length > 0) {
         errorText = formatError(command, error, stdout, stderr);

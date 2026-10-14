@@ -10,9 +10,9 @@ import type { ShellCommandOutcome, ShellCommandRunner } from './ShellRunner/Shel
 export class ExecutableFileShellCommandDefinitionRunner implements CommandDefinitionRunner {
   constructor(
     private readonly executablePermissionSetter: ExecutablePermissionSetter
-    = new FileSystemExecutablePermissionSetter(),
+      = new FileSystemExecutablePermissionSetter(),
     private readonly shellCommandRunner: ShellCommandRunner
-    = new LoggingNodeShellCommandRunner(),
+      = new LoggingNodeShellCommandRunner(),
   ) { }
 
   public async runCommandDefinition(

@@ -2,7 +2,10 @@ import type { EnumParser } from '@/application/Common/Enum';
 
 export class EnumParserStub<T> implements EnumParser<T> {
   private readonly scenarios = new Array<{
-    inputName: string, inputValue: string, outputValue: T }>();
+    inputName: string;
+    inputValue: string;
+    outputValue: T;
+  }>();
 
   private defaultValue: T | null = null;
 

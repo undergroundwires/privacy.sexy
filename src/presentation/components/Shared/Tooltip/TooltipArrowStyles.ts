@@ -57,8 +57,7 @@ function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSPropert
   return sideCounterparts[currentSide];
 }
 
-const PlacementSides = ['top', 'right', 'bottom', 'left'] as const;
-export type PlacementSide = (typeof PlacementSides)[number];
+export type PlacementSide = 'top' | 'right' | 'bottom' | 'left';
 
 function extractSide(placement: Placement): PlacementSide {
   return placement.split('-')[0] as PlacementSide;

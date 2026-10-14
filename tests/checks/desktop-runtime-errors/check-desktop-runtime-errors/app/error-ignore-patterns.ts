@@ -27,17 +27,20 @@ export const STDERR_IGNORE_PATTERNS: readonly RegExp[] = [
   /ERROR: Failed parsing extensions/,
 
   /*
-    OS: Linux (GitHub Actions)
+    OS: Linux and macOS Intel (GitHub Actions)
     Background:
       These errors occur during during Electron's GPU process initialization. Common in headless CI/CD environments.
       Not indicative of a problem in typical desktop environments.
+      The macOS Intel runner renders successfully after EGL fallback; startup log checks remain required.
     Original logs:
       [3548:0828/162502.835833:ERROR:viz_main_impl.cc(186)] Exiting GPU process due to errors during initialization
       [3627:0828/162503.133178:ERROR:viz_main_impl.cc(186)] Exiting GPU process due to errors during initialization
       [3621:0828/162503.420173:ERROR:command_buffer_proxy_impl.cc(128)] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
   */
-  /ERROR:viz_main_impl\.cc.*?Exiting GPU process due to errors during initialization/,
-  /ERROR:command_buffer_proxy_impl\.cc.*?ContextResult::kTransientFailure: Failed to send GpuControl\.CreateCommandBuffer\./,
+  /ERROR:(?:components\/viz\/service\/main\/)?viz_main_impl\.cc.*?Exiting GPU process due to errors during initialization/,
+  /ERROR:(?:gpu\/ipc\/client\/)?command_buffer_proxy_impl\.cc.*?ContextResult::kTransientFailure: Failed to send GpuControl\.CreateCommandBuffer\./,
+  /ERROR:ui\/gl\/gl_display\.cc:\d+\] Initialization of all \(1\) EGL display types failed\.$/,
+  /ERROR:ui\/gl\/init\/gl_initializer_mac\.cc:\d+\] GLDisplayEGL::Initialize failed\.$/,
 
   /*
    OS: macOS (GitHub Actions)

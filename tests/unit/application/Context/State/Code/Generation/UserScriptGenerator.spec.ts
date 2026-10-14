@@ -8,8 +8,8 @@ import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTest
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import { indentText } from '@/application/Common/Text/IndentText';
+import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 
 describe('UserScriptGenerator', () => {
   describe('scriptMetadata', () => {
@@ -37,17 +37,24 @@ describe('UserScriptGenerator', () => {
           const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
           const script = new ScriptStub('id')
             .withCode('code\nmulti-lined')
-            .toSelectedScript();
+            .toSelectedScript()
+            .withRevert(false);
           const definition = new ScriptMetadataStub()
-            .withStartCode(absentValue);
-          const expectedStart = codeBuilderStub
-            .appendFunction(script.script.name, script.script.code.execute)
-            .toString();
+            .withStartCode(absentValue)
+            .withEndCode('');
+          const expectedCode = [
+            '',
+            `Function | Name: [1/1] ${script.script.name}`,
+            `Function | Code: ${script.script.code.execute}`,
+            '',
+            'Standard output | Text: ',
+            'Standard output | Text: Reached the end of 1 selected actions. Review warnings/errors above.',
+          ].join('\n');
           // act
           const code = sut.buildCode([script], definition);
           // assert
           const actual = code.code;
-          expect(actual.startsWith(expectedStart));
+          expect(actual).to.equal(expectedCode);
         }, { excludeNull: true, excludeUndefined: true });
       });
     });
@@ -75,17 +82,24 @@ describe('UserScriptGenerator', () => {
           const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
           const script = new ScriptStub('id')
             .withCode('code\nmulti-lined')
-            .toSelectedScript();
-          const expectedEnd = codeBuilderStub
-            .appendFunction(script.script.name, script.script.code.execute)
-            .toString();
+            .toSelectedScript()
+            .withRevert(false);
           const definition = new ScriptMetadataStub()
+            .withStartCode('')
             .withEndCode(absentValue);
+          const expectedCode = [
+            '',
+            `Function | Name: [1/1] ${script.script.name}`,
+            `Function | Code: ${script.script.code.execute}`,
+            '',
+            'Standard output | Text: ',
+            'Standard output | Text: Reached the end of 1 selected actions. Review warnings/errors above.',
+          ].join('\n');
           // act
           const code = sut.buildCode([script], definition);
           // assert
           const actual = code.code;
-          expect(actual.endsWith(expectedEnd));
+          expect(actual).to.equal(expectedCode);
         }, { excludeNull: true, excludeUndefined: true });
       });
     });
@@ -142,6 +156,43 @@ describe('UserScriptGenerator', () => {
       }, { excludeNull: true });
     });
   });
+  describe('runtime progress', () => {
+    it('labels every selection when it starts and summarizes before metadata', () => {
+      // arrange
+      const codeBuilderStub = new CodeBuilderStub();
+      const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
+      const executeSelection = new ScriptStub('execute')
+        .withName('Execute action')
+        .withCode('execute body')
+        .toSelectedScript()
+        .withRevert(false);
+      const revertSelection = new ScriptStub('revert')
+        .withName('Revert action')
+        .withRevertCode('revert body')
+        .toSelectedScript()
+        .withRevert(true);
+      const definition = new ScriptMetadataStub()
+        .withStartCode('')
+        .withEndCode('metadata footer');
+      // act
+      const actual = sut.buildCode([executeSelection, revertSelection], definition);
+      // assert
+      expect(actual.code).to.equal([
+        '',
+        'Function | Name: [1/2] Execute action',
+        'Function | Code: execute body',
+        '',
+        '',
+        'Function | Name: [2/2] Revert action (revert)',
+        'Function | Code: revert body',
+        '',
+        'Standard output | Text: ',
+        'Standard output | Text: Reached the end of 2 selected actions. Review warnings/errors above.',
+        '',
+        'metadata footer',
+      ].join('\n'));
+    });
+  });
   describe('scriptPositions', () => {
     it('without script; returns empty', () => {
       // arrange
@@ -152,39 +203,29 @@ describe('UserScriptGenerator', () => {
       const actual = sut.buildCode(selectedScripts, definition);
       // assert
       expect(actual.scriptPositions.size).to.equal(0);
+      expect(actual.code).to.equal('');
     });
     describe('with scripts', () => {
-      // arrange
-      const totalStartCodeLines = 2;
-      const totalFunctionNameLines = 4;
       const definition = new ScriptMetadataStub()
         .withStartCode('First line\nSecond line');
       describe('single script', () => {
         const testCases: readonly {
           readonly description: string;
           readonly scriptCode: string;
-          readonly codeLines: number;
         }[] = [
           {
             description: 'single-lined',
             scriptCode: 'only line',
-            codeLines: 1,
           },
           {
             description: 'multi-lined',
             scriptCode: 'first line\nsecond line',
-            codeLines: 2,
           },
         ];
         const sut = new UserScriptGenerator();
         for (const testCase of testCases) {
           it(testCase.description, () => {
-            const expectedStartLine = totalStartCodeLines
-              + 1 // empty line code begin
-              + 1; // code begin
-            const expectedEndLine = expectedStartLine
-              + totalFunctionNameLines
-              + testCase.codeLines;
+            // arrange
             const selectedScript = new ScriptStub('script-id')
               .withName('script')
               .withCode(testCase.scriptCode)
@@ -192,16 +233,18 @@ describe('UserScriptGenerator', () => {
               .withRevert(false);
             // act
             const actual = sut.buildCode([selectedScript], definition);
-            // expect
+            // assert
             expect(1).to.equal(actual.scriptPositions.size);
             const position = actual.scriptPositions.get(selectedScript);
+            expectScriptPosition(actual.code, position, testCase.scriptCode);
             expectExists(position);
-            expect(expectedStartLine).to.equal(position.startLine, 'Unexpected start line position');
-            expect(expectedEndLine).to.equal(position.endLine, 'Unexpected end line position');
+            expect(position.startLine).to.equal(4);
+            expect(position.endLine).to.equal(8 + splitTextIntoLines(testCase.scriptCode).length);
           });
         }
       });
       it('multiple scripts', () => {
+        // arrange
         const sut = new UserScriptGenerator();
         const selectedScripts = [
           new ScriptStub('1').withCode('only line'),
@@ -209,55 +252,87 @@ describe('UserScriptGenerator', () => {
         ]
           .map((s) => s.toSelectedScript())
           .map((s) => s.withRevert(false));
-        const expectedScript1Start = totalStartCodeLines
-          + 1 // empty line code begin
-          + 1; // code begin
-        const expectedScript1End = expectedScript1Start
-          + totalFunctionNameLines
-          + 1; // total code lines
-        const expectedScript2Start = expectedScript1End
-          + 1 // code end hyphens
-          + 1 // new line
-          + 1; // code begin
-        const expectedScript2End = expectedScript2Start
-          + totalFunctionNameLines
-          + 2; // total lines of second script
         // act
         const actual = sut.buildCode(selectedScripts, definition);
         // assert
-        const actualPosition1 = actual.scriptPositions.get(selectedScripts[0]);
-        const actualPosition2 = actual.scriptPositions.get(selectedScripts[1]);
-        const assertionContext: readonly string[] = [
-          'Given scripts:',
-          indentText(JSON.stringify(selectedScripts)),
-          'Generated code:',
-          indentText(actual.code),
-          'Actual script positions:',
-          indentText(JSON.stringify(Array.from(actual.scriptPositions.values()))),
-        ];
         expect(actual.scriptPositions.size).to.equal(2);
-        expectExists(actualPosition1);
-        expect(expectedScript1Start).to.equal(actualPosition1.startLine, formatAssertionMessage([
-          'Unexpected start line position (first script)',
-          ...assertionContext,
-        ]));
-        expect(expectedScript1End).to.equal(actualPosition1.endLine, formatAssertionMessage([
-          'Unexpected end line position (first script)',
-          ...assertionContext,
-        ]));
-        expectExists(actualPosition2);
-        expect(expectedScript2Start).to.equal(actualPosition2.startLine, formatAssertionMessage([
-          'Unexpected start line position (second script)',
-          ...assertionContext,
-        ]));
-        expect(expectedScript2End).to.equal(actualPosition2.endLine, formatAssertionMessage([
-          'Unexpected end line position (second script)',
-          ...assertionContext,
-        ]));
+        expectScriptPosition(actual.code, actual.scriptPositions.get(selectedScripts[0]), 'only line');
+        expectScriptPosition(actual.code, actual.scriptPositions.get(selectedScripts[1]), 'first line\nsecond line');
+        const firstPosition = actual.scriptPositions.get(selectedScripts[0]);
+        const secondPosition = actual.scriptPositions.get(selectedScripts[1]);
+        expectExists(firstPosition);
+        expectExists(secondPosition);
+        expect(firstPosition.startLine).to.equal(4);
+        expect(firstPosition.endLine).to.equal(9);
+        expect(secondPosition.startLine).to.equal(12);
+        expect(secondPosition.endLine).to.equal(18);
+      });
+      it('maps exact-boundary and long progress titles with duplicate bodies independently', () => {
+        // arrange
+        const duplicateBody = 'identical body';
+        const exactBoundaryActionName = 'x'.repeat(52);
+        const longActionName = 'long action '.repeat(8);
+        const exactBoundarySelection = new ScriptStub('exact-boundary')
+          .withName(exactBoundaryActionName)
+          .withCode(duplicateBody)
+          .toSelectedScript()
+          .withRevert(false);
+        const longSelection = new ScriptStub('long')
+          .withName(longActionName)
+          .withCode(duplicateBody)
+          .toSelectedScript()
+          .withRevert(false);
+        const metadata = new ScriptMetadataStub()
+          .withStartCode('')
+          .withEndCode('');
+        const sut = new UserScriptGenerator();
+        // act
+        const actual = sut.buildCode([exactBoundarySelection, longSelection], metadata);
+        // assert
+        const exactBoundaryPosition = actual.scriptPositions.get(exactBoundarySelection);
+        const longPosition = actual.scriptPositions.get(longSelection);
+        expectExists(exactBoundaryPosition);
+        expectExists(longPosition);
+        expect(exactBoundaryPosition.startLine).to.equal(1);
+        expect(exactBoundaryPosition.endLine).to.equal(4);
+        expect(longPosition.startLine).to.equal(7);
+        expect(longPosition.endLine).to.equal(10);
+        const generatedLines = splitTextIntoLines(actual.code);
+        expect(generatedLines).toContain(`:: [1/2] ${exactBoundaryActionName}`);
+        expect(generatedLines).toContain(`:: [2/2] ${longActionName}`);
+        expect(generatedLines.slice(
+          exactBoundaryPosition.endLine - 1,
+          exactBoundaryPosition.endLine,
+        )).to.deep.equal([duplicateBody]);
+        expect(generatedLines.slice(longPosition.endLine - 1, longPosition.endLine))
+          .to.deep.equal([duplicateBody]);
       });
     });
   });
 });
+
+function expectScriptPosition(
+  generatedCode: string,
+  position: ICodePosition | undefined,
+  scriptCode: string,
+): void {
+  expectExists(position);
+  const generatedLines = splitTextIntoLines(generatedCode);
+  const scriptLines = splitTextIntoLines(scriptCode);
+  const scriptStartLineIndex = findLineSequence(generatedLines, scriptLines);
+  const selectionStartLineIndex = generatedLines.lastIndexOf('', scriptStartLineIndex);
+  expect(scriptStartLineIndex).toBeGreaterThanOrEqual(0);
+  expect(selectionStartLineIndex).toBeGreaterThanOrEqual(0);
+  expect(position.startLine).to.equal(selectionStartLineIndex + 1);
+  expect(position.endLine).to.equal(scriptStartLineIndex + scriptLines.length);
+}
+
+function findLineSequence(lines: readonly string[], expectedLines: readonly string[]): number {
+  return lines.findIndex((line, startIndex) => {
+    return line === expectedLines[0]
+      && expectedLines.every((expectedLine, offset) => lines[startIndex + offset] === expectedLine);
+  });
+}
 
 function mockCodeBuilderFactory(mock: ICodeBuilder): ICodeBuilderFactory {
   return {
@@ -266,14 +341,23 @@ function mockCodeBuilderFactory(mock: ICodeBuilder): ICodeBuilderFactory {
 }
 
 class CodeBuilderStub implements ICodeBuilder {
-  public currentLine = 0;
+  private readonly lines = new Array<string>();
 
-  private text = '';
+  public get currentLine(): number {
+    return this.lines.length;
+  }
 
   public appendLine(code?: string): ICodeBuilder {
-    this.text += this.text ? `${code}\n` : code;
-    this.currentLine++;
+    if (!code) {
+      this.lines.push('');
+      return this;
+    }
+    this.lines.push(...splitTextIntoLines(code));
     return this;
+  }
+
+  public appendStandardOutLine(text: string): ICodeBuilder {
+    return this.appendLine(`Standard output | Text: ${text}`);
   }
 
   public appendTrailingHyphensCommentLine(totalRepeatHyphens: number): ICodeBuilder {
@@ -298,6 +382,6 @@ class CodeBuilderStub implements ICodeBuilder {
   }
 
   public toString(): string {
-    return this.text;
+    return this.lines.join('\n');
   }
 }

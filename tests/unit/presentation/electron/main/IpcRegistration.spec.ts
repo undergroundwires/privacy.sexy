@@ -94,8 +94,9 @@ class IpcRegistrationTestSetup {
 
   private dialogFactory: DialogFactory = () => new DialogStub();
 
-  private scriptDiagnosticsCollectorFactory
-  : ScriptDiagnosticsCollectorFactory = () => new ScriptDiagnosticsCollectorStub();
+  private scriptDiagnosticsCollectorFactory: ScriptDiagnosticsCollectorFactory = (
+    () => new ScriptDiagnosticsCollectorStub()
+  );
 
   public withRegistrar(registrar: IpcChannelRegistrar): this {
     this.registrar = registrar;

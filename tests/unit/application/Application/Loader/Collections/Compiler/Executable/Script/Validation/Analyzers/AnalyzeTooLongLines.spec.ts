@@ -161,7 +161,7 @@ interface ScriptLanguageScenario {
 
 function createScriptLanguageScenarios(): readonly ScriptLanguageScenario[] {
   const maxLengths: Record< // `Record` catches missing entries at compile-time
-  ScriptLanguage, number> = {
+    ScriptLanguage, number> = {
     [ScriptLanguage.batchfile]: 8191,
     [ScriptLanguage.shellscript]: 1048576,
   };

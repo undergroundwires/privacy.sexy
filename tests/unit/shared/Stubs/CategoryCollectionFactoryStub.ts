@@ -9,7 +9,7 @@ export function createCategoryCollectionFactorySpy(): {
   ) => CategoryCollectionInitParameters | undefined;
 } {
   const createdCategoryCollections = new Map<
-  CategoryCollection, CategoryCollectionInitParameters
+    CategoryCollection, CategoryCollectionInitParameters
   >();
   return {
     categoryCollectionFactorySpy: (parameters) => {

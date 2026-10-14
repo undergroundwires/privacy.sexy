@@ -1,9 +1,9 @@
-import { CustomError } from '@/application/Common/CustomError';
+import { CustomError, ensureError } from '@/application/Common/CustomError';
 import { indentText } from '@/application/Common/Text/IndentText';
 
 export interface ErrorWithContextWrapper {
   (
-    innerError: Error,
+    innerError: unknown,
     additionalContext: string,
   ): Error;
 }
@@ -16,7 +16,7 @@ export const wrapErrorWithAdditionalContext: ErrorWithContextWrapper = (
     throw new Error('Missing additional context');
   }
   return new ContextualError({
-    innerError,
+    innerError: ensureError(innerError),
     additionalContext,
   });
 };

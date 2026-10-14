@@ -14,7 +14,7 @@ Options:
     Example: npm run install-deps -- --root-directory /your/path/here
 
   --no-errors
-    Ignores errors and continues the execution.
+    Limits NPM output to errors; installation failures still return a nonzero exit code.
     Example: npm run install-deps -- --no-errors
 
   --ci
@@ -51,6 +51,10 @@ const ARG_NAMES = {
 };
 
 async function main() {
+  if (process.argv.slice(2).some((argument) => argument === '--help' || argument === '-h')) {
+    console.log('Usage: node scripts/npm-install.js [--root-directory <path>] [--ci] [--fresh] [--non-deterministic] [--no-errors]');
+    return;
+  }
   const options = getOptions();
   console.log('Options:', options);
   await ensureNpmRootDirectory(options.rootDirectory);
@@ -65,7 +69,7 @@ async function main() {
   console.log('Starting dependency installation...');
   const exitCode = await executeWithRetry(
     command,
-    options.workingDirectory,
+    options.rootDirectory,
     MAX_RETRIES,
     RETRY_DELAY_IN_MS,
   );
@@ -79,7 +83,7 @@ async function main() {
 
 async function removeNodeModules(workingDirectory) {
   const nodeModulesDirectory = resolve(workingDirectory, 'node_modules');
-  if (await exists('./node_modules')) {
+  if (await exists(nodeModulesDirectory)) {
     console.log('Removing node_modules...');
     await rm(nodeModulesDirectory, { recursive: true });
   }
@@ -117,8 +121,24 @@ function buildCommand(ci, outputErrors) {
 
 function getOptions() {
   const processArgs = process.argv.slice(2); // Slice off the node and script name
+  const knownArguments = new Set(Object.values(ARG_NAMES));
+  for (let index = 0; index < processArgs.length; index++) {
+    const argument = processArgs[index];
+    if (!knownArguments.has(argument)) {
+      throw new Error(`Unknown option: ${argument}. Use --help for usage.`);
+    }
+    if (argument === ARG_NAMES.rootDirectory) {
+      const rootDirectory = processArgs[index + 1];
+      if (!rootDirectory || rootDirectory.startsWith('--')) {
+        throw new Error(`${ARG_NAMES.rootDirectory} requires a directory path.`);
+      }
+      index++;
+    }
+  }
   return {
-    rootDirectory: processArgs.includes('--root-directory') ? processArgs[processArgs.indexOf('--root-directory') + 1] : process.cwd(),
+    rootDirectory: processArgs.includes(ARG_NAMES.rootDirectory)
+      ? processArgs[processArgs.indexOf(ARG_NAMES.rootDirectory) + 1]
+      : process.cwd(),
     outputErrors: !processArgs.includes(ARG_NAMES.ignoreErrors),
     ci: processArgs.includes(ARG_NAMES.ci),
     fresh: processArgs.includes(ARG_NAMES.fresh),

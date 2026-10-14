@@ -74,8 +74,9 @@ class TestContext {
 
   private typeValidator: TypeValidator = new TypeValidatorStub();
 
-  private parameterNameValidator
-  : ParameterNameValidator = createParameterNameValidatorStub().validator;
+  private parameterNameValidator: ParameterNameValidator = (
+    createParameterNameValidatorStub().validator
+  );
 
   public withParameterName(parameterName: string): this {
     this.parameterName = parameterName;

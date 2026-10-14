@@ -34,20 +34,18 @@ export function bindObjectMethods<T>(obj: T): T {
   return obj;
 }
 
-function bindMethodsOfObject<T>(obj: T): T {
-  const prototype = Object.getPrototypeOf(obj);
-  if (!prototype) {
-    return obj;
-  }
-  Object.getOwnPropertyNames(prototype).forEach((property) => {
-    if (!prototype.hasOwnProperty.call(obj, property)) {
-      return; // Skip properties not directly on the prototype
-    }
-    const propertyKey = property as keyof (typeof obj);
-    const value = obj[propertyKey];
-    if (isFunction(value)) {
-      obj[propertyKey] = value.bind(obj);
+function bindMethodsOfObject(obj: object): void {
+  const prototype: object | null = Object.getPrototypeOf(obj);
+  const properties = new Set([
+    ...Object.getOwnPropertyNames(obj),
+    ...(prototype && prototype !== Object.prototype ? Object.getOwnPropertyNames(prototype) : []),
+  ]);
+  properties.forEach((property) => {
+    const descriptor = Object.getOwnPropertyDescriptor(obj, property)
+      ?? (prototype ? Object.getOwnPropertyDescriptor(prototype, property) : undefined);
+    const value: unknown = descriptor?.value;
+    if (property !== 'constructor' && isFunction(value)) {
+      Object.assign(obj, { [property]: value.bind(obj) });
     }
   });
-  return obj;
 }

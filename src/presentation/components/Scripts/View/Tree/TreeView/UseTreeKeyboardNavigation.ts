@@ -34,23 +34,25 @@ export function useTreeKeyboardNavigation(
     }
 
     event.preventDefault();
-    event.stopPropagation();
 
     action({
       focus: treeRoot.focus,
-      nodes: treeRoot.collection.nodes,
+      renderedNodes: getRenderedNodes(
+        treeElementRef.value,
+        treeRoot.collection.nodes,
+      ),
     });
   });
 }
 
 interface TreeNavigationContext {
   readonly focus: SingleNodeFocusManager;
-  readonly nodes: QueryableNodes;
+  readonly renderedNodes: readonly TreeNode[];
 }
 
 const KeyToActionMapping: Record<
-TreeNavigationKeyCodes,
-(context: TreeNavigationContext) => void
+  TreeNavigationKeyCodes,
+  (context: TreeNavigationContext) => void
 > = {
   ArrowLeft: collapseNodeOrFocusParent,
   ArrowUp: focusPreviousVisibleNode,
@@ -67,7 +69,7 @@ function focusPreviousVisibleNode(context: TreeNavigationContext): void {
   }
   const previousVisibleNode = findPreviousVisibleNode(
     focusedNode,
-    context.nodes,
+    context.renderedNodes,
   );
   if (!previousVisibleNode) {
     return;
@@ -80,7 +82,7 @@ function focusNextVisibleNode(context: TreeNavigationContext): void {
   if (!focusedNode) {
     return;
   }
-  const nextVisibleNode = findNextVisibleNode(focusedNode, context.nodes);
+  const nextVisibleNode = findNextVisibleNode(focusedNode, context.renderedNodes);
   if (!nextVisibleNode) {
     return;
   }
@@ -133,48 +135,48 @@ function expandNodeOrFocusFirstChild(context: TreeNavigationContext): void {
     );
     return;
   }
-  if (focusedNode.hierarchy.children.length === 0) {
-    return;
-  }
-  const firstChildNode = focusedNode.hierarchy.children[0];
+  const firstChildNode = context.renderedNodes.find(
+    (node) => node.hierarchy.parent === focusedNode,
+  );
   if (firstChildNode) {
     context.focus.setSingleFocus(firstChildNode);
   }
 }
 
-function findNextVisibleNode(node: TreeNode, nodes: QueryableNodes): TreeNode | undefined {
-  if (node.hierarchy.children.length && node.state.current.isExpanded) {
-    return node.hierarchy.children[0];
-  }
-  const nextNode = findNextNode(node, nodes);
-  const parentNode = node.hierarchy.parent;
-  if (!nextNode && parentNode) {
-    const nextSibling = findNextNode(parentNode, nodes);
-    return nextSibling;
-  }
-  return nextNode;
-}
-
-function findNextNode(node: TreeNode, nodes: QueryableNodes): TreeNode | undefined {
-  const index = nodes.flattenedNodes.indexOf(node);
-  return nodes.flattenedNodes[index + 1] || undefined;
+function findNextVisibleNode(
+  node: TreeNode,
+  renderedNodes: readonly TreeNode[],
+): TreeNode | undefined {
+  const index = renderedNodes.indexOf(node);
+  return renderedNodes[index + 1];
 }
 
 function findPreviousVisibleNode(
   node: TreeNode,
-  nodes: QueryableNodes,
+  renderedNodes: readonly TreeNode[],
 ): TreeNode | undefined {
-  const previousNode = findPreviousNode(node, nodes);
-  if (!previousNode) {
-    return node.hierarchy.parent;
-  }
-  if (previousNode.hierarchy.children.length && previousNode.state.current.isExpanded) {
-    return previousNode.hierarchy.children[previousNode.hierarchy.children.length - 1];
-  }
-  return previousNode;
+  const index = renderedNodes.indexOf(node);
+  return renderedNodes[index - 1];
 }
 
-function findPreviousNode(node: TreeNode, nodes: QueryableNodes): TreeNode | undefined {
-  const index = nodes.flattenedNodes.indexOf(node);
-  return nodes.flattenedNodes[index - 1] || undefined;
+function getRenderedNodes(
+  treeElement: HTMLElement,
+  nodes: QueryableNodes,
+): readonly TreeNode[] {
+  return Array
+    .from(treeElement.querySelectorAll<HTMLElement>('[data-tree-node-id]'))
+    .map((nodeElement) => nodeElement.dataset.treeNodeId)
+    .filter((nodeId): nodeId is string => nodeId !== undefined)
+    .map((nodeId) => nodes.getNodeById(nodeId))
+    .filter((node) => {
+      if (!node.state.current.isVisible) {
+        return false;
+      }
+      for (let { parent } = node.hierarchy; parent; parent = parent.hierarchy.parent) {
+        if (!parent.state.current.isVisible || !parent.state.current.isExpanded) {
+          return false;
+        }
+      }
+      return true;
+    });
 }

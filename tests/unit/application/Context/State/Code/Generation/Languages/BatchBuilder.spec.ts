@@ -34,6 +34,11 @@ describe('BatchBuilder', () => {
         expected: 'echo test',
       },
       {
+        name: 'empty text',
+        text: '',
+        expected: 'echo(',
+      },
+      {
         name: 'text with ampersand',
         text: 'a & b',
         expected: 'echo a ^& b',
@@ -47,6 +52,11 @@ describe('BatchBuilder', () => {
         name: 'text with multiple ampersands and percent signs',
         text: 'Me&you in % ? You & me = 0%',
         expected: 'echo Me^&you in %% ? You ^& me = 0%%',
+      },
+      {
+        name: 'text with cmd special characters',
+        text: '"^&|<>();%',
+        expected: 'echo ^"^^^&^|^<^>^(^);%%',
       },
     ];
     for (const test of testData) {

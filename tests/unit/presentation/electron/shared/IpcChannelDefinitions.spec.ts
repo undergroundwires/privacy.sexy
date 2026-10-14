@@ -3,7 +3,7 @@ import { type ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation
 import { expectArrayEquals } from '@tests/shared/Assertions/ExpectArrayEquals';
 
 describe('IpcChannelDefinitions', () => {
-  it('defines IPC channels correctly', () => {
+  describe('defines IPC channels correctly', () => {
     const testScenarios: Record<ChannelDefinitionKey, {
       readonly expectedNamespace: string;
       readonly expectedAccessibleMembers: readonly string[];
@@ -14,7 +14,7 @@ describe('IpcChannelDefinitions', () => {
       },
       Dialog: {
         expectedNamespace: 'dialogs',
-        expectedAccessibleMembers: ['saveFile'],
+        expectedAccessibleMembers: ['showError', 'saveFile'],
       },
       ScriptDiagnosticsCollector: {
         expectedNamespace: 'script-diagnostics-collector',

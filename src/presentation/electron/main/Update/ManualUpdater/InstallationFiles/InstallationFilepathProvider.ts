@@ -44,11 +44,11 @@ async function makeFilepathAvailable(
   filePath: string,
   utilities: InstallationFilepathProviderUtilities,
 ): Promise<boolean> {
-  let isFileAvailable = false;
+  let isFileAvailable: boolean;
   try {
     isFileAvailable = await utilities.fileSystem.isFileAvailable(filePath);
   } catch (error) {
-    throw new Error('File availability check failed');
+    throw new Error('File availability check failed', { cause: error });
   }
   if (!isFileAvailable) {
     return true;

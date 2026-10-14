@@ -20,8 +20,9 @@ export class WindowVariablesStub implements WindowVariables {
 
   public dialog?: Dialog = new DialogStub();
 
-  public scriptDiagnosticsCollector?
-  : ScriptDiagnosticsCollector = new ScriptDiagnosticsCollectorStub();
+  public scriptDiagnosticsCollector?: ScriptDiagnosticsCollector = (
+    new ScriptDiagnosticsCollectorStub()
+  );
 
   public withScriptDiagnosticsCollector(
     scriptDiagnosticsCollector: ScriptDiagnosticsCollector,

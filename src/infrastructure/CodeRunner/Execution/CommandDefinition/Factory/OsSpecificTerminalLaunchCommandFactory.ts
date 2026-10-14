@@ -32,8 +32,8 @@ function getOperatingSystemCommandDefinition(
 }
 
 const SupportedDesktopCommandDefinitions: Readonly<Partial<Record<
-OperatingSystem,
-CommandDefinition>>> = {
+  OperatingSystem,
+  CommandDefinition>>> = {
   [OperatingSystem.Windows]: new WindowsVisibleTerminalCommand(),
   [OperatingSystem.Linux]: new LinuxVisibleTerminalCommand(),
   [OperatingSystem.macOS]: new MacOsVisibleTerminalCommand(),

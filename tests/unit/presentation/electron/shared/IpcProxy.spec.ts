@@ -249,7 +249,7 @@ describe('IpcProxy', () => {
 });
 
 function mockIpcMain() {
-  const registeredHandlersByChannel: Record<string, (...args: unknown[]) => unknown> = {};
+  const registeredHandlersByChannel: Record<string, IpcHandler> = {};
   const ipcMainMock: Partial<Electron.IpcMain> = {
     handle: (channel, handler) => {
       registeredHandlersByChannel[channel] = handler;
@@ -260,6 +260,10 @@ function mockIpcMain() {
     registeredHandlersByChannel,
   };
 }
+
+type IpcHandler = {
+  handler(...args: unknown[]): unknown;
+}['handler'];
 
 function mockIpcRenderer(returnValuePromise: Promise<unknown> = Promise.resolve()) {
   const registeredCallArgs = new Array<Parameters<Electron.IpcRenderer['invoke']>>();

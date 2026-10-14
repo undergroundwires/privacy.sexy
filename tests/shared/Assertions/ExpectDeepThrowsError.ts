@@ -4,7 +4,7 @@ import { expectExists } from './ExpectExists';
 // `toThrowError` does not assert the error type (https://github.com/vitest-dev/vitest/blob/v0.34.2/docs/api/expect.md#tothrowerror)
 export function expectDeepThrowsError<T extends Error>(delegate: () => void, expected: T) {
   // arrange
-  let actual: T | undefined;
+  let actual: unknown;
   // act
   try {
     delegate();
@@ -13,6 +13,10 @@ export function expectDeepThrowsError<T extends Error>(delegate: () => void, exp
   }
   // assert
   expectExists(actual);
+  expect(actual).to.be.an(Error.name);
+  if (!(actual instanceof Error)) {
+    throw new Error('Expected an Error to be thrown.');
+  }
   expect(Boolean(actual.stack)).to.equal(true, 'Empty stack trace.');
   expect(expected.message).to.equal(actual.message);
   expect(expected.name).to.equal(actual.name);

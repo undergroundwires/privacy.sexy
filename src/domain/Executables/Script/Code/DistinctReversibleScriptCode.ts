@@ -20,7 +20,7 @@ function validateRevertCode(revertCode: string | undefined, execute: string) {
       throw new Error('Code itself and its reverting code cannot be the same');
     }
   } catch (err) {
-    throw Error(`(revert): ${err.message}`);
+    throw Error(`(revert): ${err instanceof Error ? err.message : String(err)}`, { cause: err });
   }
 }
 

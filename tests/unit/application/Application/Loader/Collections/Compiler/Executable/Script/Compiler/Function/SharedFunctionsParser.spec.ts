@@ -449,8 +449,9 @@ class TestContext {
 
   private functionParameterParser: FunctionParameterParser = createFunctionParameterParserStub;
 
-  private parameterCollectionFactory
-  : FunctionParameterCollectionFactory = () => new FunctionParameterCollectionStub();
+  private parameterCollectionFactory: FunctionParameterCollectionFactory = (
+    () => new FunctionParameterCollectionStub()
+  );
 
   public withLanguage(language: ScriptLanguage): this {
     this.language = language;

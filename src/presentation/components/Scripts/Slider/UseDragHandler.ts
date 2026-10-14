@@ -65,27 +65,27 @@ export function useDragHandler(
 }
 
 export interface DragDomModifier {
-  addEventListenerToDocument(
-    type: keyof DocumentEventMap,
-    handler: EventListener,
+  addEventListenerToDocument<TEvent extends keyof DocumentEventMap>(
+    type: TEvent,
+    handler: (event: DocumentEventMap[TEvent]) => void,
   ): void;
-  removeEventListenerFromDocument(
-    type: keyof DocumentEventMap,
-    handler: EventListener,
+  removeEventListenerFromDocument<TEvent extends keyof DocumentEventMap>(
+    type: TEvent,
+    handler: (event: DocumentEventMap[TEvent]) => void,
   ): void;
 }
 
 class GlobalDocumentDragDomModifier implements DragDomModifier {
-  public addEventListenerToDocument(
-    type: keyof DocumentEventMap,
-    listener: EventListener,
+  public addEventListenerToDocument<TEvent extends keyof DocumentEventMap>(
+    type: TEvent,
+    listener: (event: DocumentEventMap[TEvent]) => void,
   ): void {
     document.addEventListener(type, listener);
   }
 
-  public removeEventListenerFromDocument(
-    type: keyof DocumentEventMap,
-    listener: EventListener,
+  public removeEventListenerFromDocument<TEvent extends keyof DocumentEventMap>(
+    type: TEvent,
+    listener: (event: DocumentEventMap[TEvent]) => void,
   ): void {
     document.removeEventListener(type, listener);
   }

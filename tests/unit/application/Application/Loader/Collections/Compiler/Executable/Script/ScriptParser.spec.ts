@@ -460,8 +460,7 @@ describe('ScriptParser', () => {
 class TestContext {
   private data: ScriptData = createScriptDataWithCode();
 
-  private collectionContext
-  : CategoryCollectionContext = new CategoryCollectionContextStub();
+  private collectionContext: CategoryCollectionContext = new CategoryCollectionContextStub();
 
   private levelParser: EnumParser<RecommendationLevel> = new EnumParserStub<RecommendationLevel>()
     .setupDefaultValue(RecommendationLevel.Standard);

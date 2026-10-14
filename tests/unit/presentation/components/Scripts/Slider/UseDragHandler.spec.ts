@@ -113,7 +113,7 @@ describe('useDragHandler', () => {
       mockElement.dispatchEvent(createMockPointerEvent('pointerdown', { clientX: 100 }));
 
       // assert
-      const actualEventNames = [...dragDomModifierMock.events].map(([eventName]) => eventName);
+      const actualEventNames = [...dragDomModifierMock.events];
       expectArrayEquals(actualEventNames, expectedEventNames, {
         ignoreOrder: true,
       });
@@ -149,7 +149,7 @@ describe('useDragHandler', () => {
 
         // assert
         expect(throttleStub.throttleInitializationCallArgs.length).to.equal(1);
-        const [, actualThrottleInMs] = throttleStub.throttleInitializationCallArgs[0];
+        const actualThrottleInMs = throttleStub.throttleInitializationCallArgs[0].waitInMs;
         expect(expectedThrottleInMs).to.equal(actualThrottleInMs);
       });
       it('limits frequency of drag movement updates', () => {
@@ -277,22 +277,23 @@ function createMockPointerEvent(...args: ConstructorArguments<typeof PointerEven
 
 function createDragDomModifierMock(): DragDomModifier & {
   simulateEvent(type: keyof DocumentEventMap, event: Event): void;
-  readonly events: Map<keyof DocumentEventMap, EventListener>;
+  readonly events: ReadonlySet<keyof DocumentEventMap>;
 } {
-  const events = new Map<keyof DocumentEventMap, EventListener>();
+  const events = new Set<keyof DocumentEventMap>();
   return {
     addEventListenerToDocument: (type, handler) => {
-      events.set(type, handler);
+      document.addEventListener(type, handler);
+      events.add(type);
     },
-    removeEventListenerFromDocument: (type) => {
+    removeEventListenerFromDocument: (type, handler) => {
+      document.removeEventListener(type, handler);
       events.delete(type);
     },
     simulateEvent: (type, event) => {
-      const handler = events.get(type);
-      if (!handler) {
+      if (!events.has(type)) {
         throw new Error(`No event handler registered for: ${type}`);
       }
-      handler(event);
+      document.dispatchEvent(event);
     },
     events,
   };

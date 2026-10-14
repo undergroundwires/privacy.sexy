@@ -32,7 +32,7 @@ describe('injectionSymbols', () => {
       const mockValue = { someProperty: 'someValue' };
       // act
       const mockInject = () => mockValue;
-      const result = injectKey((keys) => keys.useApplication, mockInject);
+      const result = injectKey<unknown>((keys) => keys.useApplication, mockInject);
       // assert
       expect(result).to.equal(mockValue);
     });
@@ -42,7 +42,7 @@ describe('injectionSymbols', () => {
       const mockFactory = () => mockValue;
       const mockInject = () => mockFactory;
       // act
-      const result = injectKey((keys) => keys.useCollectionState, mockInject);
+      const result = injectKey<unknown>((keys) => keys.useCollectionState, mockInject);
       // assert
       expect(result).to.equal(mockValue);
     });

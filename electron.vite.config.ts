@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
-import { mergeConfig, type UserConfig } from 'vite';
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
+import { mergeConfig } from 'vite';
+import { defineConfig, type MainViteConfig } from 'electron-vite';
 import { getAliases, getClientEnvironmentVariables } from './vite-config-helper';
 import { createVueConfig } from './vite.config';
 import distDirs from './dist-dirs.json' with { type: 'json' };
@@ -45,10 +45,15 @@ export default defineConfig({
 function getSharedElectronConfig(options: {
   readonly distDirSubfolder: string;
   readonly entryFilePath: string;
-}): UserConfig {
+}): MainViteConfig {
   return {
     build: {
       outDir: options.distDirSubfolder,
+      externalizeDeps: {
+        // Preserve bundled electron-log subpath imports for Electron's ESM loader.
+        // See https://github.com/electron/electron/issues/41241.
+        exclude: ['electron-log'],
+      },
       lib: {
         entry: options.entryFilePath,
       },
@@ -62,15 +67,6 @@ function getSharedElectronConfig(options: {
         },
       },
     },
-    plugins: [externalizeDepsPlugin({
-      exclude: [
-        // Keep 'electron-log' in bundling process.
-        // This is a workaround for inability of Electron's ESM loader to resolve subpath imports.
-        // Do not externalize `electron-log` so subpath imports such as `electron-log/main` works.
-        // See https://github.com/electron/electron/issues/41241, https://github.com/alex8088/electron-vite/issues/401
-        'electron-log',
-      ],
-    })],
     define: {
       ...getClientEnvironmentVariables(),
     },

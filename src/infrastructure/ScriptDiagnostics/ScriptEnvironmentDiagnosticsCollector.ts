@@ -7,7 +7,7 @@ import { PersistentApplicationDirectoryProvider } from '@/infrastructure/FileSys
 export class ScriptEnvironmentDiagnosticsCollector implements ScriptDiagnosticsCollector {
   constructor(
     private readonly directoryProvider: ApplicationDirectoryProvider
-    = new PersistentApplicationDirectoryProvider(),
+      = new PersistentApplicationDirectoryProvider(),
     private readonly environment: RuntimeEnvironment = CurrentEnvironment,
   ) { }
 

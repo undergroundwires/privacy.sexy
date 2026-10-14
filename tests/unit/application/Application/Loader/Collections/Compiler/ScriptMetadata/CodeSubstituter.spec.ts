@@ -83,8 +83,9 @@ class TestContext {
 
   private projectDetails: ProjectDetails = new ProjectDetailsStub();
 
-  private callArgumentFactory
-  : FunctionCallArgumentFactory = new FunctionCallArgumentFactoryStub().factory;
+  private callArgumentFactory: FunctionCallArgumentFactory = (
+    new FunctionCallArgumentFactoryStub().factory
+  );
 
   public withCompiler(compiler: IExpressionsCompiler): this {
     this.compiler = compiler;

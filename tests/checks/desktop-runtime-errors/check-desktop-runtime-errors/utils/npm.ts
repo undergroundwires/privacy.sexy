@@ -56,6 +56,7 @@ export async function npmBuild(
   log('Building project...');
   const { error } = await runCommand(buildCommand, {
     cwd: projectDir,
+    timeout: 15 * 60 * 1000, // Universal macOS packaging exceeds the default command timeout.
   });
   if (error) {
     die(error);

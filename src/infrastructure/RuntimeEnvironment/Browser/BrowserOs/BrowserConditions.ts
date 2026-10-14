@@ -90,8 +90,8 @@ export const BrowserConditions: readonly BrowserCondition[] = [
 function generateJsdomBrowserConditions(): readonly BrowserCondition[] {
   // jsdom user agent format: `Mozilla/5.0 (${process.platform || "unknown OS"}) ...` (https://archive.ph/2023.02.14-193200/https://github.com/jsdom/jsdom#advanced-configuration)
   const operatingSystemPlatformMap: Partial<Record<
-  OperatingSystem,
-  NodeJS.Platform> // Enforce right platform constants at compile time
+    OperatingSystem,
+    NodeJS.Platform> // Enforce right platform constants at compile time
   > = {
     [OperatingSystem.Linux]: 'linux',
     [OperatingSystem.Windows]: 'win32',

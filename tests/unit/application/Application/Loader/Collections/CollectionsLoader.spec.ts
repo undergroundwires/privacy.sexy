@@ -94,8 +94,7 @@ describe('CollectionsLoader', () => {
 });
 
 class TestContext {
-  private collectionCompiler
-  : CollectionCompiler = new CollectionCompilerStub().stub();
+  private collectionCompiler: CollectionCompiler = new CollectionCompilerStub().stub();
 
   private projectDetails: ProjectDetails = new ProjectDetailsStub();
 

@@ -38,6 +38,22 @@ describe('wrapErrorWithAdditionalContext', () => {
       const actualError = error.cause;
       expect(actualError).to.equal(expectedError);
     });
+    it('normalizes non-Error causes', () => {
+      // arrange
+      const originalError = 'error causing the issue';
+
+      // act
+      const error = wrapErrorWithAdditionalContext(originalError, 'additional context');
+
+      // assert
+      const { cause } = error;
+      expect(cause).to.be.an.instanceof(Error);
+      if (!(cause instanceof Error)) {
+        throw new Error('Expected the cause to be an Error.');
+      }
+      expect(cause.message).to.equal(originalError);
+      expect(cause.cause).to.equal(originalError);
+    });
   });
   describe('error message construction', () => {
     it('includes the original error message', () => {

@@ -1,3 +1,4 @@
+import { ensureError } from '@/application/Common/CustomError';
 import type { SanityValidator } from './SanityValidator';
 import type { SanityCheckOptions } from './SanityCheckOptions';
 
@@ -22,7 +23,7 @@ export abstract class FactoryValidator<T> implements SanityValidator {
         yield 'Factory resulted in a falsy value';
       }
     } catch (error) {
-      yield `Error in factory creation: ${error.message}`;
+      yield `Error in factory creation: ${ensureError(error).message}`;
     }
   }
 }

@@ -10,6 +10,13 @@ Love your input ❤️! Contributing to this project should be as easy and trans
 
 As a small open source project with small community, it can sometimes take a long time to address the issues so please be patient.
 
+## Contributor guide
+
+- [Development guide](./docs/development.md): setup and safe local validation.
+- [Test guide](./docs/tests.md): test suites and their scope.
+- [CI/CD guide](./docs/ci-cd.md): automated checks and release pipelines.
+- [Maintenance assessment](./docs/maintenance-assessment.md): verified maintenance work and remaining release gates.
+
 ## Pull request process
 
 Your pull requests are actively welcomed. We collaborate using [GitHub flow](https://web.archive.org/web/20250317121135/https://docs.github.com/en/get-started/using-github/github-flow).
@@ -19,8 +26,8 @@ The steps:
 1. Fork the repository and create your branch from `master`.
 2. If you've added code that requires testing, add tests. See [tests.md](./docs/tests.md).
 3. If you've done a major change, update the documentation. See [docs/](./docs/).
-4. Ensure the test suite passes. See [development.md | Testing](./docs/development.md#testing) for commands.
-5. Make sure your code lints.See [development.md | Linting](./docs/development.md#linting) for commands.
+4. Run the validation that fits your change. See [development.md | Testing](./docs/development.md#testing) for commands.
+5. Before committing, you can explicitly run `npm run check:quality`. No Git hook is installed or enabled by this project. See [development.md | Linting](./docs/development.md#linting) for focused commands.
 6. Issue that pull request!
 
 **🙏 DO:**

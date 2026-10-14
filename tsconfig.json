@@ -2,11 +2,12 @@
   "compilerOptions": {
     "target": "ES2018",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["node"],
     "module": "ESNext",
     "importHelpers": true,
-    "downlevelIteration": true,
     "jsx": "preserve",
     "moduleResolution": "Bundler",
+    "strict": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "strictPropertyInitialization": true,
@@ -18,13 +19,12 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
       "@tests/*": [
-        "tests/*"
+        "./tests/*"
       ]
     }
   },

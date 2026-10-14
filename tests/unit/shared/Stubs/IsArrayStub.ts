@@ -9,6 +9,7 @@ export class IsArrayStub {
   }
 
   public get(): typeof isArray {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Predetermined test predicate.
     return (value: unknown): value is Array<unknown> => this.predeterminedResult;
   }
 }

@@ -1,6 +1,5 @@
-import MarkdownIt from 'markdown-it';
+import MarkdownIt, { type MarkdownIt as MarkdownItInstance, type RendererRule } from 'markdown-it';
 import type { MarkdownRenderer } from '../MarkdownRenderer';
-import type { RenderRule } from 'markdown-it/lib/renderer.mjs'; // eslint-disable-line import/extensions
 
 export class MarkdownItHtmlRenderer implements MarkdownRenderer {
   public render(markdownContent: string): string {
@@ -14,7 +13,7 @@ export class MarkdownItHtmlRenderer implements MarkdownRenderer {
   }
 }
 
-function configureLinksToOpenInNewTab(markdownParser: MarkdownIt): void {
+function configureLinksToOpenInNewTab(markdownParser: MarkdownItInstance): void {
   // https://github.com/markdown-it/markdown-it/blob/14.0.0/docs/architecture.md#renderer
   const defaultLinkRenderer = getDefaultRenderer(markdownParser, 'link_open');
   markdownParser.renderer.rules.link_open = (tokens, index, options, env, self) => {
@@ -26,9 +25,9 @@ function configureLinksToOpenInNewTab(markdownParser: MarkdownIt): void {
   };
 }
 
-function getDefaultRenderer(md: MarkdownIt, ruleName: string): RenderRule {
+function getDefaultRenderer(md: MarkdownItInstance, ruleName: string): RendererRule {
   const ruleRenderer = md.renderer.rules[ruleName];
-  const renderTokenAsDefault: RenderRule = (tokens, idx, options, _env, self) => {
+  const renderTokenAsDefault: RendererRule = (tokens, idx, options, _env, self) => {
     return self.renderToken(tokens, idx, options);
   };
   return ruleRenderer || renderTokenAsDefault;

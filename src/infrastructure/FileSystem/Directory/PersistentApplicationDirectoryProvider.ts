@@ -1,4 +1,5 @@
 import type { Logger } from '@/application/Common/Log/Logger';
+import { ensureError } from '@/application/Common/CustomError';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { NodeElectronFileSystemOperations } from '@/infrastructure/FileSystem/NodeElectronFileSystemOperations';
 import type {
@@ -99,14 +100,15 @@ export class PersistentApplicationDirectoryProvider implements ApplicationDirect
   }
 
   private handleError(
-    exception: Error,
+    exception: unknown,
     errorType: DirectoryCreationErrorType,
   ): DirectoryCreationError {
     const errorMessage = 'Error during script directory creation';
-    this.logger.error(errorType, errorMessage, exception);
+    const error = ensureError(exception);
+    this.logger.error(errorType, errorMessage, error);
     return {
       type: errorType,
-      message: `${errorMessage}: ${exception.message}`,
+      message: `${errorMessage}: ${error.message}`,
     };
   }
 }

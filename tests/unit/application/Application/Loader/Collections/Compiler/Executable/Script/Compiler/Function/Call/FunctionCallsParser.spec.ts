@@ -180,8 +180,9 @@ describe('FunctionCallsParser', () => {
 class TestContext {
   private typeValidator: TypeValidator = new TypeValidatorStub();
 
-  private createCallArgument
-  : FunctionCallArgumentFactory = new FunctionCallArgumentFactoryStub().factory;
+  private createCallArgument: FunctionCallArgumentFactory = (
+    new FunctionCallArgumentFactoryStub().factory
+  );
 
   private calls: FunctionCallsData = [new FunctionCallDataStub()];
 

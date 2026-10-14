@@ -1,4 +1,5 @@
 import { isString } from '@/TypeHelpers';
+import { ensureError } from '@/application/Common/CustomError';
 import { createTypeValidator, type TypeValidator } from '@/application/Common/TypeValidator';
 import { type ExecutableErrorContext } from './ExecutableErrorContext';
 import { createExecutableContextErrorMessage, type ExecutableContextErrorMessageCreator } from './ExecutableErrorContextMessage';
@@ -44,7 +45,7 @@ export class ContextualExecutableValidator implements ExecutableValidator {
     try {
       assert(this.validator);
     } catch (error) {
-      this.throw(error.message);
+      this.throw(ensureError(error).message);
     }
   }
 

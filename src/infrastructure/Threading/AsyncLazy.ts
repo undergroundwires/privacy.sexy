@@ -40,10 +40,9 @@ enum ValueStatus {
   Created,
 }
 
-type ValueState<T> =
-  | {
-    readonly status: ValueStatus.NotRequested;
-  }
+type ValueState<T> = {
+  readonly status: ValueStatus.NotRequested;
+}
   | {
     readonly status: ValueStatus.BeingCreated;
     readonly value: Promise<T>;

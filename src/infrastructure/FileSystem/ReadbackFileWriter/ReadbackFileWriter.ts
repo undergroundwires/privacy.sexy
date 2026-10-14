@@ -15,8 +15,7 @@ export interface ReadbackFileWriter {
 
 export type FileWriteOutcome = SuccessfulFileWrite | FailedFileWrite;
 
-export type FileWriteErrorType =
-  | UnionOfConstArray<typeof FileWriteOperationErrors>
+export type FileWriteErrorType = UnionOfConstArray<typeof FileWriteOperationErrors>
   | UnionOfConstArray<typeof FileReadbackVerificationErrors>;
 
 export const FileWriteOperationErrors = [

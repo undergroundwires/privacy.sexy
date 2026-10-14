@@ -1,13 +1,13 @@
 import { inject, type App } from 'vue';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
-import { provideDependencies } from '@/presentation/bootstrapping/DependencyProvider';
+import { provideDependencies, type VueDependencyInjectionApi } from '@/presentation/bootstrapping/DependencyProvider';
 import type { Bootstrapper } from '../Bootstrapper';
 
 export class DependencyBootstrapper implements Bootstrapper {
   constructor(
     private readonly contextFactory = buildContext,
     private readonly dependencyProvider = provideDependencies,
-    private readonly injector = inject,
+    private readonly injector: VueDependencyInjectionApi['inject'] = inject,
   ) { }
 
   public async bootstrap(app: App): Promise<void> {

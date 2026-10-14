@@ -13,22 +13,25 @@
  *   --web                   Verify artifacts for the web application.
  */
 
-import { access, readdir } from 'node:fs/promises';
-import { exec } from 'node:child_process';
-import { resolve } from 'node:path';
+import { access, readdir, readFile } from 'node:fs/promises';
+import { relative, resolve } from 'node:path';
 
 const PROCESS_ARGUMENTS = process.argv.slice(2);
-const PRINT_DIST_DIR_SCRIPT_BASE_COMMAND = 'node scripts/print-dist-dir';
 
 async function main() {
   const buildConfigs = getBuildVerificationConfigs();
+  if (PROCESS_ARGUMENTS.includes('--help')) {
+    console.log(`Usage: node scripts/verify-build-artifacts.js [${Object.keys(buildConfigs).join(' | ')}]`);
+    return;
+  }
   if (!anyCommandsFound(Object.keys(buildConfigs))) {
     die(`No valid command found in process arguments. Expected one of: ${Object.keys(buildConfigs).join(', ')}`);
   }
+  const distDirs = JSON.parse(await readFile(resolve(process.cwd(), 'dist-dirs.json'), 'utf8'));
   /* eslint-disable no-await-in-loop */
   for (const [command, config] of Object.entries(buildConfigs)) {
     if (PROCESS_ARGUMENTS.includes(command)) {
-      const distDir = await executePrintDistDirScript(config.printDistDirScriptArgument);
+      const distDir = resolve(process.cwd(), distDirs[config.directoryKey]);
       await verifyDirectoryExists(distDir);
       await verifyNonEmptyDirectory(distDir);
       await verifyFilesExist(distDir, config.filePatterns);
@@ -42,24 +45,24 @@ async function main() {
 function getBuildVerificationConfigs() {
   return {
     '--electron-unbundled': {
-      printDistDirScriptArgument: '--electron-unbundled',
+      directoryKey: 'electronUnbundled',
       filePatterns: [
-        /main[/\\]index\.(cjs|mjs|js)/,
-        /preload[/\\]index\.(cjs|mjs|js)/,
-        /renderer[/\\]index\.htm(l)?/,
+        /^main[/\\]index\.(cjs|mjs|js)$/,
+        /^preload[/\\]index\.(cjs|mjs|js)$/,
+        /^renderer[/\\]index\.html?$/,
       ],
     },
     '--electron-bundled': {
-      printDistDirScriptArgument: '--electron-bundled',
+      directoryKey: 'electronBundled',
       filePatterns: [
-        /latest.*\.yml/, // generates latest.yml for auto-updates
+        /^latest.*\.yml$/, // generates latest.yml for auto-updates
         /.*-\d+\.\d+\.\d+\..*/, // a file with extension and semantic version (packaged application)
       ],
     },
     '--web': {
-      printDistDirScriptArgument: '--web',
+      directoryKey: 'web',
       filePatterns: [
-        /index\.htm(l)?/,
+        /^index\.html?$/,
       ],
     },
   };
@@ -87,7 +90,7 @@ async function verifyNonEmptyDirectory(directoryPath) {
 async function verifyFilesExist(directoryPath, filePatterns) {
   const files = await listAllFilesRecursively(directoryPath);
   for (const pattern of filePatterns) {
-    const match = files.some((file) => pattern.test(file));
+    const match = files.some((file) => pattern.test(relative(directoryPath, file)));
     if (!match) {
       die(
         `No file matches the pattern ${pattern.source} in directory \`${directoryPath}\``,
@@ -107,22 +110,6 @@ async function listAllFilesRecursively(directoryPath) {
     return absolutePath;
   }));
   return files.flat();
-}
-
-async function executePrintDistDirScript(flag) {
-  return new Promise((resolve, reject) => {
-    const commandToRun = `${PRINT_DIST_DIR_SCRIPT_BASE_COMMAND} ${flag}`;
-
-    exec(commandToRun, (error, stdout, stderr) => {
-      if (error) {
-        reject(new Error(`Execution failed with error: ${error}`));
-      } else if (stderr) {
-        reject(new Error(`Execution failed with stderr: ${stderr}`));
-      } else {
-        resolve(stdout.trim());
-      }
-    });
-  });
 }
 
 function die(...message) {

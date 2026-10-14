@@ -104,14 +104,17 @@ function createWindowStub(partialWindowProperties?: Partial<Window>): Window {
 export class RuntimeEnvironmentFactoryTestSetup {
   private globalWindow: Window | undefined | null = createWindowStub();
 
-  private electronEnvironmentDetector
-  : ElectronEnvironmentDetector = new ElectronEnvironmentDetectorStub();
+  private electronEnvironmentDetector: ElectronEnvironmentDetector = (
+    new ElectronEnvironmentDetectorStub()
+  );
 
-  private browserEnvironmentFactory
-  : BrowserRuntimeEnvironmentFactory = () => new RuntimeEnvironmentStub();
+  private browserEnvironmentFactory: BrowserRuntimeEnvironmentFactory = (
+    () => new RuntimeEnvironmentStub()
+  );
 
-  private nodeEnvironmentFactory
-  : NodeRuntimeEnvironmentFactory = () => new RuntimeEnvironmentStub();
+  private nodeEnvironmentFactory: NodeRuntimeEnvironmentFactory = (
+    () => new RuntimeEnvironmentStub()
+  );
 
   public withGlobalWindow(globalWindow: Window | undefined | null): this {
     this.globalWindow = globalWindow;

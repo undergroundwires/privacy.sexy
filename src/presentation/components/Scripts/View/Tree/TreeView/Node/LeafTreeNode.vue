@@ -1,10 +1,6 @@
 <template>
   <li>
-    <InteractableNode
-      :node-id="nodeId"
-      :tree-root="treeRoot"
-      class="node"
-    >
+    <div class="node">
       <div class="node__layout">
         <div class="node__checkbox">
           <NodeCheckbox
@@ -19,7 +15,7 @@
           />
         </div>
       </div>
-    </InteractableNode>
+    </div>
   </li>
 </template>
 
@@ -27,7 +23,6 @@
 import { defineComponent, computed, toRef } from 'vue';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import NodeCheckbox from './NodeCheckbox.vue';
-import InteractableNode from './InteractableNode.vue';
 import type { TreeNode, TreeNodeId } from './TreeNode';
 import type { TreeRoot } from '../TreeRoot/TreeRoot';
 import type { PropType } from 'vue';
@@ -35,7 +30,6 @@ import type { PropType } from 'vue';
 export default defineComponent({
   components: {
     NodeCheckbox,
-    InteractableNode,
   },
   props: {
     nodeId: {

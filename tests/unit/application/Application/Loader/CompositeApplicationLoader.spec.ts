@@ -109,8 +109,7 @@ describe('CompositeApplicationLoader', () => {
 });
 
 class TestContext {
-  private collectionsLoader
-  : CollectionsLoader = new CollectionsLoaderStub().stub();
+  private collectionsLoader: CollectionsLoader = new CollectionsLoaderStub().stub();
 
   private projectDetailsLoader: ProjectDetailsLoader = new ProjectDetailsLoaderStub()
     .stub();

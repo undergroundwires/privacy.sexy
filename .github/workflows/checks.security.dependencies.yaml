@@ -3,7 +3,7 @@ name: checks.security.dependencies
 on:
   push:
   pull_request:
-    paths: [ '/package.json', '/package-lock.json' ] # Allow PRs to be green if they do not introduce dependency change
+    paths: [ 'package.json', 'package-lock.json', '.github/workflows/checks.security.dependencies.yaml' ]
   schedule:
     - cron: '0 0 * * 0' # at 00:00 on every Sunday
 
@@ -19,4 +19,4 @@ jobs:
         uses: ./.github/actions/setup-node
       -
         name: NPM audit
-        run:  npm audit --omit=dev
+        run: npm audit --package-lock-only --ignore-scripts

@@ -1,4 +1,5 @@
 import type { ErrorWithContextWrapper } from '@/application/Application/Loader/Collections/Compiler/Common/ContextualError';
+import { ensureError } from '@/application/Common/CustomError';
 import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
 
 export class ErrorWrapperStub {
@@ -50,7 +51,7 @@ function getAdditionalContext(
 function getError(
   parameters: Parameters<ErrorWithContextWrapper>,
 ): Error {
-  return parameters[0];
+  return ensureError(parameters[0]);
 }
 
 function getLimitedStackTrace(

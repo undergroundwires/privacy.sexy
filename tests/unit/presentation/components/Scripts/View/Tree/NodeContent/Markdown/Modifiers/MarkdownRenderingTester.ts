@@ -3,7 +3,7 @@ import type { MarkdownRenderer } from '@/presentation/components/Scripts/View/Tr
 type RenderFunction = MarkdownRenderer['render'];
 
 export function renderMarkdownUsingRenderer(
-  MarkdownRendererClass: { new(): MarkdownRenderer ; },
+  MarkdownRendererClass: { new(): MarkdownRenderer; },
   ...renderArgs: Parameters<RenderFunction>
 ): ReturnType<RenderFunction> {
   const rendererInstance = new MarkdownRendererClass();

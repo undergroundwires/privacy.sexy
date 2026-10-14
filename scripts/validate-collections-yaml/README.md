@@ -4,48 +4,25 @@ This script validates YAML collection files against a predefined schema to ensur
 
 ## Prerequisites
 
-- Python 3.x installed on your system.
+- [uv](https://docs.astral.sh/uv/) installed.
+- Python 3.12 or later available to uv.
 
-## Running in a Virtual Environment (Recommended)
+## Run
 
-Using a virtual environment isolates dependencies and prevents conflicts.
+From the repository root, create or update the validator's isolated environment and run it:
 
-1. **Create a virtual environment:**
+```bash
+uv sync --project ./scripts/validate-collections-yaml
+uv run --project ./scripts/validate-collections-yaml python ./scripts/validate-collections-yaml
+```
 
-   ```bash
-   python3 -m venv ./scripts/validate-collections-yaml/.venv
-   ```
+The validator only reads the collection schema and YAML files. Do not run it from the validator directory because its file paths are relative to the repository root.
 
-2. **Activate the virtual environment:**
+## Update CI Requirements Export
 
-   ```bash
-   source ./scripts/validate-collections-yaml/.venv/bin/activate
-   ```
+`requirements.txt` is a fully pinned, pip-compatible export for the existing CI workflow. After changing the project dependencies, regenerate it from the lockfile at the repository root:
 
-3. **Install dependencies:**
-
-   ```bash
-   python3 -m pip install -r ./scripts/validate-collections-yaml/requirements.txt
-   ```
-
-4. **Run the script:**
-
-   ```bash
-   python3 ./scripts/validate-collections-yaml
-   ```
-
-## Running Globally
-
-Running the script globally is less recommended due to potential dependency conflicts.
-
-1. **Install dependencies:**
-
-   ```bash
-   python3 -m pip install -r ./scripts/validate-collections-yaml/requirements.txt
-   ```
-
-2. **Run the script:**
-
-   ```bash
-   python3 ./scripts/validate-collections-yaml
-   ```
+```bash
+uv lock --project ./scripts/validate-collections-yaml
+uv export --project ./scripts/validate-collections-yaml --locked --format requirements.txt --no-emit-project --no-header --output-file ./scripts/validate-collections-yaml/requirements.txt
+```

@@ -6,6 +6,7 @@ import {
 import { shell } from 'electron/common';
 import log from 'electron-log/main';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import { ensureError } from '@/application/Common/CustomError';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { setupAutoUpdater } from './Update/UpdateInitializer';
@@ -14,6 +15,7 @@ import {
 } from './ElectronConfig';
 import { registerAllIpcChannels } from './IpcRegistration';
 import { loadWindowContents } from './WindowContentLoader';
+import { configureNavigationPolicy } from './NavigationPolicy';
 
 const hideWindowUntilLoaded = true;
 
@@ -53,7 +55,6 @@ async function createWindow() {
   });
   focusAndShowOnceLoaded(win);
   win.setMenuBarVisibility(false);
-  configureExternalsUrlsOpenBrowser(win);
   win.on('closed', () => {
     win = null;
   });
@@ -62,6 +63,13 @@ async function createWindow() {
 
 configureAppQuitBehavior();
 registerAllIpcChannels();
+
+app.on('web-contents-created', (_, contents) => {
+  configureNavigationPolicy(contents, {
+    openExternal: shell.openExternal,
+    logger: ElectronLogger,
+  });
+});
 
 app.whenReady().then(async () => {
   await initializeApplication(app);
@@ -106,7 +114,7 @@ async function installVueDevTools() {
   try {
     await installExtension(VUEJS_DEVTOOLS);
   } catch (e) {
-    ElectronLogger.error('Vue Devtools failed to install:', e.toString());
+    ElectronLogger.error('Vue Devtools failed to install:', ensureError(e).toString());
   }
 }
 
@@ -117,13 +125,6 @@ async function checkForUpdates() {
   }
   const updater = setupAutoUpdater();
   await updater.checkForUpdates();
-}
-
-function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
-  window.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
-    return { action: 'deny' };
-  });
 }
 
 function getWindowSize(idealWidth: number, idealHeight: number) {

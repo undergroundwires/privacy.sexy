@@ -16,6 +16,26 @@ GitHub workflows i.e. pipelines exist in [`/.github/workflows/`](./../.github/wo
 
 Local GitHub actions are defined in [`/.github/actions/`](./../.github/actions/) and used to reuse same workflow steps.
 
+## Local CI
+
+The [sm18lr88/privacy.sexy](https://github.com/sm18lr88/privacy.sexy) fork disables GitHub Actions to save CI minutes.
+The workflow files stay as the reference definition, and [`scripts/local-ci`](./../scripts/local-ci/) runs their Linux legs in Docker:
+
+```sh
+npm run ci:local                      # Default jobs against the committed HEAD
+npm run ci:local -- --worktree        # Include uncommitted and untracked changes
+npm run ci:local -- --only unit,lint-eslint
+npm run ci:local -- --all             # Add desktop runtime, external URL, CodeQL, and install-deps jobs
+npm run ci:local -- --list            # List jobs and their source workflows
+```
+
+- Requires Docker Desktop (or another Docker engine) running Linux containers.
+- Each run tests a `git archive` snapshot in a disposable container, so integration tests and desktop checks never touch the host.
+- Named volumes `privacy-sexy-local-ci-npm` and `privacy-sexy-local-ci-cache` cache npm, Electron, Cypress, uv, and CodeQL downloads.
+- Logs, `summary.json`, and artifacts (coverage, e2e videos, screenshots, SARIF) are written to `dist-ci/<run-id>/`.
+- The command exits with a nonzero code if any job fails.
+- Not covered: macOS and Windows matrix legs, `configure-vscode`, and the `release.*` workflows.
+
 ## Pipeline types
 
 We categorize pipelines into different categories. We use these names in convention when naming files and actions, see [naming conventions](#naming-conventions).

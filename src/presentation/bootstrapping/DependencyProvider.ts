@@ -96,7 +96,7 @@ function registerAll(
 
 export interface VueDependencyInjectionApi {
   provide<T>(key: InjectionKey<T>, value: T): void;
-  inject<T>(key: InjectionKey<T>): T;
+  inject<T>(key: InjectionKey<T>): T | undefined;
 }
 
 class DependencyRegistrar {

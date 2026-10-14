@@ -1,5 +1,6 @@
 import { it, describe, expect } from 'vitest';
 import { provideWindowVariables } from '@/presentation/electron/preload/ContextBridging/RendererApiProvider';
+import { ensureError } from '@/application/Common/CustomError';
 import {
   isArray, isBoolean, isFunction, isNullOrUndefined, isNumber, isPlainObject, isString,
 } from '@/TypeHelpers';
@@ -47,7 +48,7 @@ function checkArrayElements(array: unknown[]): void {
     try {
       checkAllowedType(item);
     } catch (error) {
-      throw new Error(`Invalid array element at index ${index}: ${error.message}`);
+      throw new Error(`Invalid array element at index ${index}: ${ensureError(error).message}`, { cause: error });
     }
   });
 }
@@ -60,7 +61,7 @@ function checkObjectProperties(obj: NonNullable<object>): void {
     try {
       checkAllowedType(memberValue);
     } catch (error) {
-      throw new Error(`Invalid object property '${key}': ${error.message}`);
+      throw new Error(`Invalid object property '${key}': ${ensureError(error).message}`, { cause: error });
     }
   });
 }

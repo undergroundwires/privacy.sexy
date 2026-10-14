@@ -1,4 +1,5 @@
 import type { Logger } from '@/application/Common/Log/Logger';
+import { ensureError } from '@/application/Common/CustomError';
 import { ElectronLogger } from '../../Log/ElectronLogger';
 import { NodeElectronFileSystemOperations } from '../NodeElectronFileSystemOperations';
 import type {
@@ -86,14 +87,14 @@ export class NodeReadbackFileWriter implements ReadbackFileWriter {
 
   private reportFailure(
     errorType: FileWriteErrorType,
-    error: Error | string,
+    error: unknown,
   ): FailedFileWrite {
     this.logger.error('Error saving file', errorType, error);
     return {
       success: false,
       error: {
         type: errorType,
-        message: typeof error === 'string' ? error : error.message,
+        message: typeof error === 'string' ? error : ensureError(error).message,
       },
     };
   }

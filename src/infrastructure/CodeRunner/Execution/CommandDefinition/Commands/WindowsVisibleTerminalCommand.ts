@@ -10,7 +10,7 @@ export class WindowsVisibleTerminalCommand implements CommandDefinition {
   constructor(
     private readonly escaper: ShellArgumentEscaper = new PowerShellArgumentEscaper(),
     private readonly powershellCommandCreator: PowerShellInvokeShellCommandCreator
-    = new EncodedPowerShellInvokeCmdCommandCreator(),
+      = new EncodedPowerShellInvokeCmdCommandCreator(),
     private readonly logger: Logger = ElectronLogger,
   ) { }
 

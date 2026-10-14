@@ -61,11 +61,7 @@ describe('throttle', () => {
     let lastArgs: readonly number[] | null = null;
     const callback = (...args: readonly number[]) => { lastArgs = args; };
     const waitInMs = 500;
-    const throttleFunc = new TestContext()
-      .withWaitInMs(waitInMs)
-      .withTimer(timer)
-      .withCallback(callback)
-      .throttle();
+    const throttleFunc = throttle(callback, waitInMs, { timer });
 
     // act
     throttleFunc(...expectedArguments);
@@ -84,18 +80,14 @@ describe('throttle', () => {
     let lastArgs: readonly number[] | null = null;
     const callback = (...args: readonly number[]) => { lastArgs = args; };
     const waitInMs = 500;
-    const throttleFunc = new TestContext()
-      .withWaitInMs(waitInMs)
-      .withTimer(timer)
-      .withCallback(callback)
-      .throttle();
+    const throttleFunc = throttle(callback, waitInMs, { timer });
 
     // act
     throttleFunc(1, 2, 3);
     timer.tickNext(100);
     throttleFunc(4, 5, 6);
     timer.tickNext(100);
-    throttleFunc(lastArgs);
+    throttleFunc(...expectedArguments);
 
     // assert
     expect(lastArgs).to.deep.equal(expectedArguments);
@@ -207,12 +199,10 @@ describe('throttle', () => {
         totalRuns++;
         calledArgs.push(message);
       };
-      const throttleFunc = new TestContext()
-        .withTimer(timer)
-        .withCallback(callback)
-        .withWaitInMs(waitInMs)
-        .withExcludeLeadingCall(true)
-        .throttle();
+      const throttleFunc = throttle(callback, waitInMs, {
+        timer,
+        excludeLeadingCall: true,
+      });
       // act
       Array.from({ length: expectedTotalRuns }).forEach((_, index) => {
         throttleFunc(`Call ${index} (zero-based, where initial call is 0)`);
@@ -231,12 +221,10 @@ describe('throttle', () => {
       let totalRuns = 0;
       const callback = () => { totalRuns++; };
       const waitInMs = 300;
-      const throttleFunc = new TestContext()
-        .withTimer(timer)
-        .withWaitInMs(waitInMs)
-        .withCallback(callback)
-        .withExcludeLeadingCall(true)
-        .throttle();
+      const throttleFunc = throttle(callback, waitInMs, {
+        timer,
+        excludeLeadingCall: true,
+      });
       // act
       throttleFunc();
       timer.tickNext(waitInMs / 3);
@@ -256,12 +244,10 @@ describe('throttle', () => {
         actualLastArg = arg;
       };
       const waitInMs = 300;
-      const throttleFunc = new TestContext()
-        .withTimer(timer)
-        .withWaitInMs(waitInMs)
-        .withCallback(callback)
-        .withExcludeLeadingCall(true)
-        .throttle();
+      const throttleFunc = throttle(callback, waitInMs, {
+        timer,
+        excludeLeadingCall: true,
+      });
       // act
       throttleFunc('leading call');
       timer.tickNext(waitInMs / 3);
@@ -275,7 +261,7 @@ describe('throttle', () => {
   });
 });
 
-type CallbackType = Parameters<ThrottleFunction>[0];
+type CallbackType = () => void;
 
 class TestContext {
   private options: Partial<ThrottleOptions> | undefined = {

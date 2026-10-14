@@ -79,7 +79,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-13 # Downgraded due to lack of nested virtualization support in ARM-based runners (See: actions/runner-images#9460, actions/runner-images#9741, abiosoft/colima#1023)
+          - macos-15-intel # Keep an available Intel runner for the Colima-based Docker check.
           - ubuntu-latest
           # - windows-latest # Windows runners do not support Linux containers
       fail-fast: false # Allows to see results from other combinations
@@ -90,6 +90,7 @@ jobs:
         uses: actions/checkout@v4
       -
         name: Install Docker on macOS
+        id: setup-docker
         if: contains(matrix.os, 'macos') # macOS runner is missing Docker
         run: |-
           # Install Docker
@@ -103,7 +104,11 @@ jobs:
         run: docker build -t undergroundwires/privacy.sexy:latest .
       -
         name: Run Docker image on port 8080
-        run: docker run -d -p 8080:80 --rm --name privacy.sexy undergroundwires/privacy.sexy:latest
+        id: run-container
+        shell: bash
+        run: |-
+          container_id=$(docker run -d -p 8080:80 --rm undergroundwires/privacy.sexy:latest)
+          echo "container_id=$container_id" >> "$GITHUB_OUTPUT"
       -
         name: Enforce IPv4 Connectivity # Used due to GitHub runners' lack of IPv6 support, preventing request timeouts.
         uses: ./.github/actions/force-ipv4
@@ -112,4 +117,15 @@ jobs:
         run: >-
           node ./scripts/verify-web-server-status.js \
             --url http://localhost:8080  \
-            --max-retries ${{ matrix.os == 'macos' && '90' || '30' }}
+            --max-retries ${{ contains(matrix.os, 'macos') && '90' || '30' }}
+      -
+        name: Remove the test container
+        if: ${{ always() && steps.run-container.outputs.container_id != '' }}
+        shell: bash
+        env:
+          CONTAINER_ID: ${{ steps.run-container.outputs.container_id }}
+        run: docker rm --force "$CONTAINER_ID"
+      -
+        name: Stop Colima
+        if: ${{ always() && contains(matrix.os, 'macos') && steps.setup-docker.outcome == 'success' }}
+        run: colima stop

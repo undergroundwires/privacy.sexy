@@ -105,8 +105,9 @@ class CommandBuilder {
 
   private logger: Logger = new LoggerStub();
 
-  private powerShellCommandCreator
-  : PowerShellInvokeShellCommandCreator = new PowerShellInvokeShellCommandCreatorStub();
+  private powerShellCommandCreator: PowerShellInvokeShellCommandCreator = (
+    new PowerShellInvokeShellCommandCreatorStub()
+  );
 
   public withEscaper(escaper: ShellArgumentEscaper): this {
     this.escaper = escaper;

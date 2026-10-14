@@ -37,7 +37,7 @@ function serializeItemForDisplay(item: unknown): string {
 
 function getTypeDescription(item: unknown): string {
   // Basic type detection using typeof
-  let type = typeof item;
+  let type: string = typeof item;
   // More specific type detection for object types using Object.prototype.toString
   if (type === 'object') {
     const preciseType = Object.prototype.toString.call(item);

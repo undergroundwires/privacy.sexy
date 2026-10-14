@@ -13,9 +13,9 @@ import type { ArgumentCompiler } from './Argument/ArgumentCompiler';
 export class NestedFunctionCallCompiler implements SingleCallCompilerStrategy {
   public constructor(
     private readonly argumentCompiler: ArgumentCompiler
-    = new NestedFunctionArgumentCompiler(),
+      = new NestedFunctionArgumentCompiler(),
     private readonly wrapError: ErrorWithContextWrapper
-    = wrapErrorWithAdditionalContext,
+      = wrapErrorWithAdditionalContext,
   ) {
   }
 

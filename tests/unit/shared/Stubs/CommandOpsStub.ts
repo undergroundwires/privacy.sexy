@@ -1,21 +1,20 @@
-import { type ChildProcess } from 'node:child_process';
-import type { CommandOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { CommandOps, CommandProcess } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { ChildProcessStub } from './ChildProcesssStub';
 
 export class CommandOpsStub
   extends StubWithObservableMethodCalls<CommandOps>
   implements CommandOps {
-  private childProcess: ChildProcess = new ChildProcessStub()
+  private childProcess: CommandProcess = new ChildProcessStub()
     .withAutoEmitExit(true)
     .asChildProcess();
 
-  public withChildProcess(childProcess: ChildProcess): this {
+  public withChildProcess(childProcess: CommandProcess): this {
     this.childProcess = childProcess;
     return this;
   }
 
-  public exec(command: string): ChildProcess {
+  public exec(command: string): CommandProcess {
     this.registerMethodCall({
       methodName: 'exec',
       args: [command],

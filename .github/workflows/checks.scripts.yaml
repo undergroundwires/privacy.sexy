@@ -75,11 +75,11 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
-        name: Setup node
+        name: Setup Python
         uses: ./.github/actions/setup-python
       -
         name: Install VSCode
         run: ${{ matrix.os.install-vscode-command }}
       -
         name: Configure VSCode
-        run: python3 ./scripts/configure_vscode.py
+        run: python ./scripts/configure_vscode.py

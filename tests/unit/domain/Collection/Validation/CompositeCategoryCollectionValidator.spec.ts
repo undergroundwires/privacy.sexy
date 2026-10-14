@@ -148,8 +148,9 @@ class TestContext {
     () => {},
   ];
 
-  private validationContext
-  : CategoryCollectionValidationContext = new CategoryCollectionValidationContextStub();
+  private validationContext: CategoryCollectionValidationContext = (
+    new CategoryCollectionValidationContextStub()
+  );
 
   public withValidators(validators: readonly CategoryCollectionValidator[]): this {
     this.validators = validators;

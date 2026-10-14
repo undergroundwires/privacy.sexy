@@ -1,4 +1,5 @@
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
+import { ensureError } from '@/application/Common/CustomError';
 import type { Logger } from '@/application/Common/Log/Logger';
 import type { CodeRunError, CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 import { FileReadbackVerificationErrors, type ReadbackFileWriter } from '@/infrastructure/FileSystem/ReadbackFileWriter/ReadbackFileWriter';
@@ -16,7 +17,7 @@ export class ScriptFileCreationOrchestrator implements ScriptFileCreator {
     private readonly fileSystem: FileSystemOperations = NodeElectronFileSystemOperations,
     private readonly filenameGenerator: FilenameGenerator = new TimestampedFilenameGenerator(),
     private readonly directoryProvider: ApplicationDirectoryProvider
-    = new PersistentApplicationDirectoryProvider(),
+      = new PersistentApplicationDirectoryProvider(),
     private readonly fileWriter: ReadbackFileWriter = new NodeReadbackFileWriter(),
     private readonly logger: Logger = ElectronLogger,
   ) { }
@@ -88,14 +89,15 @@ export class ScriptFileCreationOrchestrator implements ScriptFileCreator {
   }
 
   private handleException(
-    exception: Error,
+    exception: unknown,
     errorType: CodeRunErrorType,
   ): CodeRunError {
     const errorMessage = 'Error during script file operation';
-    this.logger.error(errorType, errorMessage, exception);
+    const error = ensureError(exception);
+    this.logger.error(errorType, errorMessage, error);
     return {
       type: errorType,
-      message: `${errorMessage}: ${exception.message}`,
+      message: `${errorMessage}: ${error.message}`,
     };
   }
 }

@@ -1,4 +1,5 @@
 import { NodeElectronSystemOperations } from '@/infrastructure/CodeRunner/System/NodeElectronSystemOperations';
+import { ensureError } from '@/application/Common/CustomError';
 import type { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import type { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
@@ -22,12 +23,13 @@ export class FileSystemExecutablePermissionSetter implements ExecutablePermissio
       this.logger.info(`Execution permissions set successfully for ${filePath}`);
       return { success: true };
     } catch (error) {
-      this.logger.error(error);
+      const normalizedError = ensureError(error);
+      this.logger.error(normalizedError);
       return {
         success: false,
         error: {
           type: 'FilePermissionChangeError',
-          message: `Error setting script file permission: ${error.message}`,
+          message: `Error setting script file permission: ${normalizedError.message}`,
         },
       };
     }

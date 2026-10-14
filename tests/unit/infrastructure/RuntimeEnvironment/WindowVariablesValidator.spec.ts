@@ -140,8 +140,8 @@ describe('WindowVariablesValidator', () => {
         readonly invalidValue: unknown;
       }
       const testScenarios: Record<
-      PropertyKeys<Required<WindowVariables>>,
-      ReadonlyArray<InvalidValueTestCase>> = {
+        PropertyKeys<Required<WindowVariables>>,
+        ReadonlyArray<InvalidValueTestCase>> = {
         isRunningAsDesktopApplication: [
           {
             description: 'rejects false',

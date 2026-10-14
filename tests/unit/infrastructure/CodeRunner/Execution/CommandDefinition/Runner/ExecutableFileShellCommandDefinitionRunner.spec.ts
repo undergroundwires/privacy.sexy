@@ -208,11 +208,11 @@ function createExecutableCommandDefinition(): CommandDefinition {
 }
 
 class TestContext {
-  private executablePermissionSetter
-  : ExecutablePermissionSetter = new ExecutablePermissionSetterStub();
+  private executablePermissionSetter: ExecutablePermissionSetter = (
+    new ExecutablePermissionSetterStub()
+  );
 
-  private shellCommandRunner
-  : ShellCommandRunner = new ShellCommandRunnerStub();
+  private shellCommandRunner: ShellCommandRunner = new ShellCommandRunnerStub();
 
   private commandDefinition: CommandDefinition = new CommandDefinitionStub();
 
@@ -245,7 +245,7 @@ class TestContext {
   }
 
   public runCommandDefinition(): ReturnType<
-  ExecutableFileShellCommandDefinitionRunner['runCommandDefinition']
+    ExecutableFileShellCommandDefinitionRunner['runCommandDefinition']
   > {
     const sut = new ExecutableFileShellCommandDefinitionRunner(
       this.executablePermissionSetter,

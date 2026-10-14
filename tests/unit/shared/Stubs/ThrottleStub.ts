@@ -1,16 +1,26 @@
 import type { CallbackType, ThrottleFunction } from '@/application/Common/Timing/Throttle';
 
 export class ThrottleStub {
-  public readonly throttleInitializationCallArgs: Array<Parameters<ThrottleFunction>> = [];
+  public readonly throttleInitializationCallArgs = new Array<ThrottleInitialization>();
 
   public readonly throttledFunctionCallArgs = new Array<readonly unknown[]>();
 
+  private readonly firstCallbacks = new Array<() => void>();
+
   private executeImmediately: boolean = false;
 
-  public func = (callback: CallbackType, waitInMs: number): ReturnType<ThrottleFunction> => {
-    this.throttleInitializationCallArgs.push([callback, waitInMs]);
-    return (...args: readonly unknown[]) => {
+  public readonly func: ThrottleFunction = <TArgs extends readonly unknown[]>(
+    callback: CallbackType<TArgs>,
+    waitInMs: number,
+  ): CallbackType<TArgs> => {
+    this.throttleInitializationCallArgs.push({ waitInMs });
+    let executeFirst: (() => void) | undefined;
+    return (...args: TArgs) => {
       this.throttledFunctionCallArgs.push([...args]);
+      if (executeFirst === undefined) {
+        executeFirst = () => callback(...args);
+        this.firstCallbacks.push(executeFirst);
+      }
       if (this.executeImmediately) {
         callback(...args);
       }
@@ -23,12 +33,13 @@ export class ThrottleStub {
   }
 
   public executeFirst() {
-    if (this.throttledFunctionCallArgs.length === 0) {
+    if (this.firstCallbacks.length === 0) {
       throw new Error('Function was never throttled.');
     }
-    const firstArgs = this.throttledFunctionCallArgs[0];
-    this.throttleInitializationCallArgs.forEach(([callback]) => {
-      callback(...firstArgs);
-    });
+    this.firstCallbacks.forEach((callback) => callback());
   }
+}
+
+interface ThrottleInitialization {
+  readonly waitInMs: number;
 }

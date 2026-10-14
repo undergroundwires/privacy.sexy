@@ -68,7 +68,7 @@ describe('NodeRuntimeEnvironment', () => {
       const expectedDesktopCondition = true;
       // act
       const environment = new NodeRuntimeEnvironment();
-      /// assert
+      // assert
       expect(environment.isRunningAsDesktopApplication).to.equal(expectedDesktopCondition);
     });
   });
@@ -82,7 +82,7 @@ describe('NodeRuntimeEnvironment', () => {
       const environment = new NodeRuntimeEnvironmentBuilder()
         .withProcess(nodeProcess)
         .build();
-      /// assert
+      // assert
       expect(environment.isNonProduction).to.equal(expectedNonProductionCondition);
     });
     it('identifies production mode', () => {
@@ -94,7 +94,7 @@ describe('NodeRuntimeEnvironment', () => {
       const environment = new NodeRuntimeEnvironmentBuilder()
         .withProcess(nodeProcess)
         .build();
-      /// assert
+      // assert
       expect(environment.isNonProduction).to.equal(expectedNonProductionCondition);
     });
   });

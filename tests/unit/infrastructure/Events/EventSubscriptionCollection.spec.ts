@@ -35,7 +35,7 @@ describe('EventSubscriptionCollection', () => {
       const act = (
         subscriptions: IEventSubscription[],
       ) => sut.register(subscriptions);
-      /// assert
+      // assert
       describeSubscriptionValidations(act);
     });
   });
@@ -115,7 +115,7 @@ describe('EventSubscriptionCollection', () => {
       const act = (
         subscriptions: IEventSubscription[],
       ) => sut.unsubscribeAllAndRegister(subscriptions);
-      /// assert
+      // assert
       describeSubscriptionValidations(act);
     });
   });

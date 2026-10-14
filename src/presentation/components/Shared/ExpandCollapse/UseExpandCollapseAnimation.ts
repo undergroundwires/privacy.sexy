@@ -6,9 +6,9 @@ export type AnimationFunction = (element: Element) => Promise<void>;
 export function useExpandCollapseAnimation(
   timer: Timer = PlatformTimer,
 ): {
-    readonly collapse: AnimationFunction;
-    readonly expand: AnimationFunction;
-  } {
+  readonly collapse: AnimationFunction;
+  readonly expand: AnimationFunction;
+} {
   return {
     collapse: (element: Element) => animateCollapse(element, timer),
     expand: (element: Element) => animateExpand(element, timer),

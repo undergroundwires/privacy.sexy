@@ -45,6 +45,9 @@ There are different types of tests executed:
 
 - Assess the combined functionality of components.
 - They verify that third-party dependencies function as anticipated.
+- **Use a disposable machine for the full suite.** `ScriptFileCodeRunner.spec.ts` executes generated shell files.
+- `npm run test:safe` selects only unit tests and application-layer integration tests, with throwing desktop/process boundaries.
+  See [personal-computer validation](./development.md#non-executing-validation-on-personal-computers).
 
 ## E2E tests
 

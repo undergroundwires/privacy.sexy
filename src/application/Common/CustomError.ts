@@ -22,6 +22,10 @@ export abstract class CustomError extends Error {
   }
 }
 
+export function ensureError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(String(error), { cause: error });
+}
+
 interface ErrorPrototypeManipulation {
   getSetPrototypeOf: () => (typeof Object.setPrototypeOf | undefined);
   getCaptureStackTrace: () => (typeof Error.captureStackTrace | undefined);

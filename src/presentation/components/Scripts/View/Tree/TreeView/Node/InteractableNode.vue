@@ -1,7 +1,9 @@
 <template>
   <div
+    ref="nodeElement"
     class="clickable-node focusable-node"
     tabindex="-1"
+    :data-tree-node-id="nodeId"
     :class="{
       'keyboard-focus': hasKeyboardFocus,
     }"
@@ -13,7 +15,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, toRef } from 'vue';
+import {
+  defineComponent, computed, nextTick, ref, toRef, watch,
+} from 'vue';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { useNodeState } from './UseNodeState';
 import { useKeyboardInteractionState } from './UseKeyboardInteractionState';
@@ -37,6 +41,7 @@ export default defineComponent({
     const { nodes } = useCurrentTreeNodes(toRef(props, 'treeRoot'));
     const currentNode = computed<TreeNode>(() => nodes.value.getNodeById(props.nodeId));
     const { state } = useNodeState(currentNode);
+    const nodeElement = ref<HTMLElement>();
 
     const hasKeyboardFocus = computed<boolean>(() => {
       if (!isKeyboardBeingUsed.value) {
@@ -49,6 +54,17 @@ export default defineComponent({
       props.treeRoot.focus.setSingleFocus(currentNode.value);
     };
 
+    watch(
+      () => state.value.isFocused,
+      (isFocused) => {
+        if (!isFocused) {
+          return;
+        }
+        nextTick(() => nodeElement.value?.focus());
+      },
+      { immediate: true },
+    );
+
     function toggleCheckState() {
       currentNode.value.state.toggleCheck();
     }
@@ -58,6 +74,7 @@ export default defineComponent({
       toggleCheckState,
       currentNode,
       hasKeyboardFocus,
+      nodeElement,
     };
   },
 });

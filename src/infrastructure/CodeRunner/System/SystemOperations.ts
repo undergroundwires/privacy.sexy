@@ -1,5 +1,4 @@
 import type { FileSystemOperations } from '@/infrastructure/FileSystem/FileSystemOperations';
-import type { exec } from 'node:child_process';
 
 export interface SystemOperations {
   readonly fileSystem: FileSystemOperations;
@@ -7,5 +6,10 @@ export interface SystemOperations {
 }
 
 export interface CommandOps {
-  exec(command: string): ReturnType<typeof exec>;
+  exec(command: string): CommandProcess;
+}
+
+export interface CommandProcess {
+  on(event: 'exit', listener: (code: number | null, signal: NodeJS.Signals | null) => void): this;
+  on(event: 'error', listener: (error: Error) => void): this;
 }

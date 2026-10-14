@@ -1,7 +1,6 @@
 import {
   type Ref, shallowReadonly, shallowRef,
 } from 'vue';
-import type { Category } from '@/domain/Executables/Category/Category';
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
@@ -81,6 +80,6 @@ function containsExecutable(
   executables: readonly Executable[],
 ): boolean {
   return executables.some(
-    (existing: Category) => existing.executableId === expectedId,
+    (existing) => existing.executableId === expectedId,
   );
 }

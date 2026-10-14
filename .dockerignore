@@ -1,6 +1,15 @@
 node_modules
 dist
 dist_electron
+dist-web
+dist-electron-bundled
+dist-electron-unbundled
+dist-coverage
+dist-maintenance
+.omo
+.playwright-mcp
+.solidkg
+.debug-journal.md
 .vs
 .vscode
 .github

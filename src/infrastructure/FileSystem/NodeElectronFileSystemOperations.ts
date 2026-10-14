@@ -60,7 +60,7 @@ async function isPathAvailable(
     const stats = await stat(path);
     return condition(stats);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
       return false; // path does not exist
     }
     throw error;

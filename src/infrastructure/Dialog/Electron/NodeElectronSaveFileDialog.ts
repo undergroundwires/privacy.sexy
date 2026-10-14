@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import { app, dialog } from 'electron/main';
 import type { Logger } from '@/application/Common/Log/Logger';
+import { ensureError } from '@/application/Common/CustomError';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import {
   FileType, type SaveFileError, type SaveFileErrorType, type SaveFileOutcome,
@@ -119,14 +120,15 @@ export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
   }
 
   private handleException(
-    exception: Error,
+    exception: unknown,
     errorType: SaveFileErrorType,
   ): SaveFileError {
     const errorMessage = 'Error during saving script file.';
-    this.logger.error(errorType, errorMessage, exception);
+    const error = ensureError(exception);
+    this.logger.error(errorType, errorMessage, error);
     return {
       type: errorType,
-      message: `${errorMessage}: ${exception.message}`,
+      message: `${errorMessage}: ${error.message}`,
     };
   }
 }
@@ -166,11 +168,13 @@ const FileTypeSpecificFilters: Record<FileType, Electron.FileFilter[]> = {
   ],
 };
 
-type SaveDialogOutcome =
-  | { readonly success: true; readonly filePath: string; readonly canceled?: false }
+type SaveDialogOutcome = {
+  readonly success: true; readonly filePath: string; readonly canceled?: false
+}
   | { readonly success: true; readonly canceled: true }
   | { readonly success: false; readonly error: SaveFileError; readonly canceled?: false };
 
-type DefaultFilePathConstructionOutcome =
-  | { readonly success: true; readonly filePath: string; readonly error?: undefined; }
+type DefaultFilePathConstructionOutcome = {
+  readonly success: true; readonly filePath: string; readonly error?: undefined;
+}
   | { readonly success: false; readonly filePath?: undefined; readonly error: SaveFileError; };

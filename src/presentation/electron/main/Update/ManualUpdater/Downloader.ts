@@ -1,4 +1,5 @@
 import { createWriteStream, type WriteStream } from 'node:fs';
+import { ensureError } from '@/application/Common/CustomError';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import type { Logger } from '@/application/Common/Log/Logger';
 import { UpdateProgressBar } from '../ProgressBar/UpdateProgressBar';
@@ -41,7 +42,7 @@ export async function downloadUpdate(
       installerPath: filePath,
     };
   } catch (e) {
-    progressBar.showError(e);
+    progressBar.showError(ensureError(e));
     return {
       success: false,
     };

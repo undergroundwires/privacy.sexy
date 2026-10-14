@@ -29,14 +29,23 @@ export function createSecureFacade<T>(
   return facade as T;
 }
 
-type PrependTuple<H, T extends readonly unknown[]> = H extends unknown ? T extends unknown ?
-  ((h: H, ...t: T) => void) extends ((...r: infer R) => void) ? R : never : never : never;
+type PrependTuple<H, T extends readonly unknown[]> = H extends unknown
+  ? T extends unknown
+    ? ((h: H, ...t: T) => void) extends ((...r: infer R) => void) ? R : never
+    : never
+  : never;
 type RecursionDepthControl = [
   never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 ];
-type AllKeyCombinations<T, U = T, N extends number = 15> = T extends unknown ?
-  PrependTuple<T, Exclude<U, T> extends infer X ? {
-    0: [], 1: AllKeyCombinations<X, X, RecursionDepthControl[N]>
-  }[[X] extends [never] ? 0 : 1] : never> :
-  never;
-type KeyTypeCombinations<T> = AllKeyCombinations<keyof T>;
+type AllKeyCombinations<T, U = T, N extends number = 15> = T extends unknown
+  ? PrependTuple<T, Exclude<U, T> extends infer X
+    ? {
+      0: [], 1: AllKeyCombinations<X, X, RecursionDepthControl[N]>
+    }[[X] extends [never] ? 0 : 1]
+    : never>
+  : never;
+type KeyTypeCombinations<T> = AllKeyCombinations<
+  keyof T
+> extends infer TKeys extends readonly (keyof T)[]
+  ? TKeys
+  : never;

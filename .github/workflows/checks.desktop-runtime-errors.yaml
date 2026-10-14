@@ -11,7 +11,7 @@ jobs:
       matrix:
         os:
           - macos-latest  # Apple silicon (ARM64)
-          - macos-13      # Intel-based (x86-64)
+          - macos-15-intel # Intel-based (x86-64)
           - ubuntu-latest
           - windows-latest
       fail-fast: false # Allows to see results from other combinations
@@ -70,14 +70,15 @@ jobs:
           # Workaround for Mesa driver issues on Ubuntu 24.04
           # Installs latest Mesa drivers from Kisak PPA
           # Reference: https://askubuntu.com/q/1516040
-          sudo add-apt-repository ppa:kisak/kisak-mesa
+          sudo add-apt-repository -y ppa:kisak/kisak-mesa
           sudo apt update
-          sudo apt upgrade
+          sudo apt upgrade -y
       -
         name: Test
         shell: bash
         run: |-
           export SCREENSHOT=true
+          export BUILD=true
           npm run check:desktop
       -
         name: Upload screenshot

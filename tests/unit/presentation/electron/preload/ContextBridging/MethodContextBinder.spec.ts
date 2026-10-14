@@ -17,7 +17,8 @@ describe('MethodContextBinder', () => {
 
       // act
       const boundInstance = bindObjectMethods(instance);
-      boundInstance.increment();
+      const { increment } = boundInstance;
+      increment();
 
       // assert
       expect(boundInstance.value).toBe(1);
@@ -36,7 +37,8 @@ describe('MethodContextBinder', () => {
       const boundObject = bindObjectMethods(object);
 
       // assert
-      expect(() => boundObject.increment()).not.toThrow();
+      const { increment } = boundObject;
+      expect(() => increment()).not.toThrow();
     });
 
     it('recursively binds methods in nested objects', () => {
@@ -52,7 +54,8 @@ describe('MethodContextBinder', () => {
 
       // act
       const boundObject = bindObjectMethods(nestedObject);
-      boundObject.child.increment();
+      const { increment } = boundObject.child;
+      increment();
 
       // assert
       expect(boundObject.child.value).toBe(1);
@@ -71,7 +74,8 @@ describe('MethodContextBinder', () => {
 
       // act
       const boundArray = bindObjectMethods(array);
-      boundArray[0].increment();
+      const { increment } = boundArray[0];
+      increment();
 
       // assert
       expect(boundArray[0].value).toBe(1);

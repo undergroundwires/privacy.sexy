@@ -1,4 +1,6 @@
-import { describe, it, afterEach } from 'vitest';
+import {
+  describe, it, afterEach, vi,
+} from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { MobileSafariActivePseudoClassEnabler } from '@/presentation/bootstrapping/Modules/MobileSafariActivePseudoClassEnabler';
 import { createEventSpies } from '@tests/shared/Spies/EventTargetSpy';
@@ -41,16 +43,9 @@ function patchUserAgent(
   userAgent: string,
   restoreCallback: (restoreFunc: () => void) => void,
 ) {
-  const originalNavigator = window.navigator;
-  const userAgentGetter = { get: () => userAgent };
-  window.navigator = Object.create(navigator, {
-    userAgent: userAgentGetter,
-  });
-  restoreCallback(() => {
-    Object.assign(window, {
-      navigator: originalNavigator,
-    });
-  });
+  const userAgentSpy = vi.spyOn(window.navigator, 'userAgent', 'get')
+    .mockReturnValue(userAgent);
+  restoreCallback(() => userAgentSpy.mockRestore());
 }
 
 function getTouchDetectorMock(

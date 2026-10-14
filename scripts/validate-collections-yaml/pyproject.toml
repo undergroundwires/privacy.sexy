@@ -1,0 +1,8 @@
+[project]
+name = "validate-collections-yaml"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "jsonschema>=4.26,<5",
+  "pyyaml>=6.0.3,<7",
+]

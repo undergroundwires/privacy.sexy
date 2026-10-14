@@ -253,15 +253,16 @@ class TestContext {
 
   private collectionContextFactory
   : CategoryCollectionContextFactory = () => {
-      return new CategoryCollectionContextStub();
-    };
+    return new CategoryCollectionContextStub();
+  };
 
   private scriptDefinitionParser: ScriptMetadataParser = () => new ScriptMetadataStub();
 
   private categoryParser: CategoryParser = new CategoryParserStub().get();
 
-  private categoryCollectionFactory
-  : CategoryCollectionFactory = createCategoryCollectionFactorySpy().categoryCollectionFactorySpy;
+  private categoryCollectionFactory: CategoryCollectionFactory = (
+    createCategoryCollectionFactorySpy().categoryCollectionFactorySpy
+  );
 
   public withData(data: CollectionData): this {
     this.data = data;

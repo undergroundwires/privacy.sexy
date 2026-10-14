@@ -151,7 +151,7 @@ describe('InstallationFileCleaner', () => {
         const fileSystemStub = new FileSystemOperationsStub();
         fileSystemStub.listDirectoryContents = async () => {
           await FileSystemOperationsStub.prototype
-            .listDirectoryContents.call(fileSystemStub); // register call history
+            .listDirectoryContents.call(fileSystemStub, ''); // register call history
           return [...itemsWithErrors.keys()];
         };
         fileSystemStub.deletePath = (path) => {
@@ -205,7 +205,7 @@ describe('InstallationFileCleaner', () => {
         const loggerStub = new LoggerStub();
         fileSystemStub.listDirectoryContents = async () => {
           await FileSystemOperationsStub.prototype
-            .listDirectoryContents.call(fileSystemStub); // register call history
+            .listDirectoryContents.call(fileSystemStub, ''); // register call history
           return allItems;
         };
         fileSystemStub.deletePath = async (path) => {

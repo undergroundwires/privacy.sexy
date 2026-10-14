@@ -31,17 +31,27 @@ describe('ShellBuilder', () => {
       {
         name: 'plain text',
         text: 'test',
-        expected: 'echo \'test\'',
+        expected: 'printf \'%s\\n\' \'test\'',
+      },
+      {
+        name: 'empty text',
+        text: '',
+        expected: 'printf \'%s\\n\' \'\'',
       },
       {
         name: 'text with single quote',
         text: 'I\'m not who you think I am',
-        expected: 'echo \'I\'\\\'\'m not who you think I am\'',
+        expected: 'printf \'%s\\n\' \'I\'\\\'\'m not who you think I am\'',
       },
       {
         name: 'text with multiple single quotes',
         text: 'I\'m what you\'re',
-        expected: 'echo \'I\'\\\'\'m what you\'\\\'\'re\'',
+        expected: 'printf \'%s\\n\' \'I\'\\\'\'m what you\'\\\'\'re\'',
+      },
+      {
+        name: 'text with backslashes',
+        text: 'C:\\scripts\\new',
+        expected: 'printf \'%s\\n\' \'C:\\scripts\\new\'',
       },
     ];
     for (const test of testData) {

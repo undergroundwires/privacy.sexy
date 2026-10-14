@@ -1,18 +1,16 @@
-export type Constructible<T, TArgs extends unknown[] = never> = {
-  prototype: T;
-  apply: (this: unknown, args: TArgs) => void;
+export type Constructible<T> = {
+  readonly prototype: T;
   readonly name: string;
 };
 
 export type PropertyKeys<T> = {
-  [K in keyof T]: T[K] extends (...args: unknown[]) => unknown ? never : K;
+  [K in keyof T]: T[K] extends (...args: never[]) => unknown ? never : K;
 }[keyof T];
 
-export type ConstructorArguments<T> =
-  T extends new (...args: infer U) => unknown ? U : never;
+export type ConstructorArguments<T> = T extends new (...args: infer U) => unknown ? U : never;
 
 export type FunctionKeys<T> = {
-  [K in keyof T]: T[K] extends (...args: unknown[]) => unknown ? K : never;
+  [K in keyof T]: T[K] extends (...args: never[]) => unknown ? K : never;
 }[keyof T];
 
 export function isString(value: unknown): value is string {

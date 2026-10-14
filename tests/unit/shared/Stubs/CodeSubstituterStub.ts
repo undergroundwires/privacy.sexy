@@ -3,7 +3,10 @@ import type { CodeSubstituter } from '@/application/Application/Loader/Collectio
 
 export class CodeSubstituterStub {
   private readonly scenarios = new Array<{
-    code: string, projectDetails: ProjectDetails, result: string }>();
+    code: string;
+    projectDetails: ProjectDetails;
+    result: string;
+  }>();
 
   public setup(code: string, projectDetails: ProjectDetails, result: string) {
     this.scenarios.push({ code, projectDetails, result });

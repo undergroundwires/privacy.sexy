@@ -1,6 +1,7 @@
 import { mkdtemp, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { ensureError } from '@/application/Common/CustomError';
 import { exists } from '../../utils/io';
 import { log, die, LogLevel } from '../../utils/log';
 import { runCommand } from '../../utils/run-command';
@@ -24,7 +25,7 @@ export async function prepareWindowsApp(
       try {
         await rm(workdir, { recursive: true, force: true });
       } catch (error) {
-        log(`Could not cleanup the working directory: ${error.message}`, LogLevel.Error);
+        log(`Could not cleanup the working directory: ${ensureError(error).message}`, LogLevel.Error);
       }
     },
   };

@@ -7,7 +7,7 @@ export function useEscapeKeyListener(
 ): void {
   const { startListening } = useEventListener();
   startListening(eventTarget, 'keyup', (event) => {
-    if (event.key === 'Escape') {
+    if (event instanceof KeyboardEvent && event.key === 'Escape') {
       callback();
     }
   });

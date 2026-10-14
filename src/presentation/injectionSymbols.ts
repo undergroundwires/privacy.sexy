@@ -46,9 +46,11 @@ export type AnyLifetimeInjectionKey<T> = InjectionKeyWithLifetime<T> | Transient
 
 export type InjectionKeySelector<T> = (keys: typeof InjectionKeys) => AnyLifetimeInjectionKey<T>;
 
+export type VueKeyInjector<T> = (key: InjectionKey<T>) => T | undefined;
+
 export function injectKey<T>(
   keySelector: InjectionKeySelector<T>,
-  vueInjector = inject,
+  vueInjector: VueKeyInjector<T | (() => T)> = inject,
 ): T {
   const key = keySelector(InjectionKeys);
   const injectedValue = injectRequired(key.key, vueInjector);
@@ -82,7 +84,7 @@ function defineTransientKey<T>(key: string): TransientKey<T> {
 
 function injectRequired<T>(
   key: InjectionKey<T>,
-  vueInjector = inject,
+  vueInjector: VueKeyInjector<T> = inject,
 ): T {
   const injectedValue = vueInjector(key);
 

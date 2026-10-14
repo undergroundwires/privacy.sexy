@@ -19,6 +19,12 @@ module.exports = {
     output: electronBundled,
     buildResources: resolvePathFromProjectRoot('src/presentation/electron/build'),
   },
+  files: [
+    `${electronUnbundled}/**/*`,
+    'package.json',
+    'LICENSE',
+    `!${electronUnbundled}/**/*.map`,
+  ],
   extraMetadata: {
     main: findMainEntryFile(
       join(electronUnbundled, 'main'), // do not `path.resolve`, it expects a relative path

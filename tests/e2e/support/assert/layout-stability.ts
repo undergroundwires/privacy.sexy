@@ -7,7 +7,7 @@ interface LayoutStabilityTestOptions {
 
 export function assertLayoutStability(
   selector: string,
-  action: ()=> void,
+  action: () => void,
   options: Partial<LayoutStabilityTestOptions> | undefined = undefined,
 ): void {
   // arrange

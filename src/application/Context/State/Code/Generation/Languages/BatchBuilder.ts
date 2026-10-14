@@ -6,6 +6,9 @@ export class BatchBuilder extends CodeBuilder {
   }
 
   protected writeStandardOut(text: string): string {
+    if (!text) {
+      return 'echo(';
+    }
     return `echo ${escapeForEcho(text)}`;
   }
 
@@ -14,8 +17,8 @@ export class BatchBuilder extends CodeBuilder {
   }
 }
 
-function escapeForEcho(text: string) {
+function escapeForEcho(text: string): string {
   return text
-    .replace(/&/g, '^&')
+    .replace(/[\^"&|<>()]/g, '^$&')
     .replace(/%/g, '%%');
 }

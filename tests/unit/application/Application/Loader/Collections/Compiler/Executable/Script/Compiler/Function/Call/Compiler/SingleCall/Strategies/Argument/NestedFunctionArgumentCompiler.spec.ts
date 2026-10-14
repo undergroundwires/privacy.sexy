@@ -271,8 +271,9 @@ class NestedFunctionArgumentCompilerBuilder implements ArgumentCompiler {
 
   private wrapError: ErrorWithContextWrapper = errorWithContextWrapperStub;
 
-  private callArgumentFactory
-  : FunctionCallArgumentFactory = new FunctionCallArgumentFactoryStub().factory;
+  private callArgumentFactory: FunctionCallArgumentFactory = (
+    new FunctionCallArgumentFactoryStub().factory
+  );
 
   public withExpressionsCompiler(expressionsCompiler: IExpressionsCompiler): this {
     this.expressionsCompiler = expressionsCompiler;

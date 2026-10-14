@@ -1,4 +1,5 @@
 import { ScriptFileCodeRunner } from '@/infrastructure/CodeRunner/ScriptFileCodeRunner';
+import { ensureError } from '@/application/Common/CustomError';
 import type { CodeRunner } from '@/application/CodeRunner/CodeRunner';
 import type { Dialog } from '@/presentation/common/Dialog';
 import { ElectronDialog } from '@/infrastructure/Dialog/Electron/ElectronDialog';
@@ -27,7 +28,8 @@ export function registerAllIpcChannels(
       const instance = instanceFactory();
       registrar(definition, instance);
     } catch (err) {
-      throw new AggregateError([err], `main: Failed to register IPC channel "${name}":\n${err.message}`);
+      const error = ensureError(err);
+      throw new AggregateError([error], `main: Failed to register IPC channel "${name}":\n${error.message}`, { cause: err });
     }
   });
 }

@@ -2,6 +2,10 @@ import remarkLintNoDeadUrls from 'remark-lint-no-dead-urls';
 
 /** @type {import('remark-lint-no-dead-urls').Options} */
 const PluginOptions = {
+  deadOrAliveOptions: {
+    timeout: 30000,
+    maxRetries: 2,
+  },
   skipUrlPatterns: [
     // These result in false negatives
     'archive.ph',

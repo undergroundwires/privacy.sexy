@@ -4,7 +4,7 @@ import type { Logger } from '@/application/Common/Log/Logger';
 export function itEachLoggingMethod(
   handler: (
     functionName: keyof Logger,
-    testParameters: readonly unknown[]
+    testParameters: readonly unknown[],
   ) => void,
 ) {
   const testScenarios: {

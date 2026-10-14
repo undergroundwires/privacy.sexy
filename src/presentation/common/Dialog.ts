@@ -30,7 +30,6 @@ export interface SaveFileError {
   readonly message: string;
 }
 
-export type SaveFileErrorType =
-  | 'FileCreationError'
+export type SaveFileErrorType = 'FileCreationError'
   | 'FileReadbackVerificationError'
   | 'DialogDisplayError';

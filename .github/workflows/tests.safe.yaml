@@ -1,0 +1,38 @@
+name: non-executing-tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      NODE_DISABLE_COMPILE_CACHE: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+      - name: Install without lifecycle scripts
+        run: npm ci --include=dev --ignore-scripts --engine-strict --strict-peer-deps
+      - name: Type-check
+        run: node node_modules/vue-tsc/bin/vue-tsc.js --noEmit
+      - name: Test without applying scripts or loading Electron
+        if: matrix.os == 'windows-latest'
+        run: node node_modules/vitest/vitest.mjs run --config vitest.safe.config.ts --maxWorkers=2
+      - name: Test with coverage through Make
+        if: matrix.os == 'ubuntu-latest'
+        run: make coverage
+      - name: Upload safe test coverage
+        if: matrix.os == 'ubuntu-latest'
+        uses: ./.github/actions/upload-artifact
+        with:
+          name: safe-test-coverage
+          path: dist-coverage

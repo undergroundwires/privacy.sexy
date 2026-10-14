@@ -67,7 +67,7 @@ class TestContext {
   }
 
   public provideCommandDefinition(): ReturnType<
-  OsSpecificTerminalLaunchCommandFactory['provideCommandDefinition']
+    OsSpecificTerminalLaunchCommandFactory['provideCommandDefinition']
   > {
     const sut = new OsSpecificTerminalLaunchCommandFactory(this.environment);
     return sut.provideCommandDefinition();

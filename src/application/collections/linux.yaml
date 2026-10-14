@@ -18,8 +18,11 @@ scripting:
         exit 0
       fi
       export HOME="/home/${SUDO_USER:-${USER}}" # Keep `~` and `$HOME` for user not `/root`.
+      printf '%s\n' ''
+      printf '%s\n' 'privacy.sexy - Running selected actions'
+      printf '%s\n' 'Review each action below for errors or warnings.'
     endCode: |-
-      echo 'Your privacy and security is now hardened 🎉💪'
+      printf '%s\n' ''
       echo 'Press any key to exit.'
       read -n 1 -s
 actions:
@@ -246,13 +249,13 @@ actions:
               [1]: https://web.archive.org/web/20221029135718/https://en.wikipedia.org/wiki/Steam_%28service%29 "Steam | Wikipedia | wikipedia.org"
             code: |-
               # Global installation
-              rm -rfv ~/.local/share/Steam/appcache/*
+              rm -rf ~/.local/share/Steam/appcache/*
               # Snap
-              rm -rfv ~/snap/steam/common/.cache/*
-              rm -rfv ~/snap/steam/common/.local/share/Steam/appcache/*
+              rm -rf ~/snap/steam/common/.cache/*
+              rm -rf ~/snap/steam/common/.local/share/Steam/appcache/*
               # Flatpak
-              rm -rfv ~/.var/app/com.valvesoftware.Steam/cache/*
-              rm -rfv ~/.var/app/com.valvesoftware.Steam/data/Steam/appcache/*
+              rm -rf ~/.var/app/com.valvesoftware.Steam/cache/*
+              rm -rf ~/.var/app/com.valvesoftware.Steam/data/Steam/appcache/*
           -
             name: Clear Clementine cache
             docs: |-
@@ -267,11 +270,11 @@ actions:
               [3]: https://web.archive.org/web/20221029135834/https://github.com/clementine-player/Clementine/issues/3265 "Cache folder · Issue #3265 · clementine-player/Clementine | GitHub | github.com/clementine-player/Clementine"
             code: |-
               # Global installation
-              rm -rfv ~/.cache/Clementine/*
+              rm -rf ~/.cache/Clementine/*
               # Flatpak installation
-              rm -rfv ~/.var/app/org.clementine_player.Clementine/cache/*
+              rm -rf ~/.var/app/org.clementine_player.Clementine/cache/*
               # Snap installation
-              rm -rfv ~/snap/clementine/common/.cache/*
+              rm -rf ~/snap/clementine/common/.cache/*
           -
             category: Clear Wine data
             docs: |-
@@ -295,9 +298,9 @@ actions:
                   [3]: https://web.archive.org/web/20221029135955/https://wiki.debian.org/Wine#Mono_and_Gecko "Wine - Debian Wiki | wiki.debian.org"
                 code: |-
                   # Temporary Windows files for global prefix
-                  rm -rfv ~/.wine/drive_c/windows/temp/*
+                  rm -rf ~/.wine/drive_c/windows/temp/*
                   # Wine cache:
-                  rm -rfv ~/.cache/wine/
+                  rm -rf ~/.cache/wine/
               -
                 name: Clear Winetricks cache
                 recommend: standard
@@ -314,7 +317,7 @@ actions:
                   [2]: https://web.archive.org/web/20221029140047/https://github.com/Winetricks/winetricks/blob/164d243e1384ba7cc6058a6524c1472100b7722c/src/winetricks#L1269-L1271 "Wine source code | GitHub | github.com/Winetricks/winetricks"
                   [3]: https://web.archive.org/web/20221029140047/https://github.com/Winetricks/winetricks/blob/164d243e1384ba7cc6058a6524c1472100b7722c/src/winetricks#L1515-L1517 "Wine source code | GitHub | github.com/Winetricks/winetricks"
                   [4]: https://web.archive.org/web/20221029140204/https://manpages.debian.org/experimental/winetricks/winetricks.1.en.html#XDG_CACHE_HOME "winetricks man page | Debian Manpages | manpages.debian.org"
-                code: rm -rfv ~/.cache/winetricks/
+                code: rm -rf ~/.cache/winetricks/
           -
             name: Clear LibreOffice usage history
             recommend: strict
@@ -335,9 +338,9 @@ actions:
               # Global installation
               rm -f ~/.config/libreoffice/4/user/registrymodifications.xcu
               # Snap package
-              rm -fv ~/snap/libreoffice/*/.config/libreoffice/4/user/registrymodifications.xcu
+              rm -f ~/snap/libreoffice/*/.config/libreoffice/4/user/registrymodifications.xcu
               # Flatpak installation
-              rm -fv ~/.var/app/org.libreoffice.LibreOffice/config/libreoffice/4/user/registrymodifications.xcu
+              rm -f ~/.var/app/org.libreoffice.LibreOffice/config/libreoffice/4/user/registrymodifications.xcu
           -
             category: Clear Thunderbird data
             docs: |-
@@ -633,9 +636,9 @@ actions:
 
                       [1]: https://web.archive.org/web/20221029142939/https://github.com/Azure/azure-cli/blob/29767d75d850ddc1c24cc85bd46d861b61d77a47/src/azure-cli-telemetry/azure/cli/telemetry/const.py "Azure CLI Source Code | GitHub | github.com"
                     code: |-
-                      rm -rfv ~/.azure/telemetry
-                      rm -fv ~/.azure/telemetry.txt
-                      rm -fv ~/.azure/logs/telemetry.txt
+                      rm -rf ~/.azure/telemetry
+                      rm -f ~/.azure/telemetry.txt
+                      rm -f ~/.azure/logs/telemetry.txt
                   -
                     name: Clear Azure CLI logs
                     recommend: standard
@@ -643,7 +646,7 @@ actions:
                       Azure CLI saves logs in the `logs` directory [1].
 
                       [1]: https://web.archive.org/web/20221029143112/https://github.com/Azure/azure-cli/blob/87c9c3c5a46de622b38e1ec4d5797bb9a3eb9e6f/src/azure/cli/_logging.py#L23 "Azure CLI Source Code | GitHub | github.com"
-                    code: rm -rfv ~/.azure/logs
+                    code: rm -rf ~/.azure/logs
                   -
                     name: Clear Azure CLI cache
                     recommend: standard
@@ -684,9 +687,9 @@ actions:
                       parameters:
                         command: az
                         code: |-
-                          az logout 2&> /dev/null
+                          az logout &> /dev/null
                           az account clear
-                          rm -fv ~/.azure/accessTokens.json
+                          rm -f ~/.azure/accessTokens.json
       -
         category: Clear browser history
         docs: |-
@@ -716,11 +719,11 @@ actions:
                 docs: This script clears the temporary cache and does not cause any user data loss.
                 code: |-
                   # Global installation
-                  rm -rfv /.cache/epiphany/*
+                  rm -rf -- "$HOME/.cache/epiphany/"*
                   # Flatpak installation
-                  rm -rfv ~/.var/app/org.gnome.Epiphany/cache/*
+                  rm -rf -- "$HOME/.var/app/org.gnome.Epiphany/cache/"*
                   # Snap installation
-                  rm -rfv ~/~/snap/epiphany/common/.cache/*
+                  rm -rf -- "$HOME/snap/epiphany/common/.cache/"*
               -
                 name: Clear GNOME Web browsing history
                 recommend: strict
@@ -788,11 +791,11 @@ actions:
                   [2]: https://web.archive.org/web/20221029145237/https://wiki.archlinux.org/title/Firefox/Profile_on_RAM "Firefox/Profile on RAM | ArchWiki | wiki.archlinux.org"
                 code: |-
                   # Global installation
-                  rm -rfv ~/.cache/mozilla/*
+                  rm -rf ~/.cache/mozilla/*
                   # Flatpak installation
-                  rm -rfv ~/.var/app/org.mozilla.firefox/cache/*
+                  rm -rf ~/.var/app/org.mozilla.firefox/cache/*
                   # Snap installation
-                  rm -rfv ~/snap/firefox/common/.cache/*
+                  rm -rf ~/snap/firefox/common/.cache/*
               -
                 name: Clear Firefox crash reports
                 recommend: standard
@@ -810,11 +813,11 @@ actions:
                     parameters:
                       code: |-
                         # Global installation
-                        rm -fv ~/.mozilla/firefox/Crash\ Reports/*
+                        rm -f ~/.mozilla/firefox/Crash\ Reports/*
                         # Flatpak installation
-                        rm -rfv ~/.var/app/org.mozilla.firefox/.mozilla/firefox/Crash\ Reports/*
+                        rm -rf ~/.var/app/org.mozilla.firefox/.mozilla/firefox/Crash\ Reports/*
                         # Snap installation
-                        rm -rfv ~/snap/firefox/common/.mozilla/firefox/Crash\ Reports/*
+                        rm -rf ~/snap/firefox/common/.mozilla/firefox/Crash\ Reports/*
                   -
                     function: DeleteFilesFromFirefoxProfiles
                     parameters:
@@ -974,8 +977,8 @@ actions:
               [6]: https://web.archive.org/web/20221029150331/https://bugs.launchpad.net/apport/+bug/357024 "Bug #357024 (pertian7) “security hole in /etc/cron.daily/apport” : Bugs : Apport | bugs.launchpad.net"
               [7]: https://web.archive.org/web/20221029211018/https://www.freedesktop.org/software/systemd/man/systemd-coredump.html "systemd-coredump | freedesktop.org"
             code: |-
-              sudo rm -rfv /var/crash/*
-              sudo rm -rfv /var/lib/systemd/coredump/
+              sudo rm -rf /var/crash/*
+              sudo rm -rf /var/lib/systemd/coredump/
           -
             name: Clear system logs (`journald`)
             docs: |-
@@ -999,8 +1002,8 @@ actions:
                 function: RunInlineCode
                 parameters:
                   code: |-
-                    sudo rm -rfv /run/log/journal/*
-                    sudo rm -rfv /var/log/journal/*
+                    sudo rm -rf /run/log/journal/*
+                    sudo rm -rf /var/log/journal/*
           -
             name: Clear Zeitgeist data (activity logs)
             recommend: strict
@@ -1019,7 +1022,7 @@ actions:
               [2]: https://web.archive.org/web/20221029150843/https://packages.debian.org/sid/libdevel/libzeitgeist-2.0-dev "Debian -- Details of package libzeitgeist-2.0-dev in sid | packages.debian.org"
               [3]: https://web.archive.org/web/20221029150959/https://bugs.launchpad.net/ubuntu/+source/zeitgeist/+bug/941643 "Bug #941643 “activity.sqlite-wal's size increments dramatically” : Bugs : zeitgeist package : Ubuntu | Ubuntu Zeitgeist Package | bugs.launchpad.net"
             code: |-
-              sudo rm -rfv {/root,/home/*}/.local/share/zeitgeist
+              sudo rm -rf {/root,/home/*}/.local/share/zeitgeist
       -
         category: Clear recently used files list
         docs: |-
@@ -1046,12 +1049,12 @@ actions:
               [5]: https://web.archive.org/web/20221029151534/https://github.com/electron/electron/issues/2927 "Consider replacing GTK2 w GTK3 in Linux builds · Issue #2927 · electron/electron | GitHub"
             code: |-
               # From global installations
-              rm -fv /.recently-used.xbel
-              rm -fv ~/.local/share/recently-used.xbel*
+              rm -f /.recently-used.xbel
+              rm -f ~/.local/share/recently-used.xbel*
               # From snap packages
-              rm -fv ~/snap/*/*/.local/share/recently-used.xbel
+              rm -f ~/snap/*/*/.local/share/recently-used.xbel
               # From Flatpak packages
-              rm -fv ~/.var/app/*/data/recently-used.xbel
+              rm -f ~/.var/app/*/data/recently-used.xbel
           -
             name: Clear KDE-tracked recently used items list
             recommend: strict
@@ -1066,13 +1069,13 @@ actions:
               [1]: https://web.archive.org/web/20221029151634/https://api.kde.org/frameworks/kio/html/classKRecentDocument.html "KIO - KRecentDocument Class Reference | api.kde.org"
             code: |-
               # From global installations
-              rm -rfv ~/.local/share/RecentDocuments/*.desktop
-              rm -rfv ~/.kde/share/apps/RecentDocuments/*.desktop
-              rm -rfv ~/.kde4/share/apps/RecentDocuments/*.desktop
+              rm -rf ~/.local/share/RecentDocuments/*.desktop
+              rm -rf ~/.kde/share/apps/RecentDocuments/*.desktop
+              rm -rf ~/.kde4/share/apps/RecentDocuments/*.desktop
               # From snap packages
-              rm -fv ~/snap/*/*/.local/share/*.desktop
+              rm -f ~/snap/*/*/.local/share/*.desktop
               # From Flatpak packages
-              rm -rfv ~/.var/app/*/data/*.desktop
+              rm -rf ~/.var/app/*/data/*.desktop
       -
         name: Empty trash
         docs: |-
@@ -1088,12 +1091,12 @@ actions:
           [4]: https://web.archive.org/web/20221029151931/https://bugs.launchpad.net/snapd/+bug/1787903 "Bug #1787903 “Snapped application can't access user's trash can” : Bugs : snapd | bugs.launchpad.net"
         code: |-
           # Empty global trash
-          rm -rfv ~/.local/share/Trash/*
-          sudo rm -rfv /root/.local/share/Trash/*
+          rm -rf ~/.local/share/Trash/*
+          sudo rm -rf /root/.local/share/Trash/*
           # Empty Snap trash
-          rm -rfv ~/snap/*/*/.local/share/Trash/*
+          rm -rf ~/snap/*/*/.local/share/Trash/*
           # Empty Flatpak trash (apps may not choose to use Portal API)
-          rm -rfv ~/.var/app/*/data/Trash/*
+          rm -rf ~/.var/app/*/data/Trash/*
       -
         name: Clear global temporary folders
         docs: |-
@@ -1111,8 +1114,8 @@ actions:
           [1]: https://web.archive.org/web/20221029152135/https://en.wikipedia.org/wiki/Temporary_folder "Temporary folder | Wikipedia | en.wikipedia.org"
           [2]: https://web.archive.org/web/20221029152204/https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch03s18.html "Filesystem Hierarchy Standard | LinuxFoundation.org"
         code: |-
-          sudo rm -rfv /tmp/*
-          sudo rm -rfv /var/tmp/*
+          sudo rm -rf /tmp/*
+          sudo rm -rf /var/tmp/*
       -
         category: Clear package manager data
         docs: |-
@@ -1180,7 +1183,7 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029152638/https://github.com/snapcore/snapd/blob/76b081beee1899c573b42bf216b6e087656011e7/tests/main/auto-refresh-private/task.yaml#L74 "snapd source code | GitHub | github.com"
                   [2]: https://web.archive.org/web/20221029152651/https://forum.snapcraft.io/t/is-if-safe-for-me-to-remove-cache-files/7641/2 "Is if safe for me to remove cache files? - snapd - snapcraft.io | forum.snapcraft.io"
-                code: sudo rm -rfv /var/lib/snapd/cache/*
+                code: sudo rm -rf /var/lib/snapd/cache/*
               -
                 name: Remove old Snap packages
                 recommend: standard
@@ -1252,11 +1255,11 @@ actions:
                   [2]: https://web.archive.org/web/20221029153627/https://github.com/flatpak/flatpak/commit/1a49029f9d8fbee0338665522cf7432ae7485841 "Move caches to ~/.cache · flatpak/flatpak@1a49029 · GitHub | github.com"
                 code: |-
                   # Temporary cache
-                  sudo rm -rfv /var/tmp/flatpak-cache-*
+                  sudo rm -rf /var/tmp/flatpak-cache-*
                   # New cache
-                  rm -rfv ~/.cache/flatpak/system-cache/*
+                  rm -rf ~/.cache/flatpak/system-cache/*
                   # Old cache
-                  rm -rfv ~/.local/share/flatpak/system-cache/*
+                  rm -rf ~/.local/share/flatpak/system-cache/*
           -
             category: Clear APT data
             docs: |-
@@ -1293,7 +1296,7 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029153731/https://www.debian.org/doc/manuals/debian-handbook/sect.apt-cache.en.html "6.3. The apt-cache Command | Debian Handbook | www.debian.org"
                   [2]: https://web.archive.org/web/20221029154335/https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=775163 "#775163 - apt pigs out in /var, particularly with multi-arch - Debian Bug report logs | bugs.debian.org"
-                code: sudo rm -rfv /var/lib/apt/lists/*
+                code: sudo rm -rf /var/lib/apt/lists/*
               -
                 name: Clear orphaned APT package dependencies
                 recommend: standard
@@ -1343,13 +1346,16 @@ actions:
               pip (Python package manager) [3], or Google Chrome and Chromium-based browsers.
               Deleting this cache does not affect sandboxed applications, e.g., those that are installed using Snap or Flatpak.
 
+              This script clears the default `$HOME/.cache` location and root's `/root/.cache` directory.
+              It does not follow a customized `XDG_CACHE_HOME`. Root cache enumeration requires `sudo`.
+
               [1]: https://web.archive.org/web/20221029151712/https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html "XDG Base Directory Specification | specifications.freedesktop.org"
               [2]: https://web.archive.org/web/20221029154505/https://wiki.archlinux.org/title/KDE#Clean_cache_to_resolve_upgrade_problems "KDE - ArchWiki | wiki.archlinux.org"
               [3]: https://web.archive.org/web/20221029154542/https://pip.pypa.io/en/stable/topics/caching/#default-paths "Caching - pip documentation v22.2.2 | pip.pypa.io"
               [4]: https://web.archive.org/web/20221029154556/https://chromium.googlesource.com/chromium/src/+/master/docs/user_data_dir.md#Linux "Chromium Docs - User Data Directory | chromium.googlesource.com"
             code: |-
-              rm -rfv ~/.cache/*
-              sudo rm -rfv root/.cache/*
+              rm -rf -- "$HOME/.cache/"*
+              sudo find /root/.cache -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
           -
             name: Clear system-wide cache
             docs: |-
@@ -1377,7 +1383,7 @@ actions:
 
               [1]: https://web.archive.org/web/20221029154654/https://docs.flatpak.org/en/latest/conventions.html#xdg-base-directories "Requirements & Conventions - Flatpak documentation | docs.flatpak.org"
               [2]: https://web.archive.org/web/20221029151712/https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html "XDG Base Directory Specification | specifications.freedesktop.org"
-            code: rm -rfv ~/.var/app/*/cache/*
+            code: rm -rf ~/.var/app/*/cache/*
           -
             name: Clear Snap application cache
             docs: |-
@@ -1385,7 +1391,7 @@ actions:
               folders for Snap applications [1].
 
               [1]: https://web.archive.org/web/20221029154850/https://bugs.launchpad.net/snappy/+bug/1744584 "Bug #1744584 “Exclude Snap .cache from Dejadup backups” : Bugs : Snappy | bugs.launchpad.net/snappy"
-            code: rm -fv ~/snap/*/*/.cache/*
+            code: rm -f ~/snap/*/*/.cache/*
           -
             name: Clear thumbnails (icon cache)
             docs: |-
@@ -1401,8 +1407,8 @@ actions:
               [3]: https://web.archive.org/web/20221030163411/https://gitlab.gnome.org/GNOME/nautilus/-/issues/1237 "Unable to generate thumbnails (#1237) · Issues · GNOME / Files · GitLab | gitlab.gnome.org"
               [4]: https://web.archive.org/web/20221029155859/https://bugs.kde.org/show_bug.cgi?id=79943 "79943 - It should be possible to limit the amount of disk space used by thumbnails (.thumbnails directory) | bugs.kde.org"
             code: |-
-              rm -rfv ~/.thumbnails/*
-              rm -rfv ~/.cache/thumbnails/*
+              rm -rf ~/.thumbnails/*
+              rm -rf ~/.cache/thumbnails/*
       -
         name: Clear screenshots
         docs: |-
@@ -1425,20 +1431,20 @@ actions:
           [5]: https://web.archive.org/web/20221029160052/https://github.com/ksnip/ksnip/blob/89b7f3f1f5efc0c62797c091e985dc70be17e347/src/backend/config/Config.cpp#L232-L241 "ksnip/Config.cpp · ksnip/ksnip | GitHub"
         code: |-
           # Clear default directory for GNOME screenshots
-          rm -rfv ~/Pictures/Screenshots/*
+          rm -rf ~/Pictures/Screenshots/*
           if [ -d ~/Pictures ]; then
             # Clear Ubuntu screenshots
             find ~/Pictures -name 'Screenshot from *.png' | while read -r file_path; do
-              rm -fv "$file_path" # E.g. Screenshot from 2022-08-20 02-46-41.png
+              rm -f "$file_path" # E.g. Screenshot from 2022-08-20 02-46-41.png
             done
             # Clear KDE (Spectatle) screenshots
             find ~/Pictures -name 'Screenshot_*' | while read -r file_path; do
-              rm -fv "$file_path" # E.g. Screenshot_20220927_205646.png
+              rm -f "$file_path" # E.g. Screenshot_20220927_205646.png
             done
           fi
           # Clear ksnip screenshots
           find ~ -name 'ksnip_*' | while read -r file_path; do
-            rm -fv "$file_path" # E.g. ksnip_20220927-195151.png
+            rm -f "$file_path" # E.g. ksnip_20220927-195151.png
           done
   -
     category: Disable OS data collection
@@ -1676,10 +1682,10 @@ actions:
               Removing the identifier reduces the risk of your computer being identified.
 
               [1]: https://web.archive.org/web/20221029162231/https://launchpadlibrarian.net/425925849/zorin-os-census_1.1~zorinos15_1.2.diff.gz "Zorin OS source code | launchpad.net"
-            code: sudo rm -fv '/var/lib/zorin-os-census/uuid'
+            code: sudo rm -f '/var/lib/zorin-os-census/uuid'
             revertCode: |-
               if [ -f /var/lib/zorin-os-census/uuid ]; then
-                echo 'Skipping, uuid already exists.'
+                :
               else
                 sudo mkdir -p /var/lib/zorin-os-census
                 uuidgen | sudo tee /var/lib/zorin-os-census/uuid > /dev/null
@@ -1758,13 +1764,13 @@ actions:
                     command: ubuntu-report
                     code: |-
                       if ubuntu-report -f send no; then
-                        echo 'Successfully opted out.'
+                        :
                       else
                         >&2 echo 'Failed to opt out.'
                       fi
                     revertCode: |-
                       if ubuntu-report -f send yes; then
-                        echo 'Successfully opted in.'
+                        :
                       else
                         >&2 echo 'Failed to opt in.'
                       fi
@@ -1881,16 +1887,14 @@ actions:
                     code: |-
                       if [ -f /etc/default/apport ]; then
                         sudo sed -i 's/enabled=1/enabled=0/g' /etc/default/apport
-                        echo 'Successfully disabled apport.'
                       else
-                        echo 'Skipping, apport is not configured to be enabled.'
+                        :
                       fi
                     revertCode: |-
                       if [ -f /etc/default/apport ]; then
                         sudo sed -i 's/enabled=0/enabled=1/g' /etc/default/apport
-                        echo 'Successfully enabled apport.'
                       else
-                        echo 'Skipping, apport is not configured to be disabled.'
+                        :
                       fi
               -
                 category: Disable uploading errors (Whoopsie)
@@ -2049,15 +2053,13 @@ actions:
               file="$HOME/.local/share/zeitgeist/activity.sqlite"
               if [ -f "$file" ]; then
                 chmod -rw "$file"
-                echo "Successfully disabled read/write access to $file."
               else
-                echo "Skipping, no action needed, file does not exist at $file."
+                :
               fi
             revertCode: |-
               file="$HOME/.local/share/zeitgeist/activity.sqlite"
               if [ -f "$file" ]; then
                 chmod +rw "$file"
-                echo "Successfully restored read/write access to $file."
               else
                 >&2 echo "Failed to restore access, file does not exist at $file."
               fi
@@ -2131,27 +2133,23 @@ actions:
               directory="${file%/*}"
               mkdir -p "$directory"
               if [ -f "$file" ]; then
-                echo "Skipping, connectivity checks are already disabled through $file."
+                :
               else
                 echo -n "$content" | sudo tee "$file" > /dev/null
-                echo 'Successfully disabled connectivity checks.'
               fi
               if command -v 'nmcli' &> /dev/null; then
                 sudo nmcli general reload
-                echo 'Successfully reloaded configuration.'
               else
                 echo 'It will take effect after reboot.'
               fi
             revertCode: |-
               if [ ! -f "$file" ]; then
-                echo 'Skipping, connectivity checks are not disabled.'
+                :
               else
-                sudo rm -fv "$file"
-                echo 'Successfully restored connectivity checks.'
+                sudo rm -f "$file"
               fi
               if command -v 'nmcli' &> /dev/null; then
                 sudo nmcli general reload
-                echo 'Successfully reloaded configuration.'
               else
                 echo 'It will take effect after reboot.'
               fi
@@ -3231,7 +3229,7 @@ actions:
                   If this blocking is removed, the user should be knowledgeable about the potential risks and will take precautions.
 
                   [1]: https://web.archive.org/web/20221026164502/https://wiki.mozilla.org/Security/Safe_Browsing#Prefs "Security/Safe Browsing - MozillaWiki | wiki.mozilla.org"
-                  [2]: https://web.archive.org/web/20230811024650/https://blog.mozilla.org/addons/2020/08/24/introducing-a-scalable-add-ons-blocklist/ "Introducing a scalable add-ons blocklist | Mozilla Add-ons Community Blog"
+                  [2]: https://blog.mozilla.org/addons/2020/08/24/introducing-a-scalable-add-ons-blocklist/ "Introducing a scalable add-ons blocklist | Mozilla Add-ons Community Blog"
                 call:
                   function: AddFirefoxPrefs
                   parameters:
@@ -3357,8 +3355,8 @@ functions:
     parameters:
       - name: file
     code: |-
-      rm -fv ~/{{ $file }}
-      sudo rm -fv /root/{{ $file }}
+      rm -f ~/{{ $file }}
+      sudo rm -f /root/{{ $file }}
   -
     name: SetVsCodeSetting
     parameters:
@@ -3379,34 +3377,25 @@ functions:
             # Flatpak installation
             f'{home_dir}/.var/app/com.visualstudio.code/config/Code/User/settings.json'
           ]
+          configured_count = 0
           for settings_file in settings_files:
-            file=Path(settings_file)
+            file = Path(settings_file)
             if not file.is_file():
-              print(f'Skipping, file does not exist at "{settings_file}".')
               continue
-            print(f'Reading file at "{settings_file}".')
             file_content = file.read_text()
             if not file_content.strip():
-              print('Settings file is empty. Treating it as default empty JSON object.')
               file_content = '{}'
-            json_object = None
             try:
               json_object = json.loads(file_content)
             except json.JSONDecodeError:
               print(f'Error, invalid JSON format in the settings file: "{settings_file}".', file=sys.stderr)
               continue
-            if property_name not in json_object:
-              print(f'Settings "{property_name}" is not configured.')
-            else:
-              existing_value = json_object[property_name]
-              if existing_value == target:
-                print(f'Skipping, "{property_name}" is already configured as {json.dumps(target)}.')
-                continue
-              print(f'Setting "{property_name}" has unexpected value {json.dumps(existing_value)} that will be changed.')
+            if property_name in json_object and json_object[property_name] == target:
+              continue
             json_object[property_name] = target
-            new_content = json.dumps(json_object, indent=2)
-            file.write_text(new_content)
-            print(f'Successfully configured "{property_name}" to {json.dumps(target)}.')
+            file.write_text(json.dumps(json_object, indent=2))
+            configured_count += 1
+          print(f'Configured "{property_name}" in {configured_count} settings file(s).')
         revertCode: |-
           from pathlib import Path
           import os, json, sys
@@ -3419,32 +3408,25 @@ functions:
             # Flatpak installation
             f'{home_dir}/.var/app/com.visualstudio.code/config/Code/User/settings.json'
           ]
+          reverted_count = 0
           for settings_file in settings_files:
-            file=Path(settings_file)
+            file = Path(settings_file)
             if not file.is_file():
-              print(f'Skipping, file does not exist at "{settings_file}".')
               continue
-            print(f'Reading file at "{settings_file}".')
             file_content = file.read_text()
             if not file_content.strip():
-              print(f'Skipping, no need to revert because settings file is empty: "{settings_file}".')
               continue
             try:
               json_object = json.loads(file_content)
             except json.JSONDecodeError:
               print(f'Error, invalid JSON format in the settings file: "{settings_file}".', file=sys.stderr)
               continue
-            if property_name not in json_object:
-              print(f'Skipping, "{property_name}" is not configured.')
-              continue
-            existing_value = json_object[property_name]
-            if existing_value != target:
-              print(f'Skipping, "{property_name}" is configured using {json.dumps(existing_value)} instead of {json.dumps(target)}.')
+            if property_name not in json_object or json_object[property_name] != target:
               continue
             del json_object[property_name]
-            new_content = json.dumps(json_object, indent=2)
-            file.write_text(new_content)
-            print(f'Successfully reverted "{property_name}" setting.')
+            file.write_text(json.dumps(json_object, indent=2))
+            reverted_count += 1
+          print(f'Reverted "{property_name}" in {reverted_count} settings file(s).')
   -
     name: UninstallPacmanPackage
     parameters:
@@ -3456,18 +3438,30 @@ functions:
         code: |-
           pkg_package_name='{{ $packageName }}'
           if pacman -Qs "$pkg_package_name" > /dev/null ; then
-            echo "\"$pkg_package_name\" is installed and will be uninstalled."
-            sudo pacman -Rcns "$pkg_package_name" --noconfirm
-          else
-            echo "The package $pkg_package_name is not installed"
+            (
+              pacman_output="$(sudo pacman -Rcns "$pkg_package_name" --noconfirm)"
+              package_status=$?
+              if [ "$package_status" -ne 0 ]; then
+                printf '%s\n' "$pacman_output" >&2
+                >&2 echo "Failed to uninstall $pkg_package_name."
+              fi
+              exit "$package_status"
+            )
           fi
         revertCode: |-
           pkg_package_name='{{ $packageName }}'
           if pacman -Qs "$pkg_package_name" > /dev/null ; then
-            echo "Skipping, no action needed because \"$pkg_package_name\" is already installed."
+            :
           else
-            echo "\"$pkg_package_name\" is not installed and will be reinstalled."
-            sudo pacman -S "$pkg_package_name" --noconfirm
+            (
+              pacman_output="$(sudo pacman -S "$pkg_package_name" --noconfirm)"
+              package_status=$?
+              if [ "$package_status" -ne 0 ]; then
+                printf '%s\n' "$pacman_output" >&2
+                >&2 echo "Failed to reinstall $pkg_package_name."
+              fi
+              exit "$package_status"
+            )
           fi
   -
     name: UninstallRPMPackage
@@ -3479,10 +3473,26 @@ functions:
         command: dnf
         code: |-
           rpm_package_name='{{ $packageName }}'
-          sudo dnf autoremove -y --skip-broken "$rpm_package_name"
+          (
+            dnf_output="$(sudo dnf autoremove -y --skip-broken "$rpm_package_name")"
+            package_status=$?
+            if [ "$package_status" -ne 0 ]; then
+              printf '%s\n' "$dnf_output" >&2
+              >&2 echo "Failed to uninstall $rpm_package_name."
+            fi
+            exit "$package_status"
+          )
         revertCode: |-
           rpm_package_name='{{ $packageName }}'
-          sudo dnf install -y "$rpm_package_name"
+          (
+            dnf_output="$(sudo dnf install -y "$rpm_package_name")"
+            package_status=$?
+            if [ "$package_status" -ne 0 ]; then
+              printf '%s\n' "$dnf_output" >&2
+              >&2 echo "Failed to reinstall $rpm_package_name."
+            fi
+            exit "$package_status"
+          )
   -
     name: UninstallAptPackage
     parameters:
@@ -3495,19 +3505,31 @@ functions:
           apt_package_name='{{ $packageName }}'
           if status="$(dpkg-query -W --showformat='${db:Status-Status}' "$apt_package_name" 2>&1)" \
               && [ "$status" = installed ]; then
-            echo "\"$apt_package_name\" is installed and will be uninstalled."
-            sudo apt-get purge -y "$apt_package_name"
-          else
-            echo "Skipping, no action needed, \"$apt_package_name\" is not installed."
+            (
+              apt_output="$(sudo apt-get purge -y "$apt_package_name")"
+              package_status=$?
+              if [ "$package_status" -ne 0 ]; then
+                printf '%s\n' "$apt_output" >&2
+                >&2 echo "Failed to uninstall $apt_package_name."
+              fi
+              exit "$package_status"
+            )
           fi
         revertCode: |-
           apt_package_name='{{ $packageName }}'
           if status="$(dpkg-query -W --showformat='${db:Status-Status}' "$apt_package_name" 2>&1)" \
               && [ "$status" = installed ]; then
-            echo "Skipping, no action needed because \"$apt_package_name\" is already installed."
+            :
           else
-            echo "\"$apt_package_name\" is not installed and will be reinstalled."
-            sudo apt-get install -y "$apt_package_name"
+            (
+              apt_output="$(sudo apt-get install -y "$apt_package_name")"
+              package_status=$?
+              if [ "$package_status" -ne 0 ]; then
+                printf '%s\n' "$apt_output" >&2
+                >&2 echo "Failed to reinstall $apt_package_name."
+              fi
+              exit "$package_status"
+            )
           fi
   -
     name: DisableSystemdService
@@ -3524,32 +3546,29 @@ functions:
           if systemctl list-units --full -all | grep --fixed-strings --quiet "$service"; then # service exists
             if systemctl is-enabled --quiet "$service"; then
               if systemctl is-active --quiet "$service"; then
-                echo "Service $service is running now, stopping it."
                 if ! sudo systemctl stop "$service"; then
                   >&2 echo "Could not stop $service."
-                else
-                  echo 'Successfully stopped'
                 fi
               fi
               if sudo systemctl disable "$service"; then
-                echo "Successfully disabled $service."
+                echo "Disabled $service."
               else
                 >&2 echo "Failed to disable $service."
               fi
             else
-              echo "Skipping, $service is already disabled."
+              :
             fi
           else
-            echo "Skipping, $service does not exist."
+            :
           fi
         revertCode: |- # Not restarting/enabling service because the process/socket may need to be trigged by other hooks.
           service='{{ $serviceName }}'
           if systemctl list-units --full -all | grep --fixed-strings --quiet "$service"; then # service exists
             if systemctl is-enabled --quiet "$service"; then
-              echo "Skipping, $service is already enabled."
+              :
             else
               if sudo systemctl enable "$service"; then
-                echo "Successfully enabled $service, it may require reboot to start."
+                echo "Enabled $service. It may require reboot to start."
               else
                 >&2 echo "Failed to enable $service."
               fi
@@ -3595,17 +3614,16 @@ functions:
             import os
             path = '{{ $fileGlob }}'
             expanded_path = os.path.expandvars(os.path.expanduser(path))
-            print(f'Deleting files matching pattern: {expanded_path}')
             paths = glob.glob(expanded_path)
-            if not paths:
-              print('Skipping, no paths found.')
+            removed_count = 0
+            skipped_count = 0
             for path in paths:
               if not os.path.isfile(path):
-                print(f'Skipping folder: "{path}".')
+                skipped_count += 1
                 continue
               os.remove(path)
-              print(f'Successfully delete file: "{path}".')
-            print(f'Successfully deleted {len(paths)} file(s).')
+              removed_count += 1
+            print(f'Removed {removed_count} file(s); skipped {skipped_count} non-file path(s).')
   -
     name: DeleteFilesFromFirefoxProfiles
     parameters:
@@ -3636,11 +3654,11 @@ functions:
           import sqlite3
           import glob
           import sys
-
-          database_name   = 'places.sqlite'
-          table_name      = 'moz_inputhistory' # moz_historyvisits, moz_places
-
-          home_dir = f'/home/{os.getenv("SUDO_USER", os.getenv("USER"))}'
+          import pwd
+          from contextlib import closing
+          database_name = '{{ $databaseFileName }}'
+          table_name = '{{ $tableName }}'
+          home_dir = pwd.getpwnam(os.environ['SUDO_USER']).pw_dir if os.getenv('SUDO_USER') else os.path.expanduser('~')
           database_globs = [
               # Global installation
               f'{home_dir}/.mozilla/firefox/*/{database_name}',
@@ -3650,51 +3668,50 @@ functions:
               f'{home_dir}/snap/firefox/common/.mozilla/firefox/*/{database_name}',
           ]
           database_files = [file for files in [glob.glob(glob_pattern) for glob_pattern in database_globs] for file in files]
-          if not database_files:
-              print(f'Skipping, no "{database_name}" found.')
-              exit(0)
-          print(f'Total database files found: {len(database_files)}')
+          deleted_row_count = 0
+          cleaned_database_count = 0
           for file in database_files:
-              print(f'Cleaning "{table_name}" in: {file}')
-              try:
-                  conn = sqlite3.connect(file)
-                  cursor = conn.cursor()
-                  cursor.execute(f'DELETE from {table_name}')
-                  total_deleted = cursor.rowcount
-                  print(f'Table was empty, no items were deleted.' if total_deleted == 0 else f'Total deleted items: {cursor.rowcount}')
-              except Exception as e:
-                  print(f'Failed to delete: {e}', file=sys.stderr)
+            try:
+              with closing(sqlite3.connect(file)) as conn:
+                cursor = conn.cursor()
+                cursor.execute(f'DELETE from {table_name}')
+                conn.commit()
+                deleted_row_count += cursor.rowcount
+                cleaned_database_count += 1
+            except sqlite3.Error as e:
+              print(f'Failed to delete from {file}: {e}', file=sys.stderr)
+          print(f'Deleted {deleted_row_count} row(s) from {cleaned_database_count} database(s).')
   -
     name: DeleteFileFromThunderbirdProfiles
     parameters:
       - name: file
     code: |-
       # {{ $file }}: Global installation
-      rm -fv ~/.thunderbird/*/{{ $file }}
-      # {{ $file }}: Flatpak installation
-      rm -fv ~/snap/thunderbird/common/.thunderbird/*/{{ $file }}
+      rm -f ~/.thunderbird/*/{{ $file }}
       # {{ $file }}: Snap installation
-      rm -fv ~/.var/app/org.mozilla.Thunderbird/.thunderbird/*/{{ $file }}
+      rm -f ~/snap/thunderbird/common/.thunderbird/*/{{ $file }}
+      # {{ $file }}: Flatpak installation
+      rm -f ~/.var/app/org.mozilla.Thunderbird/.thunderbird/*/{{ $file }}
   -
     name: DeleteFileFromGNOMEWebData
     parameters:
       - name: file
     code: |-
       # {{ $file }}: Global installation
-      rm -fv ~/.local/share/epiphany/{{ $file }}
+      rm -f ~/.local/share/epiphany/{{ $file }}
       # {{ $file }}: Flatpak installation
-      rm -fv ~/.var/app/org.gnome.Epiphany/data/epiphany/{{ $file }}
+      rm -f ~/.var/app/org.gnome.Epiphany/data/epiphany/{{ $file }}
       # {{ $file }}: Snap installation
-      rm -fv ~/snap/epiphany/*/.local/share/epiphany/{{ $file }}
+      rm -f ~/snap/epiphany/*/.local/share/epiphany/{{ $file }}
   -
     name: ClearDirFromVsCodeUserDataDir
     parameters:
       - name: directory # Whitespaces must be escaped with /
     code: |-
       # {{ $directory }}: Global installation (also Snap with --classic)
-      rm -rfv ~/.config/Code/{{ $directory }}/*
+      rm -rf ~/.config/Code/{{ $directory }}/*
       # {{ $directory }}: Flatpak installation
-      rm -rfv ~/.var/app/com.visualstudio.code/config/Code/{{ $directory }}/*
+      rm -rf ~/.var/app/com.visualstudio.code/config/Code/{{ $directory }}/*
   -
     name: PersistSystemEnvironmentVariable
     parameters:
@@ -3798,6 +3815,7 @@ functions:
         echo "Skipping, \"$job_name\" cronjob is not found."
       fi
     revertCode: |-
+      job_name='{{ $jobName }}'
       cronjob_path="/etc/cron.daily/$job_name"
       if [[ -f "$cronjob_path" ]]; then
         if [[ -x "$cronjob_path" ]]; then
@@ -3838,13 +3856,12 @@ functions:
     code: |-
       pref_name='{{ $prefName }}'
       pref_value='{{ $jsonValue }}'
-      echo "Setting preference \"$pref_name\" to \"$pref_value\"."
       declare -a profile_paths=(
         ~/.mozilla/firefox/*/
         ~/.var/app/org.mozilla.firefox/.mozilla/firefox/*/
         ~/snap/firefox/common/.mozilla/firefox/*/
       )
-      declare -i total_profiles_found=0
+      declare -i configured_profile_count=0
       for profile_dir in "${profile_paths[@]}"; do
         if [ ! -d "$profile_dir" ]; then
           continue
@@ -3852,34 +3869,27 @@ functions:
         if [[ ! "$(basename "$profile_dir")" =~ ^[a-z0-9]{8}\..+ ]]; then
           continue # Not a profile folder
         fi
-        ((total_profiles_found++))
         user_js_file="${profile_dir}user.js"
-        echo "$user_js_file:"
         if [ ! -f "$user_js_file" ]; then
           touch "$user_js_file"
-          echo $'\t''Created new user.js file'
         fi
         pref_start="user_pref(\"$pref_name\","
         pref_line="user_pref(\"$pref_name\", $pref_value);"
-        if ! grep --quiet "^$pref_start" "${user_js_file}"; then
-          echo -n $'\n'"$pref_line" >> "$user_js_file"
-          echo $'\t'"Successfully added a new preference in $user_js_file."
-        elif grep --quiet "^$pref_line$" "$user_js_file"; then
-          echo $'\t'"Skipping, preference is already set as expected in $user_js_file."
-        else
+        if grep --quiet "^$pref_line$" "$user_js_file"; then
+          :
+        elif grep --quiet "^$pref_start" "${user_js_file}"; then
+          >&2 echo "Replacing unexpected value for \"$pref_name\" in $user_js_file."
           sed --in-place "/^$pref_start/c\\$pref_line" "$user_js_file"
-          echo $'\t'"Successfully replaced the existing incorrect preference in $user_js_file."
+          ((configured_profile_count++))
+        else
+          echo -n $'\n'"$pref_line" >> "$user_js_file"
+          ((configured_profile_count += 1))
         fi
       done
-      if [ "$total_profiles_found" -eq 0 ]; then
-        echo 'No profile folders are found, no changes are made.'
-      else
-        echo "Successfully verified preferences in $total_profiles_found profiles."
-      fi
+      echo "Configured \"$pref_name\" in $configured_profile_count profile(s)."
     revertCode: |-
       pref_name='{{ $prefName }}'
       pref_value='{{ $jsonValue }}'
-      echo "Reverting preference: \"$pref_name\" to its default."
       if command -v 'ps' &> /dev/null && ps aux | grep -i "[f]irefox" > /dev/null; then
         >&2 echo -e "\e[33mWarning: Firefox is currently running. Please close Firefox before executing the revert script to ensure changes are applied effectively.\e[0m"
       fi
@@ -3889,7 +3899,7 @@ functions:
         ~/.var/app/org.mozilla.firefox/.mozilla/firefox/*/
         ~/snap/firefox/common/.mozilla/firefox/*/
       )
-      declare -i total_profiles_found=0
+      declare -i reverted_preference_count=0
       for profile_dir in "${profile_paths[@]}"; do
         if [ ! -d "$profile_dir" ]; then
           continue
@@ -3897,34 +3907,23 @@ functions:
         if [[ ! "$(basename "$profile_dir")" =~ ^[a-z0-9]{8}\..+ ]]; then
           continue # Not a profile folder
         fi
-        ((total_profiles_found++))
         for file_to_modify in "${files_to_modify[@]}"; do
           config_file_path="${profile_dir}${file_to_modify}"
-          if [ ! -f "$config_file_path" ]; then
-            continue
-          fi
-          echo "$config_file_path:"
+          [ -f "$config_file_path" ] || continue
           pref_start="user_pref(\"$pref_name\","
           pref_line="user_pref(\"$pref_name\", $pref_value);"
-          if ! grep --quiet "^$pref_start" "${config_file_path}"; then
-            echo $'\t''Skipping, preference was not configured before.'
-          elif grep --quiet "^$pref_line$" "${config_file_path}"; then
+          if grep --quiet "^$pref_line$" "${config_file_path}"; then
             sed --in-place "/^$pref_line/d" "$config_file_path"
-            echo $'\t''Successfully reverted preference to default.'
+            ((reverted_preference_count++))
             if ! grep --quiet '[^[:space:]]' "$config_file_path"; then
               rm "$config_file_path"
-              echo $'\t'"Removed the file as it became empty."
             fi
-          else
-            echo $'\t''Skipping, the preference has value that is not configured by privacy.sexy.'
+          elif grep --quiet "^$pref_start" "${config_file_path}"; then
+            >&2 echo "Skipping $config_file_path because \"$pref_name\" has an unexpected value."
           fi
         done
       done
-      if [ "$total_profiles_found" -eq 0 ]; then
-        echo 'No reversion was necessary.'
-      else
-        echo "Successfully verified preferences in $total_profiles_found profiles."
-      fi
+      echo "Reverted \"$pref_name\" from $reverted_preference_count file(s)."
   -
     name: RenameFile
     parameters:
@@ -3933,20 +3932,17 @@ functions:
       file='{{ $path }}'
       backup_file="${file}.old"
       if [ -f "$file" ]; then
-        echo "File exists: $file."
         sudo mv "$file" "$backup_file"
-        echo "Moved to: $backup_file."
+        echo "Renamed $file to $backup_file."
       else
-        echo "Skipping, no changes needed."
+        :
       fi
     revertCode: |-
       file='{{ $path }}'
       backup_file="${file}.old"
       if [ -f "$backup_file" ]; then
-        echo "Backup file exists: $file."
         sudo mv "$backup_file" "$file"
-        echo "Moved to: $file."
-        echo "Successfully restored."
+        echo "Restored $file."
       else
         >&2 echo "Failed to restore, backup file could not be found at $backup_file."
         >&2 echo "Was the change initially applied by privacy.sexy?"
@@ -3964,9 +3960,8 @@ functions:
         >&2 echo "Skipping, original file missing at $file."
       else
         sudo mv "$file" "$backup_file"
-        echo "Successfully backed up existing $file"
         echo -n $"$new_content" | sudo tee "$file" > /dev/null
-        echo "Successfully replaced $file"
+        echo "Replaced $file with requested content."
       fi
     revertCode: |-
       file='{{ $filePath }}'
@@ -3974,9 +3969,9 @@ functions:
       if [ ! -f "$backup_file" ]; then
         >&2 echo "Failed, backup file is missing at $backup_file."
       else
-        sudo rm -fv "$file"
+        sudo rm -f "$file"
         sudo mv "$file.backup" "$file"
-        echo "Successfully restored from backup: $file"
+        echo "Restored $file from backup."
       fi
   -
     name: ClearDirectoryContents
@@ -4000,4 +3995,4 @@ functions:
         parameters:
           code: |-
             glob_pattern="{{ $directoryGlob }}/*"
-            {{ with $grantPermissions }}sudo {{ end }}rm -rfv $glob_pattern
+            {{ with $grantPermissions }}sudo {{ end }}rm -rf $glob_pattern

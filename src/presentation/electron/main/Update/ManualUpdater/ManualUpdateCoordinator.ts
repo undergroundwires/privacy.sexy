@@ -4,6 +4,7 @@ import { Version } from '@/domain/Version';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { createGitHubProjectDetails } from '@/application/Application/Loader/ProjectDetails/GitHubProjectDetailsFactory';
 import { loadProjectDetailsFromMetadata } from '@/application/Application/Loader/ProjectDetails/MetadataProjectDetailsLoader';
+import { ExternalUrlOpenResult, openExternalWebUrl } from '../../NavigationPolicy';
 import { UpdateProgressBar } from '../ProgressBar/UpdateProgressBar';
 import {
   promptForManualUpdate, promptInstallerOpenError,
@@ -44,7 +45,13 @@ async function executeManualUpdateProcess(info: UpdateInfo): Promise<void> {
     const { releaseUrl, downloadUrl } = getRemoteUpdateUrls(info.version);
     if (updateAction === ManualUpdateChoice.VisitReleasesPage) {
       ElectronLogger.info('User chose to visit release page', { url: releaseUrl });
-      await shell.openExternal(releaseUrl);
+      const result = await openExternalWebUrl(releaseUrl, {
+        openExternal: shell.openExternal,
+        logger: ElectronLogger,
+      });
+      if (result !== ExternalUrlOpenResult.Opened) {
+        await handleUnexpectedError(info);
+      }
     } else if (updateAction === ManualUpdateChoice.UpdateNow) {
       ElectronLogger.info('User chose to download and install update');
       await downloadAndInstallUpdate(downloadUrl, info);

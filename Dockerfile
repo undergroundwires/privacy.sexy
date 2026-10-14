@@ -1,8 +1,8 @@
 # Build
-FROM node:lts-alpine AS build-stage
+FROM node:24-alpine AS build-stage
 WORKDIR /app
 COPY . .
-RUN npm run install-deps
+RUN npm ci --ignore-scripts --engine-strict --strict-peer-deps
 RUN npm run build \
     && npm run check:verify-build-artifacts -- --web
 RUN mkdir /dist \

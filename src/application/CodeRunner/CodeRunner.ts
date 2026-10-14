@@ -7,8 +7,7 @@ export interface CodeRunner {
 
 export type CodeRunOutcome = SuccessfulCodeRun | FailedCodeRun;
 
-export type CodeRunErrorType =
-  | 'FileWriteError'
+export type CodeRunErrorType = 'FileWriteError'
   | 'FileReadbackVerificationError'
   | 'FilePathGenerationError'
   | 'UnsupportedPlatform'

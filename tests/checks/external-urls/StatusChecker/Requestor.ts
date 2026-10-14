@@ -61,7 +61,8 @@ function fetchUrlStatusWithRetry(
       result = {
         url,
         error: [
-          'Error:', indentText(JSON.stringify(err, null, '\t') || err.toString()),
+          'Error:', indentText(String(err)),
+          'Error details:', indentText(JSON.stringify(err, null, '\t') || ''),
           'Fetch options:', indentText(JSON.stringify(fetchOptions, null, '\t')),
           'Request options:', indentText(JSON.stringify(requestOptions, null, '\t')),
           'TLS:', indentText(getTlsContextInfo()),

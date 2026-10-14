@@ -63,7 +63,7 @@ jobs:
         name: Setup node
         uses: ./.github/actions/setup-node
       -
-        name: Setup node
+        name: Setup Python
         uses: ./.github/actions/setup-python
       -
         name: Install dependencies
@@ -88,11 +88,11 @@ jobs:
         name: Setup node
         uses: ./.github/actions/setup-node
       -
-        name: Setup node
+        name: Setup Python
         uses: ./.github/actions/setup-python
       -
         name: Install dependencies
-        run: python3 -m pip install -r ./scripts/validate-collections-yaml/requirements.txt
+        run: python -m pip install -r ./scripts/validate-collections-yaml/requirements.txt
       -
         name: Validate
-        run: python3 ./scripts/validate-collections-yaml
+        run: python ./scripts/validate-collections-yaml

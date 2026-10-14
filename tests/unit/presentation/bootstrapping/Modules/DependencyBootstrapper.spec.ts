@@ -1,14 +1,35 @@
 import { describe, it, expect } from 'vitest';
+import { createApp, type App, type InjectionKey } from 'vue';
 import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationContextStub';
 import { DependencyBootstrapper } from '@/presentation/bootstrapping/Modules/DependencyBootstrapper';
 import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { VueDependencyInjectionApiStub } from '@tests/unit/shared/Stubs/VueDependencyInjectionApiStub';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { provideDependencies } from '@/presentation/bootstrapping/DependencyProvider';
-import type { App, inject } from 'vue';
+import type { VueDependencyInjectionApi } from '@/presentation/bootstrapping/DependencyProvider';
 
 describe('DependencyBootstrapper', () => {
   describe('bootstrap', () => {
+    it('uses Vue injection by default to resolve an app-provided value', async () => {
+      const app = createApp({ render: () => null });
+      const key: InjectionKey<string> = Symbol('bootstrap-default-injector');
+      let resolveValue: () => string | undefined = () => undefined;
+      const sut = new DependencyBootstrapper(
+        async () => new ApplicationContextStub(),
+        (_context, api) => {
+          if (!api) {
+            throw new Error('Bootstrap did not supply the injection API.');
+          }
+          api.provide(key, 'provided-value');
+          resolveValue = () => api.inject(key);
+        },
+      );
+
+      await sut.bootstrap(app);
+
+      expect(app.runWithContext(resolveValue)).to.equal('provided-value');
+    });
+
     it('calls the contextFactory', async () => {
       // arrange
       const { mockContext, mockApp } = createMocks();
@@ -84,7 +105,7 @@ function createMocks() {
   return { mockContext, mockApp, provideMock };
 }
 
-type Injector = typeof inject;
+type Injector = VueDependencyInjectionApi['inject'];
 type Provider = typeof provideDependencies;
 type ContextFactory = typeof buildContext;
 
@@ -93,7 +114,7 @@ class DependencyBootstrapperBuilder {
 
   private dependencyProvider: Provider = () => new VueDependencyInjectionApiStub().provide;
 
-  private injector: Injector = () => new VueDependencyInjectionApiStub().inject;
+  private injector: Injector = new VueDependencyInjectionApiStub().inject;
 
   public withContextFactory(contextFactory: ContextFactory): this {
     this.contextFactory = contextFactory;
